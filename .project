@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>JumpGame</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.adobe.flexbuilder.project.flexbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>[source path] Source</name>
+			<type>2</type>
+			<location>C:/Users/Freeman/Documents/Libraries/Box2DFlashAS3 2.1a/Source</location>
+		</link>
+		<link>
+			<name>[source path] Starling-Extension-Particle-System-master-src</name>
+			<type>2</type>
+			<location>C:/Users/Freeman/Documents/Libraries/Starling-Extension-Particle-System-master/src</location>
+		</link>
+		<link>
+			<name>[source path] starling-src</name>
+			<type>2</type>
+			<location>C:/Users/Freeman/Documents/Libraries/PrimaryFeather-Starling-Framework-0ac3592/starling/src</location>
+		</link>
+	</linkedResources>
+</projectDescription>
