@@ -13,7 +13,7 @@ package com.jumpGame.gameElements
 	/**
 	 * This class is the hero character.
 	 */
-	public class Hero extends DynamicGameObject
+	public class Hero extends GameObject
 	{
 		/** Hero character animation. */
 		private var heroArt:MovieClip;
@@ -73,18 +73,18 @@ package com.jumpGame.gameElements
 			else return NaN;
 		}
 		
-		override public function setX(newX:Number):void {
-			// enable left and right border warp
-			if (newX < -1 * stage.stageWidth / 2) {
-				newX += stage.stageWidth;
-			}
-			else if (newX >= stage.stageWidth / 2) {
-				newX -= stage.stageWidth;
-			}
-			
-			this.mx = newX;
-			this.x = stage.stageWidth / 2 + newX;
-		}
+//		override public function setX(newX:Number):void {
+//			// enable left and right border warp
+//			if (newX < -1 * stage.stageWidth / 2) {
+//				newX += stage.stageWidth;
+//			}
+//			else if (newX >= stage.stageWidth / 2) {
+//				newX -= stage.stageWidth;
+//			}
+//			
+//			this.mx = newX;
+//			this.x = stage.stageWidth / 2 + newX;
+//		}
 		
 		public function triggerSpecialAbility():void {
 			if (this.abilityReady) {

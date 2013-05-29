@@ -1,7 +1,5 @@
 package com.jumpGame.screens
 {
-	import com.jumpGame.builders.BoxObjectBuilder;
-	import com.jumpGame.builders.RoundObjectBuilder;
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.gameElements.Hero;
 	import com.jumpGame.gameElements.Platform;
@@ -14,18 +12,14 @@ package com.jumpGame.screens
 	import flash.media.SoundMixer;
 	import flash.utils.getTimer;
 	
-	import Box2D.Collision.Shapes.b2CircleShape;
-	import Box2D.Collision.Shapes.b2PolygonShape;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2BodyDef;
-	import Box2D.Dynamics.b2FixtureDef;
 	import Box2D.Dynamics.b2World;
 	
 	import starling.animation.Tween;
 	import starling.core.Starling;
 	import starling.display.Button;
-	import starling.display.DisplayObject;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import com.jumpGame.builders.PhysicsBuilder;
@@ -80,6 +74,8 @@ package com.jumpGame.screens
 		
 		private var world:b2World;
 		private var bodyDef:b2BodyDef;
+		
+		private var builder:PhysicsBuilder;
 		
 		private var physicsDebug:PhysicsDebug;
 		
@@ -168,11 +164,6 @@ package com.jumpGame.screens
 			platformsList = new Vector.<Platform>();
 			platformsListLength = 0;
 			
-			var platform:Platform = this.platformCreate()
-			platformsList.push(platform);
-			platform.visible = false;
-			platformsListLength++;
-			
 			//createPlatformsPool();
 		}
 		
@@ -258,34 +249,33 @@ package com.jumpGame.screens
 			
 			
 			// create physics world
-			var gravity:b2Vec2 = new b2Vec2(0.0, 10.0);
+			var gravity:b2Vec2 = new b2Vec2(0.0, -10.0);
 			this.world = new b2World(gravity, true);
+			this.builder = new PhysicsBuilder(this.world); // physics object builder
 			
 			// Box2d debug draw
 			this.physicsDebug = new PhysicsDebug();
 			this.world.SetDebugDraw(this.physicsDebug.debugDraw);
 			Starling.current.nativeOverlay.addChild(this.physicsDebug);
 			
-			var builder:PhysicsBuilder = new PhysicsBuilder(this.world);
-			
 			// set up platform
-			platformsList[0].setX(0);
-			platformsList[0].setY(-200);
-			builder.setDimensions(Constants.SHAPE_BOX, 75, 20);
-			platformsList[0].body = builder.build(platformsList[0], stage.stageWidth * 0.5, 200);
+			var platform:Platform = this.platformCreate()
+			this.platformsList.push(platform);
+			platformsListLength++;
+			platform.visible = false;
+			// create platform body
+			trace(platform.width * Constants.PX_TO_M);
+			trace(platform.height * Constants.PX_TO_M);
+			this.builder.setDimensions(Constants.SHAPE_BOX, platform.width * Constants.PX_TO_M, platform.height * Constants.PX_TO_M);
+			this.builder.isStatic = true;
+			platform.body = builder.build(platform, 0, -1);
 			
 			// set up hero
 			hero = new Hero(this.world);
 			this.addChild(hero);
 			this.hero.visible = false;
-			this.hero.setX(Constants.HERO_INITIAL_X);
-			this.hero.setY(Constants.HERO_INITIAL_Y);
-			//this.hero.scaleX = 0.6;
-			//this.hero.scaleY = 0.6;
-			
-			builder.setDimensions(Constants.SHAPE_CIRCLE, this.hero.width);
-			this.hero.body = builder.build(this.hero, stage.stageWidth * 0.5, Constants.HERO_INITIAL_Y);
-			
+			builder.setDimensions(Constants.SHAPE_CIRCLE, this.hero.width * Constants.PX_TO_M);
+			this.hero.body = builder.build(this.hero, 0, 0);
 			// add sea of fire
 //			this.seaOfFire = new SeaOfFire();
 //			this.seaOfFire.setX(0);
@@ -382,15 +372,15 @@ package com.jumpGame.screens
 		{
 			if (!gamePaused)
 			{
-				this.world.Step(this.timeDiffControlled, 10, 10);
+				this.world.Step(1.0/60.0, 10, 10);
 				this.world.ClearForces();
 				
 				// go through body list and update sprite positions
 				for (var bb:b2Body = this.world.GetBodyList(); bb; bb = bb.GetNext()) {
-					if (bb.GetUserData() is DisplayObject) {
-						var sprite:DisplayObject = bb.GetUserData() as DisplayObject;
-						sprite.x = bb.GetPosition().x;
-						sprite.y = bb.GetPosition().y;
+					if (bb.GetUserData() is GameObject) {
+						var sprite:GameObject = bb.GetUserData() as GameObject;
+						sprite.setX(bb.GetPosition().x);
+						sprite.setY(bb.GetPosition().y);
 						sprite.rotation = bb.GetAngle();
 					}
 				}

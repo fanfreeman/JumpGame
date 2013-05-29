@@ -27,5 +27,9 @@ package
 		// Box2d object types
 		public static const SHAPE_CIRCLE:uint = 0;
 		public static const SHAPE_BOX:uint = 1;
+		
+		// Box2d unit conversion
+		public static const M_TO_PX:Number = 150;
+		public static const PX_TO_M:Number = 1 / M_TO_PX;
 	}
 }

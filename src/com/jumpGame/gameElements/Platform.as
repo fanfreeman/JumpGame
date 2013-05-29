@@ -4,14 +4,11 @@ package com.jumpGame.gameElements
 	
 	import starling.core.Starling;
 	import starling.display.MovieClip;
-	import starling.display.Sprite;
 	import starling.events.Event;
 	
-	public class Platform extends Sprite
+	public class Platform extends GameObject
 	{
 		public var body:b2Body;
-		public var mx:int = 0;
-		public var my:int = 0;
 		
 		private var platformArt:MovieClip;
 		
@@ -36,20 +33,20 @@ package com.jumpGame.gameElements
 		private function createPlatformArt():void
 		{
 			platformArt = new MovieClip(Assets.getSprite("SpriteTexturePlatform").getTextures("PlatformGlowTurnOn"), 12);
-			platformArt.x = Math.ceil(-platformArt.width/2);
+			platformArt.x = Math.ceil(-platformArt.width/2); // center art on registration point
 			platformArt.y = Math.ceil(-platformArt.height/2);
 			starling.core.Starling.juggler.add(platformArt);
 			this.addChild(platformArt);
 		}
 		
-		public function setX(newX:int):void {
-			this.mx = newX;
-			this.x = stage.stageWidth / 2 + newX;
+		override public function get width():Number
+		{
+			return platformArt.texture.width;
 		}
 		
-		public function setY(newY:int):void {
-			this.my = newY;
-			this.y = stage.stageHeight / 2 - newY;
+		override public function get height():Number
+		{
+			return platformArt.texture.height;
 		}
 	}
 }

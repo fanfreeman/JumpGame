@@ -14,9 +14,9 @@ package com.jumpGame.builders
 	{
 		public var isStatic:Boolean = false;
 		public var type:int;
-		public var radius:Number;
-		public var halfWidth:Number;
-		public var halfHeight:Number;
+		public var mRadius:Number;
+		public var mHalfWidth:Number;
+		public var mHalfHeight:Number;
 		
 		protected var world:b2World;
 		
@@ -25,19 +25,19 @@ package com.jumpGame.builders
 			this.world = world;
 		}
 		
-		public function setDimensions(type:int, dimension1:Number, dimension2:Number = NaN):void {
+		public function setDimensions(type:int, mDimension1:Number, mDimension2:Number = NaN):void {
 			this.type = type;
 			if (type == Constants.SHAPE_CIRCLE) {
-				this.radius = dimension1;
+				this.mRadius = mDimension1;
 			} else if (type == Constants.SHAPE_BOX) {
-				this.halfWidth = dimension1;
-				this.halfHeight = dimension2;
+				this.mHalfWidth = mDimension1;
+				this.mHalfHeight = mDimension2;
 			}
 		}
 		
 		public function build(sprite:Sprite,
-							  initialX:Number, 
-							  initialY:Number, 
+							  mInitialX:Number, 
+							  mInitialY:Number, 
 							  initialVelocityX:Number = 0.0, 
 							  initialVelocityY:Number = 0.0,
 							  restitution:Number = 1.0,
@@ -45,10 +45,10 @@ package com.jumpGame.builders
 							  density:Number = 1.0):b2Body {
 			// create shape
 			if (this.type == Constants.SHAPE_CIRCLE) {
-				var circleShape:b2CircleShape = new b2CircleShape(this.radius);
+				var circleShape:b2CircleShape = new b2CircleShape(this.mRadius);
 			} else if (this.type == Constants.SHAPE_BOX) {
 				var boxShape:b2PolygonShape = new b2PolygonShape();
-				boxShape.SetAsBox(this.halfWidth, this.halfHeight);
+				boxShape.SetAsBox(this.mHalfWidth, this.mHalfHeight);
 			}
 			
 			
@@ -67,10 +67,11 @@ package com.jumpGame.builders
 			var bodyDef:b2BodyDef = new b2BodyDef();
 			if (this.isStatic) {
 				bodyDef.type = b2Body.b2_staticBody;
+				this.isStatic = false; // reset
 			} else {
 				bodyDef.type = b2Body.b2_dynamicBody;
 			}
-			bodyDef.position.Set(initialX, initialY);
+			bodyDef.position.Set(mInitialX, mInitialY);
 			
 			// create body
 			var body:b2Body = world.CreateBody(bodyDef);
