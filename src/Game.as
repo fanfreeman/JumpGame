@@ -3,6 +3,7 @@ package
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.screens.InGame;
 	import com.jumpGame.screens.Welcome;
+	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.SoundButton;
 	
 	import flash.media.SoundMixer;
@@ -18,6 +19,8 @@ package
 	{
 		/** Screen - Welcome or Main Menu. */
 		private var screenWelcome:Welcome;
+		
+		private var screenMenu:Menu;
 		
 		/** Screen - InGame. */
 		private var screenInGame:InGame;
@@ -57,6 +60,10 @@ package
 			screenInGame = new InGame();
 			screenInGame.addEventListener(NavigationEvent.CHANGE_SCREEN, onInGameNavigation);
 			this.addChild(screenInGame);
+			
+			// menu screen
+			screenMenu = new Menu();
+			this.addChild(screenMenu);
 			
 			// Welcome screen.
 			screenWelcome = new Welcome();
@@ -126,8 +133,12 @@ package
 		{
 			switch (event.params.id)
 			{
-				case "play":
+				case "menu":
 					screenWelcome.disposeTemporarily();
+					screenMenu.initialize();
+					break;
+				case "play":
+					screenMenu.disposeTemporarily();
 					screenInGame.initialize();
 					break;
 			}

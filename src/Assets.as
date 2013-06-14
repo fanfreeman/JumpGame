@@ -37,11 +37,36 @@ package
 		/**
 		 * Background Assets 
 		 */
-		[Embed(source="../media/graphics/bgLayer1.jpg")]
-		public static const BgLayer1:Class;
+		// layer 1
+		[Embed(source="../media/graphics/bgStarrySky.jpg")]
+		public static const BgStarrySky:Class;
 		
 		[Embed(source="../media/graphics/bgWelcome.jpg")]
 		public static const BgWelcome:Class;
+		
+		// layer 2
+		[Embed(source="../media/graphics/background/layer2_tree1.png")]
+		public static const BgLayer2Tree1L:Class;
+		
+		[Embed(source="../media/graphics/background/layer2_tree2.png")]
+		public static const BgLayer2Tree2R:Class;
+		
+		[Embed(source="../media/graphics/background/layer2_tree3.png")]
+		public static const BgLayer2Tree3L:Class;
+		
+		// layer 4
+		[Embed(source="../media/graphics/background/layer4_tree1.png")]
+		public static const BgLayer4Tree1R:Class;
+		
+		[Embed(source="../media/graphics/background/layer4_tree2.png")]
+		public static const BgLayer4Tree2L:Class;
+		
+		// waves spritesheet
+		// scarecrow spritesheet
+		[Embed(source="../media/graphics/background/sofwave.png")]
+		public static const SpriteTextureWaves:Class;
+		[Embed(source="../media/graphics/background/sofwave.xml", mimeType="application/octet-stream")]
+		public static const SpriteXmlWaves:Class;
 		
 		/**
 		 * Texture Cache 
@@ -96,6 +121,9 @@ package
 						break;
 					case "SpriteTexturePlatform":
 						xml = XML(new SpriteXmlPlatform());
+						break;
+					case "SpriteTextureWaves":
+						xml = XML(new SpriteXmlWaves());
 						break;
 				}
 				 

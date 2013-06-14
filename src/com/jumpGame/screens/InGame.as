@@ -1,35 +1,41 @@
 package com.jumpGame.screens
 {
 	import com.jumpGame.events.NavigationEvent;
+	import com.jumpGame.gameElements.Background;
 	import com.jumpGame.gameElements.Hero;
+	import com.jumpGame.gameElements.Particle;
 	import com.jumpGame.gameElements.Platform;
+	import com.jumpGame.gameElements.SeaOfFire;
+	import com.jumpGame.gameElements.platforms.PlatformNormal;
+	import com.jumpGame.level.LevelParser;
 	import com.jumpGame.objectPools.PoolParticle;
 	import com.jumpGame.objectPools.PoolPlatform;
 	import com.jumpGame.ui.GameOverContainer;
 	import com.jumpGame.ui.HUD;
 	import com.jumpGame.ui.PauseButton;
 	
+	import flash.events.KeyboardEvent;
+	import flash.external.ExternalInterface;
 	import flash.media.SoundMixer;
+	import flash.utils.getDefinitionByName;
 	import flash.utils.getTimer;
-	
-	import Box2D.Common.Math.b2Vec2;
-	import Box2D.Dynamics.b2Body;
-	import Box2D.Dynamics.b2BodyDef;
-	import Box2D.Dynamics.b2World;
 	
 	import starling.animation.Tween;
 	import starling.core.Starling;
 	import starling.display.Button;
 	import starling.display.Sprite;
 	import starling.events.Event;
-	import com.jumpGame.builders.PhysicsBuilder;
+	import starling.extensions.PDParticleSystem;
+	import starling.textures.Texture;
 	
 	public class InGame extends Sprite
 	{
-		/** Game background object. */
-		//private var bg:GameBackground;
+		/** Game background object */
+		private var bg:Background;
 		
-		/** Hero character. */		
+		private var fg:Background; // decorative layer in front of hero's layer
+		
+		/** Hero character */		
 		private var hero:Hero;
 		
 		/** Time calculation for animation. */
@@ -39,15 +45,13 @@ package com.jumpGame.screens
 		private var timeDiffControlled:Number;
 		private var speedFactor:Number = 1.0;
 		
-		// ------------------------------------------------------------------------------------------------------------
-		// GAME INTERACTION 
-		// ------------------------------------------------------------------------------------------------------------
+		// climb distance
+		private var climbDist:Number = 0.0;
+		private var maxDist:Number = 0.0;
 		
-		/** Is game rendering through hardware or software? */
-		private var isHardwareRendering:Boolean;
-		
-		/** Is game currently in paused state? */
-		private var gamePaused:Boolean = false;
+		// ------------------------------------------------------------------------------------------------------------
+		// OBJECT POOLING
+		// ------------------------------------------------------------------------------------------------------------
 		
 		/** Obstacles pool with a maximum cap for reuse of items. */		
 		private var platformsPool:PoolPlatform;
@@ -59,6 +63,19 @@ package com.jumpGame.screens
 		private var windParticlesPool:PoolParticle;
 		
 		// ------------------------------------------------------------------------------------------------------------
+		// GAME INTERACTION 
+		// ------------------------------------------------------------------------------------------------------------
+		
+		/** Is game rendering through hardware or software? */
+		private var isHardwareRendering:Boolean;
+		
+		/** Is game currently in paused state? */
+		private var gamePaused:Boolean = false;
+		
+		// whether or not to check win/lose condition
+		private var checkWinLose:Boolean = true;
+		
+		// ------------------------------------------------------------------------------------------------------------
 		// ANIMATION
 		// ------------------------------------------------------------------------------------------------------------
 		
@@ -68,21 +85,28 @@ package com.jumpGame.screens
 		/** platforms to animate - array length. */		
 		private var platformsListLength:uint = 0;
 		
+		// particles
+		private var particlesList:Vector.<Particle>;
+		private var particlesListLength:uint = 0;
+		public static var particleLeaf:PDParticleSystem;
+		
 		// ------------------------------------------------------------------------------------------------------------
 		// PHYSICS
 		// ------------------------------------------------------------------------------------------------------------
 		
-		private var world:b2World;
-		private var bodyDef:b2BodyDef;
-		
-		private var builder:PhysicsBuilder;
-		
-		private var physicsDebug:PhysicsDebug;
 		
 		// ------------------------------------------------------------------------------------------------------------
 		// USER CONTROL
 		// ------------------------------------------------------------------------------------------------------------
 		
+		// keyboard input
+		private var leftArrow:Boolean = false;
+		private var rightArrow:Boolean = false;
+		private var upArrow:Boolean = false;
+		private var downArrow:Boolean = false;
+		
+		// whether or not the player has control of the hero
+		private var playerControl:Boolean = true;
 		
 		// ------------------------------------------------------------------------------------------------------------
 		// PARTICLES
@@ -107,10 +131,24 @@ package com.jumpGame.screens
 		private var pauseButton:PauseButton;
 		
 		/** Kick Off button in the beginning of the game .*/
-		private var startButton:Button;
+		private var startButton:starling.display.Button;
 		
 		/** Tween object for game over container. */
 		private var tween_gameOverContainer:Tween;
+		
+		// ------------------------------------------------------------------------------------------------------------
+		// LEVEL ELEMENTS
+		// ------------------------------------------------------------------------------------------------------------
+		
+		private var levelParser:LevelParser;
+		
+		private var seaOfFire:SeaOfFire;
+		
+		// ------------------------------------------------------------------------------------------------------------
+		// COMMUNICATION
+		// ------------------------------------------------------------------------------------------------------------
+		
+		private var communicator:Communicator = null;
 		
 		// ------------------------------------------------------------------------------------------------------------
 		// METHODS
@@ -120,9 +158,9 @@ package com.jumpGame.screens
 		{
 			super();
 			
-			isHardwareRendering = Starling.context.driverInfo.toLowerCase().indexOf("software") == -1;
+			this.isHardwareRendering = Starling.context.driverInfo.toLowerCase().indexOf("software") == -1;
 			trace("Hardware rendering: " + isHardwareRendering);
-			
+
 			this.visible = false;
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -134,6 +172,14 @@ package com.jumpGame.screens
 			drawGame();
 			drawHUD();
 			drawGameOverScreen();
+			
+			// call JS
+			if(ExternalInterface.available){
+				trace("Calling JS...");
+				ExternalInterface.call("requestFbId");
+			} else {
+				trace("External interface unavailabe");
+			}
 		}
 		
 		/**
@@ -141,7 +187,13 @@ package com.jumpGame.screens
 		 */
 		private function drawGame():void
 		{
-			// draw background
+			// draw particles
+			if (this.isHardwareRendering) {
+				particleLeaf = new PDParticleSystem(XML(new ParticleAssets.ParticleLeafXML()), Texture.fromBitmap(new ParticleAssets.ParticleLeafTexture()));
+				Starling.juggler.add(particleLeaf);
+				
+				this.addChild(particleLeaf);
+			}
 			
 			
 			
@@ -153,18 +205,24 @@ package com.jumpGame.screens
 			this.addChild(pauseButton);
 			
 			// start button.
-			startButton = new Button(Assets.getAtlas().getTexture("startButton"));
+			startButton = new starling.display.Button(Assets.getAtlas().getTexture("startButton"));
 			startButton.fontColor = 0xffffff;
 			startButton.x = stage.stageWidth/2 - startButton.width/2;
 			startButton.y = stage.stageHeight/2 - startButton.height/2;
 			startButton.addEventListener(Event.TRIGGERED, onStartButtonClick);
 			this.addChild(startButton);
 			
-			// Initialize platforms vector
-			platformsList = new Vector.<Platform>();
-			platformsListLength = 0;
+			// initialize the platforms vector
+			this.platformsList = new Vector.<Platform>();
+			this.platformsListLength = 0;
+			
+			// initialize the particles vector
+			this.particlesList = new Vector.<Particle>();
+			this.particlesListLength = 0;
 			
 			//createPlatformsPool();
+			this.seaOfFire = new SeaOfFire();
+			this.addChild(this.seaOfFire);
 		}
 		
 		/**
@@ -186,7 +244,8 @@ package com.jumpGame.screens
 		
 		private function drawHUD():void
 		{
-			
+			hud = new HUD();
+			this.addChild(hud);
 		}
 		
 		/**
@@ -202,34 +261,28 @@ package com.jumpGame.screens
 		
 		public function initialize():void
 		{
-			// dispose screen temporarily.
+			// reset
 			disposeTemporarily();
+			
+			// create background
+			this.bg = new Background(Constants.Background);
+			this.addChild(this.bg);
+			this.setChildIndex(this.bg, 0); // push to back
+			
+			// populate stage from level file
+			this.levelParser = new LevelParser();
 			
 			this.visible = true;
 			
-			// calculate elapsed time.
-			this.addEventListener(Event.ENTER_FRAME, calculateElapsed);
-			
 			// play screen background music.
 			//if (!Sounds.muted) Sounds.sndBgGame.play(0, 999);
-			
-			// reset game time
-			this.gameStartTime = getTimer();
-			this.gameTime = 0;
+			Sounds.playBgm();
 			
 			// hide the pause button since the game isn't started yet.
 			pauseButton.visible = false;
 			
 			// show start button.
 			startButton.visible = true;
-			
-			
-			
-			
-			
-			
-			// get current level and populate stage elements
-			//this.level = new Level(MovieClip(root).level);
 			
 			// create background
 			//this.bg = new Background(this, this.level.target);
@@ -244,38 +297,14 @@ package com.jumpGame.screens
 			// set original mouse position
 			//this.startingMouseX = mouseX;
 			
-			
-			
-			
-			
-			// create physics world
-			var gravity:b2Vec2 = new b2Vec2(0.0, -10.0);
-			this.world = new b2World(gravity, true);
-			this.builder = new PhysicsBuilder(this.world); // physics object builder
-			
-			// Box2d debug draw
-			this.physicsDebug = new PhysicsDebug();
-			this.world.SetDebugDraw(this.physicsDebug.debugDraw);
-			Starling.current.nativeOverlay.addChild(this.physicsDebug);
-			
-			// set up platform
-			var platform:Platform = this.platformCreate()
-			this.platformsList.push(platform);
-			platformsListLength++;
-			platform.visible = false;
-			// create platform body
-			trace(platform.width * Constants.PX_TO_M);
-			trace(platform.height * Constants.PX_TO_M);
-			this.builder.setDimensions(Constants.SHAPE_BOX, platform.width * Constants.PX_TO_M, platform.height * Constants.PX_TO_M);
-			this.builder.isStatic = true;
-			platform.body = builder.build(platform, 0, -1);
-			
 			// set up hero
-			hero = new Hero(this.world);
+			this.hero = new Hero();
+			this.hero.setX(Constants.HERO_INITIAL_X);
+			this.hero.setY(Constants.HERO_INITIAL_Y);
 			this.addChild(hero);
 			this.hero.visible = false;
-			builder.setDimensions(Constants.SHAPE_CIRCLE, this.hero.width * Constants.PX_TO_M);
-			this.hero.body = builder.build(this.hero, 0, 0);
+			this.hero.dy = Constants.HeroInitialVelocityY;
+			
 			// add sea of fire
 //			this.seaOfFire = new SeaOfFire();
 //			this.seaOfFire.setX(0);
@@ -301,6 +330,11 @@ package com.jumpGame.screens
 //			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressedDown);
 //			stage.addEventListener(KeyboardEvent.KEY_UP, keyPressedUp);
 //			addEventListener(Event.ENTER_FRAME, animate);
+			this.fg = new Background(Constants.Foreground);
+			this.addChild(this.fg);
+			
+			// reset scores
+			hud.distance = 0;
 		}
 		
 		/**
@@ -355,12 +389,51 @@ package com.jumpGame.screens
 		private function launchHero():void
 		{
 			this.hero.visible = true;
-			this.platformsList[0].visible = true;
 			// Touch interaction
 			//this.addEventListener(TouchEvent.TOUCH, onTouch);
 			
+			// keyboard interaction
+			Starling.current.nativeOverlay.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressedDown);
+			Starling.current.nativeOverlay.stage.addEventListener(KeyboardEvent.KEY_UP, keyPressedUp);
+			
 			// Game tick
 			this.addEventListener(Event.ENTER_FRAME, onGameTick);
+			
+			// start game timer
+			this.gameStartTime = getTimer();
+			this.gameTime = 0;
+		}
+		
+		/**
+		 * Set keydown states to true
+		 */
+		public function keyPressedDown(event:KeyboardEvent):void {
+			if (event.keyCode == 37) {
+				leftArrow = true;
+			} else if (event.keyCode == 39) {
+				rightArrow = true;
+			} else if (event.keyCode == 38) {
+				upArrow = true;
+			} else if (event.keyCode == 40) {
+				downArrow = true;
+			} else if (event.keyCode == 32) { // space bar pressed
+				this.hero.triggerSpecialAbility();
+			}
+		}
+		
+		/**
+		 * Set keydown states to false
+		 */
+		public function keyPressedUp(event:KeyboardEvent):void {
+			if (event.keyCode == 37) {
+				leftArrow = false;
+			} else if (event.keyCode == 39) {
+				rightArrow = false;
+			} else if (event.keyCode == 38) {
+				upArrow = false;
+			} else if (event.keyCode == 40) {
+				downArrow = false;
+			}
 		}
 		
 		/**
@@ -370,28 +443,152 @@ package com.jumpGame.screens
 		 */
 		private function onGameTick(event:Event):void
 		{
-			if (!gamePaused)
-			{
-				this.world.Step(1.0/60.0, 10, 10);
-				this.world.ClearForces();
-				
-				// go through body list and update sprite positions
-				for (var bb:b2Body = this.world.GetBodyList(); bb; bb = bb.GetNext()) {
-					if (bb.GetUserData() is GameObject) {
-						var sprite:GameObject = bb.GetUserData() as GameObject;
-						sprite.setX(bb.GetPosition().x);
-						sprite.setY(bb.GetPosition().y);
-						sprite.rotation = bb.GetAngle();
+			// update game time
+			var timeCurrent:int = getTimer() - this.gameStartTime;
+			this.timeDiffReal = timeCurrent - this.gameTime;
+			this.gameTime = timeCurrent;
+			this.timeDiffControlled = this.timeDiffReal * this.speedFactor;
+			
+			if (gamePaused) {
+				return;
+			}
+			
+			// adjust hero vertical speed for gravity
+			this.hero.dy -= Constants.Gravity * this.timeDiffControlled;
+			if (this.hero.dy < Constants.MaxHeroFallVelocity) {
+				this.hero.dy = Constants.MaxHeroFallVelocity;
+			}
+			
+			// handle left and right arrow key input
+			if (this.playerControl) {
+				if (leftArrow) { // left arrow pressed
+					this.hero.turnLeft();
+					if (this.hero.dx > 0) {this.hero.dx = 0;}
+					this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled;
+					if (this.hero.dx < -Constants.HeroMaxSpeedX) {
+						this.hero.dx = -Constants.HeroMaxSpeedX;
 					}
 				}
+				else if (rightArrow) { // right arrow pressed
+					this.hero.turnRight();
+					if (this.hero.dx < 0) {this.hero.dx = 0;}
+					this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled;
+					if (this.hero.dx > Constants.HeroMaxSpeedX) {
+						this.hero.dx = Constants.HeroMaxSpeedX;
+					}
+				}
+				else { // no arrow pressed, reset velocity
+					if (this.hero.dx < 0) {
+						if (Math.abs(this.hero.dx) < Constants.HeroSpeedX * this.timeDiffControlled) {
+							this.hero.dx = 0;
+						} else {
+							this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled;
+						}
+					} else if (this.hero.dx > 0) {
+						if (Math.abs(this.hero.dx) < Constants.HeroSpeedX * this.timeDiffControlled) {
+							this.hero.dx = 0;
+						} else {
+							this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled;
+						}
+					}
+				}
+			}
+			
+			// move hero
+			this.hero.setX(this.hero.mx + this.timeDiffControlled * this.hero.dx);
+			this.hero.setY(this.hero.my + this.timeDiffControlled * this.hero.dy);
+			
+			// update climb distance
+			this.climbDist += this.timeDiffControlled * this.hero.dy;
+			if (this.climbDist > this.maxDist) {
+				this.maxDist = this.climbDist;
+			}
+			
+			// move everything down on hero moving up
+			if (this.hero.my > 0) {
+				this.scrollElements(this.hero.my);
+				this.hero.setY(0);
+			}
+			
+			// move everything up on hero moving down
+			if (this.hero.my < -Constants.ScrollDownThreshold) {
+				this.scrollElements(this.hero.my + Constants.ScrollDownThreshold);
+				this.hero.setY(-Constants.ScrollDownThreshold);
+			}
+			
+			// scroll sea of fire horizontally
+			this.seaOfFire.scrollHorizontal();
+			
+			// animate stage elements
+			for (var i:uint = 0; i < this.platformsListLength; i++) {
+				// detect hero/platform collisions
+				//if (this.hero.bounds.intersects(this.platformsList[i].bounds)) {
+				if (this.platformsList[i].bounds.contains(this.hero.x - 10, this.hero.y + 20) ||
+					this.platformsList[i].bounds.contains(this.hero.x + 10, this.hero.y + 20)) {
+					if (this.hero.dy < 0) {
+						this.hero.bounce();
+						this.platformsList[i].contact();
+						particleLeaf.start(0.1); // play particle effect
+					}
+				}
+			}
+			
+			// If hardware rendering, set the particle emitter's x and y.
+			if (isHardwareRendering)
+			{
+				particleLeaf.emitterX = hero.x;
+				particleLeaf.emitterY = hero.y;
+			}
+			
+			// we lose if we fall
+			if (this.checkWinLose && hero.my < -1 * Constants.StageHeight / 2) {
+			//if (this.checkWinLose && this.climbDist < this.seaOfFireHeight) {
+				this.playerFail();
+				return;
+			}
+			
+			// update hud
+			hud.distance = Math.round(this.maxDist);
+		}
+		
+		/**
+		 * Player fails, check to see if saves are available
+		 */
+		private function playerFail():void {
+//			this.soundControl.stopBgm();
+//			this.soundControl.playScratch();
+//			this.endLevel(false);
+		}
+		
+		/**
+		 * Scroll all of the rainbows downward
+		 */
+		public function scrollElements(distance:Number):void {
+			// scroll platforms
+			for (var i:uint = 0; i < this.platformsListLength; i++) {
+				this.platformsList[i].setY(this.platformsList[i].my - distance);
 				
-				this.world.DrawDebugData();
+				// remove a rainbow if it has scrolled below sea of fire
+				if (this.platformsList[i].my < (-Constants.StageHeight)) {
+					//this.removeElement(index);
+				}
+			}
+			
+			// scroll background and foreground layers
+			this.bg.scroll(distance);
+			this.fg.scroll(distance);
+			
+			// populate area above visible stage with next elements in level elements array
+			while (this.levelParser.levelElementsArray.length > 0 && this.levelParser.levelElementsArray[0][0] < this.climbDist + Constants.StageHeight) {
+				var levelElement:Array = this.levelParser.levelElementsArray[0];
+				this.addElement(levelElement[0] - this.climbDist, levelElement[1], levelElement[2]);
+				this.levelParser.levelElementsArray.splice(0, 1);
+				this.setChildIndex(this.platformsList[this.platformsList.length - 1], this.getChildIndex(this.hero)); // push newly added element behind hero
 			}
 		}
 		
 		/**
-		 * Create platforms pool by passing the create and clean methods/functions to the Pool.  
-		 * 
+		 * Create platforms pool by passing the create and clean methods/functions to the Pool
 		 */
 		private function createPlatformsPool():void
 		{
@@ -407,6 +604,8 @@ package com.jumpGame.screens
 		private function platformCreate():Platform
 		{
 			var platform:Platform = new Platform();
+			platform.setX(-Constants.StageWidth);
+			platform.setY(0);
 			this.addChild(platform);
 			
 			return platform;
@@ -441,14 +640,25 @@ package com.jumpGame.screens
 		 * @param _distance
 		 * 
 		 */
-		private function createPlatform(_type:int = 1, _distance:Number = 0):void
+		private function createPlatform():void
 		{
-			// create a new platform
-			var platform:Platform = platformsPool.checkOut();
-			//platform.type = _type;
-			//platform.distance = _distance;
-			platform.x = stage.stageWidth;
-			platformsList[platformsListLength++] = platform;
+			var platform:Platform = this.platformsPool.checkOut();
+			platform.setX(0);
+			platform.setY(-200);
+			this.platformsList[platformsListLength++] = platform;
+		}
+		
+		// add an element to stage
+		public function addElement(y:Number, x:Number, elementClassName:String):void {
+			switch(elementClassName) {
+				case "PlatformNormal":
+					var element:Platform = new PlatformNormal();
+					break;
+			}
+			element.setX(x);
+			element.setY(y);
+			this.addChild(element);
+			this.platformsList[platformsListLength++] = element;
 		}
 		
 		private function disposeTemporarily():void
@@ -457,24 +667,9 @@ package com.jumpGame.screens
 			
 			gameOverContainer.visible = false;
 			
-			if (this.hasEventListener(Event.ENTER_FRAME)) this.removeEventListener(Event.ENTER_FRAME, calculateElapsed);
-			
 			//if (this.hasEventListener(TouchEvent.TOUCH)) this.removeEventListener(TouchEvent.TOUCH, onTouch);
 			
-			//if (this.hasEventListener(Event.ENTER_FRAME)) this.removeEventListener(Event.ENTER_FRAME, onGameTick);
-		}
-		
-		/**
-		 * Calculate elapsed time. 
-		 * @param event
-		 * 
-		 */
-		private function calculateElapsed(event:Event):void
-		{
-			var timeCurrent:int = getTimer() - this.gameStartTime;
-			this.timeDiffReal = timeCurrent - this.gameTime;
-			this.gameTime = timeCurrent;
-			this.timeDiffControlled = this.timeDiffReal * this.speedFactor;
+			if (this.hasEventListener(Event.ENTER_FRAME)) this.removeEventListener(Event.ENTER_FRAME, onGameTick);
 		}
 	}
 }

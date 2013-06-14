@@ -173,7 +173,7 @@ package com.jumpGame.screens
 		 */
 		private function onPlayClick(event:Event):void
 		{
-			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "play"}, true));
+			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "menu"}, true));
 			
 			//if (!Sounds.muted) Sounds.sndCoffee.play();
 		}

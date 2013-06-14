@@ -3,16 +3,22 @@ package
 	import starling.display.Sprite;
 	
 	/**
-	 * A game element
+	 * This class represents a game element
 	 */
 	public class GameObject extends Sprite
 	{
-		public function setX(mX:Number):void {
-			this.x = stage.stageWidth / 2 + mX * Constants.M_TO_PX;
+		// custom location
+		public var mx:Number;
+		public var my:Number;
+		
+		public function setX(newX:Number):void {			
+			this.mx = newX;
+			this.x = Constants.StageWidth / 2 + newX;
 		}
 		
-		public function setY(mY:Number):void {
-			this.y = stage.stageHeight / 2 - mY * Constants.M_TO_PX;
+		public function setY(newY:Number):void {
+			this.my = newY;
+			this.y = Constants.StageHeight / 2 - newY;
 		}
 	}
 }

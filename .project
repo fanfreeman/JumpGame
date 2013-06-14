@@ -16,19 +16,29 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>[source path] Source</name>
-			<type>2</type>
-			<location>C:/Users/Freeman/Documents/Libraries/Box2DFlashAS3 2.1a/Source</location>
-		</link>
-		<link>
 			<name>[source path] Starling-Extension-Particle-System-master-src</name>
 			<type>2</type>
 			<location>C:/Users/Freeman/Documents/Libraries/Starling-Extension-Particle-System-master/src</location>
 		</link>
 		<link>
+			<name>[source path] as3corelib-src</name>
+			<type>2</type>
+			<location>C:/Users/Freeman/Documents/Libraries/as3corelib/src</location>
+		</link>
+		<link>
+			<name>[source path] source</name>
+			<type>2</type>
+			<location>C:/Users/Freeman/Documents/Libraries/feathers-1.0.1/themes/MetalWorksMobileTheme/source</location>
+		</link>
+		<link>
 			<name>[source path] starling-src</name>
 			<type>2</type>
 			<location>C:/Users/Freeman/Documents/Libraries/PrimaryFeather-Starling-Framework-0ac3592/starling/src</location>
+		</link>
+		<link>
+			<name>bin-debug</name>
+			<type>2</type>
+			<location>C:/Sites/JumpBackend/web/swf</location>
 		</link>
 	</linkedResources>
 </projectDescription>
