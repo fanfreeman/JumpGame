@@ -10,6 +10,9 @@ package com.jumpGame.events
 		/** Change of a screen. */		
 		public static const CHANGE_SCREEN:String = "changeScreen";
 		
+		// communicator data received
+		public static const RESPONSE_RECEIVED:String = "responseReceived";
+		
 		/** Custom object to pass parameters to the screens. */
 		public var params:Object;
 		

@@ -8,6 +8,9 @@ package com.jumpGame.ui
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
 	
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
 	/**
 	 * This class handles the Heads Up Display for the game.
 	 *  
@@ -48,6 +51,9 @@ package com.jumpGame.ui
 		
 		/** Font for score value. */		
 		private var fontScoreValue:Font;
+		
+		// on screen message
+		private var messageText:TextField;
 		
 		public function HUD()
 		{
@@ -122,6 +128,17 @@ package com.jumpGame.ui
 			foodScoreText.x = int(foodScoreLabel.x + foodScoreLabel.width - foodScoreText.width);
 			foodScoreText.y = foodScoreLabel.y + foodScoreLabel.height;
 			this.addChild(foodScoreText);
+			
+			// on screen message
+			var fontMessage:Font = Fonts.getFont("Badabb");
+			trace("HUD fontName: " + fontMessage.fontName);
+			trace("HUD fontSize: " + fontMessage.fontSize);
+			messageText = new TextField(stage.stageWidth, stage.stageHeight * 0.5, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
+			messageText.vAlign = VAlign.TOP;
+			messageText.height = messageText.textBounds.height;
+			messageText.y = (stage.stageHeight * 20)/100;
+			messageText.visible = false;
+			this.addChild(messageText);
 		}
 		
 		/**
@@ -172,6 +189,20 @@ package com.jumpGame.ui
 				ret = "0" + ret;
 			}
 			return ret;
+		}
+		
+		// display an on screen message
+		public function showMessage(message:String):void {
+			this.messageText.text = message;
+			this.messageText.visible = true;
+			
+			var messageTimer:Timer = new Timer(2000, 1);
+			messageTimer.addEventListener(TimerEvent.TIMER_COMPLETE, hideMessage);
+			messageTimer.start();
+		}
+		
+		public function hideMessage(event:TimerEvent):void {
+			this.messageText.visible = false;
 		}
 	}
 }

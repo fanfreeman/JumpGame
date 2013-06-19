@@ -15,15 +15,9 @@ package com.jumpGame.level  {
 					currentY += element[3];
 				} else {
 					currentY += element[0];
-					//if (element[3] == undefined) {
-						this.levelElementsArray.push([currentY * Constants.UnitHeight, element[1], element[2]]);
-					//} else {
-						//this.levelElementsArray.push([currentY * Constants.UnitHeight, element[1], element[2] + element[3]]);
-					//}
+					this.levelElementsArray.push([currentY * Constants.UnitHeight, element[1], element[2], element[3]]);
 				}
 			}
 		}
-		
-		
 	}
 }

@@ -13,6 +13,7 @@ package com.jumpGame.level  {
 		public static function getContents():Array {
 			var stageContents:Array = new Array();
 			
+			stageContents.push(new Array(Constants.Generator, 3, 3, 123));
 			stageContents.push(new Array(3, 			-250, 			Constants.PlatformNormal, 5));
 			stageContents.push(new Array(3, 			-250, 			Constants.PlatformNormal, 5));
 			stageContents.push(new Array(3, 			-250, 			Constants.PlatformNormal, 5));
@@ -39,8 +40,14 @@ package com.jumpGame.level  {
 			stageContents.push(new Array(3, 			200, 			Constants.PlatformNormal, 5));
 			stageContents.push(new Array(3, 			-200, 			Constants.PlatformNormal, 5));
 			stageContents.push(new Array(3, 			200, 			Constants.PlatformNormal, 5));
-			
 			stageContents.push(new Array(3, 			270, 			Constants.PlatformNormal, 5));
+			
+			// generate random type 1
+			stageContents.push(new Array(Constants.Generator, 1, 1, 61));
+			
+			// generate random type 2
+			// [1] size [4-5] [normal, drop] platforms per row
+			stageContents.push(new Array(Constants.Generator, 2, 3, 63));
 			
 			return stageContents;
 		}

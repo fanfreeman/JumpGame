@@ -29,10 +29,10 @@ package
 		public static const SpriteXmlScarecrow:Class;
 		
 		// platform spritesheet
-		[Embed(source="../media/graphics/platform/platform.png")]
-		public static const SpriteTexturePlatform:Class;
-		[Embed(source="../media/graphics/platform/platform.xml", mimeType="application/octet-stream")]
-		public static const SpriteXmlPlatform:Class;
+		[Embed(source="../media/graphics/platform/platforms.png")]
+		public static const AtlasTexturePlatforms:Class;
+		[Embed(source="../media/graphics/platform/platforms.xml", mimeType="application/octet-stream")]
+		public static const AtlasXmlPlatforms:Class;
 		
 		/**
 		 * Background Assets 
@@ -119,8 +119,8 @@ package
 					case "SpriteTextureScarecrow":
 						xml = XML(new SpriteXmlScarecrow());
 						break;
-					case "SpriteTexturePlatform":
-						xml = XML(new SpriteXmlPlatform());
+					case "AtlasTexturePlatforms":
+						xml = XML(new AtlasXmlPlatforms());
 						break;
 					case "SpriteTextureWaves":
 						xml = XML(new SpriteXmlWaves());

@@ -1,6 +1,7 @@
 package
 {
 	import com.adobe.crypto.MD5;
+	import com.jumpGame.events.NavigationEvent;
 	
 	import flash.events.Event;
 	import flash.events.HTTPStatusEvent;
@@ -12,15 +13,11 @@ package
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
+	
+	import starling.events.EventDispatcher;
 		
-	public class Communicator
+	public class Communicator extends EventDispatcher
 	{
-		public static const URL:String = "/score/get";
-		
-		public var dataAvailable:Boolean = false;
-		public var data:String;
-		public var fbid:uint;
-		
 		private var _loader:URLLoader;
 		private var _request:URLRequest;
 		
@@ -28,21 +25,13 @@ package
 		{
 		}
 		
-		public function readData():String {
-			if (this.dataAvailable) {
-				this.dataAvailable = false;
-				return this.data;
-			} else {
-				return null;
-			}
-		}
-		
+		// retrieve user data from the backend, use readData() to read async data
 		public function retrieveUserData():void {
-			var randomParam:String = "?p=" + Math.floor(Math.random() * (10000000));
+			var randomParam:String = "?p=" + Math.floor(Math.random() * (10000000)); // random parameter to avoid getting cached result
 			var loader:URLLoader = new URLLoader();
 			configureListeners(loader);
 			
-			var request:URLRequest = new URLRequest(Constants.UriUserInfo);
+			var request:URLRequest = new URLRequest(Constants.UriGetUserInfo);
 			request.method = URLRequestMethod.GET;
 			
 			try {
@@ -52,7 +41,9 @@ package
 			}
 		}
 		
-		public function syncUserData(data:*):void {
+		// post a piece of user data to the backend
+		// @param data a json string to send
+		public function postUserData(data:String):void {
 			var preSalt:String = "oMgTHIS__$iS?Saltted!@#39-";
 			var afterSalt:String = "-=^pErrf_-_+=f3$ct:)#";
 			var hash:String = MD5.hash(preSalt + data + afterSalt + afterSalt);
@@ -60,8 +51,9 @@ package
 			var loader:URLLoader = new URLLoader();
 			configureListeners(loader);
 			
-			var request:URLRequest = new URLRequest("/score/submit");
+			var request:URLRequest = new URLRequest(Constants.UriPostUserInfo);
 			request.method = URLRequestMethod.POST;
+			
 			var variables : URLVariables = new URLVariables();
 			variables.data = data;
 			variables.hash = hash;
@@ -88,9 +80,10 @@ package
 		
 		private function completeHandler(event:Event):void {
 			var loader:URLLoader = URLLoader(event.target);
-			this.data = loader.data;
-			this.dataAvailable = true;
-			trace("completeHandler: " + this.data);
+			var data:String = loader.data;
+			trace("completeHandler: " + data);
+			
+			this.dispatchEvent(new NavigationEvent(NavigationEvent.RESPONSE_RECEIVED, {data: data}, true));
 		}
 		
 		private function openHandler(event:Event):void {

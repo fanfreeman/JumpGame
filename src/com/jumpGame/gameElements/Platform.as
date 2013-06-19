@@ -1,17 +1,17 @@
 package com.jumpGame.gameElements
 {
-	import starling.core.Starling;
 	import starling.display.MovieClip;
 	import starling.events.Event;
 	
 	public class Platform extends GameObject
 	{
+		protected var animations:Vector.<MovieClip>;
+		protected var size:int;
 		
-		private var animations:Vector.<MovieClip>;
-		
-		public function Platform()
+		public function Platform(size:int)
 		{
 			super();
+			this.size = size;
 			this.animations = new Vector.<MovieClip>();
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -27,43 +27,30 @@ package com.jumpGame.gameElements
 			createPlatformArt();
 		}
 		
-		private function createPlatformArt():void
-		{
-			// turned on state
-			var platformArt:MovieClip;
-			platformArt = new MovieClip(Assets.getSprite("SpriteTexturePlatform").getTextures("PlatformGlowOn"), 12);
-			platformArt.x = Math.ceil(-platformArt.width/2); // center art on registration point
-			platformArt.y = Math.ceil(-platformArt.height/2);
-			starling.core.Starling.juggler.add(platformArt);
-			this.addChild(platformArt);
-			this.animations.push(platformArt);
-			
-			// turning on
-			platformArt = new MovieClip(Assets.getSprite("SpriteTexturePlatform").getTextures("PlatformGlowTurnOn"), 12);
-			platformArt.x = Math.ceil(-platformArt.width/2); // center art on registration point
-			platformArt.y = Math.ceil(-platformArt.height/2);
-			starling.core.Starling.juggler.add(platformArt);
-			platformArt.visible = false;
-			platformArt.loop = false;
-			this.addChild(platformArt);
-			this.animations.push(platformArt);
-			
-			// turning off
-			platformArt = new MovieClip(Assets.getSprite("SpriteTexturePlatform").getTextures("PlatformGlowTurnOff"), 12);
-			platformArt.x = Math.ceil(-platformArt.width/2); // center art on registration point
-			platformArt.y = Math.ceil(-platformArt.height/2);
-			starling.core.Starling.juggler.add(platformArt);
-			platformArt.visible = false;
-			platformArt.loop = false;
-			this.addChild(platformArt);
-			this.animations.push(platformArt);
-		}
+		protected function createPlatformArt():void{}
 		
 		public function contact():void {
-			this.animations[0].visible = false;
-			this.animations[2].visible = true; // turning light off animation
-			this.animations[2].stop();
-			this.animations[2].play();
+			// play sound effect
+			var temp:Number = Math.random() * 3;
+			if (temp < 1) {
+				Sounds.sndBounce1.play();
+			} else if (temp >= 1 && temp < 2) {
+				Sounds.sndBounce2.play();
+			} else if (temp >= 2 && temp < 3) {
+				Sounds.sndBounce3.play();
+			}
+			
+			this.animations[0].stop();
+			this.animations[0].play();
+		}
+		
+		public function getBouncePower():Number {
+			return Constants.NormalBouncePower;
+		}
+		
+		public function update(timeDiff:Number):void {
+			this.gx = this.gx;
+			this.gy = this.gy;
 		}
 		
 		override public function get width():Number

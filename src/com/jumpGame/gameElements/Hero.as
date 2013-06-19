@@ -24,6 +24,9 @@ package com.jumpGame.gameElements
 		{
 			super();
 			
+			this.gx = 0.0;
+			this.gy = 0.0;
+			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
@@ -38,14 +41,15 @@ package com.jumpGame.gameElements
 			
 			this.createHeroWalkAnim();
 			this.createHeroJumpAnim();
+			this.createHeroFailAnim();
 		}
 		
 		private function createHeroWalkAnim():void {
 			var heroWalkAnim:MovieClip = new MovieClip(Assets.getSprite("SpriteTextureScarecrow").getTextures("walk.swf/"), 24);
-			heroWalkAnim.pivotX = Math.ceil(heroWalkAnim.texture.width / 2);
-			heroWalkAnim.pivotY = Math.ceil(heroWalkAnim.texture.height / 2);
 			heroWalkAnim.scaleX = 0.6;
 			heroWalkAnim.scaleY = 0.6;
+			heroWalkAnim.pivotX = Math.ceil(heroWalkAnim.texture.width / 2);
+			heroWalkAnim.pivotY = Math.ceil(heroWalkAnim.texture.height / 2);
 			starling.core.Starling.juggler.add(heroWalkAnim);
 			this.addChild(heroWalkAnim);
 			this.heroAnimations[Constants.HeroAnimWalk] = heroWalkAnim;
@@ -53,16 +57,30 @@ package com.jumpGame.gameElements
 		
 		private function createHeroJumpAnim():void {
 			var heroJumpAnim:MovieClip = new MovieClip(Assets.getSprite("SpriteTextureScarecrow").getTextures("jump.swf/"), 24);
-			heroJumpAnim.pivotX = Math.ceil(heroJumpAnim.texture.width  / 2);
-			heroJumpAnim.pivotY = Math.ceil(heroJumpAnim.texture.height / 2);
 			heroJumpAnim.scaleX = 0.6;
 			heroJumpAnim.scaleY = 0.6;
+			heroJumpAnim.pivotX = Math.ceil(heroJumpAnim.texture.width  / 2);
+			heroJumpAnim.pivotY = Math.ceil(heroJumpAnim.texture.height / 2);
 			starling.core.Starling.juggler.add(heroJumpAnim);
 			this.addChild(heroJumpAnim);
 			// hide this by default
 			heroJumpAnim.visible = false;
 			heroJumpAnim.loop = false;
 			this.heroAnimations[Constants.HeroAnimJump] = heroJumpAnim;
+		}
+		
+		private function createHeroFailAnim():void {
+			var heroFailAnim:MovieClip = new MovieClip(Assets.getSprite("SpriteTextureScarecrow").getTextures("hurt.swf/"), 24);
+			heroFailAnim.scaleX = 0.6;
+			heroFailAnim.scaleY = 0.6;
+			heroFailAnim.pivotX = Math.ceil(heroFailAnim.texture.width  / 2);
+			heroFailAnim.pivotY = Math.ceil(heroFailAnim.texture.height / 2);
+			starling.core.Starling.juggler.add(heroFailAnim);
+			this.addChild(heroFailAnim);
+			// hide this by default
+			heroFailAnim.visible = false;
+			heroFailAnim.loop = false;
+			this.heroAnimations[Constants.HeroAnimFail] = heroFailAnim;
 		}
 		
 		/**
@@ -119,8 +137,8 @@ package com.jumpGame.gameElements
 			//this.rgo.showMessage("Ability Ready!");
 		}
 		
-		public function bounce():void {
-			this.dy = 0.8;
+		public function bounce(bouncePower:Number):void {
+			this.dy = bouncePower;
 			this.heroAnimations[Constants.HeroAnimWalk].visible = false;
 			this.heroAnimations[Constants.HeroAnimJump].visible = true;
 			this.heroAnimations[Constants.HeroAnimJump].stop();
@@ -143,6 +161,15 @@ package com.jumpGame.gameElements
 		public function turnRight():void {
 				this.heroAnimations[Constants.HeroAnimJump].scaleX = 0.6;
 				this.heroAnimations[Constants.HeroAnimWalk].scaleX = 0.6;
+		}
+		
+		public function playFailAnimatjion():void {
+			this.dy = Constants.NormalBouncePower;
+			this.heroAnimations[Constants.HeroAnimWalk].visible = false;
+			this.heroAnimations[Constants.HeroAnimJump].visible = false;
+			this.heroAnimations[Constants.HeroAnimFail].visible = true;
+			this.heroAnimations[Constants.HeroAnimFail].stop();
+			this.heroAnimations[Constants.HeroAnimFail].play();
 		}
 	}
 }

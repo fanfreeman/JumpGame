@@ -3,7 +3,7 @@ package com.jumpGame.level {
 		// designed patterns constants
 		public static const Dots3PerRow100RowSpace:uint = 10000;
 		// other constants
-		private static const ScreenBorder = 100; // the sum of the left and right screen borders
+		private static const ScreenBorder:Number = 100; // the sum of the left and right screen borders
 		private static const SeparationWidth:uint = 60; // minimum x distance between the centers of rainbows
 		private static const SeparationHeight:uint = 30; // minimum y distance between the centers of rainbows
 		
@@ -31,7 +31,7 @@ package com.jumpGame.level {
 					sizeDistribution = new Array(0.0, 0.0, 0.0, 0.5, 1.0)
 					this.generateRandom(yMin, yMax, unitHeight, false, true, elementDistribution, elementsPerRowDistribution, sizeDistribution);
 					break;
-				case 3: // [1] size [3-5] [normal, drop, mobile, trampoline]
+				case 3: // [1] size [3-5] [normal, drop, mobile, normalboost]
 					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
 					elementDistribution = new Array(0.3, 0.6, 0.9, 1.0, 1.0, 1.0, 1.0);
 					sizeDistribution = new Array(0.0, 0.0, 0.3, 1.0, 1.0)
@@ -68,7 +68,7 @@ package com.jumpGame.level {
 		// generate random segment according to specifications
 		private function generateRandom(yMin:Number, yMax:Number, unitHeight:Number, yVariation:Boolean,
 										xVariation:Boolean, elementDistribution:Array,
-										elementsPerRowDistribution:Array, sizeDistribution:Array) {
+										elementsPerRowDistribution:Array, sizeDistribution:Array):void {
 			var x:Number = 0;
 			var y:Number = 0;
 			var rowHeight:Number = unitHeight * 3;
@@ -102,13 +102,11 @@ package com.jumpGame.level {
 					
 					var elementClass:String = this.getElementClassByDistribution(elementDistribution);
 					var elementSize:String = "";
-					if ([Constants.PlatformNormal, Constants.PlatformDrop, Constants.PlatformMobile, Constants.Trampoline].indexOf(elementClass) != -1) {
+					//if ([Constants.PlatformNormal, Constants.PlatformDrop, Constants.PlatformMobile, Constants.Trampoline].indexOf(elementClass) != -1) {
 						elementSize = String(this.getElementSizeByDistribution(sizeDistribution));
-					}
-					this.level.levelElementsArray.push([y, x, elementClass + elementSize]);
-					this.level.levelElementsArray.push([y + unitHeight, x, Constants.Coin]);
-					//this.level.addElement(y, x, elementClass + elementSize);
-					//this.level.addElement(y + unitHeight, x, Level.Coin);
+					//}
+					this.level.levelElementsArray.push([y, x, elementClass, elementSize]);
+					//this.level.levelElementsArray.push([y + unitHeight, x, Constants.Coin]);
 				}
 				currentY += rowHeight;
 			}
@@ -142,18 +140,13 @@ package com.jumpGame.level {
 				return Constants.PlatformMobile;
 			}
 			else if (seed >= elementDistribution[2] && seed < elementDistribution[3]) {
-				return Constants.Trampoline;
+				return Constants.PlatformNormalBoost;
 			}
 			else if (seed >= elementDistribution[3] && seed < elementDistribution[4]) {
-				return Constants.PowerTrampoline;
+				return Constants.PlatformPower;
 			}
 			else if (seed >= elementDistribution[4] && seed < elementDistribution[5]) {
-				//r = new Cloud();
-				return Constants.Cannon;
-			}
-			else if (seed >= elementDistribution[5] && seed < elementDistribution[6]) {
-				//r = new CloudMobile();
-				return Constants.PowerCannon;
+				return Constants.PlatformSuper;
 			}
 			return Constants.PlatformNormal;
 		}
@@ -177,7 +170,7 @@ package com.jumpGame.level {
 		
 		/********** Designed Patterns **********/
 		
-		private function generateDots3PerRow100RowSpace(yMin:Number, yMax:Number, unitHeight:Number) {
+		private function generateDots3PerRow100RowSpace(yMin:Number, yMax:Number, unitHeight:Number):void {
 			var rowHeight:Number = unitHeight * 3;
 			var currentY:Number = yMin * unitHeight;
 			while (currentY <= yMax * unitHeight) {

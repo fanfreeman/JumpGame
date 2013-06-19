@@ -2,8 +2,8 @@ package
 {
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.screens.InGame;
-	import com.jumpGame.screens.Welcome;
 	import com.jumpGame.screens.Menu;
+	import com.jumpGame.screens.Welcome;
 	import com.jumpGame.ui.SoundButton;
 	
 	import flash.media.SoundMixer;
@@ -17,14 +17,9 @@ package
 	 */
 	public class Game extends Sprite
 	{
-		/** Screen - Welcome or Main Menu. */
 		private var screenWelcome:Welcome;
-		
 		private var screenMenu:Menu;
-		
-		/** Screen - InGame. */
 		private var screenInGame:InGame;
-		
 		/** Sound / Mute button. */
 		private var soundButton:SoundButton;
 		
@@ -56,10 +51,7 @@ package
 		{
 			this.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
 			
-			// InGame screen.
-			screenInGame = new InGame();
-			screenInGame.addEventListener(NavigationEvent.CHANGE_SCREEN, onInGameNavigation);
-			this.addChild(screenInGame);
+			
 			
 			// menu screen
 			screenMenu = new Menu();
@@ -83,15 +75,12 @@ package
 		/**
 		 * On navigation from different screens. 
 		 * @param event
-		 * 
+		 * MARKED FOR DELETION
 		 */
 		private function onInGameNavigation(event:NavigationEvent):void
 		{
 			switch (event.params.id)
 			{
-				case "mainMenu":
-					screenWelcome.initialize();
-					break;
 				case "about":
 					screenWelcome.initialize();
 					screenWelcome.showAbout();
@@ -111,7 +100,7 @@ package
 				Sounds.muted = false;
 				
 				if (screenWelcome.visible) Sounds.sndBgMain.play(0, 999);
-				else if (screenInGame.visible) Sounds.sndBgGame.play(0, 999);
+				else if (screenInGame.visible) Sounds.sndBgMain.play(0, 999);
 				
 				soundButton.showUnmuteState();
 			}
@@ -133,12 +122,29 @@ package
 		{
 			switch (event.params.id)
 			{
+				case "welcome":
+					screenWelcome.initialize();
+					break;
 				case "menu":
 					screenWelcome.disposeTemporarily();
 					screenMenu.initialize();
+					
+					// get rid of in game screen first if it is present
+					if (screenInGame) {
+						this.removeChild(screenInGame);
+					}
 					break;
 				case "play":
+					// get rid of in game screen first if it is present
+					if (screenInGame) {
+						this.removeChild(screenInGame);
+					}
 					screenMenu.disposeTemporarily();
+					
+					// create and initialize in game screen
+					screenInGame = new InGame();
+					screenInGame.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
+					this.addChild(screenInGame);
 					screenInGame.initialize();
 					break;
 			}

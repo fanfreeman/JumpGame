@@ -5,18 +5,23 @@ package com.jumpGame.screens
 	import com.jumpGame.gameElements.Hero;
 	import com.jumpGame.gameElements.Particle;
 	import com.jumpGame.gameElements.Platform;
-	import com.jumpGame.gameElements.SeaOfFire;
-	import com.jumpGame.gameElements.platforms.PlatformNormal;
 	import com.jumpGame.level.LevelParser;
 	import com.jumpGame.objectPools.PoolParticle;
 	import com.jumpGame.objectPools.PoolPlatform;
 	import com.jumpGame.ui.GameOverContainer;
 	import com.jumpGame.ui.HUD;
 	import com.jumpGame.ui.PauseButton;
+	import com.jumpGame.gameElements.Camera;
+	import com.jumpGame.gameElements.platforms.PlatformNormal;
+	import com.jumpGame.gameElements.platforms.PlatformDrop;
+	import com.jumpGame.gameElements.platforms.PlatformMobile;
+	import com.jumpGame.gameElements.platforms.PlatformNormalBoost;
 	
 	import flash.events.KeyboardEvent;
+	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
 	import flash.media.SoundMixer;
+	import flash.utils.Timer;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getTimer;
 	
@@ -30,23 +35,34 @@ package com.jumpGame.screens
 	
 	public class InGame extends Sprite
 	{
-		/** Game background object */
-		private var bg:Background;
+		// ------------------------------------------------------------------------------------------------------------
+		// GAME OBJECTS
+		// ------------------------------------------------------------------------------------------------------------
 		
+		// game backgrounds and sea of fire waves
+		private var bg:Background;
 		private var fg:Background; // decorative layer in front of hero's layer
 		
-		/** Hero character */		
+		// hero
 		private var hero:Hero;
 		
-		/** Time calculation for animation. */
+		// platforms
+		private var platformsList:Vector.<Platform>;
+		private var platformsListLength:uint = 0;
+		
+		// ------------------------------------------------------------------------------------------------------------
+		// GAME PROPERTIES AND DATA
+		// ------------------------------------------------------------------------------------------------------------
+		
+		// Time calculation for animation
 		private var gameStartTime:Number;
 		private var timeDiffReal:Number;
 		private var gameTime:Number;
 		private var timeDiffControlled:Number;
-		private var speedFactor:Number = 1.0;
+		private var speedFactor:Number = 1.0; // game speed multiplier
+		private var delayTimer:Timer; // used for delaying game end upon player fail
 		
-		// climb distance
-		private var climbDist:Number = 0.0;
+		// max climb distance
 		private var maxDist:Number = 0.0;
 		
 		// ------------------------------------------------------------------------------------------------------------
@@ -76,21 +92,6 @@ package com.jumpGame.screens
 		private var checkWinLose:Boolean = true;
 		
 		// ------------------------------------------------------------------------------------------------------------
-		// ANIMATION
-		// ------------------------------------------------------------------------------------------------------------
-		
-		/** platforms to animate. */
-		private var platformsList:Vector.<Platform>;
-		
-		/** platforms to animate - array length. */		
-		private var platformsListLength:uint = 0;
-		
-		// particles
-		private var particlesList:Vector.<Particle>;
-		private var particlesListLength:uint = 0;
-		public static var particleLeaf:PDParticleSystem;
-		
-		// ------------------------------------------------------------------------------------------------------------
 		// PHYSICS
 		// ------------------------------------------------------------------------------------------------------------
 		
@@ -112,6 +113,10 @@ package com.jumpGame.screens
 		// PARTICLES
 		// ------------------------------------------------------------------------------------------------------------
 		
+		// particles
+		private var particlesList:Vector.<Particle>;
+		private var particlesListLength:uint = 0;
+		public static var particleLeaf:PDParticleSystem;
 		
 		// ------------------------------------------------------------------------------------------------------------
 		// HUD
@@ -137,18 +142,16 @@ package com.jumpGame.screens
 		private var tween_gameOverContainer:Tween;
 		
 		// ------------------------------------------------------------------------------------------------------------
-		// LEVEL ELEMENTS
+		// LEVEL PARSING AND GENERATION
 		// ------------------------------------------------------------------------------------------------------------
 		
 		private var levelParser:LevelParser;
-		
-		private var seaOfFire:SeaOfFire;
 		
 		// ------------------------------------------------------------------------------------------------------------
 		// COMMUNICATION
 		// ------------------------------------------------------------------------------------------------------------
 		
-		private var communicator:Communicator = null;
+		//private var communicator:Communicator = null;
 		
 		// ------------------------------------------------------------------------------------------------------------
 		// METHODS
@@ -160,8 +163,9 @@ package com.jumpGame.screens
 			
 			this.isHardwareRendering = Starling.context.driverInfo.toLowerCase().indexOf("software") == -1;
 			trace("Hardware rendering: " + isHardwareRendering);
-
-			this.visible = false;
+			Camera.reset();
+			this.referenceElementClasses();
+			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
@@ -187,6 +191,23 @@ package com.jumpGame.screens
 		 */
 		private function drawGame():void
 		{
+			// set up background
+			this.bg = new Background(Constants.Background);
+			this.addChild(this.bg);
+			this.setChildIndex(this.bg, 0); // push to back
+			
+			// set up hero
+			this.hero = new Hero();
+			this.hero.gx = Constants.HERO_INITIAL_X;
+			this.hero.gy = Constants.HERO_INITIAL_Y;
+			this.addChild(hero);
+			this.hero.visible = false;
+			this.hero.dy = Constants.HeroInitialVelocityY;
+			
+			// set up foreground
+			this.fg = new Background(Constants.Foreground);
+			this.addChild(this.fg);
+			
 			// draw particles
 			if (this.isHardwareRendering) {
 				particleLeaf = new PDParticleSystem(XML(new ParticleAssets.ParticleLeafXML()), Texture.fromBitmap(new ParticleAssets.ParticleLeafTexture()));
@@ -194,8 +215,6 @@ package com.jumpGame.screens
 				
 				this.addChild(particleLeaf);
 			}
-			
-			
 			
 			// pause button.
 			pauseButton = new PauseButton();
@@ -221,8 +240,6 @@ package com.jumpGame.screens
 			this.particlesListLength = 0;
 			
 			//createPlatformsPool();
-			this.seaOfFire = new SeaOfFire();
-			this.addChild(this.seaOfFire);
 		}
 		
 		/**
@@ -256,27 +273,17 @@ package com.jumpGame.screens
 		{
 			gameOverContainer = new GameOverContainer();
 			gameOverContainer.addEventListener(NavigationEvent.CHANGE_SCREEN, playAgain);
+			gameOverContainer.visible = false;
 			this.addChild(gameOverContainer);
 		}
 		
 		public function initialize():void
 		{
-			// reset
-			disposeTemporarily();
-			
-			// create background
-			this.bg = new Background(Constants.Background);
-			this.addChild(this.bg);
-			this.setChildIndex(this.bg, 0); // push to back
-			
 			// populate stage from level file
 			this.levelParser = new LevelParser();
 			
-			this.visible = true;
-			
-			// play screen background music.
-			//if (!Sounds.muted) Sounds.sndBgGame.play(0, 999);
-			Sounds.playBgm();
+			// play background music
+			if (!Sounds.muted) Sounds.playBgm();
 			
 			// hide the pause button since the game isn't started yet.
 			pauseButton.visible = false;
@@ -284,54 +291,8 @@ package com.jumpGame.screens
 			// show start button.
 			startButton.visible = true;
 			
-			// create background
-			//this.bg = new Background(this, this.level.target);
-			
 			// populate stage from level file
 			//this.level.populateStage(this);
-			
-			// create sound control object
-			//this.soundControl = new SoundControl();
-			//this.soundControl.playBgm();
-			
-			// set original mouse position
-			//this.startingMouseX = mouseX;
-			
-			// set up hero
-			this.hero = new Hero();
-			this.hero.setX(Constants.HERO_INITIAL_X);
-			this.hero.setY(Constants.HERO_INITIAL_Y);
-			this.addChild(hero);
-			this.hero.visible = false;
-			this.hero.dy = Constants.HeroInitialVelocityY;
-			
-			// add sea of fire
-//			this.seaOfFire = new SeaOfFire();
-//			this.seaOfFire.setX(0);
-//			//this.seaOfFire.setY(this.seaOfFireHeight);
-//			this.addChild(this.seaOfFire);
-//			
-//			// add score field
-//			this.gameScoreField = new TextField();
-//			this.addChild(this.gameScoreField);
-//			this.gameScore = 0;
-//			this.showGameScore();
-//			
-//			// add time field
-//			this.gameTimeField = new TextField();
-//			this.gameTimeField.x = 660;
-//			this.addChild(this.gameTimeField);
-//			this.gameStartTime = getTimer();
-//			this.gameTime = 0;
-//			
-//			// initial velocity and time
-//			this.dx = 0.2;
-//			this.dy = 1.8;
-//			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressedDown);
-//			stage.addEventListener(KeyboardEvent.KEY_UP, keyPressedUp);
-//			addEventListener(Event.ENTER_FRAME, animate);
-			this.fg = new Background(Constants.Foreground);
-			this.addChild(this.fg);
 			
 			// reset scores
 			hud.distance = 0;
@@ -369,26 +330,15 @@ package com.jumpGame.screens
 		 */
 		private function onStartButtonClick(event:Event):void
 		{
-			// Play coffee sound for button click.
-			//if (!Sounds.muted) Sounds.sndCoffee.play();
-			
 			// Hide start button.
 			startButton.visible = false;
 			
 			// Show pause button since the game is started.
 			pauseButton.visible = true;
 			
-			// Launch hero.
-			launchHero();
-		}
-		
-		/**
-		 * Launch hero. 
-		 * 
-		 */
-		private function launchHero():void
-		{
+			// show hero
 			this.hero.visible = true;
+			
 			// Touch interaction
 			//this.addEventListener(TouchEvent.TOUCH, onTouch);
 			
@@ -411,13 +361,15 @@ package com.jumpGame.screens
 			if (event.keyCode == 37) {
 				leftArrow = true;
 			} else if (event.keyCode == 39) {
-				rightArrow = true;
+				rightArrow = true;        
 			} else if (event.keyCode == 38) {
 				upArrow = true;
 			} else if (event.keyCode == 40) {
 				downArrow = true;
 			} else if (event.keyCode == 32) { // space bar pressed
-				this.hero.triggerSpecialAbility();
+				if (this.playerControl) {
+					this.hero.triggerSpecialAbility();
+				}
 			}
 		}
 		
@@ -494,41 +446,44 @@ package com.jumpGame.screens
 				}
 			}
 			
+			// move camera
+			Camera.update(this.hero.gy);
+			
 			// move hero
-			this.hero.setX(this.hero.mx + this.timeDiffControlled * this.hero.dx);
-			this.hero.setY(this.hero.my + this.timeDiffControlled * this.hero.dy);
+			this.hero.gx += this.timeDiffControlled * this.hero.dx;
+			this.hero.gy += this.timeDiffControlled * this.hero.dy;
 			
-			// update climb distance
-			this.climbDist += this.timeDiffControlled * this.hero.dy;
-			if (this.climbDist > this.maxDist) {
-				this.maxDist = this.climbDist;
+			// update max climb distance
+			if (this.hero.gy > this.maxDist) {
+				this.maxDist = this.hero.gy;
 			}
 			
-			// move everything down on hero moving up
-			if (this.hero.my > 0) {
-				this.scrollElements(this.hero.my);
-				this.hero.setY(0);
-			}
+			this.scrollElements();
 			
-			// move everything up on hero moving down
-			if (this.hero.my < -Constants.ScrollDownThreshold) {
-				this.scrollElements(this.hero.my + Constants.ScrollDownThreshold);
-				this.hero.setY(-Constants.ScrollDownThreshold);
+			// sea of fire
+			if (Constants.SofEnabled) {
+				// scroll sea of fire vertically
+				this.bg.scrollSofVertical(this.timeDiffControlled, this.hero.gy);
+				this.fg.scrollSofVertical(this.timeDiffControlled, this.hero.gy);
+				
+				// scroll sea of fire horizontally
+				this.bg.scrollSofHorizontal();
+				this.fg.scrollSofHorizontal();
 			}
-			
-			// scroll sea of fire horizontally
-			this.seaOfFire.scrollHorizontal();
 			
 			// animate stage elements
 			for (var i:uint = 0; i < this.platformsListLength; i++) {
-				// detect hero/platform collisions
-				//if (this.hero.bounds.intersects(this.platformsList[i].bounds)) {
-				if (this.platformsList[i].bounds.contains(this.hero.x - 10, this.hero.y + 20) ||
-					this.platformsList[i].bounds.contains(this.hero.x + 10, this.hero.y + 20)) {
-					if (this.hero.dy < 0) {
-						this.hero.bounce();
-						this.platformsList[i].contact();
-						particleLeaf.start(0.1); // play particle effect
+				// do the following if player has not yet lost
+				if (this.checkWinLose) {
+					// detect hero/platform collisions
+					//if (this.hero.bounds.intersects(this.platformsList[i].bounds)) {
+					if (this.platformsList[i].bounds.contains(this.hero.x - 10, this.hero.y + 20) ||
+						this.platformsList[i].bounds.contains(this.hero.x + 10, this.hero.y + 20)) {
+						if (this.hero.dy < 0) {
+							this.hero.bounce(this.platformsList[i].getBouncePower());
+							this.platformsList[i].contact();
+							particleLeaf.start(0.1); // play particle effect
+						}
 					}
 				}
 			}
@@ -541,10 +496,16 @@ package com.jumpGame.screens
 			}
 			
 			// we lose if we fall
-			if (this.checkWinLose && hero.my < -1 * Constants.StageHeight / 2) {
-			//if (this.checkWinLose && this.climbDist < this.seaOfFireHeight) {
-				this.playerFail();
-				return;
+			if (Constants.SofEnabled) {
+				if (this.checkWinLose && this.hero.gy < this.fg.sofHeight) {
+					this.playerFail();
+					return;
+				}
+			} else {
+				if (this.checkWinLose && hero.gy < Camera.gy - Constants.StageHeight / 2) {
+					this.playerFail();
+					return;
+				}
 			}
 			
 			// update hud
@@ -555,45 +516,92 @@ package com.jumpGame.screens
 		 * Player fails, check to see if saves are available
 		 */
 		private function playerFail():void {
-//			this.soundControl.stopBgm();
-//			this.soundControl.playScratch();
-//			this.endLevel(false);
+			this.hero.playFailAnimatjion();
+			this.hud.showMessage("OH NOES...");
+			
+			// stop checking win/lose condition
+			this.checkWinLose = false;
+			
+			// revoke player control of hero
+			this.playerControl = false;
+			
+			// stop sounds
+			SoundMixer.stopAll();
+			Sounds.sndScratch.play();
+			
+			// show on screen message
+			//this.showMessage("You Lose");
+			
+			// call endGame() after a brief delay
+			this.delayTimer = new Timer(3000, 1);
+			this.delayTimer.addEventListener(TimerEvent.TIMER_COMPLETE, endGame);
+			this.delayTimer.start();
+		}
+		
+		/**
+		 * Clean up the stage and end game
+		 */
+		public function endGame(event:TimerEvent):void {
+			if (event != null) {
+				this.delayTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, endGame);
+			}
+			
+			// remove event listeners
+			Starling.current.nativeOverlay.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPressedDown);
+			Starling.current.nativeOverlay.stage.removeEventListener(KeyboardEvent.KEY_UP, keyPressedUp);
+			this.removeEventListener(Event.ENTER_FRAME, onGameTick);
+			
+			// clean up platforms
+			for(var i:uint = 0; i < this.platformsListLength; i++)
+			{
+				if (this.platformsList[i] != null)
+				{
+					// dispose the platform temporarily.
+					disposePlatformTemporarily(i, this.platformsList[i]);
+				}
+			}
+			
+			this.removeChild(this.hero);
+			this.hero = null;
+			
+			this.setChildIndex(gameOverContainer, this.numChildren - 1);
+			gameOverContainer.initialize(this.maxDist, this.maxDist);
 		}
 		
 		/**
 		 * Scroll all of the rainbows downward
 		 */
-		public function scrollElements(distance:Number):void {
+		public function scrollElements():void {
 			// scroll platforms
 			for (var i:uint = 0; i < this.platformsListLength; i++) {
-				this.platformsList[i].setY(this.platformsList[i].my - distance);
+				this.platformsList[i].update(this.timeDiffControlled);
 				
 				// remove a rainbow if it has scrolled below sea of fire
-				if (this.platformsList[i].my < (-Constants.StageHeight)) {
+				if (this.platformsList[i].gy < this.fg.sofHeight) {
 					//this.removeElement(index);
 				}
 			}
 			
 			// scroll background and foreground layers
-			this.bg.scroll(distance);
-			this.fg.scroll(distance);
+			this.bg.scroll();
+			this.fg.scroll();
 			
 			// populate area above visible stage with next elements in level elements array
-			while (this.levelParser.levelElementsArray.length > 0 && this.levelParser.levelElementsArray[0][0] < this.climbDist + Constants.StageHeight) {
+			while (this.levelParser.levelElementsArray.length > 0 && this.levelParser.levelElementsArray[0][0] < this.hero.gy + Constants.StageHeight) {
 				var levelElement:Array = this.levelParser.levelElementsArray[0];
-				this.addElement(levelElement[0] - this.climbDist, levelElement[1], levelElement[2]);
+				this.addElement(levelElement[0], levelElement[1], levelElement[2], levelElement[3]);
 				this.levelParser.levelElementsArray.splice(0, 1);
-				this.setChildIndex(this.platformsList[this.platformsList.length - 1], this.getChildIndex(this.hero)); // push newly added element behind hero
+				this.setChildIndex(this.platformsList[(uint)(this.platformsList.length) - 1], this.getChildIndex(this.hero)); // push newly added element behind hero
 			}
 		}
 		
 		/**
 		 * Create platforms pool by passing the create and clean methods/functions to the Pool
 		 */
-		private function createPlatformsPool():void
-		{
-			platformsPool = new PoolPlatform(platformCreate, platformClean, 20, 50);
-		}
+//		private function createPlatformsPool():void
+//		{
+//			platformsPool = new PoolPlatform(platformCreate, platformClean, 20, 50);
+//		}
 		
 		/**
 		 * Create platform objects and add to display list.
@@ -601,15 +609,15 @@ package com.jumpGame.screens
 		 * @return Platform that was created.
 		 * 
 		 */
-		private function platformCreate():Platform
-		{
-			var platform:Platform = new Platform();
-			platform.setX(-Constants.StageWidth);
-			platform.setY(0);
-			this.addChild(platform);
-			
-			return platform;
-		}
+//		private function platformCreate():Platform
+//		{
+//			var platform:Platform = new Platform();
+//			platform.setX(-Constants.StageWidth);
+//			platform.setY(0);
+//			this.addChild(platform);
+//			
+//			return platform;
+//		}
 		
 		/**
 		 * Clean the platforms before reusing from the pool. Called from the pool. 
@@ -627,11 +635,11 @@ package com.jumpGame.screens
 		 * @param platform
 		 * 
 		 */
-		private function disposePlatformTemporarily(animateId:uint, platform:Platform):void
+		private function disposePlatformTemporarily(arrayIndex:Number, platform:Platform):void
 		{
-			platformsList.splice(animateId, 1);
-			platformsListLength--;
-			platformsPool.checkIn(platform);
+//			platformsList.splice(arrayIndex, 1);
+//			platformsListLength--;
+			//platformsPool.checkIn(platform);
 		}
 		
 		/**
@@ -640,36 +648,39 @@ package com.jumpGame.screens
 		 * @param _distance
 		 * 
 		 */
-		private function createPlatform():void
-		{
-			var platform:Platform = this.platformsPool.checkOut();
-			platform.setX(0);
-			platform.setY(-200);
-			this.platformsList[platformsListLength++] = platform;
-		}
+//		private function createPlatform():void
+//		{
+//			var platform:Platform = this.platformsPool.checkOut();
+//			platform.setX(0);
+//			platform.setY(-200);
+//			this.platformsList[platformsListLength++] = platform;
+//		}
 		
 		// add an element to stage
-		public function addElement(y:Number, x:Number, elementClassName:String):void {
-			switch(elementClassName) {
-				case "PlatformNormal":
-					var element:Platform = new PlatformNormal();
-					break;
-			}
-			element.setX(x);
-			element.setY(y);
+		private function addElement(y:Number, x:Number, elementClassName:String, elementSize:int):void {
+			var elementClass:Class = getDefinitionByName("com.jumpGame.gameElements.platforms." + elementClassName) as Class;
+			var element:Platform = new elementClass(elementSize);
+//			switch(elementClassName) {
+//				case "PlatformNormal":
+//					element = new PlatformNormal(elementSize);
+//					break;
+//				case "PlatformDrop":
+//					element = new PlatformDrop(elementSize);
+//					break;
+//				case "PlatformNormalBoost":
+//					element
+//			}
+			element.gx = x;
+			element.gy = y;
 			this.addChild(element);
 			this.platformsList[platformsListLength++] = element;
 		}
 		
-		private function disposeTemporarily():void
-		{
-			SoundMixer.stopAll();
-			
-			gameOverContainer.visible = false;
-			
-			//if (this.hasEventListener(TouchEvent.TOUCH)) this.removeEventListener(TouchEvent.TOUCH, onTouch);
-			
-			if (this.hasEventListener(Event.ENTER_FRAME)) this.removeEventListener(Event.ENTER_FRAME, onGameTick);
+		private function referenceElementClasses():void {
+			PlatformNormal;
+			PlatformDrop;
+			PlatformMobile;
+			PlatformNormalBoost;
 		}
 	}
 }

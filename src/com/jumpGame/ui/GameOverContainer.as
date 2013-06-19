@@ -42,17 +42,15 @@ package com.jumpGame.ui
 		/** Font - message display. */
 		private var fontMessage:Font;
 		
-		/** Score value - distance. */
-		private var _distance:int;
-		
-		/** Score value - score. */
-		private var _score:int;
+		private var communicator:Communicator;
 		
 		public function GameOverContainer()
 		{
 			super();
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			
+			this.communicator = new Communicator();
 		}
 		
 		/**
@@ -74,7 +72,7 @@ package com.jumpGame.ui
 		private function drawGameOver():void
 		{
 			// Get fonts for text display.
-			fontMessage = Fonts.getFont("ScoreValue");
+			fontMessage = Fonts.getFont("Badabb");
 			fontScore = Fonts.getFont("ScoreLabel");
 			
 			// Background quad.
@@ -82,8 +80,10 @@ package com.jumpGame.ui
 			bg.alpha = 0.75;
 			this.addChild(bg);
 			
-			// Message text field.
-			messageText = new TextField(stage.stageWidth, stage.stageHeight * 0.5, "HERO WAS KILLED!", fontMessage.fontName, fontMessage.fontSize, 0xf3e75f);
+			trace("fontName: " + fontMessage.fontName);
+			trace("fontSize: " + fontMessage.fontSize);
+			// Message text field
+			messageText = new TextField(stage.stageWidth, stage.stageHeight * 0.5, "GOOD EFFORT!", fontMessage.fontName, fontMessage.fontSize, 0xf3e75f);
 			messageText.vAlign = VAlign.TOP;
 			messageText.height = messageText.textBounds.height;
 			messageText.y = (stage.stageHeight * 20)/100;
@@ -118,12 +118,16 @@ package com.jumpGame.ui
 			
 			aboutBtn = new Button(Assets.getAtlas().getTexture("gameOver_aboutButton"));
 			aboutBtn.y = playAgainBtn.y + playAgainBtn.height * 0.5 - aboutBtn.height * 0.5;
-			aboutBtn.addEventListener(Event.TRIGGERED, onAboutClick);
+			//aboutBtn.addEventListener(Event.TRIGGERED, onAboutClick);
 			this.addChild(aboutBtn);
 			
 			mainBtn.x = stage.stageWidth * 0.5 - (mainBtn.width + playAgainBtn.width + aboutBtn.width + 30) * 0.5;
 			playAgainBtn.x = mainBtn.bounds.right + 10;
 			aboutBtn.x = playAgainBtn.bounds.right + 10;
+			
+			mainBtn.visible = false;
+			playAgainBtn.visible = false;
+			aboutBtn.visible = false;
 		}
 		
 		/**
@@ -135,7 +139,7 @@ package com.jumpGame.ui
 		{
 			if (!Sounds.muted) Sounds.sndMushroom.play();
 			
-			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "playAgain"}));
+			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "play"}, true));
 		}
 		
 		/**
@@ -147,7 +151,7 @@ package com.jumpGame.ui
 		{
 			if (!Sounds.muted) Sounds.sndMushroom.play();
 			
-			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "mainMenu"}, true));
+			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "menu"}, true));
 		}
 		
 		/**
@@ -163,35 +167,32 @@ package com.jumpGame.ui
 		}
 		
 		/**
-		 * Initialize Game Over container. 
+		 * show game over container and send back score 
 		 * @param _score
 		 * @param _distance
 		 * 
 		 */
-		public function initialize(_score:int, _distance:int):void
+		public function initialize(score:int, distance:int):void
 		{
-			this._distance = _distance;
-			this._score = _score;
+			distanceText.text = "DISTANCE TRAVELLED: " + distance.toString();
+			scoreText.text = "SCORE: " + score.toString();
 			
-			distanceText.text = "DISTANCE TRAVELLED: " + this._distance.toString();
-			scoreText.text = "SCORE: " + this._score.toString();
-			
-			this.alpha = 0;
 			this.visible = true;
+			
+			// send new score to backend
+			var jsonStr:String = JSON.stringify({
+				score: score
+			});
+			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
+			this.communicator.postUserData(jsonStr);
 		}
 		
-		/**
-		 * Score. 
-		 * @return 
-		 * 
-		 */
-		public function get score():int { return _score; }
-		
-		/**
-		 * Distance. 
-		 * @return 
-		 * 
-		 */
-		public function get distance():int { return _distance; }
+		private function dataReceived(event:NavigationEvent):void {
+			trace(event.params.data);
+			
+			mainBtn.visible = true;
+			playAgainBtn.visible = true;
+			aboutBtn.visible = true;
+		}
 	}
 }

@@ -9,7 +9,7 @@ package
 	public class Sounds
 	{
 		/**
-		 * Embedded sound files. 
+		 * demo sounds 
 		 */
 		[Embed(source="../media/sounds/bgWelcome.mp3")]
 		public static const SND_BG_MAIN:Class;
@@ -32,11 +32,20 @@ package
 		[Embed(source="../media/sounds/lose.mp3")]
 		public static const SND_LOSE:Class;
 		
-		// bgm: legend of snow
-		[Embed(source="../media/sounds/bgGame.mp3")]
-		public static const SND_BG_GAME:Class;
+		// sound effects
+		[Embed(source="../media/sounds/scratch.mp3")]
+		public static const SND_SCRATCH:Class;
 		
-		/** musical notes */
+		[Embed(source="../media/sounds/bounce1.mp3")]
+		public static const SND_BOUNCE_1:Class;
+		
+		[Embed(source="../media/sounds/bounce2.mp3")]
+		public static const SND_BOUNCE_2:Class;
+		
+		[Embed(source="../media/sounds/bounce3.mp3")]
+		public static const SND_BOUNCE_3:Class;
+		
+		// musical notes
 		[Embed(source="../media/sounds/notes/do-00.mp3")]
 		public static const SND_NOTE_1:Class;
 		
@@ -102,9 +111,10 @@ package
 		public static var sndHit:Sound = new Sounds.SND_HIT() as Sound;
 		public static var sndHurt:Sound = new Sounds.SND_HURT() as Sound;
 		public static var sndLose:Sound = new Sounds.SND_LOSE() as Sound;
-		// game bgm
-		public static var sndBgGame:Sound = new Sounds.SND_BG_GAME() as Sound;
-		
+		public static var sndScratch:Sound = new Sounds.SND_SCRATCH() as Sound;
+		public static var sndBounce1:Sound = new Sounds.SND_BOUNCE_1() as Sound;
+		public static var sndBounce2:Sound = new Sounds.SND_BOUNCE_2() as Sound;
+		public static var sndBounce3:Sound = new Sounds.SND_BOUNCE_3() as Sound;
 		
 		
 		// notes
