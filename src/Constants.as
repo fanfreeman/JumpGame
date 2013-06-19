@@ -53,6 +53,8 @@ package
 		// bounce power definitions
 		public static const NormalBouncePower:Number = 0.8;
 		public static const BoostBouncePower:Number = 1.1;
+		public static const PowerBouncePower:Number = 1.3;
+		public static const SuperBouncePower:Number = 2.4;
 		
 		// leve generator definition
 		public static const Generator:String = "Generator"; // randomly generate elements according to specification

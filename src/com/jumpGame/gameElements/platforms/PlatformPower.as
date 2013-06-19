@@ -4,15 +4,19 @@ package com.jumpGame.gameElements.platforms
 	
 	import starling.core.Starling;
 	import starling.display.MovieClip;
-
-	public dynamic class PlatformNormal extends Platform
+	
+	public class PlatformPower extends Platform
 	{
 		override protected function createPlatformArt():void
 		{
-			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformNormal"), 12);
+			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformPower"), 12);
 			starling.core.Starling.juggler.add(platformAnimation);
 			platformAnimation.loop = false;
 			this.addChild(platformAnimation);
+		}
+		
+		override public function getBouncePower():Number {
+			return Constants.PowerBouncePower;
 		}
 	}
 }

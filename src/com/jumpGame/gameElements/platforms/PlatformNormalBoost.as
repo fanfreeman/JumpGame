@@ -4,19 +4,10 @@ package com.jumpGame.gameElements.platforms
 
 	public class PlatformNormalBoost extends PlatformNormal
 	{
-		public function PlatformNormalBoost(size:int)
-		{
-			super(size);
-		}
-		
 		override protected function createPlatformArt():void {
 			super.createPlatformArt();
-			var image:Image = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("NormalTriangle"));
-			image.scaleX = this.size / Constants.PlatformMaxSize;
-			image.scaleY = this.size / Constants.PlatformMaxSize;
-			image.x = Math.ceil(-image.width/2); // center art on registration point
-			image.y = Math.ceil(-image.height/2);
-			this.addChild(image);
+			platformImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("NormalTriangle"));
+			this.addChild(platformImage);
 		}
 		
 		override public function getBouncePower():Number {

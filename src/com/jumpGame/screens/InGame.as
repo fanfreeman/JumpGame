@@ -2,20 +2,21 @@ package com.jumpGame.screens
 {
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.gameElements.Background;
+	import com.jumpGame.gameElements.Camera;
 	import com.jumpGame.gameElements.Hero;
 	import com.jumpGame.gameElements.Particle;
 	import com.jumpGame.gameElements.Platform;
+	import com.jumpGame.gameElements.platforms.PlatformDrop;
+	import com.jumpGame.gameElements.platforms.PlatformMobile;
+	import com.jumpGame.gameElements.platforms.PlatformNormal;
+	import com.jumpGame.gameElements.platforms.PlatformNormalBoost;
+	import com.jumpGame.gameElements.platforms.PlatformPower;
+	import com.jumpGame.gameElements.platforms.PlatformSuper;
 	import com.jumpGame.level.LevelParser;
-	import com.jumpGame.objectPools.PoolParticle;
-	import com.jumpGame.objectPools.PoolPlatform;
+	import com.jumpGame.objectPools.ObjectPool;
 	import com.jumpGame.ui.GameOverContainer;
 	import com.jumpGame.ui.HUD;
 	import com.jumpGame.ui.PauseButton;
-	import com.jumpGame.gameElements.Camera;
-	import com.jumpGame.gameElements.platforms.PlatformNormal;
-	import com.jumpGame.gameElements.platforms.PlatformDrop;
-	import com.jumpGame.gameElements.platforms.PlatformMobile;
-	import com.jumpGame.gameElements.platforms.PlatformNormalBoost;
 	
 	import flash.events.KeyboardEvent;
 	import flash.events.TimerEvent;
@@ -64,19 +65,6 @@ package com.jumpGame.screens
 		
 		// max climb distance
 		private var maxDist:Number = 0.0;
-		
-		// ------------------------------------------------------------------------------------------------------------
-		// OBJECT POOLING
-		// ------------------------------------------------------------------------------------------------------------
-		
-		/** Obstacles pool with a maximum cap for reuse of items. */		
-		private var platformsPool:PoolPlatform;
-		
-		/** Bounce Particles pool with a maximum cap for reuse of items. */		
-		private var bounceParticlesPool:PoolParticle;
-		
-		/** Wind Particles pool with a maximum cap for reuse of items. */		
-		private var windParticlesPool:PoolParticle;
 		
 		// ------------------------------------------------------------------------------------------------------------
 		// GAME INTERACTION 
@@ -164,7 +152,7 @@ package com.jumpGame.screens
 			this.isHardwareRendering = Starling.context.driverInfo.toLowerCase().indexOf("software") == -1;
 			trace("Hardware rendering: " + isHardwareRendering);
 			Camera.reset();
-			this.referenceElementClasses();
+			//this.referenceElementClasses();
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -239,7 +227,13 @@ package com.jumpGame.screens
 			this.particlesList = new Vector.<Particle>();
 			this.particlesListLength = 0;
 			
-			//createPlatformsPool();
+			// create platform pools
+			ObjectPool.instance.registerPool(PlatformNormal, 10, true);
+			ObjectPool.instance.registerPool(PlatformMobile, 10, true);
+			ObjectPool.instance.registerPool(PlatformDrop, 10, true);
+			ObjectPool.instance.registerPool(PlatformNormalBoost, 10, true);
+			ObjectPool.instance.registerPool(PlatformPower, 5, true);
+			ObjectPool.instance.registerPool(PlatformSuper, 5, true);
 		}
 		
 		/**
@@ -516,7 +510,7 @@ package com.jumpGame.screens
 		 * Player fails, check to see if saves are available
 		 */
 		private function playerFail():void {
-			this.hero.playFailAnimatjion();
+			this.hero.playFailAnimation();
 			this.hud.showMessage("OH NOES...");
 			
 			// stop checking win/lose condition
@@ -556,8 +550,7 @@ package com.jumpGame.screens
 			{
 				if (this.platformsList[i] != null)
 				{
-					// dispose the platform temporarily.
-					disposePlatformTemporarily(i, this.platformsList[i]);
+					this.returnPlatformToPool(i);
 				}
 			}
 			
@@ -578,7 +571,7 @@ package com.jumpGame.screens
 				
 				// remove a rainbow if it has scrolled below sea of fire
 				if (this.platformsList[i].gy < this.fg.sofHeight) {
-					//this.removeElement(index);
+					this.returnPlatformToPool(i);
 				}
 			}
 			
@@ -589,93 +582,41 @@ package com.jumpGame.screens
 			// populate area above visible stage with next elements in level elements array
 			while (this.levelParser.levelElementsArray.length > 0 && this.levelParser.levelElementsArray[0][0] < this.hero.gy + Constants.StageHeight) {
 				var levelElement:Array = this.levelParser.levelElementsArray[0];
-				this.addElement(levelElement[0], levelElement[1], levelElement[2], levelElement[3]);
+				this.addElementFromPool(levelElement[0], levelElement[1], levelElement[2], levelElement[3]);
 				this.levelParser.levelElementsArray.splice(0, 1);
 				this.setChildIndex(this.platformsList[(uint)(this.platformsList.length) - 1], this.getChildIndex(this.hero)); // push newly added element behind hero
 			}
 		}
 		
 		/**
-		 * Create platforms pool by passing the create and clean methods/functions to the Pool
+		 * Add an element to the stage
 		 */
-//		private function createPlatformsPool():void
-//		{
-//			platformsPool = new PoolPlatform(platformCreate, platformClean, 20, 50);
-//		}
-		
-		/**
-		 * Create platform objects and add to display list.
-		 * Also called from the Pool class while creating minimum number of objects & run-time objects < maximum number.
-		 * @return Platform that was created.
-		 * 
-		 */
-//		private function platformCreate():Platform
-//		{
-//			var platform:Platform = new Platform();
-//			platform.setX(-Constants.StageWidth);
-//			platform.setY(0);
-//			this.addChild(platform);
-//			
-//			return platform;
-//		}
-		
-		/**
-		 * Clean the platforms before reusing from the pool. Called from the pool. 
-		 * @param platform
-		 * 
-		 */
-		private function platformClean(platform:Platform):void
-		{
-			platform.x = stage.stageWidth + platform.width * 2;
-		}
-		
-		/**
-		 * Dispose the platform temporarily. Check-in into pool (will get cleaned) and reduce the vector length by 1. 
-		 * @param animateId
-		 * @param platform
-		 * 
-		 */
-		private function disposePlatformTemporarily(arrayIndex:Number, platform:Platform):void
-		{
-//			platformsList.splice(arrayIndex, 1);
-//			platformsListLength--;
-			//platformsPool.checkIn(platform);
-		}
-		
-		/**
-		 * Create the platform object based on the type indicated and make it appear based on the distance passed. 
-		 * @param _type
-		 * @param _distance
-		 * 
-		 */
-//		private function createPlatform():void
-//		{
-//			var platform:Platform = this.platformsPool.checkOut();
-//			platform.setX(0);
-//			platform.setY(-200);
-//			this.platformsList[platformsListLength++] = platform;
-//		}
-		
-		// add an element to stage
-		private function addElement(y:Number, x:Number, elementClassName:String, elementSize:int):void {
+		private function addElementFromPool(y:Number, x:Number, elementClassName:String, elementSize:int):void {
 			var elementClass:Class = getDefinitionByName("com.jumpGame.gameElements.platforms." + elementClassName) as Class;
-			var element:Platform = new elementClass(elementSize);
-//			switch(elementClassName) {
-//				case "PlatformNormal":
-//					element = new PlatformNormal(elementSize);
-//					break;
-//				case "PlatformDrop":
-//					element = new PlatformDrop(elementSize);
-//					break;
-//				case "PlatformNormalBoost":
-//					element
-//			}
-			element.gx = x;
-			element.gy = y;
-			this.addChild(element);
-			this.platformsList[platformsListLength++] = element;
+			var tempElement:Platform = ObjectPool.instance.getObj(elementClass) as elementClass;
+			tempElement.initialize(elementSize);
+			tempElement.gx = x;
+			tempElement.gy = y;
+			this.addChild(tempElement);
+			this.platformsList[platformsListLength++] = tempElement;
 		}
 		
+		/**
+		 * Dispose the platform temporarily. Check-in into pool (will get cleaned) and reduce the vector length by 1
+		 * @param arrayIndex
+		 * @param platform
+		 */
+		private function returnPlatformToPool(platformIndex:Number):void
+		{
+			var platform:Platform = this.platformsList[platformIndex];
+			platformsList.splice(platformIndex, 1);
+			platformsListLength--;
+			ObjectPool.instance.returnObj(platform);
+		}
+		
+		/**
+		 * Reference Classes
+		 */
 		private function referenceElementClasses():void {
 			PlatformNormal;
 			PlatformDrop;

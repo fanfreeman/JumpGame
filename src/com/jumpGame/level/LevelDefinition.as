@@ -13,34 +13,7 @@ package com.jumpGame.level  {
 		public static function getContents():Array {
 			var stageContents:Array = new Array();
 			
-			stageContents.push(new Array(Constants.Generator, 3, 3, 123));
-			stageContents.push(new Array(3, 			-250, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-250, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-250, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-250, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-250, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-250, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-100, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			100, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-100, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			100, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-200, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			0, 				Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-200, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			0, 				Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-100, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			200, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-100, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			200, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-200, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			200, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-200, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			200, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-200, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			200, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			-200, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			200, 			Constants.PlatformNormal, 5));
-			stageContents.push(new Array(3, 			270, 			Constants.PlatformNormal, 5));
+			stageContents.push(new Array(Constants.Generator, 6, 3, 243));
 			
 			// generate random type 1
 			stageContents.push(new Array(Constants.Generator, 1, 1, 61));
@@ -48,6 +21,29 @@ package com.jumpGame.level  {
 			// generate random type 2
 			// [1] size [4-5] [normal, drop] platforms per row
 			stageContents.push(new Array(Constants.Generator, 2, 3, 63));
+			
+			// generate random type 3
+			// [1] size [3-4] [normal, drop, mobile, normalboost]
+			stageContents.push(new Array(Constants.Generator, 3, 3, 123));
+			
+			// generate random type 4
+			// [1] size [3-4] [normal, drop, mobile, normalboost, power, super]
+			stageContents.push(new Array(Constants.Generator, 4, 3, 123));
+			
+			// [1] size [2-4] [normal, drop, mobile, normalboost, power, super]
+			stageContents.push(new Array(Constants.Generator, 5, 3, 243));
+			
+			// centered dots
+			//stageContents.push(new Array(Constants.Generator, LevelGenerator.Dots3PerRow100RowSpace, 3, 33));
+			
+			// [1] size [1-3] [normal, drop, mobile, normalboost, power, super]
+			stageContents.push(new Array(Constants.Generator, 6, 3, 243));
+			
+			// centered dots
+			//stageContents.push(new Array(Constants.Generator, LevelGenerator.Dots3PerRow100RowSpace, 3, 33));
+			
+			// goal
+			//stageContents.push(new Array(3, 			0, 				Constants.Goal));
 			
 			return stageContents;
 		}

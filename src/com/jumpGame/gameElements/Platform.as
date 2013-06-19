@@ -1,30 +1,37 @@
 package com.jumpGame.gameElements
 {
+	import starling.display.Image;
 	import starling.display.MovieClip;
-	import starling.events.Event;
 	
-	public class Platform extends GameObject
+	public class Platform extends GameObject implements IPoolable
 	{
-		protected var animations:Vector.<MovieClip>;
 		protected var size:int;
+		protected var platformAnimation:MovieClip = null;
+		protected var platformImage:Image = null;
 		
-		public function Platform(size:int)
-		{
-			super();
+		private var _destroyed:Boolean = true; // required by interface
+		
+		public function initialize(size:int):void {
 			this.size = size;
-			this.animations = new Vector.<MovieClip>();
-			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			if (platformAnimation == null && platformImage == null) createPlatformArt();
+			this.rescale();
+			this.show();
 		}
 		
-		/**
-		 * On added to stage. 
-		 * @param event
-		 * 
-		 */
-		private function onAddedToStage(event:Event):void
-		{
-			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			createPlatformArt();
+		protected function rescale():void {
+			if (platformAnimation != null) {
+				platformAnimation.scaleX = this.size / Constants.PlatformMaxSize;
+				platformAnimation.scaleY = this.size / Constants.PlatformMaxSize;
+				platformAnimation.x = Math.ceil(-platformAnimation.width/2); // center art on registration point
+				platformAnimation.y = Math.ceil(-platformAnimation.height/2);
+			}
+			
+			if (platformImage != null) {
+				platformImage.scaleX = this.size / Constants.PlatformMaxSize;
+				platformImage.scaleY = this.size / Constants.PlatformMaxSize;
+				platformImage.x = Math.ceil(-platformImage.width/2); // center art on registration point
+				platformImage.y = Math.ceil(-platformImage.height/2);
+			}
 		}
 		
 		protected function createPlatformArt():void{}
@@ -40,8 +47,8 @@ package com.jumpGame.gameElements
 				Sounds.sndBounce3.play();
 			}
 			
-			this.animations[0].stop();
-			this.animations[0].play();
+			this.platformAnimation.stop();
+			this.platformAnimation.play();
 		}
 		
 		public function getBouncePower():Number {
@@ -53,14 +60,53 @@ package com.jumpGame.gameElements
 			this.gy = this.gy;
 		}
 		
+		/**
+		 * hide artwork before returning to pool
+		 */
+		private function hide():void
+		{
+			if (this.platformAnimation != null) this.platformAnimation.visible = false;
+			if (this.platformImage != null) this.platformImage.visible = false;
+			//Starling.juggler.remove(this.platformAnimation);
+		}
+		
+		/**
+		 * show artwork after retrieved from pool
+		 */
+		private function show():void
+		{
+			if (this.platformAnimation != null) this.platformAnimation.visible = true;
+			if (this.platformImage != null) this.platformImage.visible = true;
+		}
+		
 		override public function get width():Number
 		{
-			return this.animations[0].texture.width;
+			return this.platformAnimation.texture.width;
 		}
 		
 		override public function get height():Number
 		{
-			return this.animations[0].texture.height;
+			return this.platformAnimation.texture.height;
+		}
+		
+		// methods required by interface
+		
+		public function get destroyed():Boolean
+		{
+			return _destroyed;
+		}
+		
+		public function renew():void
+		{
+			if (!_destroyed) { return; }
+			_destroyed = false;
+		}
+		
+		public function destroy():void
+		{
+			if (_destroyed) { return; }
+			_destroyed = true;
+			this.hide();
 		}
 	}
 }

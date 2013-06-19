@@ -10,22 +10,12 @@ package com.jumpGame.gameElements.platforms
 		private var isFalling:Boolean = false;
 		private var fallVelocity:Number = 0;
 		
-		public function PlatformDrop(size:int)
-		{
-			super(size);
-		}
-		
 		override protected function createPlatformArt():void
 		{
-			var platformArt:MovieClip = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformDrop"), 12);
-			platformArt.scaleX = this.size / Constants.PlatformMaxSize;
-			platformArt.scaleY = this.size / Constants.PlatformMaxSize;
-			platformArt.x = Math.ceil(-platformArt.width/2); // center art on registration point
-			platformArt.y = Math.ceil(-platformArt.height/2);
-			starling.core.Starling.juggler.add(platformArt);
-			platformArt.loop = false;
-			this.addChild(platformArt);
-			this.animations.push(platformArt);
+			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformDrop"), 12);
+			starling.core.Starling.juggler.add(platformAnimation);
+			platformAnimation.loop = false;
+			this.addChild(platformAnimation);
 		}
 		
 		override public function contact():void {
@@ -41,6 +31,12 @@ package com.jumpGame.gameElements.platforms
 			} else {
 				this.gy = this.gy;
 			}
+		}
+		
+		override public function initialize(size:int):void {
+			super.initialize(size);
+			this.isFalling = false;
+			this.fallVelocity = 0;
 		}
 	}
 }

@@ -163,7 +163,7 @@ package com.jumpGame.gameElements
 				this.heroAnimations[Constants.HeroAnimWalk].scaleX = 0.6;
 		}
 		
-		public function playFailAnimatjion():void {
+		public function playFailAnimation():void {
 			this.dy = Constants.NormalBouncePower;
 			this.heroAnimations[Constants.HeroAnimWalk].visible = false;
 			this.heroAnimations[Constants.HeroAnimJump].visible = false;
