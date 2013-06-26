@@ -1,10 +1,13 @@
 package com.jumpGame.gameElements
 {
+	import com.jumpGame.level.Statics;
+	
 	import starling.display.Image;
 	import starling.display.MovieClip;
 	
 	public class Platform extends GameObject implements IPoolable
 	{
+		public var isTouched:Boolean = false;
 		protected var size:int;
 		protected var platformAnimation:MovieClip = null;
 		protected var platformImage:Image = null;
@@ -22,29 +25,35 @@ package com.jumpGame.gameElements
 			if (platformAnimation != null) {
 				platformAnimation.scaleX = this.size / Constants.PlatformMaxSize;
 				platformAnimation.scaleY = this.size / Constants.PlatformMaxSize;
-				platformAnimation.x = Math.ceil(-platformAnimation.width/2); // center art on registration point
-				platformAnimation.y = Math.ceil(-platformAnimation.height/2);
+				platformAnimation.pivotX = Math.ceil(platformAnimation.texture.width  / 2); // center art on registration point
+				platformAnimation.pivotY = Math.ceil(platformAnimation.texture.height / 2);
 			}
 			
 			if (platformImage != null) {
 				platformImage.scaleX = this.size / Constants.PlatformMaxSize;
 				platformImage.scaleY = this.size / Constants.PlatformMaxSize;
-				platformImage.x = Math.ceil(-platformImage.width/2); // center art on registration point
-				platformImage.y = Math.ceil(-platformImage.height/2);
+				platformImage.pivotX = Math.ceil(platformImage.width / 2); // center art on registration point
+				platformImage.pivotY = Math.ceil(platformImage.height / 2);
 			}
 		}
 		
 		protected function createPlatformArt():void{}
 		
+		public function touch():void {
+			this.isTouched = true;
+		}
+		
 		public function contact():void {
 			// play sound effect
-			var temp:Number = Math.random() * 3;
-			if (temp < 1) {
-				Sounds.sndBounce1.play();
-			} else if (temp >= 1 && temp < 2) {
-				Sounds.sndBounce2.play();
-			} else if (temp >= 2 && temp < 3) {
-				Sounds.sndBounce3.play();
+			if (Statics.gameMode == Constants.ModeNormal) {
+				var temp:Number = Math.random() * 3;
+				if (temp < 1) {
+					Sounds.sndBounce1.play();
+				} else if (temp >= 1 && temp < 2) {
+					Sounds.sndBounce2.play();
+				} else if (temp >= 2 && temp < 3) {
+					Sounds.sndBounce3.play();
+				}
 			}
 			
 			this.platformAnimation.stop();
@@ -100,6 +109,8 @@ package com.jumpGame.gameElements
 		{
 			if (!_destroyed) { return; }
 			_destroyed = false;
+			
+			this.isTouched = false;
 		}
 		
 		public function destroy():void

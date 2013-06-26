@@ -27,14 +27,10 @@ package com.jumpGame.ui
 		/** Score display - score. */
 		private var scoreText:TextField;
 		
-		/** Play again button. */
-		private var playAgainBtn:Button;
-		
-		/** Main Menu button. */
-		private var mainBtn:Button;
-		
-		/** About button. */
-		private var aboutBtn:Button;
+		// buttons
+		private var continueBtn:Button;
+		private var returnBtn:Button;
+		private var proceedBtn:Button;
 		
 		/** Font - score display. */
 		private var fontScore:Font;
@@ -106,72 +102,52 @@ package com.jumpGame.ui
 			scoreContainer.addChild(scoreText);
 			
 			// Navigation buttons.
-			mainBtn = new Button(Assets.getAtlas().getTexture("gameOver_mainButton"));
-			mainBtn.y = (stage.stageHeight * 70)/100;
-			mainBtn.addEventListener(Event.TRIGGERED, onMainClick);
-			this.addChild(mainBtn);
+			returnBtn = new Button(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnReturn"));
+			returnBtn.y = (stage.stageHeight * 70)/100;
+			returnBtn.addEventListener(Event.TRIGGERED, onReturnClick);
+			this.addChild(returnBtn);
 			
-			playAgainBtn = new Button(Assets.getAtlas().getTexture("gameOver_playAgainButton"));
-			playAgainBtn.y = mainBtn.y + mainBtn.height * 0.5 - playAgainBtn.height * 0.5;
-			playAgainBtn.addEventListener(Event.TRIGGERED, onPlayAgainClick);
-			this.addChild(playAgainBtn);
+			continueBtn = new Button(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnContinue"));
+			continueBtn.y = (stage.stageHeight * 70)/100;
+			continueBtn.addEventListener(Event.TRIGGERED, onContinueClick);
+			this.addChild(continueBtn);
 			
-			aboutBtn = new Button(Assets.getAtlas().getTexture("gameOver_aboutButton"));
-			aboutBtn.y = playAgainBtn.y + playAgainBtn.height * 0.5 - aboutBtn.height * 0.5;
-			//aboutBtn.addEventListener(Event.TRIGGERED, onAboutClick);
-			this.addChild(aboutBtn);
+			proceedBtn = new Button(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnProceed"));
+			proceedBtn.y = (stage.stageHeight * 70)/100;
+			proceedBtn.addEventListener(Event.TRIGGERED, onProceedClick);
+			this.addChild(proceedBtn);
 			
-			mainBtn.x = stage.stageWidth * 0.5 - (mainBtn.width + playAgainBtn.width + aboutBtn.width + 30) * 0.5;
-			playAgainBtn.x = mainBtn.bounds.right + 10;
-			aboutBtn.x = playAgainBtn.bounds.right + 10;
+			returnBtn.x = stage.stageWidth * 0.5 - (returnBtn.width + continueBtn.width + proceedBtn.width + 30) * 0.5;
+			continueBtn.x = returnBtn.x = stage.stageWidth * 0.5 - (continueBtn.width + proceedBtn.width + 20) * 0.5;
+			proceedBtn.x = continueBtn.bounds.right + 10;
 			
-			mainBtn.visible = false;
-			playAgainBtn.visible = false;
-			aboutBtn.visible = false;
+			returnBtn.visible = false;
+			continueBtn.visible = false;
+			proceedBtn.visible = false;
 		}
 		
-		/**
-		 * On play-again button click. 
-		 * @param event
-		 * 
-		 */
-		private function onPlayAgainClick(event:Event):void
+		private function onContinueClick(event:Event):void
 		{
 			if (!Sounds.muted) Sounds.sndMushroom.play();
 			
-			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "play"}, true));
+			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "continue"}, true));
 		}
 		
-		/**
-		 * On main menu button click. 
-		 * @param event
-		 * 
-		 */
-		private function onMainClick(event:Event):void
+		private function onReturnClick(event:Event):void
 		{
 			if (!Sounds.muted) Sounds.sndMushroom.play();
 			
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "menu"}, true));
 		}
 		
-		/**
-		 * On about button click. 
-		 * @param event
-		 * 
-		 */
-		private function onAboutClick(event:Event):void
+		private function onProceedClick(event:Event):void
 		{
 			if (!Sounds.muted) Sounds.sndMushroom.play();
 			
-			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "about"}, true));
+			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "proceed"}, true));
 		}
 		
-		/**
-		 * show game over container and send back score 
-		 * @param _score
-		 * @param _distance
-		 * 
-		 */
+		// show scores and post to backend
 		public function initialize(score:int, distance:int):void
 		{
 			distanceText.text = "DISTANCE TRAVELLED: " + distance.toString();
@@ -190,9 +166,9 @@ package com.jumpGame.ui
 		private function dataReceived(event:NavigationEvent):void {
 			trace(event.params.data);
 			
-			mainBtn.visible = true;
-			playAgainBtn.visible = true;
-			aboutBtn.visible = true;
+			returnBtn.visible = false;
+			continueBtn.visible = true;
+			proceedBtn.visible = true;
 		}
 	}
 }

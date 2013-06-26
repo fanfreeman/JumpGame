@@ -5,7 +5,7 @@ package com.jumpGame.gameElements
 	
 	/**
 	 * This class represents the particles that appear around hero after a bounce
-	 * These particles use the Particle Systems extension for Starling Framework.
+	 * These particles use the Particle Systems extension for Starling Framework
 	 */
 	public class Particle extends Sprite
 	{

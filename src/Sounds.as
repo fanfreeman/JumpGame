@@ -2,6 +2,7 @@ package
 {
 	import flash.media.Sound;
 	import flash.net.URLRequest;
+	import flash.events.IOErrorEvent;
 	
 	/**
 	 * This class holds all the sound embeds and objects that are used in the game.
@@ -44,6 +45,15 @@ package
 		
 		[Embed(source="../media/sounds/bounce3.mp3")]
 		public static const SND_BOUNCE_3:Class;
+		
+		[Embed(source="../media/sounds/airjump.mp3")]
+		public static const SND_AIRJUMP:Class;
+		
+		[Embed(source="../media/sounds/train_hit.mp3")]
+		public static const SND_TRAIN_HIT:Class;
+		
+		[Embed(source="../media/sounds/got_hourglass.mp3")]
+		public static const SND_GOT_HOURGLASS:Class;
 		
 		// musical notes
 		[Embed(source="../media/sounds/notes/do-00.mp3")]
@@ -115,6 +125,9 @@ package
 		public static var sndBounce1:Sound = new Sounds.SND_BOUNCE_1() as Sound;
 		public static var sndBounce2:Sound = new Sounds.SND_BOUNCE_2() as Sound;
 		public static var sndBounce3:Sound = new Sounds.SND_BOUNCE_3() as Sound;
+		public static var sndAirjump:Sound = new Sounds.SND_AIRJUMP() as Sound;
+		public static var sndTrainHit:Sound = new Sounds.SND_TRAIN_HIT() as Sound;
+		public static var sndGotHourglass:Sound = new Sounds.SND_GOT_HOURGLASS() as Sound;
 		
 		
 		// notes
@@ -165,6 +178,13 @@ package
 			var sound:Sound=new Sound();
 			sound.load(new URLRequest("../media/sounds/bgFunky.mp3"));  
 			sound.play(0, 999);  
+		}
+		
+		public static function playBgmFireAura():void {
+			var sound:Sound=new Sound();
+			sound.load(new URLRequest("../media/sounds/bgFireAura.mp3"));  
+			sound.play(0, 999); 
+			//sound.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void{ trace(e); }); 
 		}
 		
 		/**

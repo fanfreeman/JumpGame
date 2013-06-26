@@ -7,6 +7,8 @@ package com.jumpGame.gameElements.platforms
 		override protected function createPlatformArt():void {
 			super.createPlatformArt();
 			platformImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("NormalTriangle"));
+			platformImage.x = -5;
+			platformImage.y = -4;
 			this.addChild(platformImage);
 		}
 		

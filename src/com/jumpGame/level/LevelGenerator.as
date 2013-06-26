@@ -7,13 +7,20 @@ package com.jumpGame.level {
 		private static const SeparationWidth:uint = 60; // minimum x distance between the centers of rainbows
 		private static const SeparationHeight:uint = 30; // minimum y distance between the centers of rainbows
 		
+		private var prevElementX:Number = 0;
+		
 		private var level:LevelParser;
 		
-		public function LevelGenerator(level:LevelParser, type:uint, yMin:int, yMax:int, unitHeight:Number) {
+		public function LevelGenerator(level:LevelParser) {
 			this.level = level;
+		}
+		
+		public function generate(type:uint, yMin:int, yMax:int, unitHeight:Number):void {
+			// distribution arrays
 			var elementDistribution:Array;
 			var elementsPerRowDistribution:Array;
 			var sizeDistribution:Array;
+			
 			switch(type) {
 				// random generation
 				case 1: // 1 size 5 normal platform per row
@@ -23,36 +30,43 @@ package com.jumpGame.level {
 					elementDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
 					// size 1, 2, 3, 4, 5
 					sizeDistribution = new Array(0.0, 0.0, 0.0, 0.5, 1.0)
-					this.generateRandom(yMin, yMax, unitHeight, false, true, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					this.generateRandom(yMin, yMax, unitHeight, false, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
 					break;
 				case 2: // [1] size [4-5] [normal, drop] platforms per row
 					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
 					elementDistribution = new Array(0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
 					sizeDistribution = new Array(0.0, 0.0, 0.0, 0.5, 1.0)
-					this.generateRandom(yMin, yMax, unitHeight, false, true, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					this.generateRandom(yMin, yMax, unitHeight, false, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
 					break;
 				case 3: // [1] size [3-5] [normal, drop, mobile, normalboost]
 					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
 					elementDistribution = new Array(0.3, 0.6, 0.9, 1.0, 1.0, 1.0, 1.0);
 					sizeDistribution = new Array(0.0, 0.0, 0.3, 1.0, 1.0)
-					this.generateRandom(yMin, yMax, unitHeight, false, true, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					this.generateRandom(yMin, yMax, unitHeight, false, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
 					break;
 				case 4: // [1] size [3-4] [normal, drop, mobile, trampoline, power trampoline, cannon]
 					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
 					elementDistribution = new Array(0.2, 0.5, 0.8, 0.9, 0.98, 1.0, 1.0);
 					sizeDistribution = new Array(0.0, 0.0, 0.5, 1.0, 1.0)
-					this.generateRandom(yMin, yMax, unitHeight, false, true, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					this.generateRandom(yMin, yMax, unitHeight, false, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
 					break;
 				case 5: // [1] size [2-4] [normal, drop, mobile, trampoline, power trampoline, cannon]
 					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
 					elementDistribution = new Array(0.1, 0.4, 0.8, 0.9, 0.98, 1.0, 1.0);
 					sizeDistribution = new Array(0.0, 0.4, 0.8, 1.0, 1.0)
-					this.generateRandom(yMin, yMax, unitHeight, false, true, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					this.generateRandom(yMin, yMax, unitHeight, false, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
 					break;
 				case 6: // [1] size [1-3] [normal, drop, mobile, trampoline, power trampoline, cannon]
 					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
 					elementDistribution = new Array(0.1, 0.4, 0.85, 0.95, 0.98, 1.0, 1.0);
 					sizeDistribution = new Array(0.4, 0.9, 1.0, 1.0, 1.0)
+					this.generateRandom(yMin, yMax, unitHeight, false, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					break;
+				
+				case 999: // music mode
+					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0); // 1 per row
+					elementDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0); // all normal platforms
+					sizeDistribution = new Array(0.0, 0.0, 0.0, 1.0, 1.0) // all size 4
 					this.generateRandom(yMin, yMax, unitHeight, false, true, elementDistribution, elementsPerRowDistribution, sizeDistribution);
 					break;
 				
@@ -67,7 +81,7 @@ package com.jumpGame.level {
 		
 		// generate random segment according to specifications
 		private function generateRandom(yMin:Number, yMax:Number, unitHeight:Number, yVariation:Boolean,
-										xVariation:Boolean, elementDistribution:Array,
+										isMusicMode:Boolean, elementDistribution:Array,
 										elementsPerRowDistribution:Array, sizeDistribution:Array):void {
 			var x:Number = 0;
 			var y:Number = 0;
@@ -80,11 +94,26 @@ package com.jumpGame.level {
 				for (var i:uint = 0;  i < numElementsPerRow; i++) {
 					do {
 						overlap = false;
-						if (xVariation) {
-							x = Math.random() * (Constants.StageWidth - ScreenBorder)
-								- (Constants.StageWidth - ScreenBorder) / 2;
+						if (isMusicMode) {
+//							x = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1) - Constants.StageWidth / 2;
+							
+							if (Math.random() < 0.5) { // place next platform toward left
+								x = this.prevElementX - Constants.MusicModeColumnSpacing;
+							} else { // place next platfrom toward right
+								x = this.prevElementX + Constants.MusicModeColumnSpacing;
+							}
+							this.prevElementX = x;
 						} else {
-							x = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1) - Constants.StageWidth / 2;
+							// generate x randomly
+//							x = Math.random() * (Constants.StageWidth - ScreenBorder)
+//								- (Constants.StageWidth - ScreenBorder) / 2;
+							x = Math.random() * 600 - 300 + this.prevElementX;
+							if (x < -Constants.StageWidth / 2 + 300) {
+								this.prevElementX = -Constants.StageWidth / 2 + 300;
+							}
+							else if (x > Constants.StageWidth / 2 - 300) {
+								this.prevElementX = Constants.StageWidth / 2 - 300;
+							}
 						}
 						
 						if (yVariation) {

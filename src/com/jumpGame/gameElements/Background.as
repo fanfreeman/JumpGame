@@ -1,4 +1,6 @@
 package com.jumpGame.gameElements {
+	import com.jumpGame.level.Statics;
+	
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -152,6 +154,9 @@ package com.jumpGame.gameElements {
 					this.bgLayer2.cycle();
 					this.bgLayer2.gy = Camera.gy - Constants.StageHeight * 1.5;
 				}
+				
+//				this.bgLayer1.visible = false;
+//				this.bgLayer2.visible = false;
 			}
 			else if (this.type == Constants.Foreground) {
 				// scroll fg layer
@@ -165,6 +170,8 @@ package com.jumpGame.gameElements {
 					this.bgLayer4.cycle();
 					this.bgLayer4.gy = Camera.gy - Constants.StageHeight * 1.5;
 				}
+				
+//				this.bgLayer4.visible = false;
 			}
 		}
 		
@@ -173,8 +180,14 @@ package com.jumpGame.gameElements {
 			this.sofHeight += timeDiff * this.sofSpeed;
 			
 			// adjust sea of fire so it keeps up with player
-			if ((heroGy - this.sofHeight) > Constants.StageHeight) {
-				this.sofHeight = heroGy - Constants.StageHeight;
+			if (Statics.gameMode == Constants.ModeBonus) {
+				if ((heroGy - this.sofHeight) > 300) {
+					this.sofHeight = heroGy - 300;
+				}
+			} else {
+				if ((heroGy - this.sofHeight) > Constants.StageHeight) {
+					this.sofHeight = heroGy - Constants.StageHeight;
+				}
 			}
 			
 			if (this.type == Constants.Background) { // scroll bg sof layers

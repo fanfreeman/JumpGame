@@ -83,10 +83,13 @@ package com.jumpGame.objectPools
 			
 			PoolInfo(_pools[qualifiedName]).active++;
 			
-//			trace("pool name: " + qualifiedName);
-//			trace("pool size: " + PoolInfo(_pools[qualifiedName]).size);
-//			trace("pool active: " + PoolInfo(_pools[qualifiedName]).active);
-//			trace("========================");
+			if (Constants.DebugObjectPools) {
+				trace("GET OBJECT pool name: " + qualifiedName);
+				trace("pool size: " + PoolInfo(_pools[qualifiedName]).size);
+				trace("pool active: " + PoolInfo(_pools[qualifiedName]).active);
+				trace("========================");
+			}
+			
 			return returnObj;
 		}
 		
@@ -121,6 +124,13 @@ package com.jumpGame.objectPools
 				}
 				
 				PoolInfo(_pools[qualifiedName]).active--;
+			}
+			
+			if (Constants.DebugObjectPools) {
+				trace("RETURN OBJECT pool name: " + qualifiedName);
+				trace("pool size: " + PoolInfo(_pools[qualifiedName]).size);
+				trace("pool active: " + PoolInfo(_pools[qualifiedName]).active);
+				trace("========================");
 			}
 		}
 	}

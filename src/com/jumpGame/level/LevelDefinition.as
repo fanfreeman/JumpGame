@@ -1,19 +1,39 @@
 package com.jumpGame.level  {
 	
 	public dynamic class LevelDefinition {
-		// level attributes
-//		public var unitHeight:Number = 50;
-//		public var gravity:Number = .00158;
-//		public var normalBouncePower = 0.85;
-//		public var trampolineBouncePower = 1.1;
-//		public var powerTrampolineBouncePower = 1.3;
-//		public var cannonBouncePower = 2.4;
-		
-		
-		public static function getContents():Array {
+		public static function getBonusContents():Array {
 			var stageContents:Array = new Array();
 			
-			stageContents.push(new Array(Constants.Generator, 6, 3, 243));
+			// music mode
+			stageContents.push(new Array(3, 			0, 			Constants.PlatformNormal, 5));
+			stageContents.push(new Array(3, 			0, 			Constants.PlatformNormal, 5));
+			stageContents.push(new Array(3, 			0, 			Constants.PlatformNormal, 5));
+			stageContents.push(new Array(3, 			0, 			Constants.PlatformNormal, 5));
+			stageContents.push(new Array(3, 			0, 			Constants.PlatformNormal, 5));
+			stageContents.push(new Array(3, 			0, 			Constants.PlatformNormal, 5));
+			stageContents.push(new Array(3, 			0, 			Constants.PlatformNormal, 5));
+			stageContents.push(new Array(3, 			0, 			Constants.PlatformNormal, 5));
+			stageContents.push(new Array(3, 			0, 			Constants.PlatformNormal, 5));
+			stageContents.push(new Array(3, 			0, 			Constants.PlatformNormal, 5));
+			stageContents.push(new Array(Constants.Generator, 999, 3, 3543));
+			
+			// goal
+			//stageContents.push(new Array(3, 			0, 				Constants.Goal));
+			
+			return stageContents;
+		}
+		
+		public static function getNormalContents():Array {
+			var stageContents:Array = new Array();
+			
+			// change hourglass settings
+			stageContents.push(new Array(Constants.ContraptionSettingHourglass, 10));
+			
+			// change train settings
+			stageContents.push(new Array(Constants.ContraptionSettingTrain, 10));
+			
+			// change bell settings
+			stageContents.push(new Array(Constants.ContraptionSettingBell, 30));
 			
 			// generate random type 1
 			stageContents.push(new Array(Constants.Generator, 1, 1, 61));

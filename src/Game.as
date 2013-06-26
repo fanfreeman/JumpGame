@@ -145,7 +145,23 @@ package
 					screenInGame = new InGame();
 					screenInGame.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
 					this.addChild(screenInGame);
-					screenInGame.initialize();
+					screenInGame.initializeNormalMode();
+					break;
+				case "continue":
+					
+					break;
+				case "proceed":
+					// get rid of in game screen first if it is present
+					if (screenInGame) {
+						this.removeChild(screenInGame);
+					}
+					screenMenu.disposeTemporarily();
+					
+					// create and initialize in game screen
+					screenInGame = new InGame();
+					screenInGame.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
+					this.addChild(screenInGame);
+					screenInGame.initializeBonusMode();
 					break;
 			}
 		}

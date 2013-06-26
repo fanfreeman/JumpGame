@@ -1,6 +1,7 @@
 package com.jumpGame.ui
 {
 	import com.jumpGame.customObjects.Font;
+	import com.jumpGame.level.Statics;
 	
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -8,52 +9,33 @@ package com.jumpGame.ui
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
 	
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	
 	/**
-	 * This class handles the Heads Up Display for the game.
-	 *  
-	 * @author hsharma
-	 * 
+	 * This class handles the Heads Up Display for the game
 	 */
 	public class HUD extends Sprite
 	{
-		/** Lives left. */
-		private var _lives:int;
+		// bonus time display
+		private var _bonusTime:int;
+		private var bonusTimeLabel:TextField;
+		private var bonusTimeText:TextField;
 		
-		/** Distance travelled. */
+		// distance display
 		private var _distance:int;
-		
-		/** Food items score. */
-		private var _foodScore:int;
-		
-		/** Lives icon.  */		
-		private var livesLabel:TextField;
-		
-		/** Lives TextField. */		
-		private var livesText:TextField;
-		
-		/** Distance icon. */		
 		private var distanceLabel:TextField;
-		
-		/** Distance TextField. */		
 		private var distanceText:TextField;
 		
-		/** Food Score icon. */
-		private var foodScoreLabel:TextField;
+		// coins display
+		private var _coins:int;
+		private var coinsLabel:TextField;
+		private var coinsText:TextField;
 		
-		/** Food Score TextField. */		
-		private var foodScoreText:TextField;
-		
-		/** Font for score label. */		
-		private var fontScoreLabel:Font;
-		
-		/** Font for score value. */		
+		// fonts	
+		private var fontScoreLabel:Font;		
 		private var fontScoreValue:Font;
 		
 		// on screen message
-		private var messageText:TextField;
+		private static var messageText:TextField;
+		private static var messageExpireTime:int;
 		
 		public function HUD()
 		{
@@ -61,46 +43,38 @@ package com.jumpGame.ui
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
-		/**
-		 * On added to stage. 
-		 * @param event
-		 * 
-		 */
 		private function onAddedToStage(event:Event):void
 		{
-			// Get fonts for score labels and values.
+			// get fonts for score labels and values
 			fontScoreLabel = Fonts.getFont("ScoreLabel");
 			fontScoreValue = Fonts.getFont("ScoreValue");
 			
-			// Lives label
-			livesLabel = new TextField(150, 20, "L I V E S", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
-			livesLabel.hAlign = HAlign.RIGHT;
-			livesLabel.vAlign = VAlign.TOP;
+			// bonus time label
+			bonusTimeLabel = new TextField(150, 20, "L I V E S", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
+			bonusTimeLabel.hAlign = HAlign.RIGHT;
+			bonusTimeLabel.vAlign = VAlign.TOP;
+			bonusTimeLabel.x = 150;
+			bonusTimeLabel.y = 5;
+			this.addChild(bonusTimeLabel);
 			
-			livesLabel.x = 150;
-			livesLabel.y = 5;
-			this.addChild(livesLabel);
+			// bonus time
+			bonusTimeText = new TextField(150, 75, "5", fontScoreValue.fontName, fontScoreValue.fontSize, 0xffffff);
+			bonusTimeText.hAlign = HAlign.RIGHT;
+			bonusTimeText.vAlign = VAlign.TOP;
+			bonusTimeText.width = bonusTimeLabel.width;
+			bonusTimeText.x = int(bonusTimeLabel.x + bonusTimeLabel.width - bonusTimeText.width);
+			bonusTimeText.y = bonusTimeLabel.y + bonusTimeLabel.height;
+			this.addChild(bonusTimeText);
 			
-			// Lives
-			livesText = new TextField(150, 75, "5", fontScoreValue.fontName, fontScoreValue.fontSize, 0xffffff);
-			livesText.hAlign = HAlign.RIGHT;
-			livesText.vAlign = VAlign.TOP;
-			livesText.width = livesLabel.width;
-			
-			livesText.x = int(livesLabel.x + livesLabel.width - livesText.width);
-			livesText.y = livesLabel.y + livesLabel.height;
-			this.addChild(livesText);
-			
-			// Distance label
+			// distance label
 			distanceLabel = new TextField(150, 20, "D I S T A N C E", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
 			distanceLabel.hAlign = HAlign.RIGHT;
 			distanceLabel.vAlign = VAlign.TOP;
-			
 			distanceLabel.x = int(stage.stageWidth - distanceLabel.width - 10);
 			distanceLabel.y = 5;
 			this.addChild(distanceLabel);
 			
-			// Distance
+			// distance
 			distanceText = new TextField(150, 75, "0", fontScoreValue.fontName, fontScoreValue.fontSize, 0xffffff);
 			distanceText.hAlign = HAlign.RIGHT;
 			distanceText.vAlign = VAlign.TOP;
@@ -110,24 +84,23 @@ package com.jumpGame.ui
 			distanceText.y = distanceLabel.y + distanceLabel.height;
 			this.addChild(distanceText);
 			
-			// Score label
-			foodScoreLabel = new TextField(150, 20, "S C O R E", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
-			foodScoreLabel.hAlign = HAlign.RIGHT;
-			foodScoreLabel.vAlign = VAlign.TOP;
+			// coins label
+			coinsLabel = new TextField(150, 20, "S C O R E", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
+			coinsLabel.hAlign = HAlign.RIGHT;
+			coinsLabel.vAlign = VAlign.TOP;
 			
-			foodScoreLabel.x = int(distanceLabel.x - foodScoreLabel.width - 50);
-			foodScoreLabel.y = 5;
-			this.addChild(foodScoreLabel);
+			coinsLabel.x = int(distanceLabel.x - coinsLabel.width - 50);
+			coinsLabel.y = 5;
+			this.addChild(coinsLabel);
 			
-			// Score
-			foodScoreText = new TextField(150, 75, "0", fontScoreValue.fontName, fontScoreValue.fontSize, 0xffffff);
-			foodScoreText.hAlign = HAlign.RIGHT;
-			foodScoreText.vAlign = VAlign.TOP;
-			foodScoreText.width = foodScoreLabel.width;
-			
-			foodScoreText.x = int(foodScoreLabel.x + foodScoreLabel.width - foodScoreText.width);
-			foodScoreText.y = foodScoreLabel.y + foodScoreLabel.height;
-			this.addChild(foodScoreText);
+			// coins
+			coinsText = new TextField(150, 75, "0", fontScoreValue.fontName, fontScoreValue.fontSize, 0xffffff);
+			coinsText.hAlign = HAlign.RIGHT;
+			coinsText.vAlign = VAlign.TOP;
+			coinsText.width = coinsLabel.width;
+			coinsText.x = int(coinsLabel.x + coinsLabel.width - coinsText.width);
+			coinsText.y = coinsLabel.y + coinsLabel.height;
+			this.addChild(coinsText);
 			
 			// on screen message
 			var fontMessage:Font = Fonts.getFont("Badabb");
@@ -141,23 +114,13 @@ package com.jumpGame.ui
 			this.addChild(messageText);
 		}
 		
-		/**
-		 * Lives left. 
-		 * @return 
-		 * 
-		 */
-		public function get lives():int { return _lives; }
-		public function set lives(value:int):void
+		public function get bonusTime():int { return _bonusTime; }
+		public function set bonusTime(value:int):void
 		{
-			_lives = value;
-			livesText.text = _lives.toString();
+			_bonusTime = value;
+			bonusTimeText.text = _bonusTime.toString();
 		}
 		
-		/**
-		 * Distance travelled. 
-		 * @return 
-		 * 
-		 */
 		public function get distance():int { return _distance; }
 		public function set distance(value:int):void
 		{
@@ -165,23 +128,15 @@ package com.jumpGame.ui
 			distanceText.text = _distance.toString();
 		}
 		
-		/**
-		 * Food items score. 
-		 * @return 
-		 * 
-		 */
-		public function get foodScore():int { return _foodScore; }
-		public function set foodScore(value:int):void
+		public function get coins():int { return _coins; }
+		public function set coins(value:int):void
 		{
-			_foodScore = value;
-			foodScoreText.text = _foodScore.toString();
+			_coins = value;
+			coinsText.text = _coins.toString();
 		}
 		
 		/**
-		 * Add leading zeros to the score numbers. 
-		 * @param value
-		 * @return 
-		 * 
+		 * Add leading zeros to the score numbers
 		 */
 		private function addZeros(value:int):String {
 			var ret:String = String(value);
@@ -192,17 +147,15 @@ package com.jumpGame.ui
 		}
 		
 		// display an on screen message
-		public function showMessage(message:String):void {
-			this.messageText.text = message;
-			this.messageText.visible = true;
-			
-			var messageTimer:Timer = new Timer(2000, 1);
-			messageTimer.addEventListener(TimerEvent.TIMER_COMPLETE, hideMessage);
-			messageTimer.start();
+		public static function showMessage(message:String, duration:Number = 2000):void {
+			messageExpireTime = Statics.gameTime + duration;
+			messageText.text = message;
+			messageText.visible = true;
 		}
 		
-		public function hideMessage(event:TimerEvent):void {
-			this.messageText.visible = false;
+		// hide on screen message
+		public static function updateMessageDisplay():void {
+			if (Statics.gameTime > messageExpireTime) messageText.visible = false;
 		}
 	}
 }

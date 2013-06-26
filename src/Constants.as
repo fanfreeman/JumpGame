@@ -11,6 +11,12 @@ package
 		public static const StageWidth:uint = 756;
 		public static const StageHeight:uint = 650;
 		
+		// element preload window
+		public static const ElementPreloadWindow:Number = 650;
+		
+		// screen border on left and right side
+		public static const ScreenBorder:Number = 100;
+		
 		// Hero's graphic states - what is the position/animation of hero?
 		public static const HERO_STATE_IDLE:int = 0;
 		public static const HERO_STATE_WALK:int = 1;
@@ -18,8 +24,8 @@ package
 		public static const HERO_STATE_DIE:int = 3;
 		
 		// hero initial specs
-		public static const HERO_INITIAL_X:int = 0;
-		public static const HERO_INITIAL_Y:int = 0;
+		public static const HERO_INITIAL_X:Number = 0;
+		public static const HERO_INITIAL_Y:Number = 0;
 		public static const HeroInitialVelocityY:Number = 2.0;
 		
 		// Particle types ------------------------------------------\
@@ -36,8 +42,8 @@ package
 		public static const HeroMaxSpeedX:Number = 0.5;
 		public static const HeroSpeedX:Number = 0.003;
 		
-		// Level Elements //////////////////////////////////////////////////
-		// level element definitions
+		/** Level Elements ********************************************************/
+		// level element name definitions
 		public static const PlatformNormal:String = "PlatformNormal";
 		public static const PlatformDrop:String = "PlatformDrop";
 		public static const PlatformMobile:String = "PlatformMobile";
@@ -50,25 +56,33 @@ package
 		public static const AntigravDot:String = "AntigravDot";
 		public static const Goal:String = "Goal";
 		
+		// level generator definition
+		public static const Generator:String = "Generator"; // randomly generate elements according to specification
+		
+		// contraption setting definitions
+		public static const ContraptionSettingTrain:String = "ContraptionSettingTrain";
+		public static const ContraptionSettingHourglass:String = "ContraptionSettingHourglass";
+		public static const ContraptionSettingBell:String = "ContraptionSettingBell";
+		
 		// bounce power definitions
 		public static const NormalBouncePower:Number = 0.8;
 		public static const BoostBouncePower:Number = 1.1;
 		public static const PowerBouncePower:Number = 1.3;
 		public static const SuperBouncePower:Number = 2.4;
 		
-		// leve generator definition
-		public static const Generator:String = "Generator"; // randomly generate elements according to specification
+		// platform attributes
+		public static const PlatformMaxSize:int = 5; // platform max size
+		public static const PlatformDropFallVelocity:Number = 0.06; // platform drop
 		
 		// height per unit y distance, usually 1/3rd the height of a row
 		public static const UnitHeight:Number = 50;
 		
-		// platform max size
-		public static const PlatformMaxSize:int = 5;
+		// train attributes
+		public static const TrainVelocity:Number = -1.0;
+		public static const DirectionUp:uint = 0;
+		public static const DirectionDown:uint = 1;
 		
-		// platform drop
-		public static const PlatformDropFallVelocity:Number = 0.06;
-		
-		// Sea of Fire ////////////////////////////////////////////
+		/** Sea of Fire ********************************************************/
 		// enable sea of fire or not
 		public static const SofEnabled:Boolean = true;
 		
@@ -88,7 +102,8 @@ package
 		public static const SofLayer3HeightOffset:Number = 0;
 		public static const SofLayer4HeightOffset:Number = -30;
 		public static const SofLayer5HeightOffset:Number = -70;
-		///////////////////////////////////////////////////////////
+		
+		/** Misc ********************************************************/
 		
 		// animations
 		public static const HeroAnimWalk:uint = 0;
@@ -104,8 +119,31 @@ package
 		public static const UriPostUserInfo:String = "/app_dev.php/user/post";
 		
 		// camera
-		public static const CameraEasingTime:Number = 5.0;
+		public static const CameraEasingTimeY:Number = 10.0;
+		public static const CameraEasingTimeX:Number = 10.0;
 		public static const CameraBoundTop:Number = 0.0;
 		public static const CameraBoundBottom:Number = 200.0;
+		public static const CameraBoundLeft:Number = 10;
+		public static const CameraBoundRight:Number = 10;
+		public static const CameraMoveX:Boolean = false;
+		
+		// debug switches
+		public static const DebugObjectPools:Boolean = false;
+		
+		// game mode
+		public static const PrepareStep0:uint = 0;
+		public static const PrepareStep1:uint = 1;
+		public static const PrepareStep2:uint = 2;
+		public static const PrepareStep3:uint = 3;
+		public static const PrepareStep4:uint = 4;
+		public static const PrepareStepDone:uint = 5;
+		public static const ModeNormal:uint = 5;
+		public static const ModeBonus:uint = 6;
+		
+		// music mode specific
+		public static const MusicModeColumnSpacing:Number = 200;
+		public static const MoveNone:uint = 0;
+		public static const MoveLeft:uint = 1;
+		public static const MoveRight:uint = 2;
 	}
 }

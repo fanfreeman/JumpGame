@@ -1,5 +1,7 @@
 package com.jumpGame.gameElements
 {
+	import com.jumpGame.ui.HUD;
+	
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
@@ -19,6 +21,8 @@ package com.jumpGame.gameElements
 		public var dy:Number = 0.0;
 		private var abilityTimer:Timer;
 		private var abilityReady:Boolean = true;
+		public var gravity:Number = Constants.Gravity;
+		public var canBounce:Boolean = true;
 		
 		public function Hero()
 		{
@@ -83,16 +87,6 @@ package com.jumpGame.gameElements
 			this.heroAnimations[Constants.HeroAnimFail] = heroFailAnim;
 		}
 		
-		/**
-		 * Set hero animation speed. 
-		 * @param speed
-		 * 
-		 */
-		public function setHeroAnimationSpeed(speed:int):void {
-			if (speed == 0) this.heroAnimations[Constants.HeroAnimWalk].fps = 60;
-			else this.heroAnimations[Constants.HeroAnimWalk].fps = 60;
-		}
-		
 		override public function get width():Number
 		{
 			if (this.heroAnimations[Constants.HeroAnimWalk]) return this.heroAnimations[Constants.HeroAnimWalk].texture.width * 0.6;
@@ -118,58 +112,103 @@ package com.jumpGame.gameElements
 //			this.x = stage.stageWidth / 2 + newX;
 //		}
 		
-		public function triggerSpecialAbility():void {
+		// return true if ability triggered
+		public function triggerSpecialAbility():Boolean {
 			if (this.abilityReady) {
 				// activate ability
 				this.dy = 1.5;
-				//rgo.soundControl.playBoom();
+				Sounds.sndAirjump.play();
 				
 				this.abilityReady = false;
 				this.abilityTimer = new Timer(5000, 1);
 				this.abilityTimer.addEventListener(TimerEvent.TIMER_COMPLETE, setAbilityReady);
 				this.abilityTimer.start();
+				
+				return true;
 			}
+			
+			return false;
 		}
 		
 		private function setAbilityReady(event:TimerEvent):void {
 			this.abilityTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, setAbilityReady);
 			this.abilityReady = true;
-			//this.rgo.showMessage("Ability Ready!");
+			HUD.showMessage("Ability Ready!");
 		}
 		
 		public function bounce(bouncePower:Number):void {
-			this.dy = bouncePower;
-			this.heroAnimations[Constants.HeroAnimWalk].visible = false;
-			this.heroAnimations[Constants.HeroAnimJump].visible = true;
-			this.heroAnimations[Constants.HeroAnimJump].stop();
-			this.heroAnimations[Constants.HeroAnimJump].play();
-			//this.heroAnimations[Constants.HeroAnimJump].addEventListener(Event.COMPLETE, onFinishJumping);
-			//if (!Sounds.muted) Sounds.playRandomNote();
+			if (this.canBounce) {
+				this.dy = bouncePower;
+				this.heroAnimations[Constants.HeroAnimWalk].visible = false;
+				this.heroAnimations[Constants.HeroAnimJump].visible = true;
+				this.heroAnimations[Constants.HeroAnimJump].stop();
+				this.heroAnimations[Constants.HeroAnimJump].play();
+			}
 		}
 		
-		private function onFinishJumping():void {
-			this.heroAnimations[Constants.HeroAnimJump].removeEventListener(Event.COMPLETE, onFinishJumping);
-			this.heroAnimations[Constants.HeroAnimJump].visible = false;
-			this.heroAnimations[Constants.HeroAnimWalk].visible = true;
+		public function bounceAndFade(direction:uint, bouncePower:Number):void {
+			if (direction == Constants.DirectionUp) {
+				this.dy = bouncePower;
+			} else {
+				this.dy = -bouncePower;
+				this.scaleY *= -1;
+			}
+			
+			this.canBounce = false;
+			
+			// disable collision detection for a while
+			var delayTimer:Timer = new Timer(200, 1);
+			delayTimer.addEventListener(TimerEvent.TIMER_COMPLETE, restoreCollisionDetection);
+			delayTimer.start();
+			
+			// play sound effect
+			var temp:Number = Math.random() * 3;
+			if (temp < 1) {
+				Sounds.sndBounce1.play();
+			} else if (temp >= 1 && temp < 2) {
+				Sounds.sndBounce2.play();
+			} else if (temp >= 2 && temp < 3) {
+				Sounds.sndBounce3.play();
+			}
+		}
+		
+		public function restoreCollisionDetection(event:TimerEvent):void {
+			if (event != null) {
+				event.target.removeEventListener(TimerEvent.TIMER_COMPLETE, restoreCollisionDetection);
+			}
+			
+			if (this.scaleY < 0) this.scaleY *= -1;
+			this.canBounce = true;
 		}
 		
 		public function turnLeft():void {
 				this.heroAnimations[Constants.HeroAnimJump].scaleX = -0.6;
 				this.heroAnimations[Constants.HeroAnimWalk].scaleX = -0.6;
+				this.heroAnimations[Constants.HeroAnimJump].pivotX = Math.ceil(this.heroAnimations[Constants.HeroAnimJump].texture.width  / 2);
+				this.heroAnimations[Constants.HeroAnimWalk].pivotX = Math.ceil(this.heroAnimations[Constants.HeroAnimWalk].texture.width  / 2);
 		}
 		
 		public function turnRight():void {
 				this.heroAnimations[Constants.HeroAnimJump].scaleX = 0.6;
 				this.heroAnimations[Constants.HeroAnimWalk].scaleX = 0.6;
+				this.heroAnimations[Constants.HeroAnimJump].pivotX = Math.ceil(this.heroAnimations[Constants.HeroAnimJump].texture.width  / 2);
+				this.heroAnimations[Constants.HeroAnimWalk].pivotX = Math.ceil(this.heroAnimations[Constants.HeroAnimWalk].texture.width  / 2);
 		}
 		
-		public function playFailAnimation():void {
+		public function failBounce():void {
 			this.dy = Constants.NormalBouncePower;
 			this.heroAnimations[Constants.HeroAnimWalk].visible = false;
 			this.heroAnimations[Constants.HeroAnimJump].visible = false;
 			this.heroAnimations[Constants.HeroAnimFail].visible = true;
 			this.heroAnimations[Constants.HeroAnimFail].stop();
 			this.heroAnimations[Constants.HeroAnimFail].play();
+		}
+		
+		public function fall(timeDiff:Number):void {
+				this.dy -= this.gravity * timeDiff;
+				if (this.dy < Constants.MaxHeroFallVelocity) {
+					this.dy = Constants.MaxHeroFallVelocity;
+				}
 		}
 	}
 }

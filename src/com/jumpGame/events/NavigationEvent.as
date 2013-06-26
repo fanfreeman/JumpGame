@@ -7,11 +7,17 @@ package com.jumpGame.events
 	 */
 	public class NavigationEvent extends Event
 	{
-		/** Change of a screen. */		
+		// change of screen		
 		public static const CHANGE_SCREEN:String = "changeScreen";
 		
 		// communicator data received
 		public static const RESPONSE_RECEIVED:String = "responseReceived";
+		
+		// summon hourglass
+		public static const HOURGLASS_SUMMON:String = "hourglassSummon";
+		
+		// launch train
+		public static const TRAIN_LAUNCH:String = "trainLaunch";
 		
 		/** Custom object to pass parameters to the screens. */
 		public var params:Object;
