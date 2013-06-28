@@ -5,7 +5,7 @@ package com.jumpGame.gameElements.platforms
 	import starling.core.Starling;
 	import starling.display.MovieClip;
 
-	public dynamic class PlatformNormal extends Platform
+	public class PlatformNormal extends Platform
 	{
 		override protected function createPlatformArt():void
 		{

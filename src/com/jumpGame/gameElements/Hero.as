@@ -21,8 +21,8 @@ package com.jumpGame.gameElements
 		public var dy:Number = 0.0;
 		private var abilityTimer:Timer;
 		private var abilityReady:Boolean = true;
-		public var gravity:Number = Constants.Gravity;
 		public var canBounce:Boolean = true;
+		private var rotationSpeed:Number = 0.0;
 		
 		public function Hero()
 		{
@@ -116,7 +116,7 @@ package com.jumpGame.gameElements
 		public function triggerSpecialAbility():Boolean {
 			if (this.abilityReady) {
 				// activate ability
-				this.dy = 1.5;
+				this.dy = 2.0;
 				Sounds.sndAirjump.play();
 				
 				this.abilityReady = false;
@@ -143,6 +143,31 @@ package com.jumpGame.gameElements
 				this.heroAnimations[Constants.HeroAnimJump].visible = true;
 				this.heroAnimations[Constants.HeroAnimJump].stop();
 				this.heroAnimations[Constants.HeroAnimJump].play();
+			}
+			
+			if (this.dx > 0.2) this.rotationSpeed = Math.PI / 27;
+			else if (this.dx < -0.2) this.rotationSpeed = -Math.PI / 27;
+		}
+		
+		public function update(timeDiff:Number):void {
+			// fall down due to gravity
+			this.dy -= Constants.Gravity * timeDiff;
+			if (this.dy < Constants.MaxHeroFallVelocity) {
+				this.dy = Constants.MaxHeroFallVelocity;
+			}
+			
+			// move hero
+			this.gx += timeDiff * this.dx;
+			this.gy += timeDiff * this.dy;
+			
+			// stop bounce rotation after a full spin
+			var prevRotation:Number = this.heroAnimations[Constants.HeroAnimJump].rotation;
+			this.heroAnimations[Constants.HeroAnimJump].rotation += this.rotationSpeed;
+			if ((prevRotation < 0 && this.heroAnimations[Constants.HeroAnimJump].rotation >= 0 || 
+				prevRotation > 0 && this.heroAnimations[Constants.HeroAnimJump].rotation <= 0) &&
+				Math.abs(prevRotation) < 1) {
+				this.heroAnimations[Constants.HeroAnimJump].rotation = 0;
+				this.rotationSpeed = 0;
 			}
 		}
 		
@@ -202,13 +227,6 @@ package com.jumpGame.gameElements
 			this.heroAnimations[Constants.HeroAnimFail].visible = true;
 			this.heroAnimations[Constants.HeroAnimFail].stop();
 			this.heroAnimations[Constants.HeroAnimFail].play();
-		}
-		
-		public function fall(timeDiff:Number):void {
-				this.dy -= this.gravity * timeDiff;
-				if (this.dy < Constants.MaxHeroFallVelocity) {
-					this.dy = Constants.MaxHeroFallVelocity;
-				}
 		}
 	}
 }

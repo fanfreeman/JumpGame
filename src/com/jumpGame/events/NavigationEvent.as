@@ -19,6 +19,9 @@ package com.jumpGame.events
 		// launch train
 		public static const TRAIN_LAUNCH:String = "trainLaunch";
 		
+		// drop bell
+		public static const DROP_BELL:String = "dropBell";
+		
 		/** Custom object to pass parameters to the screens. */
 		public var params:Object;
 		

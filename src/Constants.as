@@ -26,7 +26,7 @@ package
 		// hero initial specs
 		public static const HERO_INITIAL_X:Number = 0;
 		public static const HERO_INITIAL_Y:Number = 0;
-		public static const HeroInitialVelocityY:Number = 2.0;
+		public static const HeroInitialVelocityY:Number = 2.072;
 		
 		// Particle types ------------------------------------------\
 		/** Particle - Sparkle. */		
@@ -40,7 +40,7 @@ package
 		public static const MaxHeroFallVelocity:Number = -2.0;
 		
 		public static const HeroMaxSpeedX:Number = 0.5;
-		public static const HeroSpeedX:Number = 0.003;
+		public static const HeroSpeedX:Number = 0.002;
 		
 		/** Level Elements ********************************************************/
 		// level element name definitions
@@ -56,6 +56,16 @@ package
 		public static const AntigravDot:String = "AntigravDot";
 		public static const Goal:String = "Goal";
 		
+		// contraption name definitions
+		public static const Hourglass:String = "Hourglass";
+		public static const Train:String = "Train";
+		public static const Bell:String = "Bell";
+		
+		// contraption index definitions
+		public static const ContraptionHourglass:uint = 0;
+		public static const ContraptionTrain:uint = 1;
+		public static const ContraptionBell:uint = 2;
+		
 		// level generator definition
 		public static const Generator:String = "Generator"; // randomly generate elements according to specification
 		
@@ -65,17 +75,22 @@ package
 		public static const ContraptionSettingBell:String = "ContraptionSettingBell";
 		
 		// bounce power definitions
-		public static const NormalBouncePower:Number = 0.8;
-		public static const BoostBouncePower:Number = 1.1;
-		public static const PowerBouncePower:Number = 1.3;
+//		public static const NormalBouncePower:Number = 0.85;
+//		public static const BoostBouncePower:Number = 1.1;
+//		public static const PowerBouncePower:Number = 1.3;
+//		public static const SuperBouncePower:Number = 2.4;
+		public static const NormalBouncePower:Number = 1.05;
+		public static const BoostBouncePower:Number = 1.35;
+		public static const PowerBouncePower:Number = 1.6;
 		public static const SuperBouncePower:Number = 2.4;
 		
 		// platform attributes
 		public static const PlatformMaxSize:int = 5; // platform max size
 		public static const PlatformDropFallVelocity:Number = 0.06; // platform drop
+		public static const PlatformMobileMaxVelocityX:Number = 0.15;
 		
 		// height per unit y distance, usually 1/3rd the height of a row
-		public static const UnitHeight:Number = 50;
+		public static const UnitHeight:Number = 75;
 		
 		// train attributes
 		public static const TrainVelocity:Number = -1.0;

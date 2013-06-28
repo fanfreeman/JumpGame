@@ -8,6 +8,7 @@ package com.jumpGame.gameElements
 	public class Platform extends GameObject implements IPoolable
 	{
 		public var isTouched:Boolean = false;
+		public var canBounce:Boolean = true;
 		protected var size:int;
 		protected var platformAnimation:MovieClip = null;
 		protected var platformImage:Image = null;
@@ -24,7 +25,7 @@ package com.jumpGame.gameElements
 		protected function rescale():void {
 			if (platformAnimation != null) {
 				platformAnimation.scaleX = this.size / Constants.PlatformMaxSize;
-				platformAnimation.scaleY = this.size / Constants.PlatformMaxSize;
+				platformAnimation.scaleY = 4 / Constants.PlatformMaxSize;
 				platformAnimation.pivotX = Math.ceil(platformAnimation.texture.width  / 2); // center art on registration point
 				platformAnimation.pivotY = Math.ceil(platformAnimation.texture.height / 2);
 			}
@@ -39,8 +40,16 @@ package com.jumpGame.gameElements
 		
 		protected function createPlatformArt():void{}
 		
-		public function touch():void {
-			this.isTouched = true;
+		// can only touch once each contact
+		// return true is touch is real
+		public function touch():Boolean {
+			if (!this.isTouched) {
+				this.isTouched = true;
+				
+				return true;
+			}
+			
+			return false;
 		}
 		
 		public function contact():void {
@@ -72,20 +81,22 @@ package com.jumpGame.gameElements
 		/**
 		 * hide artwork before returning to pool
 		 */
-		private function hide():void
+		protected function hide():void
 		{
-			if (this.platformAnimation != null) this.platformAnimation.visible = false;
-			if (this.platformImage != null) this.platformImage.visible = false;
+//			if (this.platformAnimation != null) this.platformAnimation.visible = false;
+//			if (this.platformImage != null) this.platformImage.visible = false;
 			//Starling.juggler.remove(this.platformAnimation);
+			this.visible = false;
 		}
 		
 		/**
 		 * show artwork after retrieved from pool
 		 */
-		private function show():void
+		protected function show():void
 		{
-			if (this.platformAnimation != null) this.platformAnimation.visible = true;
-			if (this.platformImage != null) this.platformImage.visible = true;
+//			if (this.platformAnimation != null) this.platformAnimation.visible = true;
+//			if (this.platformImage != null) this.platformImage.visible = true;
+			this.visible = true;
 		}
 		
 		override public function get width():Number

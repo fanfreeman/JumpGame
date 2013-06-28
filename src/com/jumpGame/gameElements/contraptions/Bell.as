@@ -1,18 +1,28 @@
 package com.jumpGame.gameElements.contraptions
 {
+	import com.jumpGame.gameElements.Contraption;
+	
 	import starling.display.Image;
 
-	public class Bell extends GameObject implements IPoolable
+	public class Bell extends Contraption implements IPoolable
 	{
 		private var bellImage:Image;
+		private var dx:Number;
+		private var dy:Number;
+		private var rotationSpeed:Number = Math.PI / 72;
+		private var isTouched:Boolean = false;
+		
 		private var _destroyed:Boolean = true; // required by interface
 		
-		public function initialize():void {
-			if (bellImage == null) createBellArt();
+		override public function initialize():void {
+			if (bellImage == null) createArt();
+			this.isTouched = false;
+			this.dx = 0;
+			this.dy = 0;
 			this.show();
 		}
 		
-		protected function createBellArt():void
+		protected function createArt():void
 		{
 			bellImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Bell"));
 			bellImage.pivotX = Math.ceil(bellImage.width / 2); // center image on registration point
@@ -20,45 +30,35 @@ package com.jumpGame.gameElements.contraptions
 			this.addChild(bellImage);
 		}
 		
-		public function update(timeDiff:Number):void {
-			this.gx = this.gx;
-			this.gy = this.gy;
+		override public function update(timeDiff:Number):void {
+			this.dy -= Constants.Gravity * timeDiff;
+			if (this.dy < Constants.MaxHeroFallVelocity) {
+				this.dy = Constants.MaxHeroFallVelocity;
+			}
+			
+			if (this.dy < 0) this.isTouched = false;
+			
+			this.gx += this.dx;
+			this.gy += timeDiff * this.dy;
+			this.bellImage.rotation += this.rotationSpeed;
 		}
 		
-		/**
-		 * hide artwork before returning to pool
-		 */
-		private function hide():void
-		{
-			if (bellImage != null) bellImage.visible = false;
+		public function debug(heroGy:Number):void {
+			trace("bell gx: " + this.gx + " bell y from hero: " + (this.gy - heroGy));
 		}
 		
-		/**
-		 * show artwork after retrieved from pool
-		 */
-		private function show():void
-		{
-			if (this.bellImage != null) this.bellImage.visible = true;
-		}
-		
-		// methods required by interface
-		
-		public function get destroyed():Boolean
-		{
-			return _destroyed;
-		}
-		
-		public function renew():void
-		{
-			if (!_destroyed) { return; }
-			_destroyed = false;
-		}
-		
-		public function destroy():void
-		{
-			if (_destroyed) { return; }
-			_destroyed = true;
-			this.hide();
+		public function contact(distanceFromCenter:Number, heroDy:Number):Boolean {
+			if (!this.isTouched) {
+				this.isTouched = true;
+				Sounds.sndBell.play();
+				
+				this.dx = -(distanceFromCenter / 100);
+				this.dy = Math.max(heroDy * 2, Constants.PowerBouncePower);
+				this.rotationSpeed = -(distanceFromCenter / 200) * (Math.PI / 180);
+				return true;
+			}
+			
+			return false;
 		}
 	}
 }

@@ -33,7 +33,7 @@ package com.jumpGame.level  {
 			stageContents.push(new Array(Constants.ContraptionSettingTrain, 10));
 			
 			// change bell settings
-			stageContents.push(new Array(Constants.ContraptionSettingBell, 30));
+			stageContents.push(new Array(Constants.ContraptionSettingBell, 20));
 			
 			// generate random type 1
 			stageContents.push(new Array(Constants.Generator, 1, 1, 61));

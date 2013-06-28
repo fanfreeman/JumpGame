@@ -81,7 +81,7 @@ package com.jumpGame.level {
 		
 		// generate random segment according to specifications
 		private function generateRandom(yMin:Number, yMax:Number, unitHeight:Number, yVariation:Boolean,
-										isMusicMode:Boolean, elementDistribution:Array,
+										isBonusMode:Boolean, elementDistribution:Array,
 										elementsPerRowDistribution:Array, sizeDistribution:Array):void {
 			var x:Number = 0;
 			var y:Number = 0;
@@ -89,12 +89,12 @@ package com.jumpGame.level {
 			var currentY:Number = yMin * unitHeight;
 			var overlap:Boolean; // whether the current coords overlaps an existing platform
 			
-			while (currentY <= yMax * unitHeight) {
+			while (currentY <= yMax * unitHeight) { // one row
 				var numElementsPerRow:uint = this.getNumElementsPerRowByDistribution(elementsPerRowDistribution);
-				for (var i:uint = 0;  i < numElementsPerRow; i++) {
+				for (var i:uint = 0;  i < numElementsPerRow; i++) { // loop through elements on the same row
 					do {
 						overlap = false;
-						if (isMusicMode) {
+						if (isBonusMode) {
 //							x = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1) - Constants.StageWidth / 2;
 							
 							if (Math.random() < 0.5) { // place next platform toward left
@@ -107,7 +107,7 @@ package com.jumpGame.level {
 							// generate x randomly
 //							x = Math.random() * (Constants.StageWidth - ScreenBorder)
 //								- (Constants.StageWidth - ScreenBorder) / 2;
-							x = Math.random() * 600 - 300 + this.prevElementX;
+							x = Math.random() * 400 - 200 + this.prevElementX;
 							if (x < -Constants.StageWidth / 2 + 300) {
 								this.prevElementX = -Constants.StageWidth / 2 + 300;
 							}
@@ -136,10 +136,16 @@ package com.jumpGame.level {
 					//}
 					this.level.levelElementsArray.push([y, x, elementClass, elementSize]);
 					//this.level.levelElementsArray.push([y + unitHeight, x, Constants.Coin]);
-				}
+				} // eof loop through elements on the same row
+				// add coins
+				this.level.levelElementsArray.push([currentY, Math.random() * 400 - 200, Constants.Coin]);
+				this.level.levelElementsArray.push([currentY + unitHeight, Math.random() * 400 - 200, Constants.Coin]);
+				this.level.levelElementsArray.push([currentY + unitHeight * 2, Math.random() * 400 - 200, Constants.Coin]);
+//				this.level.levelElementsArray.push([currentY - unitHeight, x * 2 / 3 + this.prevElementX / 3, Constants.Coin]);
+//				this.level.levelElementsArray.push([currentY - unitHeight * 2, x / 3 + this.prevElementX * 2 / 3, Constants.Coin]);
 				currentY += rowHeight;
-			}
-		}
+			} // eof one row
+		} // eof generateRandom()
 		
 		// obtain a number of elements per row for random generation according to distribution
 		private function getNumElementsPerRowByDistribution(elementsPerRowDistribution:Array):uint {

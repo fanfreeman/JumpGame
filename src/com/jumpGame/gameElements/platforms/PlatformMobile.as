@@ -7,9 +7,9 @@ package com.jumpGame.gameElements.platforms
 	
 	public class PlatformMobile extends Platform
 	{
+		private var dx:Number = 0.0;
 		private var fixedX:Number = 0.0;
-		private var maxPosChange:Number = 200;
-		private var posChangeSpeed:Number = 0.15;
+		private var maxPosChange:Number = 150;
 		private var isMovingRight:Boolean = true;
 		
 		override protected function createPlatformArt():void
@@ -28,17 +28,20 @@ package com.jumpGame.gameElements.platforms
 		public function updatePositionX(timeDiff:Number):void {
 			if (this.isMovingRight) {
 				if (this.gx < this.fixedX + this.maxPosChange) {
-					this.gx += this.posChangeSpeed * timeDiff;
+					this.dx += 0.00015 * timeDiff;
 				} else {
 					this.isMovingRight = false;
 				}
 			} else { // moving left
 				if (this.gx > this.fixedX - this.maxPosChange) {
-					this.gx -= this.posChangeSpeed * timeDiff;
+					this.dx -= 0.00015 * timeDiff
 				} else {
 					this.isMovingRight = true;
 				}
 			}
+			if (this.dx > Constants.PlatformMobileMaxVelocityX) this.dx = Constants.PlatformMobileMaxVelocityX;
+			else if (this.dx < -Constants.PlatformMobileMaxVelocityX) this.dx = -Constants.PlatformMobileMaxVelocityX;
+			this.gx += this.dx * timeDiff;
 		}
 	}
 }

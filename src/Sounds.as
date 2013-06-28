@@ -2,7 +2,6 @@ package
 {
 	import flash.media.Sound;
 	import flash.net.URLRequest;
-	import flash.events.IOErrorEvent;
 	
 	/**
 	 * This class holds all the sound embeds and objects that are used in the game.
@@ -54,6 +53,12 @@ package
 		
 		[Embed(source="../media/sounds/got_hourglass.mp3")]
 		public static const SND_GOT_HOURGLASS:Class;
+		
+		[Embed(source="../media/sounds/bling.mp3")]
+		public static const SND_BLING:Class;
+		
+		[Embed(source="../media/sounds/bell.mp3")]
+		public static const SND_BELL:Class;
 		
 		// musical notes
 		[Embed(source="../media/sounds/notes/do-00.mp3")]
@@ -128,6 +133,8 @@ package
 		public static var sndAirjump:Sound = new Sounds.SND_AIRJUMP() as Sound;
 		public static var sndTrainHit:Sound = new Sounds.SND_TRAIN_HIT() as Sound;
 		public static var sndGotHourglass:Sound = new Sounds.SND_GOT_HOURGLASS() as Sound;
+		public static var sndBling:Sound = new Sounds.SND_BLING() as Sound;
+		public static var sndBell:Sound = new Sounds.SND_BELL() as Sound;
 		
 		
 		// notes

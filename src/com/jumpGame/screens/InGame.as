@@ -1,14 +1,15 @@
 package com.jumpGame.screens
 {
-	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.gameElements.Background;
 	import com.jumpGame.gameElements.Camera;
+	import com.jumpGame.gameElements.Contraption;
 	import com.jumpGame.gameElements.Hero;
 	import com.jumpGame.gameElements.Particle;
 	import com.jumpGame.gameElements.Platform;
+	import com.jumpGame.gameElements.contraptions.Bell;
 	import com.jumpGame.gameElements.contraptions.Hourglass;
 	import com.jumpGame.gameElements.contraptions.Train;
-	import com.jumpGame.gameElements.contraptions.Bell;
+	import com.jumpGame.gameElements.platforms.Coin;
 	import com.jumpGame.gameElements.platforms.PlatformDrop;
 	import com.jumpGame.gameElements.platforms.PlatformMobile;
 	import com.jumpGame.gameElements.platforms.PlatformNormal;
@@ -56,13 +57,9 @@ package com.jumpGame.screens
 		private var platformsList:Vector.<Platform>;
 		private var platformsListLength:uint = 0;
 		
-		// trains
-		private var trainsList:Vector.<Train>;
-		private var trainsListLength:uint = 0;
-		
-		// hourglasses
-		private var hourglassesList:Vector.<Hourglass>;
-		private var hourglassesListLength:uint = 0;
+		// contraptions
+		private var contraptionsList:Vector.<Contraption>;
+		private var contraptionsListLength:uint = 0;
 		
 		// ------------------------------------------------------------------------------------------------------------
 		// GAME PROPERTIES AND DATA
@@ -77,6 +74,12 @@ package com.jumpGame.screens
 		
 		// max climb distance
 		private var maxDist:Number = 0.0;
+		
+		// coins obtained
+		private var coinsObtained:int = 0;
+		
+		// times jumped
+		private var jumps:int = 0;
 		
 		// ------------------------------------------------------------------------------------------------------------
 		// GAME INTERACTION 
@@ -248,12 +251,8 @@ package com.jumpGame.screens
 			this.platformsListLength = 0;
 			
 			// initialize the trains vector
-			this.trainsList = new Vector.<Train>();
-			this.trainsListLength = 0;
-			
-			// initialize the hourglasses vector
-			this.hourglassesList = new Vector.<Hourglass>();
-			this.hourglassesListLength = 0;
+			this.contraptionsList = new Vector.<Contraption>();
+			this.contraptionsListLength = 0;
 			
 			// initialize the particles vector
 			this.particlesList = new Vector.<Particle>();
@@ -266,8 +265,10 @@ package com.jumpGame.screens
 			ObjectPool.instance.registerPool(PlatformNormalBoost, 10, false);
 			ObjectPool.instance.registerPool(PlatformPower, 5, false);
 			ObjectPool.instance.registerPool(PlatformSuper, 5, false);
+			ObjectPool.instance.registerPool(Coin, 40, false);
 			ObjectPool.instance.registerPool(Train, 3, false);
 			ObjectPool.instance.registerPool(Hourglass, 3, false);
+			ObjectPool.instance.registerPool(Bell, 3, false);
 		}
 		
 		private function drawHUD():void
@@ -310,8 +311,6 @@ package com.jumpGame.screens
 			
 			// start contraption control
 			this.contraptionControl = new ContraptionControl();
-			this.contraptionControl.addEventListener(NavigationEvent.TRAIN_LAUNCH, launchTrain);
-			this.contraptionControl.addEventListener(NavigationEvent.HOURGLASS_SUMMON, summonHourglass);
 			
 			// reset scores
 			hud.bonusTime = 0;
@@ -327,6 +326,9 @@ package com.jumpGame.screens
 		
 		public function initializeBonusMode():void
 		{
+			this.speedFactor = 1.545;
+			Statics.bonusTime = 300; // test
+			
 			// reset static vars
 			Statics.gameMode = Constants.ModeBonus;
 			Statics.preparationStep = Constants.PrepareStep0;
@@ -407,8 +409,9 @@ package com.jumpGame.screens
 			
 			if (Statics.gameMode == Constants.ModeNormal) { // normal mode specific
 				// start contraptions; must be done after parsing level
-				this.contraptionControl.scheduleNextHourglass();
-				this.contraptionControl.scheduleNextTrain();
+				this.contraptionControl.scheduleNext(Constants.ContraptionHourglass);
+				this.contraptionControl.scheduleNext(Constants.ContraptionTrain);
+				this.contraptionControl.scheduleNext(Constants.ContraptionBell);
 			}
 			else if (Statics.gameMode == Constants.ModeBonus) { // bonus mode specific
 				//SoundMixer.stopAll();
@@ -433,8 +436,14 @@ package com.jumpGame.screens
 			} else if (event.keyCode == 40) {
 				downArrow = true;
 			} else if (event.keyCode == 32) { // space bar pressed
-				if (this.playerControl) {
-					if (this.hero.triggerSpecialAbility()) particleCharge.start(0.1);
+				if (Statics.gameMode == Constants.ModeBonus) {
+					HUD.showMessage("Unavailable in Bonus Mode");
+				}
+				else if (this.playerControl) {
+					if (this.hero.triggerSpecialAbility()) {
+						particleCharge.start(0.1);
+						particleLeaf.start(0.2);
+					}
 				}
 			}
 		}
@@ -459,7 +468,7 @@ package com.jumpGame.screens
 		private function launchCountdown(timeCurrent:int):Boolean {
 			if (Statics.preparationStep == Constants.PrepareStep0) { // preparation mode
 				if (Statics.gameMode == Constants.ModeNormal) HUD.showMessage("Get Ready", 1000);
-				else if (Statics.gameMode == Constants.ModeBonus) HUD.showMessage("Get ready for some musical action!", 1000);
+				else if (Statics.gameMode == Constants.ModeBonus) HUD.showMessage("Drop some beats!", 1000);
 				Statics.preparationStep = Constants.PrepareStep1;
 			}
 			else if (Statics.preparationStep == Constants.PrepareStep1) {
@@ -509,6 +518,16 @@ package com.jumpGame.screens
 				return;
 			}
 			
+			trace("jumps: " + this.jumps);
+			// bonus mode speed up
+			if (Statics.gameMode == Constants.ModeBonus && timeCurrent > 40000 && timeCurrent < 40050) {
+				HUD.showMessage("Doubling Speed!");
+			}
+			//if (Statics.gameMode == Constants.ModeBonus && timeCurrent > 42800) {
+			if (Statics.gameMode == Constants.ModeBonus && this.jumps >= 64) {
+				this.speedFactor = 2.62;
+			}
+			
 			/** update timers in other classes */
 			// update HUD message
 			HUD.updateMessageDisplay();
@@ -522,8 +541,6 @@ package com.jumpGame.screens
 			
 			if (!launchCountdown(timeCurrent)) { // not in preparation mode
 				/** update hero */
-				// adjust hero vertical speed for gravity
-				this.hero.fall(this.timeDiffControlled);
 				//trace(this.moveMadeThisTurn);
 				//trace(Camera.nextPlatformX);
 				// handle left and right arrow key input
@@ -543,14 +560,14 @@ package com.jumpGame.screens
 							//if (this.moveMade == 1) { // left arrow pressed
 							if (leftArrow) {
 								this.hero.turnLeft();
-								this.hero.dx = -0.28;
+								this.hero.dx = -0.18;
 								this.moveMadeThisTurn = true;
 							}
 								//else if (Camera.nextPlatformX > this.hero.gx) { // autopilot
 								//else if (this.moveMade == 2) { // right arrow pressed
 							else if (rightArrow) {
 								this.hero.turnRight();
-								this.hero.dx = 0.28;
+								this.hero.dx = 0.18;
 								this.moveMadeThisTurn = true;
 							}
 							
@@ -560,47 +577,56 @@ package com.jumpGame.screens
 					} else { // normal game mode
 						if (leftArrow) { // left arrow pressed
 							this.hero.turnLeft();
-							if (this.hero.dx > 0) {this.hero.dx = 0;}
-							this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled;
+							//if (this.hero.dx > 0) {this.hero.dx = 0;}
+							if (this.hero.dx > -0.2) this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled * 2;
+							else this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled;
 							if (this.hero.dx < -Constants.HeroMaxSpeedX) {
 								this.hero.dx = -Constants.HeroMaxSpeedX;
 							}
 						}
 						else if (rightArrow) { // right arrow pressed
 							this.hero.turnRight();
-							if (this.hero.dx < 0) {this.hero.dx = 0;}
-							this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled;
+							//if (this.hero.dx < 0) {this.hero.dx = 0;}
+							if (this.hero.dx < 0.2) this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled * 2;
+							else this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled;
 							if (this.hero.dx > Constants.HeroMaxSpeedX) {
 								this.hero.dx = Constants.HeroMaxSpeedX;
 							}
 						}
 						else { // no arrow pressed, reset velocity
 							if (this.hero.dx < 0) {
-								if (Math.abs(this.hero.dx) < Constants.HeroSpeedX * this.timeDiffControlled) {
+								if (Math.abs(this.hero.dx) < Constants.HeroSpeedX * this.timeDiffControlled * 0.5) {
 									this.hero.dx = 0;
 								} else {
-									this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled;
+									this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled * 0.5;
 								}
 							} else if (this.hero.dx > 0) {
-								if (Math.abs(this.hero.dx) < Constants.HeroSpeedX * this.timeDiffControlled) {
+								if (Math.abs(this.hero.dx) < Constants.HeroSpeedX * this.timeDiffControlled * 0.5) {
 									this.hero.dx = 0;
 								} else {
-									this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled;
+									this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled * 0.5;
 								}
 							}
 						}
 					} // eof normal game mode
-				}
+				} /** eof player control */
 				
-				// move hero
-				this.hero.gx += this.timeDiffControlled * this.hero.dx;
-				this.hero.gy += this.timeDiffControlled * this.hero.dy;
+				// update hero position, velocity, rotation
+				this.hero.update(this.timeDiffControlled);
 				
 				// update max climb distance
 				if (this.hero.gy > this.maxDist) {
 					this.maxDist = this.hero.gy;
 				}
 				/** eof update hero */
+				
+				// update contraption timers
+				if (Statics.gameMode == Constants.ModeNormal) {
+					var contraptionStatus:Array = this.contraptionControl.checkSchedules();
+					if (contraptionStatus[Constants.ContraptionHourglass]) this.summonHourglass();
+					if (contraptionStatus[Constants.ContraptionTrain]) this.launchTrain();
+					if (contraptionStatus[Constants.ContraptionBell] && !this.contraptionControl.isBellActive) this.dropBell();
+				}
 				
 				// sea of fire
 				if (Constants.SofEnabled) {
@@ -657,6 +683,7 @@ package com.jumpGame.screens
 				}
 				
 				hud.distance = Math.round(this.maxDist);
+				hud.coins = this.coinsObtained;
 			} // eof not in preparation mode
 		}
 		
@@ -723,20 +750,13 @@ package com.jumpGame.screens
 			// clean up platforms
 			for(; this.platformsListLength > 0;) this.returnPlatformToPool(0);
 			
-			// clean up trains
-			for(; this.trainsListLength > 0;) this.returnTrainToPool(0);
-			
-			// clean up hourglasses
-			for(; this.hourglassesListLength > 0;) this.returnHourglassToPool(0);
+			// clean up contraption
+			for(; this.contraptionsListLength > 0;) this.returnContraptionToPool(0);
 			
 			// remove event listeners
 			Starling.current.nativeOverlay.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPressedDown);
 			Starling.current.nativeOverlay.stage.removeEventListener(KeyboardEvent.KEY_UP, keyPressedUp);
 			this.removeEventListener(Event.ENTER_FRAME, onGameTick);
-			if (Statics.gameMode == Constants.ModeNormal) {
-				this.contraptionControl.removeEventListener(NavigationEvent.TRAIN_LAUNCH, launchTrain);
-				this.contraptionControl.removeEventListener(NavigationEvent.HOURGLASS_SUMMON, summonHourglass);
-			}
 			
 			// clean up hero
 			this.removeChild(this.hero);
@@ -744,7 +764,7 @@ package com.jumpGame.screens
 			
 			// show game over screen
 			this.setChildIndex(gameOverContainer, this.numChildren - 1);
-			gameOverContainer.initialize(0, this.maxDist);
+			gameOverContainer.initialize(this.coinsObtained, this.maxDist);
 		}
 		
 		/**
@@ -756,26 +776,42 @@ package com.jumpGame.screens
 			/** platform behaviors */
 			// for aiming camera at next platform
 			var smallestPlatformY:Number = this.hero.gy + Constants.StageHeight; // set it to a high value first
+			var isCoin:Boolean;
 			
 			for (i = 0; i < this.platformsListLength; i++) {
+				isCoin = false;
+				
 				if (this.checkWinLose && this.hero.canBounce) { // detect hero/platform collisions if player has not yet lost
 					//if (this.hero.bounds.intersects(this.platformsList[i].bounds)) {
-					if (this.platformsList[i].bounds.contains(this.hero.x - 10, this.hero.y + 20) ||
-						this.platformsList[i].bounds.contains(this.hero.x + 10, this.hero.y + 20)) { // platform collision!
-						this.platformsList[i].touch();
-						if (this.hero.dy < 0) { // hero is falling
-							this.hero.bounce(this.platformsList[i].getBouncePower());
-							this.platformsList[i].contact();
-							particleLeaf.start(0.1); // play particle effect
+					var platformBounds:Rectangle = this.platformsList[i].bounds;
+					if (Object(this.platformsList[i]).constructor == Coin) {
+						platformBounds.inflate(50, 50); // enlarge coin bounds
+						isCoin = true;
+					}
+					if (platformBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
+						platformBounds.contains(this.hero.x + 10, this.hero.y + 20)) { // platform collision!
+						if (this.platformsList[i].touch()) { // ensures stuff inside this block only runs once per contact
+							if (isCoin) this.coinsObtained++;
 							
-							if (Statics.gameMode == Constants.ModeBonus) { // music mode actions
-								this.hero.gx = this.platformsList[i].gx;
-								if (this.moveMadeThisTurn) {
-									this.hero.dx = 0;
-									this.moveMadeThisTurn = false;
+							if (this.hero.dy < 0) { // hero is falling
+								if (this.platformsList[i].canBounce) {
+									this.hero.bounce(this.platformsList[i].getBouncePower());
+									this.platformsList[i].contact();
+									particleLeaf.start(0.2); // play particle effect
+									this.jumps++; // record number of jumps
+									
+									if (Statics.gameMode == Constants.ModeBonus) { // music mode actions
+										this.hero.gx = this.platformsList[i].gx;
+										if (this.moveMadeThisTurn) {
+											this.hero.dx = 0;
+											this.moveMadeThisTurn = false;
+										}
+									}
 								}
 							}
 						}
+					} else { // not in collision
+						this.platformsList[i].isTouched = false; // when not colliding anymore, reset touch status
 					}
 				}
 				
@@ -794,61 +830,78 @@ package com.jumpGame.screens
 				}
 			} /** eof platform behaviors */
 			
-			/** train behaviors */
-			for (i = 0; i < this.trainsListLength; i++) {
-				if (this.checkWinLose && this.hero.canBounce) { // check hero/train collision if not yet lost
-					var trainBounds:Rectangle = this.trainsList[i].bounds;
-					trainBounds.inflate(-50, -50); // shrink train bounds
-					if (trainBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
-						trainBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
-						trainBounds.contains(this.hero.x - 10, this.hero.y - 20) ||
-						trainBounds.contains(this.hero.x + 10, this.hero.y - 20)) {
-						if (this.hero.gx < this.trainsList[i].gx + 100) { // hit by a train
-							this.playerControl = false;
-							this.hero.dx = Constants.TrainVelocity * 2;
-							Sounds.sndTrainHit.play();
-						}
-						else {
-							if (this.hero.dy < 0) { // roof bounce
-								this.hero.bounceAndFade(Constants.DirectionUp, Constants.NormalBouncePower);
-							}
-							else { // bottom bounce
-								this.hero.bounceAndFade(Constants.DirectionDown, Constants.NormalBouncePower);
-							}
-							particleLeaf.start(0.1); // play particle effect
+			/** contraption behaviors */
+			for (i = 0; i < this.contraptionsListLength; i++) {
+				var contraptionBounds:Rectangle = this.contraptionsList[i].bounds;
+				
+				if (Object(this.contraptionsList[i]).constructor == Hourglass) { /** hourglass behaviors */
+					if (this.checkWinLose) { // check hero/hourglass collision if not yet lost
+						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
+							contraptionBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
+							contraptionBounds.contains(this.hero.x - 10, this.hero.y - 20) ||
+							contraptionBounds.contains(this.hero.x + 10, this.hero.y - 20)) {
+							this.contraptionsList[i].contact();
 						}
 					}
-				}
+				} /** eof hourglass behaviors */
 				
-				// update train position
-				this.trainsList[i].update(this.timeDiffControlled);
-				
-				// remove a platform if it has scrolled below sea of fire
-				if (this.trainsList[i].gy < this.fg.sofHeight - 100) {
-					this.returnTrainToPool(i);
-				}
-			} /** eof train behaviors */
-			
-			/** hourglass behaviors */
-			for (i = 0; i < this.hourglassesListLength; i++) {
-				if (this.checkWinLose) { // check hero/hourglass collision if not yet lost
-					var hourglassBounds:Rectangle = this.hourglassesList[i].bounds;
-					if (hourglassBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
-						hourglassBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
-						hourglassBounds.contains(this.hero.x - 10, this.hero.y - 20) ||
-						hourglassBounds.contains(this.hero.x + 10, this.hero.y - 20)) {
-						this.hourglassesList[i].contact();
+				else if (Object(this.contraptionsList[i]).constructor == Train) { /** train behaviors */
+					if (this.checkWinLose && this.hero.canBounce) { // check hero/train collision if not yet lost
+						contraptionBounds.inflate(-50, -50); // shrink train bounds
+						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
+							contraptionBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
+							contraptionBounds.contains(this.hero.x - 10, this.hero.y - 20) ||
+							contraptionBounds.contains(this.hero.x + 10, this.hero.y - 20)) {
+							if (this.hero.gx < this.contraptionsList[i].gx + 100) { // hit by a train
+								this.playerControl = false;
+								this.hero.dx = Constants.TrainVelocity * 2;
+								Sounds.sndTrainHit.play();
+							}
+							else {
+								if (this.hero.dy < 0) { // roof bounce
+									this.hero.bounceAndFade(Constants.DirectionUp, Constants.NormalBouncePower);
+								}
+								else { // bottom bounce
+									this.hero.bounceAndFade(Constants.DirectionDown, Constants.NormalBouncePower);
+								}
+								particleLeaf.start(0.2); // play particle effect
+							}
+						}
 					}
-				}
+				} /** eof train behaviors */
 				
-				// update hourglass position
-				this.hourglassesList[i].update(this.timeDiffControlled);
+				else if (Object(this.contraptionsList[i]).constructor == Bell) { /** bell behaviors */
+					if (this.checkWinLose) { // check hero/bell collision if not yet lost
+//						contraptionBounds.inflate(-100, -100); // shrink bell bounds
+//						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
+//							contraptionBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
+//							contraptionBounds.contains(this.hero.x - 10, this.hero.y - 20) ||
+//							contraptionBounds.contains(this.hero.x + 10, this.hero.y - 20)) {
+//							this.contraptionsList[i].contact(this.hero.gx - this.contraptionsList[i].gx, this.hero.dy);
+//						}
+						var distance:Number = Math.sqrt(Math.pow(this.contraptionsList[i].gx - this.hero.gx, 2) + Math.pow(this.contraptionsList[i].gy - this.hero.gy, 2));
+						if (distance < this.contraptionsList[i].height / 2 + this.hero.width / 2 - 100) {
+							if (this.contraptionsList[i].contact(this.hero.gx - this.contraptionsList[i].gx, this.hero.dy)) { // hero made contact with bell
+								var numCoinsToDrop:int = int(Math.ceil(Math.random() * 20));
+								for (var ci:uint = 0; ci < numCoinsToDrop; ci++) {
+									var newCoinIndex:uint = addElementFromPool(this.contraptionsList[i].gy, this.contraptionsList[i].gx, "Coin");
+									this.platformsList[newCoinIndex].makeKinematic();
+								}
+							}
+						}
+					}
+				} /** eof bell behaviors */
+				
+				// update contraptions
+				this.contraptionsList[i].update(this.timeDiffControlled);
+				if(Object(this.contraptionsList[i]).constructor == Bell) this.contraptionsList[i].debug(this.hero.gy);
 				
 				// remove a platform if it has scrolled below sea of fire
-				if (this.hourglassesList[i].gy < this.fg.sofHeight - 100) {
-					this.returnHourglassToPool(i);
+				if (this.contraptionsList[i].gy < this.fg.sofHeight - this.contraptionsList[i].height) {
+					if (Object(this.contraptionsList[i]).constructor == Bell) this.contraptionControl.isBellActive = false;
+					this.returnContraptionToPool(i);
 				}
-			} /** eof hourglass behaviors */
+			} /** eof contraption behaviors */
 			
 			// scroll background and foreground layers
 			this.bg.scroll();
@@ -860,13 +913,16 @@ package com.jumpGame.screens
 				var levelElement:Array = this.levelParser.levelElementsArray[0];
 				
 				if (levelElement[2] == Constants.ContraptionSettingHourglass) {// check for hourglass settings
-					this.contraptionControl.hourglassInterval = levelElement[1]; // update hourglass interval
+					this.contraptionControl.intervals[Constants.ContraptionHourglass] = levelElement[1]; // update hourglass interval
 				}
 				else if (levelElement[2] == Constants.ContraptionSettingTrain) { // check for train settings
-					this.contraptionControl.trainInterval = levelElement[1]; // update train interval
+					this.contraptionControl.intervals[Constants.ContraptionTrain] = levelElement[1]; // update train interval
 				}
 				else if (levelElement[2] == Constants.ContraptionSettingBell) { // check for bell settings
-					this.contraptionControl.bellInterval = levelElement[1]; // update bell interval
+					this.contraptionControl.intervals[Constants.ContraptionBell] = levelElement[1]; // update bell interval
+				}
+				else if (levelElement[2] == Constants.Coin && Statics.gameMode == Constants.ModeBonus) {
+					// do not add coins if in bonus mode
 				}
 				else { // add element
 					this.addElementFromPool(levelElement[0], levelElement[1], levelElement[2], levelElement[3]);
@@ -874,28 +930,38 @@ package com.jumpGame.screens
 				}
 				this.levelParser.levelElementsArray.splice(0, 1); // remove this entry from level elements array
 			}
-		}
+		} /** eof scrollElements() */
 		
-		private function launchTrain():void {
-			if (Statics.gameMode == Constants.ModeNormal && this.checkWinLose) { // only dispatch train in normal mode
-				this.addTrainFromPool(this.hero.gy - 100, Constants.StageWidth);
-				this.contraptionControl.scheduleNextTrain();
+		private function summonHourglass():void {
+			if (Statics.gameMode == Constants.ModeNormal) { // only summon hourglass in normal mode
+				var gx:Number = Math.random() * (Constants.StageWidth - Constants.ScreenBorder) 
+					- (Constants.StageWidth - Constants.ScreenBorder) / 2;
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight, gx, "Hourglass");
+				this.contraptionControl.scheduleNext(Constants.ContraptionHourglass);
 			}
 		}
 		
-		private function summonHourglass():void {
-			if (Statics.gameMode == Constants.ModeNormal && this.checkWinLose) { // only summon hourglass in normal mode
-				var gx:Number = Math.random() * (Constants.StageWidth - Constants.ScreenBorder) 
-					- (Constants.StageWidth - Constants.ScreenBorder) / 2;
-				this.addHourglassFromPool(this.hero.gy + Constants.StageHeight, gx);
-				this.contraptionControl.scheduleNextHourglass();
+		private function launchTrain():void {
+			if (Statics.gameMode == Constants.ModeNormal) { // only dispatch train in normal mode
+				this.addContraptionFromPool(this.hero.gy - 100, Constants.StageWidth, "Train");
+				this.contraptionControl.scheduleNext(Constants.ContraptionTrain);
+			}
+		}
+		
+		private function dropBell():void {
+			trace("Dropping bell...");
+			if (Statics.gameMode == Constants.ModeNormal) { // only summon bell in normal mode
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight, 0, "Bell");
+				this.contraptionControl.scheduleNext(Constants.ContraptionBell);
+				this.contraptionControl.isBellActive = true;
 			}
 		}
 		
 		/**
 		 * Add an element to the stage
+		 * @return uint the platforms array index of the newly added platfrom
 		 */
-		private function addElementFromPool(y:Number, x:Number, elementClassName:String, elementSize:int):void {
+		private function addElementFromPool(y:Number, x:Number, elementClassName:String, elementSize:int = 0):uint {
 			var elementClass:Class = getDefinitionByName("com.jumpGame.gameElements.platforms." + elementClassName) as Class;
 			var tempElement:Platform = ObjectPool.instance.getObj(elementClass) as elementClass;
 			if (tempElement == null) throw new Error("Pool is full");
@@ -904,30 +970,19 @@ package com.jumpGame.screens
 			tempElement.gy = y;
 			this.addChild(tempElement);
 			this.platformsList[platformsListLength++] = tempElement;
+			return platformsListLength - 1;
 		}
 		
-		// add a train to stage
-		private function addTrainFromPool(y:Number, x:Number):void {
-			var elementClass:Class = getDefinitionByName("com.jumpGame.gameElements.contraptions.Train") as Class;
-			var tempElement:Train = ObjectPool.instance.getObj(elementClass) as elementClass;
+		// add a contraption to stage
+		private function addContraptionFromPool(y:Number, x:Number, elementClassName:String):void {
+			var elementClass:Class = getDefinitionByName("com.jumpGame.gameElements.contraptions." + elementClassName) as Class;
+			var tempElement:Contraption = ObjectPool.instance.getObj(elementClass) as elementClass;
 			if (tempElement == null) throw new Error("Pool is full");
 			tempElement.initialize();
 			tempElement.gx = x;
 			tempElement.gy = y;
 			this.addChild(tempElement);
-			this.trainsList[trainsListLength++] = tempElement;
-		}
-		
-		// add an hourglass to stage
-		private function addHourglassFromPool(y:Number, x:Number):void {
-			var elementClass:Class = getDefinitionByName("com.jumpGame.gameElements.contraptions.Hourglass") as Class;
-			var tempElement:Hourglass = ObjectPool.instance.getObj(elementClass) as elementClass;
-			if (tempElement == null) throw new Error("Pool is full");
-			tempElement.initialize();
-			tempElement.gx = x;
-			tempElement.gy = y;
-			this.addChild(tempElement);
-			this.hourglassesList[hourglassesListLength++] = tempElement;
+			this.contraptionsList[contraptionsListLength++] = tempElement;
 		}
 		
 		/**
@@ -935,32 +990,21 @@ package com.jumpGame.screens
 		 */
 		private function returnPlatformToPool(platformIndex:Number):void
 		{
-			var platform:Platform = this.platformsList[platformIndex];
+			var platform:Platform = platformsList[platformIndex];
 			platformsList.splice(platformIndex, 1);
 			platformsListLength--;
 			ObjectPool.instance.returnObj(platform);
 		}
 		
 		/**
-		 * Dispose the train temporarily. Check-in into pool (will get cleaned) and reduce the vector length by 1
+		 * Dispose the contraption temporarily. Check-in into pool (will get cleaned) and reduce the vector length by 1
 		 */
-		private function returnTrainToPool(trainIndex:Number):void
+		private function returnContraptionToPool(contraptionIndex:Number):void
 		{
-			var train:Train = this.trainsList[trainIndex];
-			trainsList.splice(trainIndex, 1);
-			trainsListLength--;
-			ObjectPool.instance.returnObj(train);
-		}
-		
-		/**
-		 * Dispose the hourglass temporarily. Check-in into pool (will get cleaned) and reduce the vector length by 1
-		 */
-		private function returnHourglassToPool(hourglassIndex:Number):void
-		{
-			var hourglass:Hourglass = this.hourglassesList[hourglassIndex];
-			hourglassesList.splice(hourglassIndex, 1);
-			hourglassesListLength--;
-			ObjectPool.instance.returnObj(hourglass);
+			var contraption:Contraption = contraptionsList[contraptionIndex];
+			contraptionsList.splice(contraptionIndex, 1);
+			contraptionsListLength--;
+			ObjectPool.instance.returnObj(contraption);
 		}
 		
 		/**
