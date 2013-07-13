@@ -35,6 +35,11 @@ package com.jumpGame.level  {
 			// change bell settings
 			stageContents.push(new Array(Constants.ContraptionSettingBell, 20));
 			
+			// change powerup boxes settings
+			stageContents.push(new Array(Constants.ContraptionSettingPowerupBoxes, 10));
+			
+			//
+			
 			// generate random type 1
 			stageContents.push(new Array(Constants.Generator, 1, 1, 61));
 			

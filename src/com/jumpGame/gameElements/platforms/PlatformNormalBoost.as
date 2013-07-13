@@ -1,12 +1,14 @@
 package com.jumpGame.gameElements.platforms
 {
+	import com.jumpGame.level.Statics;
+	
 	import starling.display.Image;
 
 	public class PlatformNormalBoost extends PlatformNormal
 	{
 		override protected function createPlatformArt():void {
 			super.createPlatformArt();
-			platformImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("NormalTriangle"));
+			platformImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("NormalTriangle0000"));
 			platformImage.x = -5;
 			platformImage.y = -4;
 			this.addChild(platformImage);
@@ -14,6 +16,12 @@ package com.jumpGame.gameElements.platforms
 		
 		override public function getBouncePower():Number {
 			return Constants.BoostBouncePower;
+		}
+		
+		override public function contact():void {
+			Sounds.sndBoostBounce.play();
+			this.platformAnimation.stop();
+			this.platformAnimation.play();
 		}
 	}
 }

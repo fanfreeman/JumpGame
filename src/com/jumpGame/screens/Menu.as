@@ -91,7 +91,7 @@ package com.jumpGame.screens
 		public function initialize():void
 		{
 			label.text = "Connecting to Game Server...";
-			this.button.visible = false;
+			this.button.visible = true; // TEST
 			this.visible = true;
 			
 			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);

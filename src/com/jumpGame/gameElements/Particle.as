@@ -24,26 +24,26 @@ package com.jumpGame.gameElements
 		/** Texture of the particle. */
 		private var particleImage:Image;
 		
-		public function Particle(_type:int)
-		{
-			super();
-			
-			this._type = _type;
-			
-			switch(_type)
-			{
-				case Constants.PARTICLE_TYPE_1:
-					particleImage = new Image(Assets.getAtlas().getTexture("particleEat"));
-					break;
-				case Constants.PARTICLE_TYPE_2:
-					particleImage = new Image(Assets.getAtlas().getTexture("particleWindForce"));
-					break;
-			}
-			
-			particleImage.x = particleImage.width/2;
-			particleImage.y = particleImage.height/2;
-			this.addChild(particleImage);
-		}
+//		public function Particle(_type:int)
+//		{
+//			super();
+//			
+//			this._type = _type;
+//			
+//			switch(_type)
+//			{
+//				case Constants.PARTICLE_TYPE_1:
+//					particleImage = new Image(Assets.getAtlas().getTexture("particleEat"));
+//					break;
+//				case Constants.PARTICLE_TYPE_2:
+//					particleImage = new Image(Assets.getAtlas().getTexture("particleWindForce"));
+//					break;
+//			}
+//			
+//			particleImage.x = particleImage.width/2;
+//			particleImage.y = particleImage.height/2;
+//			this.addChild(particleImage);
+//		}
 		
 		/**
 		 * Speed X of the particle. 

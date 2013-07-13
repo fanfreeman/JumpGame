@@ -4,9 +4,13 @@ package com.jumpGame.gameElements
 	
 	import starling.display.Image;
 	import starling.display.MovieClip;
+	import starling.core.Starling;
 	
 	public class Platform extends GameObject implements IPoolable
 	{
+		public var dx:Number;
+		public var dy:Number;
+		
 		public var isTouched:Boolean = false;
 		public var canBounce:Boolean = true;
 		protected var size:int;
@@ -16,8 +20,12 @@ package com.jumpGame.gameElements
 		private var _destroyed:Boolean = true; // required by interface
 		
 		public function initialize(size:int):void {
-			this.size = size;
+			this.dx = 0;
+			this.dy = 0;
+			this.isTouched = false;
 			if (platformAnimation == null && platformImage == null) createPlatformArt();
+			if (size == 0) this.size = 4;
+			else this.size = size;
 			this.rescale();
 			this.show();
 		}
@@ -65,8 +73,10 @@ package com.jumpGame.gameElements
 				}
 			}
 			
-			this.platformAnimation.stop();
-			this.platformAnimation.play();
+			if (this.platformAnimation != null) {
+				this.platformAnimation.stop();
+				this.platformAnimation.play();
+			}
 		}
 		
 		public function getBouncePower():Number {
@@ -74,8 +84,11 @@ package com.jumpGame.gameElements
 		}
 		
 		public function update(timeDiff:Number):void {
-			this.gx = this.gx;
-			this.gy = this.gy;
+			// not multiplying by timeDiff here because that's already done in acceleration calculations in main loop
+			if (this.dx > Constants.PlatformMobileMaxVelocityX) this.dx = Constants.PlatformMobileMaxVelocityX;
+			else if (this.dx < -Constants.PlatformMobileMaxVelocityX) this.dx = -Constants.PlatformMobileMaxVelocityX;
+			this.gx += this.dx * timeDiff;
+			this.gy += this.dy * timeDiff;
 		}
 		
 		/**
@@ -86,6 +99,7 @@ package com.jumpGame.gameElements
 //			if (this.platformAnimation != null) this.platformAnimation.visible = false;
 //			if (this.platformImage != null) this.platformImage.visible = false;
 			//Starling.juggler.remove(this.platformAnimation);
+			if (this.platformAnimation != null) Starling.juggler.remove(this.platformAnimation);
 			this.visible = false;
 		}
 		
@@ -96,6 +110,7 @@ package com.jumpGame.gameElements
 		{
 //			if (this.platformAnimation != null) this.platformAnimation.visible = true;
 //			if (this.platformImage != null) this.platformImage.visible = true;
+			if (this.platformAnimation != null) Starling.juggler.add(this.platformAnimation);
 			this.visible = true;
 		}
 		
@@ -120,8 +135,6 @@ package com.jumpGame.gameElements
 		{
 			if (!_destroyed) { return; }
 			_destroyed = false;
-			
-			this.isTouched = false;
 		}
 		
 		public function destroy():void

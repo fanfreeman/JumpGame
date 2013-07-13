@@ -21,7 +21,7 @@ package com.jumpGame.gameElements.contraptions
 		
 		protected function createArt():void
 		{
-			hourglassImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Hourglass"));
+			hourglassImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Hourglass0000"));
 			hourglassImage.pivotX = Math.ceil(hourglassImage.width / 2); // center art on registration point
 			hourglassImage.pivotY = Math.ceil(hourglassImage.height / 2);
 			this.addChild(hourglassImage);

@@ -12,8 +12,6 @@ package com.jumpGame.gameElements
 		public static var dx:Number = 0.0;
 		public static var dy:Number = 0.0;
 		
-		public static var nextPlatformX:Number = 0.0;
-		
 		// move camera by following hero
 		public static function update(heroGx:Number, heroGy:Number):void {
 			//var targetX:Number = (Camera.nextPlatformX + heroGx) / 2;
@@ -27,6 +25,8 @@ package com.jumpGame.gameElements
 			
 			// if camera is within the camera bounds box
 			// solve for camera acceleration given current velocity, zero final velocity, and constant time
+			// easing factor is the time it takes to get there
+			// d = vt + 0.5 * at^2
 			
 			// x
 			if (Statics.gameMode == Constants.ModeBonus) {

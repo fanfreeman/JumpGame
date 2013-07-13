@@ -13,26 +13,29 @@ package
 	 */
 	public class Assets
 	{
-		/**
-		 * Texture Atlas 
-		 */
+		// TODO: remove
 		[Embed(source="../media/graphics/mySpritesheet.png")]
 		public static const AtlasTextureGame:Class;
-		
 		[Embed(source="../media/graphics/mySpritesheet.xml", mimeType="application/octet-stream")]
 		public static const AtlasXmlGame:Class;
 		
-		// scarecrow spritesheet
-		[Embed(source="../media/graphics/Scarecrow.png")]
-		public static const SpriteTextureScarecrow:Class;
-		[Embed(source="../media/graphics/Scarecrow.xml", mimeType="application/octet-stream")]
-		public static const SpriteXmlScarecrow:Class;
-		
-		// platform spritesheet
-		[Embed(source="../media/graphics/platform/platforms.png")]
+		// platforms atlas
+		[Embed(source="../media/graphics/platforms.png")]
 		public static const AtlasTexturePlatforms:Class;
-		[Embed(source="../media/graphics/platform/platforms.xml", mimeType="application/octet-stream")]
+		[Embed(source="../media/graphics/platforms.xml", mimeType="application/octet-stream")]
 		public static const AtlasXmlPlatforms:Class;
+		
+		// atlas 2
+		[Embed(source="../media/graphics/atlas2.png")]
+		public static const AtlasTexture2:Class;
+		[Embed(source="../media/graphics/atlas2.xml", mimeType="application/octet-stream")]
+		public static const AtlasXml2:Class;
+		
+		// atlas 3: mostly background elements
+		[Embed(source="../media/graphics/atlas3.png")]
+		public static const AtlasTexture3:Class;
+		[Embed(source="../media/graphics/atlas3.xml", mimeType="application/octet-stream")]
+		public static const AtlasXml3:Class;
 		
 		/**
 		 * Background Assets 
@@ -43,30 +46,6 @@ package
 		
 		[Embed(source="../media/graphics/bgWelcome.jpg")]
 		public static const BgWelcome:Class;
-		
-		// layer 2
-		[Embed(source="../media/graphics/background/layer2_tree1.png")]
-		public static const BgLayer2Tree1L:Class;
-		
-		[Embed(source="../media/graphics/background/layer2_tree2.png")]
-		public static const BgLayer2Tree2R:Class;
-		
-		[Embed(source="../media/graphics/background/layer2_tree3.png")]
-		public static const BgLayer2Tree3L:Class;
-		
-		// layer 4
-		[Embed(source="../media/graphics/background/layer4_tree1.png")]
-		public static const BgLayer4Tree1R:Class;
-		
-		[Embed(source="../media/graphics/background/layer4_tree2.png")]
-		public static const BgLayer4Tree2L:Class;
-		
-		// waves spritesheet
-		// scarecrow spritesheet
-		[Embed(source="../media/graphics/background/sofwave.png")]
-		public static const SpriteTextureWaves:Class;
-		[Embed(source="../media/graphics/background/sofwave.xml", mimeType="application/octet-stream")]
-		public static const SpriteXmlWaves:Class;
 		
 		/**
 		 * Texture Cache 
@@ -116,14 +95,14 @@ package
 				var xml:XML;
 				switch(name)
 				{
-					case "SpriteTextureScarecrow":
-						xml = XML(new SpriteXmlScarecrow());
-						break;
 					case "AtlasTexturePlatforms":
 						xml = XML(new AtlasXmlPlatforms());
 						break;
-					case "SpriteTextureWaves":
-						xml = XML(new SpriteXmlWaves());
+					case "AtlasTexture2":
+						xml = XML(new AtlasXml2());
+						break;
+					case "AtlasTexture3":
+						xml = XML(new AtlasXml3());
 						break;
 				}
 				 

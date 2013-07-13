@@ -22,7 +22,7 @@ package com.jumpGame.ui
 		
 		public function SoundButton()
 		{
-			super(Texture.fromBitmapData(new BitmapData(Assets.getAtlas().getTexture("soundOff").width, Assets.getAtlas().getTexture("soundOff").height, true, 0)));
+			super(Texture.fromBitmapData(new BitmapData(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnSoundOff0000").width, Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnSoundOff0000").height, true, 0)));
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -47,12 +47,12 @@ package com.jumpGame.ui
 		private function setButtonTextures():void
 		{
 			// Normal state - image
-			mcUnmuteState = new MovieClip(Assets.getAtlas().getTextures("soundOn"), 3);
+			mcUnmuteState = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("BtnSoundOn"), 3);
 			Starling.juggler.add(mcUnmuteState);
 			this.addChild(mcUnmuteState);
 			
 			// Selected state - animation
-			imageMuteState = new Image(Assets.getAtlas().getTexture("soundOff"));
+			imageMuteState = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnSoundOff0000"));
 			this.addChild(imageMuteState);
 		}
 		

@@ -25,14 +25,11 @@ package com.jumpGame.gameElements.platforms
 		}
 		
 		override public function update(timeDiff:Number):void {
-			this.gx = this.gx;
-			
 			if (this.isFalling) {
 				this.fallVelocity -= Constants.PlatformDropFallVelocity;
 				this.gy += timeDiff * this.fallVelocity;
-			} else {
-				this.gy = this.gy;
 			}
+			super.update(timeDiff);
 		}
 		
 		override public function initialize(size:int):void {

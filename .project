@@ -16,6 +16,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>[source path] MetalWorksMobileTheme-source</name>
+			<type>2</type>
+			<location>C:/Users/Freeman/Documents/Libraries/feathers-master/themes/MetalWorksMobileTheme/source</location>
+		</link>
+		<link>
 			<name>[source path] Starling-Extension-Particle-System-master-src</name>
 			<type>2</type>
 			<location>C:/Users/Freeman/Documents/Libraries/Starling-Extension-Particle-System-master/src</location>
@@ -26,14 +31,14 @@
 			<location>C:/Users/Freeman/Documents/Libraries/as3corelib/src</location>
 		</link>
 		<link>
-			<name>[source path] source</name>
+			<name>[source path] feathers-master-source</name>
 			<type>2</type>
-			<location>C:/Users/Freeman/Documents/Libraries/feathers-1.0.1/themes/MetalWorksMobileTheme/source</location>
+			<location>C:/Users/Freeman/Documents/Libraries/feathers-master/source</location>
 		</link>
 		<link>
 			<name>[source path] starling-src</name>
 			<type>2</type>
-			<location>C:/Users/Freeman/Documents/Libraries/PrimaryFeather-Starling-Framework-0ac3592/starling/src</location>
+			<location>C:/Users/Freeman/Documents/Libraries/Starling-Framework-1.3/starling/src</location>
 		</link>
 		<link>
 			<name>bin-debug</name>

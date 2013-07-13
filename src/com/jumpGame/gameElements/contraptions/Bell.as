@@ -24,9 +24,9 @@ package com.jumpGame.gameElements.contraptions
 		
 		protected function createArt():void
 		{
-			bellImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Bell"));
+			bellImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Bell0000"));
 			bellImage.pivotX = Math.ceil(bellImage.width / 2); // center image on registration point
-			bellImage.pivotY = Math.ceil(bellImage.height / 2);
+			bellImage.pivotY = Math.ceil(bellImage.height);
 			this.addChild(bellImage);
 		}
 		

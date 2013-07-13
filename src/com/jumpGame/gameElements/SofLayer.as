@@ -23,8 +23,8 @@ package com.jumpGame.gameElements
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			
 			// add two sea of fire waves side by side
-			waveAnim1 = new MovieClip(Assets.getSprite("SpriteTextureWaves").getTextures("waves_speed_1"), 24);
-			waveAnim2 = new MovieClip(Assets.getSprite("SpriteTextureWaves").getTextures("waves_speed_1"), 24);
+			waveAnim1 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("Wave"), 24);
+			waveAnim2 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("Wave"), 24);
 			waveAnim1.x = 0;
 			waveAnim1.y = 0;
 			

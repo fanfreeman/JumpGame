@@ -48,14 +48,14 @@ package com.jumpGame.gameElements
 				this.addChild(image);
 			} 
 			else if (this._layer == 2) {
-				image = new Image(Assets.getTexture("BgLayer2Tree1L"));
+				image = new Image(Assets.getSprite("AtlasTexture3").getTexture("L2Tree10000"));
 				image.blendMode = BlendMode.NORMAL;
 				image.pivotX = 0; // set registration point to bottom left corner
 				image.pivotY = image.texture.height;
 				this.addChild(image);
 				this.imageVec.push(image); // store in vector
 				
-				image = new Image(Assets.getTexture("BgLayer2Tree2R"));
+				image = new Image(Assets.getSprite("AtlasTexture3").getTexture("L2Tree20000"));
 				image.blendMode = BlendMode.NORMAL;
 				image.pivotX = -Constants.StageWidth + image.texture.width; // set registration point
 				image.pivotY = image.texture.height;
@@ -63,7 +63,7 @@ package com.jumpGame.gameElements
 				this.addChild(image);
 				this.imageVec.push(image); // store in vector
 				
-				image = new Image(Assets.getTexture("BgLayer2Tree3L"));
+				image = new Image(Assets.getSprite("AtlasTexture3").getTexture("L2Tree30000"));
 				image.blendMode = BlendMode.NORMAL;
 				image.pivotX = 0; // set registration point to bottom left corner
 				image.pivotY = image.texture.height;
@@ -74,14 +74,14 @@ package com.jumpGame.gameElements
 				this.activeImage = 0;
 			}
 			else if (this._layer == 4) {
-				image = new Image(Assets.getTexture("BgLayer4Tree1R"));
+				image = new Image(Assets.getSprite("AtlasTexture3").getTexture("L4Tree10000"));
 				image.blendMode = BlendMode.NORMAL;
 				image.pivotX = -Constants.StageWidth + image.texture.width; // set registration point
 				image.pivotY = image.texture.height;
 				this.addChild(image);
 				this.imageVec.push(image); // store in vector
 				
-				image = new Image(Assets.getTexture("BgLayer4Tree2L"));
+				image = new Image(Assets.getSprite("AtlasTexture3").getTexture("L4Tree20000"));
 				image.blendMode = BlendMode.NORMAL;
 				image.pivotX = 0; // set registration point to bottom left corner
 				image.pivotY = image.texture.height;

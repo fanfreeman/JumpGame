@@ -9,9 +9,6 @@ package com.jumpGame.gameElements.platforms
 	{
 		private var isKinematic:Boolean;
 		
-		private var dx:Number;
-		private var dy:Number;
-		
 		override protected function createPlatformArt():void
 		{
 			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
@@ -27,7 +24,7 @@ package com.jumpGame.gameElements.platforms
 			this.dx = 0;
 			this.dy = 0;
 			this.canBounce = false;
-			if (platformAnimation == null && platformImage == null) createPlatformArt();
+			if (platformAnimation == null) createPlatformArt();
 			this.show();
 		}
 		
@@ -50,20 +47,15 @@ package com.jumpGame.gameElements.platforms
 			if (this.isKinematic) {
 				this.dy -= Constants.Gravity * timeDiff;
 				if (this.dy < Constants.MaxHeroFallVelocity) {
-					this.dy = Constants.MaxHeroFallVelocity;
+//					this.dy = Constants.MaxHeroFallVelocity;
 				}
-				
-				// move hero
-				this.gx += timeDiff * this.dx;
-				this.gy += timeDiff * this.dy;
-			} else {
-				super.update(timeDiff);
 			}
+			super.update(timeDiff);
 		}
 		
-		public function makeKinematic():void {
+		public function makeKinematic(bouncePower:Number):void {
 			this.isKinematic = true;
-			this.dy = Math.random() * Constants.NormalBouncePower;
+			this.dy = Math.random() * bouncePower;
 			this.dx = Math.random() * 0.4 - 0.2;
 		}
 	}

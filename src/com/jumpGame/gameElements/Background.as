@@ -1,10 +1,13 @@
 package com.jumpGame.gameElements {
 	import com.jumpGame.level.Statics;
 	
+	import starling.core.Starling;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.extensions.PDParticleSystem;
 	import starling.filters.BlurFilter;
+	import starling.textures.Texture;
 	
 	public class Background extends Sprite {
 		
@@ -25,7 +28,9 @@ package com.jumpGame.gameElements {
 		private var sofLayer3:SofLayer; // fg
 		private var sofLayer4:SofLayer; // fg
 		private var sofLayer5:SofLayer; // fg
-		private var sofQuad:Quad; // fg
+		public var sofQuad:Quad; // fg
+		
+		public static var particleSeaOfFire:PDParticleSystem;
 		
 		public function Background(type:uint) {
 			super();
@@ -108,6 +113,14 @@ package com.jumpGame.gameElements {
 				this.bgLayer4.gx = -Constants.StageWidth / 2; // place at top left of screen
 				this.bgLayer4.gy = Constants.StageHeight / 2;
 				this.addChild(this.bgLayer4);
+				
+				// create sea of fire particle emitter
+				if (Statics.isHardwareRendering) {
+					particleSeaOfFire = new PDParticleSystem(XML(new ParticleAssets.ParticleFireXML()), Texture.fromBitmap(new ParticleAssets.ParticleFireTexture()));
+					Starling.juggler.add(particleSeaOfFire);
+					this.addChild(particleSeaOfFire);
+//					particleSeaOfFire.start();
+				}
 				
 				// add sea of fire layer 5: closes to player
 				this.sofLayer5 = new SofLayer();

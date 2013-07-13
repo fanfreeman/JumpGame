@@ -81,7 +81,7 @@ package com.jumpGame.ui
 			// Message text field
 			messageText = new TextField(stage.stageWidth, stage.stageHeight * 0.5, "GOOD EFFORT!", fontMessage.fontName, fontMessage.fontSize, 0xf3e75f);
 			messageText.vAlign = VAlign.TOP;
-			messageText.height = messageText.textBounds.height;
+			messageText.height = 100;
 			messageText.y = (stage.stageHeight * 20)/100;
 			this.addChild(messageText);
 			
@@ -102,17 +102,17 @@ package com.jumpGame.ui
 			scoreContainer.addChild(scoreText);
 			
 			// Navigation buttons.
-			returnBtn = new Button(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnReturn"));
+			returnBtn = new Button(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnReturn0000"));
 			returnBtn.y = (stage.stageHeight * 70)/100;
 			returnBtn.addEventListener(Event.TRIGGERED, onReturnClick);
 			this.addChild(returnBtn);
 			
-			continueBtn = new Button(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnContinue"));
+			continueBtn = new Button(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnContinue0000"));
 			continueBtn.y = (stage.stageHeight * 70)/100;
 			continueBtn.addEventListener(Event.TRIGGERED, onContinueClick);
 			this.addChild(continueBtn);
 			
-			proceedBtn = new Button(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnProceed"));
+			proceedBtn = new Button(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnProceed0000"));
 			proceedBtn.y = (stage.stageHeight * 70)/100;
 			proceedBtn.addEventListener(Event.TRIGGERED, onProceedClick);
 			this.addChild(proceedBtn);
@@ -157,7 +157,7 @@ package com.jumpGame.ui
 			
 			// send new score to backend
 			var jsonStr:String = JSON.stringify({
-				score: score
+				score: distance
 			});
 			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
 			this.communicator.postUserData(jsonStr);

@@ -4,18 +4,30 @@ package com.jumpGame.screens
 	import com.jumpGame.gameElements.Camera;
 	import com.jumpGame.gameElements.Contraption;
 	import com.jumpGame.gameElements.Hero;
-	import com.jumpGame.gameElements.Particle;
 	import com.jumpGame.gameElements.Platform;
 	import com.jumpGame.gameElements.contraptions.Bell;
 	import com.jumpGame.gameElements.contraptions.Hourglass;
+	import com.jumpGame.gameElements.contraptions.PowerupBox;
+	import com.jumpGame.gameElements.contraptions.PowerupBoxBlue;
+	import com.jumpGame.gameElements.contraptions.PowerupBoxFire;
+	import com.jumpGame.gameElements.contraptions.PowerupBoxGreen;
+	import com.jumpGame.gameElements.contraptions.PowerupBoxPink;
+	import com.jumpGame.gameElements.contraptions.PowerupBoxPurple;
 	import com.jumpGame.gameElements.contraptions.Train;
+	import com.jumpGame.gameElements.contraptions.TrainFromLeft;
 	import com.jumpGame.gameElements.platforms.Coin;
 	import com.jumpGame.gameElements.platforms.PlatformDrop;
+	import com.jumpGame.gameElements.platforms.PlatformDropBoost;
 	import com.jumpGame.gameElements.platforms.PlatformMobile;
+	import com.jumpGame.gameElements.platforms.PlatformMobileBoost;
 	import com.jumpGame.gameElements.platforms.PlatformNormal;
 	import com.jumpGame.gameElements.platforms.PlatformNormalBoost;
 	import com.jumpGame.gameElements.platforms.PlatformPower;
 	import com.jumpGame.gameElements.platforms.PlatformSuper;
+	import com.jumpGame.gameElements.platforms.Star;
+	import com.jumpGame.gameElements.platforms.StarMini;
+	import com.jumpGame.gameElements.powerups.Attractor;
+	import com.jumpGame.gameElements.powerups.Blink;
 	import com.jumpGame.level.ContraptionControl;
 	import com.jumpGame.level.LevelParser;
 	import com.jumpGame.level.Statics;
@@ -25,16 +37,13 @@ package com.jumpGame.screens
 	import com.jumpGame.ui.PauseButton;
 	
 	import flash.events.KeyboardEvent;
-	import flash.events.TimerEvent;
-	import flash.external.ExternalInterface;
 	import flash.geom.Rectangle;
-	import flash.media.SoundMixer;
-	import flash.utils.Timer;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getTimer;
 	
 	import starling.animation.Tween;
 	import starling.core.Starling;
+	import starling.display.BlendMode;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.extensions.PDParticleSystem;
@@ -61,6 +70,10 @@ package com.jumpGame.screens
 		private var contraptionsList:Vector.<Contraption>;
 		private var contraptionsListLength:uint = 0;
 		
+		// powerups
+		private var powerupsList:Vector.<GameObject>;
+		private var powerupsListLength:uint = 0;
+		
 		// ------------------------------------------------------------------------------------------------------------
 		// GAME PROPERTIES AND DATA
 		// ------------------------------------------------------------------------------------------------------------
@@ -85,14 +98,14 @@ package com.jumpGame.screens
 		// GAME INTERACTION 
 		// ------------------------------------------------------------------------------------------------------------
 		
-		/** Is game rendering through hardware or software? */
-		private var isHardwareRendering:Boolean;
-		
-		/** Is game currently in paused state? */
+		// whether game currently in paused state
 		private var gamePaused:Boolean = false;
 		
 		// whether or not to check win/lose condition
 		private var checkWinLose:Boolean = true;
+		
+		// time to end the game
+		private var endGameTime:int;
 		
 		// music mode variables
 		private var moveMadeThisTurn:Boolean = false;
@@ -121,11 +134,11 @@ package com.jumpGame.screens
 		// ------------------------------------------------------------------------------------------------------------
 		
 		// particles
-		private var particlesList:Vector.<Particle>;
-		private var particlesListLength:uint = 0;
+//		private var particlesList:Vector.<Particle>;
+//		private var particlesListLength:uint = 0;
 		
-		private static var particleLeaf:PDParticleSystem;
-		private static var particleCharge:PDParticleSystem;
+		// weather
+		private var weather:Weather;
 		
 		// ------------------------------------------------------------------------------------------------------------
 		// HUD
@@ -171,8 +184,8 @@ package com.jumpGame.screens
 		{
 			super();
 			
-			this.isHardwareRendering = Starling.context.driverInfo.toLowerCase().indexOf("software") == -1;
-			trace("Hardware rendering: " + isHardwareRendering);
+			Statics.isHardwareRendering = Starling.context.driverInfo.toLowerCase().indexOf("software") == -1;
+			trace("Hardware rendering: " + Statics.isHardwareRendering);
 			Camera.reset();
 			//this.referenceElementClasses();
 			
@@ -188,16 +201,17 @@ package com.jumpGame.screens
 			drawGameOverScreen();
 			
 			// call JS
-			if(ExternalInterface.available){
-				trace("Calling JS...");
-				ExternalInterface.call("requestFbId");
-			} else {
-				trace("External interface unavailabe");
-			}
+//			if(ExternalInterface.available){
+//				trace("Calling JS...");
+//				ExternalInterface.call("requestFbId");
+//			} else {
+//				trace("External interface unavailabe");
+//			}
 		}
 		
 		/**
-		 * Draw game elements - background, hero, particles, pause button, start button and platforms (in pool).
+		 * Create all game object in this method
+		 * This is execuated as soon as the binary is loaded
 		 */
 		private function drawGame():void
 		{
@@ -219,16 +233,23 @@ package com.jumpGame.screens
 			this.addChild(this.fg);
 			
 			// set up static particles
-			if (this.isHardwareRendering) {
+			if (Statics.isHardwareRendering) {
 				// create leaf particle emitter
-				particleLeaf = new PDParticleSystem(XML(new ParticleAssets.ParticleLeafXML()), Texture.fromBitmap(new ParticleAssets.ParticleLeafTexture()));
-				Starling.juggler.add(particleLeaf);
-				this.addChild(particleLeaf);
+				Statics.particleLeaf = new PDParticleSystem(XML(new ParticleAssets.ParticleLeafXML()), Texture.fromBitmap(new ParticleAssets.ParticleLeafTexture()));
+				Starling.juggler.add(Statics.particleLeaf);
+				this.addChild(Statics.particleLeaf);
 				
 				// create charge particle emitter
-				particleCharge = new PDParticleSystem(XML(new ParticleAssets.ParticleChargeXML()), Texture.fromBitmap(new ParticleAssets.ParticleChargeTexture()));
-				Starling.juggler.add(particleCharge);
-				this.addChild(particleCharge);
+				Statics.particleCharge = new PDParticleSystem(XML(new ParticleAssets.ParticleChargeXML()), Texture.fromBitmap(new ParticleAssets.ParticleChargeTexture()));
+				Starling.juggler.add(Statics.particleCharge);
+				this.addChild(Statics.particleCharge);
+				
+				// create charge particle emitter
+				Statics.particleWind = new PDParticleSystem(XML(new ParticleAssets.ParticleWindXML()), Texture.fromBitmap(new ParticleAssets.ParticleWindTexture()));
+				Starling.juggler.add(Statics.particleWind);
+				this.addChild(Statics.particleWind);
+				Statics.particleWind.emitterX = Constants.StageWidth / 2;
+				Statics.particleWind.emitterY = 0;
 			}
 			
 			// pause button.
@@ -254,21 +275,57 @@ package com.jumpGame.screens
 			this.contraptionsList = new Vector.<Contraption>();
 			this.contraptionsListLength = 0;
 			
+			// initialize the powerups vector
+			this.powerupsList = new Vector.<GameObject>();
+			this.powerupsListLength = 0;
+			
 			// initialize the particles vector
-			this.particlesList = new Vector.<Particle>();
-			this.particlesListLength = 0;
+//			this.particlesList = new Vector.<Particle>();
+//			this.particlesListLength = 0;
+			
+			// set up weather
+			this.weather = new Weather();
+			weather.alpha = 0.999;
+			weather.blendMode = BlendMode.ADD;
+			this.addChild(weather);
+			
+			// create level builder object
+			this.levelParser = new LevelParser();
+			
+			// create contraption control object
+			this.contraptionControl = new ContraptionControl();
+			
+			// set up spells and charms
+			// spell: blink
+			var blink:Blink = new Blink(this.hero);
+			this.addChild(blink);
+			this.powerupsList[this.powerupsListLength++] = blink;
+			// charm: attractor
+			var attractor:Attractor = new Attractor(this.hero);
+			this.addChild(attractor);
+			this.powerupsList[this.powerupsListLength++] = attractor;
 			
 			// create platform pools
 			ObjectPool.instance.registerPool(PlatformNormal, 10, false);
-			ObjectPool.instance.registerPool(PlatformMobile, 10, false);
+			ObjectPool.instance.registerPool(PlatformMobile, 80, false);
 			ObjectPool.instance.registerPool(PlatformDrop, 10, false);
-			ObjectPool.instance.registerPool(PlatformNormalBoost, 10, false);
+			ObjectPool.instance.registerPool(PlatformNormalBoost, 4, false);
+			ObjectPool.instance.registerPool(PlatformDropBoost, 4, false);
+			ObjectPool.instance.registerPool(PlatformMobileBoost, 4, false);
 			ObjectPool.instance.registerPool(PlatformPower, 5, false);
 			ObjectPool.instance.registerPool(PlatformSuper, 5, false);
-			ObjectPool.instance.registerPool(Coin, 40, false);
-			ObjectPool.instance.registerPool(Train, 3, false);
+			ObjectPool.instance.registerPool(Coin, 60, false);
+			ObjectPool.instance.registerPool(Star, 100, false);
+			ObjectPool.instance.registerPool(StarMini, 20, false);
+			ObjectPool.instance.registerPool(Train, 2, false);
+			ObjectPool.instance.registerPool(TrainFromLeft, 2, false);
 			ObjectPool.instance.registerPool(Hourglass, 3, false);
 			ObjectPool.instance.registerPool(Bell, 3, false);
+			ObjectPool.instance.registerPool(PowerupBoxPink, 2, false);
+			ObjectPool.instance.registerPool(PowerupBoxGreen, 2, false);
+			ObjectPool.instance.registerPool(PowerupBoxFire, 2, false);
+			ObjectPool.instance.registerPool(PowerupBoxBlue, 2, false);
+			ObjectPool.instance.registerPool(PowerupBoxPurple, 2, false);
 		}
 		
 		private function drawHUD():void
@@ -289,6 +346,10 @@ package com.jumpGame.screens
 			this.addChild(gameOverContainer);
 		}
 		
+		/**
+		 * This method is called as soon as the play button is pressed
+		 * Do not create new objects in this methid, only reset game data
+		 */
 		public function initializeNormalMode():void
 		{
 			// reset static vars
@@ -296,9 +357,9 @@ package com.jumpGame.screens
 			Statics.preparationStep = Constants.PrepareStep0;
 			Statics.gameTime = 0;
 			Statics.bonusTime = 0;
-			
-			// populate stage from level file
-			this.levelParser = new LevelParser();
+			Statics.nextStarNote = 0;
+			Statics.powerupsEnabled = true;
+			Statics.attractorOn = false;
 			
 			// play background music
 			if (!Sounds.muted) Sounds.playBgm();
@@ -306,16 +367,13 @@ package com.jumpGame.screens
 			// hide the pause button since the game isn't started yet.
 			pauseButton.visible = false;
 			
-			// show start button.
-//			startButton.visible = true;
-			
-			// start contraption control
-			this.contraptionControl = new ContraptionControl();
-			
 			// reset scores
 			hud.bonusTime = 0;
 			hud.distance = 0;
 			hud.coins = 0;
+			
+			// reset game properties
+			Statics.cameraShake = 0;
 			
 			// start game timer
 			this.gameStartTime = getTimer();
@@ -334,9 +392,6 @@ package com.jumpGame.screens
 			Statics.preparationStep = Constants.PrepareStep0;
 			Statics.gameTime = 0;
 			Statics.bonusTimeLeft = Number(Statics.bonusTime * 1000);
-			
-			// populate stage from level file
-			this.levelParser = new LevelParser();
 			
 			// hide the pause button since the game isn't started yet.
 			pauseButton.visible = false;
@@ -411,12 +466,20 @@ package com.jumpGame.screens
 				// start contraptions; must be done after parsing level
 				this.contraptionControl.scheduleNext(Constants.ContraptionHourglass);
 				this.contraptionControl.scheduleNext(Constants.ContraptionTrain);
+				this.contraptionControl.scheduleNext(Constants.ContraptionTrainFromLeft);
 				this.contraptionControl.scheduleNext(Constants.ContraptionBell);
+				this.contraptionControl.scheduleNext(Constants.ContraptionPowerupBoxes);
+				
+				// start scheduling weather effects
+				this.weather.scheduleFirst();
 			}
 			else if (Statics.gameMode == Constants.ModeBonus) { // bonus mode specific
 				//SoundMixer.stopAll();
 				if (!Sounds.muted) Sounds.playBgmFireAura();
 			}
+			
+			// emit wind particles
+			Statics.particleWind.start(1.0);
 			
 			// restart game timer
 			Statics.gameTime = 0;
@@ -427,9 +490,9 @@ package com.jumpGame.screens
 		 * Set keydown states to true
 		 */
 		public function keyPressedDown(event:KeyboardEvent):void {
-			if (event.keyCode == 37) {
+			if (event.keyCode == 37 || event.keyCode == 65) { // left arrow or 'a'
 				leftArrow = true;
-			} else if (event.keyCode == 39) {
+			} else if (event.keyCode == 39 || event.keyCode == 68) { // right arrow or 'd'
 				rightArrow = true;        
 			} else if (event.keyCode == 38) {
 				upArrow = true;
@@ -441,8 +504,8 @@ package com.jumpGame.screens
 				}
 				else if (this.playerControl) {
 					if (this.hero.triggerSpecialAbility()) {
-						particleCharge.start(0.1);
-						particleLeaf.start(0.2);
+						Statics.particleCharge.start(0.1);
+						Statics.particleLeaf.start(0.2);
 					}
 				}
 			}
@@ -452,9 +515,9 @@ package com.jumpGame.screens
 		 * Set keydown states to false
 		 */
 		public function keyPressedUp(event:KeyboardEvent):void {
-			if (event.keyCode == 37) {
+			if (event.keyCode == 37 || event.keyCode == 65) {
 				leftArrow = false;
-			} else if (event.keyCode == 39) {
+			} else if (event.keyCode == 39 || event.keyCode == 68) {
 				rightArrow = false;
 			} else if (event.keyCode == 38) {
 				upArrow = false;
@@ -518,7 +581,15 @@ package com.jumpGame.screens
 				return;
 			}
 			
-			trace("jumps: " + this.jumps);
+			// if player fails and end game duration has passed, end the game
+			if (!this.checkWinLose && Statics.gameTime > this.endGameTime) {
+				this.endGame();
+				return;
+			}
+			
+			// normal mode grow difficulty
+			this.levelParser.updateDifficulty();
+			
 			// bonus mode speed up
 			if (Statics.gameMode == Constants.ModeBonus && timeCurrent > 40000 && timeCurrent < 40050) {
 				HUD.showMessage("Doubling Speed!");
@@ -529,9 +600,29 @@ package com.jumpGame.screens
 			}
 			
 			/** update timers in other classes */
-			// update HUD message
-			HUD.updateMessageDisplay();
+			// update HUD and spin powerup reel if needed
+			HUD.updateMessage();
+			var powerupToActivate:int = this.hud.updatePowerupReel(this.timeDiffReal);
+			if (this.checkWinLose) {
+				// update powerup reel
+				if (powerupToActivate >= 0 && powerupToActivate <= 2) {
+					HUD.showMessage("Ancient Power: Teleportation");
+					this.powerupsList[Constants.PowerupBlink].activate();
+				}
+				else if (powerupToActivate >= 3 && powerupToActivate <= 5) {
+					HUD.showMessage("Charm: Attractor");
+					this.powerupsList[Constants.PowerupAttractor].activate();
+				}
+				
+				// update powerups
+				for (var i:uint = 0; i < this.powerupsListLength; i++) {
+					this.powerupsList[i].update(this.timeDiffControlled);
+				}
+			}
 			/** eof update timers */
+			
+			// camera shake
+			this.shakeCamera();
 			
 			// move camera
 			Camera.update(this.hero.gx, this.hero.gy);
@@ -620,13 +711,18 @@ package com.jumpGame.screens
 				}
 				/** eof update hero */
 				
-				// update contraption timers
+				// check contraptions scheduling
 				if (Statics.gameMode == Constants.ModeNormal) {
 					var contraptionStatus:Array = this.contraptionControl.checkSchedules();
 					if (contraptionStatus[Constants.ContraptionHourglass]) this.summonHourglass();
 					if (contraptionStatus[Constants.ContraptionTrain]) this.launchTrain();
+					if (contraptionStatus[Constants.ContraptionTrainFromLeft]) this.launchTrainFromLeft();
 					if (contraptionStatus[Constants.ContraptionBell] && !this.contraptionControl.isBellActive) this.dropBell();
+					if (contraptionStatus[Constants.ContraptionPowerupBoxes]) this.summonPowerupBoxes();
 				}
+				
+				// check weather scheduling
+				this.weather.checkSchedules();
 				
 				// sea of fire
 				if (Constants.SofEnabled) {
@@ -640,13 +736,16 @@ package com.jumpGame.screens
 				}
 				
 				// If hardware rendering, set the particle emitter's x and y.
-				if (isHardwareRendering)
+				if (Statics.isHardwareRendering)
 				{
-					particleLeaf.emitterX = hero.x;
-					particleLeaf.emitterY = hero.y;
+					Statics.particleLeaf.emitterX = hero.x;
+					Statics.particleLeaf.emitterY = hero.y;
 					
-					particleCharge.emitterX = hero.x;
-					particleCharge.emitterY = hero.y;
+					Statics.particleCharge.emitterX = hero.x;
+					Statics.particleCharge.emitterY = hero.y;
+					
+					Background.particleSeaOfFire.emitterX = Constants.StageWidth / 2;
+					Background.particleSeaOfFire.emitterY = this.fg.sofQuad.y - 100;
 				}
 				
 				// we lose if we fall
@@ -693,6 +792,9 @@ package com.jumpGame.screens
 		private function playerFail():void {
 			this.hero.failBounce();
 			
+			// end game after short duration
+			this.endGameTime = Statics.gameTime + 3000;
+			
 			// stop checking win/lose condition
 			this.checkWinLose = false;
 			
@@ -700,13 +802,9 @@ package com.jumpGame.screens
 			this.playerControl = false;
 			
 			// stop sounds
-			SoundMixer.stopAll();
-			Sounds.sndScratch.play();
-			
-			// trigger bonus mode
-			var delayTimer:Timer = new Timer(3000, 1);
-			delayTimer.addEventListener(TimerEvent.TIMER_COMPLETE, endGame);
-			delayTimer.start();
+			//SoundMixer.stopAll();
+			Sounds.stopBgm();
+			if (!Sounds.muted) Sounds.sndScratch.play();
 		}
 		
 //		private function setupBonusMode(event:TimerEvent):void {
@@ -742,11 +840,7 @@ package com.jumpGame.screens
 		/**
 		 * Clean up the stage and end game
 		 */
-		public function endGame(event:TimerEvent):void {
-			if (event != null) {
-				event.target.removeEventListener(TimerEvent.TIMER_COMPLETE, endGame);
-			}
-			
+		public function endGame():void {
 			// clean up platforms
 			for(; this.platformsListLength > 0;) this.returnPlatformToPool(0);
 			
@@ -776,28 +870,43 @@ package com.jumpGame.screens
 			/** platform behaviors */
 			// for aiming camera at next platform
 			var smallestPlatformY:Number = this.hero.gy + Constants.StageHeight; // set it to a high value first
+			var smallestPlatformIndex:int = -1;
 			var isCoin:Boolean;
+			var isStar:Boolean;
 			
-			for (i = 0; i < this.platformsListLength; i++) {
+			for (i = 0; i < this.platformsListLength; i++) { // loop through platforms
 				isCoin = false;
+				isStar = false;
 				
-				if (this.checkWinLose && this.hero.canBounce) { // detect hero/platform collisions if player has not yet lost
+				// detect hero/platform collisions if player has not yet lost
+				if (this.checkWinLose && this.hero.canBounce) {
 					//if (this.hero.bounds.intersects(this.platformsList[i].bounds)) {
 					var platformBounds:Rectangle = this.platformsList[i].bounds;
 					if (Object(this.platformsList[i]).constructor == Coin) {
 						platformBounds.inflate(50, 50); // enlarge coin bounds
 						isCoin = true;
+					} else if (Object(this.platformsList[i]).constructor == Star || Object(this.platformsList[i]).constructor == StarMini) {
+						isStar = true;
 					}
 					if (platformBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
 						platformBounds.contains(this.hero.x + 10, this.hero.y + 20)) { // platform collision!
 						if (this.platformsList[i].touch()) { // ensures stuff inside this block only runs once per contact
-							if (isCoin) this.coinsObtained++;
+							if (isCoin) {
+								this.coinsObtained++;
+								this.returnPlatformToPool(i);
+								continue;
+							}
+							else if (isStar) {
+								this.hero.bounce(this.platformsList[i].getBouncePower());
+								this.returnPlatformToPool(i);
+								continue;
+							}
 							
-							if (this.hero.dy < 0) { // hero is falling
+							else if (this.hero.dy < 0) { // hero is falling
 								if (this.platformsList[i].canBounce) {
 									this.hero.bounce(this.platformsList[i].getBouncePower());
 									this.platformsList[i].contact();
-									particleLeaf.start(0.2); // play particle effect
+									Statics.particleLeaf.start(0.2); // play particle effect
 									this.jumps++; // record number of jumps
 									
 									if (Statics.gameMode == Constants.ModeBonus) { // music mode actions
@@ -811,26 +920,74 @@ package com.jumpGame.screens
 							}
 						}
 					} else { // not in collision
-						this.platformsList[i].isTouched = false; // when not colliding anymore, reset touch status
+						if (!isStar) this.platformsList[i].isTouched = false; // when not colliding anymore, reset touch status
 					}
+				} // eof platform collision detection
+				
+				// bof attractor charm
+				if (Statics.attractorOn) {
+					if (this.platformsList[i].gy < this.hero.gy + Constants.StageHeight / 2) {
+						var easingFactor:Number = (620 - Math.abs(this.hero.gy - this.platformsList[i].gy) / 10);
+						if (easingFactor < 5) easingFactor = 5;
+						
+						// x
+						var d2x:Number = 0.0; // acceleration
+						if (this.hero.gx >= this.platformsList[i].gx) {
+							d2x = ((this.hero.gx - this.platformsList[i].gx) - this.platformsList[i].dx * easingFactor) / (0.5 * easingFactor * easingFactor);
+						}
+						else if (this.hero.gx <= this.platformsList[i].gx) { // move platform down
+							d2x = ((this.hero.gx - this.platformsList[i].gx) - this.platformsList[i].dx * easingFactor) / (0.5 * easingFactor * easingFactor);
+						}
+						else { // bring camera to rest
+							d2x = -this.platformsList[i].dx / easingFactor;
+						}
+						//d2y *= this.timeDiffControlled * 0.001;
+						this.platformsList[i].dx += d2x * this.timeDiffControlled;
+						
+						if (isCoin || isStar) {
+							// y
+							var d2y:Number = 0.0; // acceleration
+							if (this.hero.gy >= this.platformsList[i].gy) { // move platform up
+								d2y = ((this.hero.gy - this.platformsList[i].gy) - this.platformsList[i].dy * easingFactor) / (0.5 * easingFactor * easingFactor);
+							}
+							else if (this.hero.gy <= this.platformsList[i].gy) { // move platform down
+								d2y = ((this.hero.gy - this.platformsList[i].gy) - this.platformsList[i].dy * easingFactor) / (0.5 * easingFactor * easingFactor);
+							}
+							else { // bring camera to rest
+								d2y = -this.platformsList[i].dy / easingFactor;
+							}
+							//d2y *= this.timeDiffControlled * 0.001;
+							this.platformsList[i].dy += d2y * this.timeDiffControlled;
+						}
+					} // eof attractor charm
 				}
 				
 				// update platform position
 				this.platformsList[i].update(this.timeDiffControlled);
 				
 				// for aiming camera at next platform
-				if (!this.platformsList[i].isTouched && this.platformsList[i].gy < smallestPlatformY) {
+				if (!(this.platformsList[i] is Coin) && this.platformsList[i].gy > this.hero.gy && this.platformsList[i].gy < smallestPlatformY) {
 					smallestPlatformY = this.platformsList[i].gy;
-					Camera.nextPlatformX = this.platformsList[i].gx;
+					smallestPlatformIndex = i;
 				}
 				
 				// remove a platform if it has scrolled below sea of fire
 				if (this.platformsList[i].gy < this.fg.sofHeight - 100) {
 					this.returnPlatformToPool(i);
 				}
-			} /** eof platform behaviors */
+			} // eof loop through platforms
+			
+			// update next platform position
+			if (smallestPlatformIndex != -1) {
+				Statics.nextPlatformX = this.platformsList[smallestPlatformIndex].gx;
+				Statics.nextPlatformY = this.platformsList[smallestPlatformIndex].gy;
+			}
+			/** eof platform behaviors */
 			
 			/** contraption behaviors */
+			var numCoinsToDrop:int;
+			var ci:uint;
+			var newCoinIndex:uint;
 			for (i = 0; i < this.contraptionsListLength; i++) {
 				var contraptionBounds:Rectangle = this.contraptionsList[i].bounds;
 				
@@ -847,6 +1004,7 @@ package com.jumpGame.screens
 				
 				else if (Object(this.contraptionsList[i]).constructor == Train) { /** train behaviors */
 					if (this.checkWinLose && this.hero.canBounce) { // check hero/train collision if not yet lost
+						contraptionBounds.left += 120;
 						contraptionBounds.inflate(-50, -50); // shrink train bounds
 						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
 							contraptionBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
@@ -855,20 +1013,66 @@ package com.jumpGame.screens
 							if (this.hero.gx < this.contraptionsList[i].gx + 100) { // hit by a train
 								this.playerControl = false;
 								this.hero.dx = Constants.TrainVelocity * 2;
-								Sounds.sndTrainHit.play();
+								if (!Sounds.muted) {
+//									Sounds.sndVoiceAh.play();
+									Sounds.sndTrainHit.play();
+								}
+								
+								Statics.cameraShake = 40;
 							}
 							else {
-								if (this.hero.dy < 0) { // roof bounce
-									this.hero.bounceAndFade(Constants.DirectionUp, Constants.NormalBouncePower);
+								if (this.hero.gy > this.contraptionsList[i].gy) { // roof bounce
+									this.hero.bounceAndFade(Constants.DirectionUp, Constants.BoostBouncePower);
 								}
 								else { // bottom bounce
 									this.hero.bounceAndFade(Constants.DirectionDown, Constants.NormalBouncePower);
 								}
-								particleLeaf.start(0.2); // play particle effect
+								Statics.particleLeaf.start(0.2); // play particle effect
+								numCoinsToDrop = int(Math.ceil(Math.random() * 20));
+								for (ci = 0; ci < numCoinsToDrop; ci++) {
+									newCoinIndex = addElementFromPool(this.hero.gy, this.hero.gx, "Coin");
+									this.platformsList[newCoinIndex].makeKinematic(Constants.PowerBouncePower);
+								}
 							}
 						}
 					}
 				} /** eof train behaviors */
+				
+				else if (Object(this.contraptionsList[i]).constructor == TrainFromLeft) { /** train from left behaviors */
+					if (this.checkWinLose && this.hero.canBounce) { // check hero/train collision if not yet lost
+						contraptionBounds.right -= 120;
+						contraptionBounds.inflate(-50, -50); // shrink train bounds
+						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
+							contraptionBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
+							contraptionBounds.contains(this.hero.x - 10, this.hero.y - 20) ||
+							contraptionBounds.contains(this.hero.x + 10, this.hero.y - 20)) {
+							if (this.hero.gx > this.contraptionsList[i].gx - 100) { // hit by a train
+								this.playerControl = false;
+								this.hero.dx = -Constants.TrainVelocity * 2;
+								if (!Sounds.muted) {
+//									Sounds.sndVoiceAh.play();
+									Sounds.sndTrainHit.play();
+								}
+								
+								Statics.cameraShake = 40;
+							}
+							else {
+								if (this.hero.gy > this.contraptionsList[i].gy) { // roof bounce
+									this.hero.bounceAndFade(Constants.DirectionUp, Constants.BoostBouncePower);
+								}
+								else { // bottom bounce
+									this.hero.bounceAndFade(Constants.DirectionDown, Constants.NormalBouncePower);
+								}
+								Statics.particleLeaf.start(0.2); // play particle effect
+								numCoinsToDrop = int(Math.ceil(Math.random() * 20));
+								for (ci = 0; ci < numCoinsToDrop; ci++) {
+									newCoinIndex = addElementFromPool(this.hero.gy, this.hero.gx, "Coin");
+									this.platformsList[newCoinIndex].makeKinematic(Constants.NormalBouncePower);
+								}
+							}
+						}
+					}
+				} /** eof train from left behaviors */
 				
 				else if (Object(this.contraptionsList[i]).constructor == Bell) { /** bell behaviors */
 					if (this.checkWinLose) { // check hero/bell collision if not yet lost
@@ -879,18 +1083,30 @@ package com.jumpGame.screens
 //							contraptionBounds.contains(this.hero.x + 10, this.hero.y - 20)) {
 //							this.contraptionsList[i].contact(this.hero.gx - this.contraptionsList[i].gx, this.hero.dy);
 //						}
+						// use distance based approach
 						var distance:Number = Math.sqrt(Math.pow(this.contraptionsList[i].gx - this.hero.gx, 2) + Math.pow(this.contraptionsList[i].gy - this.hero.gy, 2));
 						if (distance < this.contraptionsList[i].height / 2 + this.hero.width / 2 - 100) {
 							if (this.contraptionsList[i].contact(this.hero.gx - this.contraptionsList[i].gx, this.hero.dy)) { // hero made contact with bell
-								var numCoinsToDrop:int = int(Math.ceil(Math.random() * 20));
-								for (var ci:uint = 0; ci < numCoinsToDrop; ci++) {
-									var newCoinIndex:uint = addElementFromPool(this.contraptionsList[i].gy, this.contraptionsList[i].gx, "Coin");
-									this.platformsList[newCoinIndex].makeKinematic();
+								numCoinsToDrop = int(Math.ceil(Math.random() * 20));
+								for (ci = 0; ci < numCoinsToDrop; ci++) {
+									newCoinIndex = addElementFromPool(this.contraptionsList[i].gy, this.contraptionsList[i].gx, "Coin");
+									this.platformsList[newCoinIndex].makeKinematic(Constants.NormalBouncePower);
 								}
 							}
 						}
 					}
 				} /** eof bell behaviors */
+				
+				if (this.contraptionsList[i] is PowerupBox) { /** hourglass behaviors */
+					if (this.checkWinLose) { // check hero/hourglass collision if not yet lost
+						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
+							contraptionBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
+							contraptionBounds.contains(this.hero.x - 10, this.hero.y - 20) ||
+							contraptionBounds.contains(this.hero.x + 10, this.hero.y - 20)) {
+							this.contraptionsList[i].contact(this.hud);
+						}
+					}
+				} /** eof powerup boxes behaviors */
 				
 				// update contraptions
 				this.contraptionsList[i].update(this.timeDiffControlled);
@@ -918,33 +1134,49 @@ package com.jumpGame.screens
 				else if (levelElement[2] == Constants.ContraptionSettingTrain) { // check for train settings
 					this.contraptionControl.intervals[Constants.ContraptionTrain] = levelElement[1]; // update train interval
 				}
+				else if (levelElement[2] == Constants.ContraptionSettingTrainFromLeft) { // check for train from left settings
+					this.contraptionControl.intervals[Constants.ContraptionTrainFromLeft] = levelElement[1]; // update train from left interval
+				}
 				else if (levelElement[2] == Constants.ContraptionSettingBell) { // check for bell settings
 					this.contraptionControl.intervals[Constants.ContraptionBell] = levelElement[1]; // update bell interval
+				}
+				else if (levelElement[2] == Constants.ContraptionSettingPowerupBoxes) {// check for powerup boxes settings
+					this.contraptionControl.intervals[Constants.ContraptionPowerupBoxes] = levelElement[1]; // update powerup boxes interval
 				}
 				else if (levelElement[2] == Constants.Coin && Statics.gameMode == Constants.ModeBonus) {
 					// do not add coins if in bonus mode
 				}
 				else { // add element
 					this.addElementFromPool(levelElement[0], levelElement[1], levelElement[2], levelElement[3]);
-					this.setChildIndex(this.platformsList[(uint)(this.platformsList.length) - 1], this.getChildIndex(this.hero)); // push newly added element behind hero
 				}
 				this.levelParser.levelElementsArray.splice(0, 1); // remove this entry from level elements array
 			}
+			// request new block
+			if (this.levelParser.levelElementsArray.length == 0) this.levelParser.requestBlock();
 		} /** eof scrollElements() */
 		
 		private function summonHourglass():void {
 			if (Statics.gameMode == Constants.ModeNormal) { // only summon hourglass in normal mode
 				var gx:Number = Math.random() * (Constants.StageWidth - Constants.ScreenBorder) 
 					- (Constants.StageWidth - Constants.ScreenBorder) / 2;
-				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight, gx, "Hourglass");
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, gx, "Hourglass");
 				this.contraptionControl.scheduleNext(Constants.ContraptionHourglass);
 			}
 		}
 		
 		private function launchTrain():void {
 			if (Statics.gameMode == Constants.ModeNormal) { // only dispatch train in normal mode
-				this.addContraptionFromPool(this.hero.gy - 100, Constants.StageWidth, "Train");
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, Constants.StageWidth / 2, "Train");
+				//Sounds.sndTrainWarning.play();
 				this.contraptionControl.scheduleNext(Constants.ContraptionTrain);
+			}
+		}
+		
+		private function launchTrainFromLeft():void {
+			if (Statics.gameMode == Constants.ModeNormal) { // only dispatch train in normal mode
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, -Constants.StageWidth / 2, "TrainFromLeft");
+				//Sounds.sndTrainWarning.play();
+				this.contraptionControl.scheduleNext(Constants.ContraptionTrainFromLeft);
 			}
 		}
 		
@@ -957,32 +1189,47 @@ package com.jumpGame.screens
 			}
 		}
 		
+		private function summonPowerupBoxes():void {
+			if (Statics.gameMode == Constants.ModeNormal && Statics.powerupsEnabled) { // only summon powerup boxes in normal mode
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, -300, "PowerupBoxPink");
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, -150, "PowerupBoxGreen");
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, 0, "PowerupBoxFire");
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, 150, "PowerupBoxBlue");
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, 300, "PowerupBoxPurple");
+				this.contraptionControl.scheduleNext(Constants.ContraptionPowerupBoxes);
+			}
+		}
+		
 		/**
 		 * Add an element to the stage
 		 * @return uint the platforms array index of the newly added platfrom
 		 */
 		private function addElementFromPool(y:Number, x:Number, elementClassName:String, elementSize:int = 0):uint {
-			var elementClass:Class = getDefinitionByName("com.jumpGame.gameElements.platforms." + elementClassName) as Class;
-			var tempElement:Platform = ObjectPool.instance.getObj(elementClass) as elementClass;
-			if (tempElement == null) throw new Error("Pool is full");
+			var qualifiedName:String = "com.jumpGame.gameElements.platforms::" + elementClassName;
+			var elementClass:Class = getDefinitionByName(qualifiedName) as Class;
+			var tempElement:Platform = ObjectPool.instance.getObj(qualifiedName) as elementClass;
+			if (tempElement == null) throw new Error("Pool is full: " + elementClassName);
 			tempElement.initialize(elementSize);
 			tempElement.gx = x;
 			tempElement.gy = y;
 			this.addChild(tempElement);
 			this.platformsList[platformsListLength++] = tempElement;
+			this.setChildIndex(tempElement, this.getChildIndex(this.hero)); // push newly added element behind hero
 			return platformsListLength - 1;
 		}
 		
 		// add a contraption to stage
 		private function addContraptionFromPool(y:Number, x:Number, elementClassName:String):void {
-			var elementClass:Class = getDefinitionByName("com.jumpGame.gameElements.contraptions." + elementClassName) as Class;
-			var tempElement:Contraption = ObjectPool.instance.getObj(elementClass) as elementClass;
-			if (tempElement == null) throw new Error("Pool is full");
+			var qualifiedName:String = "com.jumpGame.gameElements.contraptions::" + elementClassName;
+			var elementClass:Class = getDefinitionByName(qualifiedName) as Class;
+			var tempElement:Contraption = ObjectPool.instance.getObj(qualifiedName) as elementClass;
+			if (tempElement == null) throw new Error("Pool is full: " + elementClassName);
 			tempElement.initialize();
 			tempElement.gx = x;
 			tempElement.gy = y;
 			this.addChild(tempElement);
 			this.contraptionsList[contraptionsListLength++] = tempElement;
+			this.setChildIndex(tempElement, this.getChildIndex(this.hero)); // push newly added element behind hero
 		}
 		
 		/**
@@ -1005,6 +1252,26 @@ package com.jumpGame.screens
 			contraptionsList.splice(contraptionIndex, 1);
 			contraptionsListLength--;
 			ObjectPool.instance.returnObj(contraption);
+		}
+		
+		// shake camera
+		private function shakeCamera():void {
+			// animate quake effect, shaking the camera a little to the sides and up and down
+			if (Statics.cameraShake > 0)
+			{
+				Statics.cameraShake -= 0.1 * this.timeDiffReal;
+				// Shake left right randomly.
+				this.x = int(Math.random() * Statics.cameraShake - Statics.cameraShake * 0.5); 
+				// Shake up down randomly.
+				this.y = int(Math.random() * Statics.cameraShake - Statics.cameraShake * 0.5); 
+			}
+			else if (x != 0) 
+			{
+				// If the shake value is 0, reset the stage back to normal.
+				// Reset to initial position.
+				this.x = 0;
+				this.y = 0;
+			}
 		}
 		
 		/**

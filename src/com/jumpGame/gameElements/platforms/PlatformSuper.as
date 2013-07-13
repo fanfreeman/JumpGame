@@ -1,6 +1,7 @@
 package com.jumpGame.gameElements.platforms
 {
 	import com.jumpGame.gameElements.Platform;
+	import com.jumpGame.level.Statics;
 	
 	import starling.core.Starling;
 	import starling.display.MovieClip;
@@ -17,6 +18,14 @@ package com.jumpGame.gameElements.platforms
 		
 		override public function getBouncePower():Number {
 			return Constants.SuperBouncePower;
+		}
+		
+		override public function contact():void {
+			Sounds.sndBoom.play();
+			this.platformAnimation.stop();
+			this.platformAnimation.play();
+			Statics.particleWind.start(1.0);
+			Statics.cameraShake = 40;
 		}
 	}
 }

@@ -7,12 +7,15 @@ package
 	 */
 	public class Constants
 	{
+		// level designer mode switch
+		public static const isDesignerMode:Boolean = false;
+		
 		// stage size
 		public static const StageWidth:uint = 756;
 		public static const StageHeight:uint = 650;
 		
 		// element preload window
-		public static const ElementPreloadWindow:Number = 650;
+		public static const ElementPreloadWindow:Number = 650 / 2;
 		
 		// screen border on left and right side
 		public static const ScreenBorder:Number = 100;
@@ -26,7 +29,7 @@ package
 		// hero initial specs
 		public static const HERO_INITIAL_X:Number = 0;
 		public static const HERO_INITIAL_Y:Number = 0;
-		public static const HeroInitialVelocityY:Number = 2.072;
+		public static const HeroInitialVelocityY:Number = 3.072;
 		
 		// Particle types ------------------------------------------\
 		/** Particle - Sparkle. */		
@@ -64,15 +67,23 @@ package
 		// contraption index definitions
 		public static const ContraptionHourglass:uint = 0;
 		public static const ContraptionTrain:uint = 1;
-		public static const ContraptionBell:uint = 2;
+		public static const ContraptionTrainFromLeft:uint = 2;
+		public static const ContraptionBell:uint = 3;
+		public static const ContraptionPowerupBoxes:uint = 4;
+		
+		// powerup index definitions
+		public static const PowerupBlink:uint = 0;
+		public static const PowerupAttractor:uint = 1;
 		
 		// level generator definition
 		public static const Generator:String = "Generator"; // randomly generate elements according to specification
 		
 		// contraption setting definitions
 		public static const ContraptionSettingTrain:String = "ContraptionSettingTrain";
+		public static const ContraptionSettingTrainFromLeft:String = "ContraptionSettingTrainFromLeft";
 		public static const ContraptionSettingHourglass:String = "ContraptionSettingHourglass";
 		public static const ContraptionSettingBell:String = "ContraptionSettingBell";
+		public static const ContraptionSettingPowerupBoxes:String = "ContraptionSettingPowerupBoxes";
 		
 		// bounce power definitions
 //		public static const NormalBouncePower:Number = 0.85;
@@ -121,17 +132,17 @@ package
 		/** Misc ********************************************************/
 		
 		// animations
-		public static const HeroAnimWalk:uint = 0;
-		public static const HeroAnimJump:uint = 1;
-		public static const HeroAnimFail:uint = 2;
+//		public static const HeroAnimWalk:uint = 0;
+//		public static const HeroAnimJump:uint = 1;
+//		public static const HeroAnimFail:uint = 2;
 		
 		// background or foreground
 		public static const Background:uint = 0;
 		public static const Foreground:uint = 1;
 		
 		// server URIs
-		public static const UriGetUserInfo:String = "/app_dev.php/user/info";
-		public static const UriPostUserInfo:String = "/app_dev.php/user/post";
+		public static const UriGetUserInfo:String = "user/info";
+		public static const UriPostUserInfo:String = "user/post";
 		
 		// camera
 		public static const CameraEasingTimeY:Number = 10.0;
@@ -160,5 +171,18 @@ package
 		public static const MoveNone:uint = 0;
 		public static const MoveLeft:uint = 1;
 		public static const MoveRight:uint = 2;
+		
+		// designed patterns
+		public static const ElementSpacing:Number = 60;
+		
+		// power up icons
+		public static const PowerupIconHeight:Number = 61;
+		public static const PowerupIconSpacing:Number = 20;
+		
+		// power up completion warning, flash reel for this duration
+		public static const PowerupWarningDuration:int = 3000; // 3 seconds
+		
+		// charm: attractor
+		public static const CharmDurationAttractor:int = 10000; // 10 seconds
 	}
 }

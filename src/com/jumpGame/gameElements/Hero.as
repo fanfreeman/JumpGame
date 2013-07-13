@@ -14,14 +14,17 @@ package com.jumpGame.gameElements
 	 */
 	public class Hero extends GameObject
 	{
-		/** Hero character animation. */
-		private var heroAnimations:Vector.<MovieClip> = new Vector.<MovieClip>();
-
 		public var dx:Number = 0.0;
 		public var dy:Number = 0.0;
+		public var canBounce:Boolean = true;
+		public var isDynamic:Boolean = true;
+		
+//		private var heroAnimations:Vector.<MovieClip> = new Vector.<MovieClip>();
+		private var animationJump:MovieClip;
+		private var animationHurt:MovieClip;
+		
 		private var abilityTimer:Timer;
 		private var abilityReady:Boolean = true;
-		public var canBounce:Boolean = true;
 		private var rotationSpeed:Number = 0.0;
 		
 		public function Hero()
@@ -43,59 +46,56 @@ package com.jumpGame.gameElements
 		{
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			
-			this.createHeroWalkAnim();
+//			this.createHeroWalkAnim();
 			this.createHeroJumpAnim();
 			this.createHeroFailAnim();
 		}
 		
-		private function createHeroWalkAnim():void {
-			var heroWalkAnim:MovieClip = new MovieClip(Assets.getSprite("SpriteTextureScarecrow").getTextures("walk.swf/"), 24);
-			heroWalkAnim.scaleX = 0.6;
-			heroWalkAnim.scaleY = 0.6;
-			heroWalkAnim.pivotX = Math.ceil(heroWalkAnim.texture.width / 2);
-			heroWalkAnim.pivotY = Math.ceil(heroWalkAnim.texture.height / 2);
-			starling.core.Starling.juggler.add(heroWalkAnim);
-			this.addChild(heroWalkAnim);
-			this.heroAnimations[Constants.HeroAnimWalk] = heroWalkAnim;
-		}
+//		private function createHeroWalkAnim():void {
+//			var heroWalkAnim:MovieClip = new MovieClip(Assets.getSprite("SpriteTextureScarecrow").getTextures("walk.swf/"), 24);
+//			heroWalkAnim.scaleX = 0.6;
+//			heroWalkAnim.scaleY = 0.6;
+//			heroWalkAnim.pivotX = Math.ceil(heroWalkAnim.texture.width / 2);
+//			heroWalkAnim.pivotY = Math.ceil(heroWalkAnim.texture.height / 2);
+//			starling.core.Starling.juggler.add(heroWalkAnim);
+//			this.addChild(heroWalkAnim);
+//			this.heroAnimations[Constants.HeroAnimWalk] = heroWalkAnim;
+//		}
 		
 		private function createHeroJumpAnim():void {
-			var heroJumpAnim:MovieClip = new MovieClip(Assets.getSprite("SpriteTextureScarecrow").getTextures("jump.swf/"), 24);
-			heroJumpAnim.scaleX = 0.6;
-			heroJumpAnim.scaleY = 0.6;
-			heroJumpAnim.pivotX = Math.ceil(heroJumpAnim.texture.width  / 2);
-			heroJumpAnim.pivotY = Math.ceil(heroJumpAnim.texture.height / 2);
-			starling.core.Starling.juggler.add(heroJumpAnim);
-			this.addChild(heroJumpAnim);
+			animationJump = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("HeroJump"), 24);
+			animationJump.scaleX = 0.6;
+			animationJump.scaleY = 0.6;
+			animationJump.pivotX = Math.ceil(animationJump.texture.width  / 2);
+			animationJump.pivotY = Math.ceil(animationJump.texture.height / 2);
+			starling.core.Starling.juggler.add(animationJump);
+			this.addChild(animationJump);
 			// hide this by default
-			heroJumpAnim.visible = false;
-			heroJumpAnim.loop = false;
-			this.heroAnimations[Constants.HeroAnimJump] = heroJumpAnim;
+			animationJump.loop = false;
 		}
 		
 		private function createHeroFailAnim():void {
-			var heroFailAnim:MovieClip = new MovieClip(Assets.getSprite("SpriteTextureScarecrow").getTextures("hurt.swf/"), 24);
-			heroFailAnim.scaleX = 0.6;
-			heroFailAnim.scaleY = 0.6;
-			heroFailAnim.pivotX = Math.ceil(heroFailAnim.texture.width  / 2);
-			heroFailAnim.pivotY = Math.ceil(heroFailAnim.texture.height / 2);
-			starling.core.Starling.juggler.add(heroFailAnim);
-			this.addChild(heroFailAnim);
+			animationHurt = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("HeroHurt"), 24);
+			animationHurt.scaleX = 0.6;
+			animationHurt.scaleY = 0.6;
+			animationHurt.pivotX = Math.ceil(animationHurt.width  / 2);
+			animationHurt.pivotY = Math.ceil(animationHurt.height / 2);
+			starling.core.Starling.juggler.add(animationHurt);
+			this.addChild(animationHurt);
 			// hide this by default
-			heroFailAnim.visible = false;
-			heroFailAnim.loop = false;
-			this.heroAnimations[Constants.HeroAnimFail] = heroFailAnim;
+			animationHurt.visible = false;
+			animationHurt.loop = false;
 		}
 		
 		override public function get width():Number
 		{
-			if (this.heroAnimations[Constants.HeroAnimWalk]) return this.heroAnimations[Constants.HeroAnimWalk].texture.width * 0.6;
+			if (animationJump) return animationJump.width;
 			else return NaN;
 		}
 		
 		override public function get height():Number
 		{
-			if (this.heroAnimations[Constants.HeroAnimWalk]) return this.heroAnimations[Constants.HeroAnimWalk].texture.height * 0.6;
+			if (animationJump) return animationJump.height;
 			else return NaN;
 		}
 		
@@ -139,10 +139,8 @@ package com.jumpGame.gameElements
 		public function bounce(bouncePower:Number):void {
 			if (this.canBounce) {
 				this.dy = bouncePower;
-				this.heroAnimations[Constants.HeroAnimWalk].visible = false;
-				this.heroAnimations[Constants.HeroAnimJump].visible = true;
-				this.heroAnimations[Constants.HeroAnimJump].stop();
-				this.heroAnimations[Constants.HeroAnimJump].play();
+				animationJump.stop();
+				animationJump.play();
 			}
 			
 			if (this.dx > 0.2) this.rotationSpeed = Math.PI / 27;
@@ -151,9 +149,11 @@ package com.jumpGame.gameElements
 		
 		public function update(timeDiff:Number):void {
 			// fall down due to gravity
-			this.dy -= Constants.Gravity * timeDiff;
-			if (this.dy < Constants.MaxHeroFallVelocity) {
-				this.dy = Constants.MaxHeroFallVelocity;
+			if (this.isDynamic) {
+				this.dy -= Constants.Gravity * timeDiff;
+				if (this.dy < Constants.MaxHeroFallVelocity) {
+					this.dy = Constants.MaxHeroFallVelocity;
+				}
 			}
 			
 			// move hero
@@ -161,12 +161,12 @@ package com.jumpGame.gameElements
 			this.gy += timeDiff * this.dy;
 			
 			// stop bounce rotation after a full spin
-			var prevRotation:Number = this.heroAnimations[Constants.HeroAnimJump].rotation;
-			this.heroAnimations[Constants.HeroAnimJump].rotation += this.rotationSpeed;
-			if ((prevRotation < 0 && this.heroAnimations[Constants.HeroAnimJump].rotation >= 0 || 
-				prevRotation > 0 && this.heroAnimations[Constants.HeroAnimJump].rotation <= 0) &&
+			var prevRotation:Number = animationJump.rotation;
+			animationJump.rotation += this.rotationSpeed;
+			if ((prevRotation < 0 && animationJump.rotation >= 0 || 
+				prevRotation > 0 && animationJump.rotation <= 0) &&
 				Math.abs(prevRotation) < 1) {
-				this.heroAnimations[Constants.HeroAnimJump].rotation = 0;
+				animationJump.rotation = 0;
 				this.rotationSpeed = 0;
 			}
 		}
@@ -207,26 +207,21 @@ package com.jumpGame.gameElements
 		}
 		
 		public function turnLeft():void {
-				this.heroAnimations[Constants.HeroAnimJump].scaleX = -0.6;
-				this.heroAnimations[Constants.HeroAnimWalk].scaleX = -0.6;
-				this.heroAnimations[Constants.HeroAnimJump].pivotX = Math.ceil(this.heroAnimations[Constants.HeroAnimJump].texture.width  / 2);
-				this.heroAnimations[Constants.HeroAnimWalk].pivotX = Math.ceil(this.heroAnimations[Constants.HeroAnimWalk].texture.width  / 2);
+			animationJump.scaleX = -0.6;
+			animationJump.pivotX = Math.ceil(animationJump.texture.width  / 2);
 		}
 		
 		public function turnRight():void {
-				this.heroAnimations[Constants.HeroAnimJump].scaleX = 0.6;
-				this.heroAnimations[Constants.HeroAnimWalk].scaleX = 0.6;
-				this.heroAnimations[Constants.HeroAnimJump].pivotX = Math.ceil(this.heroAnimations[Constants.HeroAnimJump].texture.width  / 2);
-				this.heroAnimations[Constants.HeroAnimWalk].pivotX = Math.ceil(this.heroAnimations[Constants.HeroAnimWalk].texture.width  / 2);
+			animationJump.scaleX = 0.6;
+			animationJump.pivotX = Math.ceil(animationJump.texture.width  / 2);
 		}
 		
 		public function failBounce():void {
 			this.dy = Constants.NormalBouncePower;
-			this.heroAnimations[Constants.HeroAnimWalk].visible = false;
-			this.heroAnimations[Constants.HeroAnimJump].visible = false;
-			this.heroAnimations[Constants.HeroAnimFail].visible = true;
-			this.heroAnimations[Constants.HeroAnimFail].stop();
-			this.heroAnimations[Constants.HeroAnimFail].play();
+			animationJump.visible = false;
+			animationHurt.visible = true;
+			animationHurt.stop();
+			animationHurt.play();
 		}
 	}
 }

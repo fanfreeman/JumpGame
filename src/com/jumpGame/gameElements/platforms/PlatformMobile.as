@@ -7,7 +7,6 @@ package com.jumpGame.gameElements.platforms
 	
 	public class PlatformMobile extends Platform
 	{
-		private var dx:Number = 0.0;
 		private var fixedX:Number = 0.0;
 		private var maxPosChange:Number = 150;
 		private var isMovingRight:Boolean = true;
@@ -41,7 +40,7 @@ package com.jumpGame.gameElements.platforms
 			}
 			if (this.dx > Constants.PlatformMobileMaxVelocityX) this.dx = Constants.PlatformMobileMaxVelocityX;
 			else if (this.dx < -Constants.PlatformMobileMaxVelocityX) this.dx = -Constants.PlatformMobileMaxVelocityX;
-			this.gx += this.dx * timeDiff;
+			super.update(timeDiff);
 		}
 	}
 }

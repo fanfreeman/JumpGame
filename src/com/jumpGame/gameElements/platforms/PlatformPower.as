@@ -18,5 +18,11 @@ package com.jumpGame.gameElements.platforms
 		override public function getBouncePower():Number {
 			return Constants.PowerBouncePower;
 		}
+		
+		override public function contact():void {
+			Sounds.sndBoostBounce.play();
+			this.platformAnimation.stop();
+			this.platformAnimation.play();
+		}
 	}
 }

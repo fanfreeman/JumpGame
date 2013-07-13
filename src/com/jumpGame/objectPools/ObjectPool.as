@@ -1,9 +1,10 @@
 package com.jumpGame.objectPools
 {
-	import flash.utils.getQualifiedClassName;
 	import flash.utils.describeType;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.getQualifiedClassName;
 	
-	public class ObjectPool 
+	public class ObjectPool
 	{
 		private static var _instance:ObjectPool;
 		private static var _allowInstantiation:Boolean = false;
@@ -48,13 +49,13 @@ package com.jumpGame.objectPools
 			}
 		}
 		
-		public function getObj(objectClass:Class):IPoolable
+		public function getObj(qualifiedName:String):IPoolable
 		{
-			var qualifiedName:String = getQualifiedClassName(objectClass);
+			//var qualifiedName:String = getQualifiedClassName(objectClass);
 			
 			if (!_pools[qualifiedName])
 			{
-				throw new Error("Can't get an object from a pool that hasn't been registered!");
+				throw new Error("Can't get an object from a pool that hasn't been registered: " + qualifiedName);
 				return null;
 			}
 			
@@ -64,7 +65,8 @@ package com.jumpGame.objectPools
 			{
 				if (PoolInfo(_pools[qualifiedName]).isDynamic)
 				{
-					returnObj = new objectClass();
+					var elementClass:Class = getDefinitionByName(qualifiedName) as Class;
+					returnObj = new elementClass();
 					
 					PoolInfo(_pools[qualifiedName]).size++;
 					PoolInfo(_pools[qualifiedName]).items.push(returnObj);
