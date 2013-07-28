@@ -8,7 +8,9 @@ package
 	public class Constants
 	{
 		// level designer mode switch
-		public static const isDesignerMode:Boolean = false;
+		public static const isDesignerMode:Boolean = true;
+		public static const powerupsEnabled:Boolean = true;
+		public static const contraptionsEnabled:Boolean = true;
 		
 		// stage size
 		public static const StageWidth:uint = 756;
@@ -41,8 +43,10 @@ package
 		// physics
 		public static const Gravity:Number = 0.00158;
 		public static const MaxHeroFallVelocity:Number = -2.0;
+		public static const MaxHeroBouncePower:Number = 3.0;
 		
 		public static const HeroMaxSpeedX:Number = 0.5;
+		public static const HeroExpansionMaxSpeedX:Number = 0.5;
 		public static const HeroSpeedX:Number = 0.002;
 		
 		/** Level Elements ********************************************************/
@@ -70,20 +74,29 @@ package
 		public static const ContraptionTrainFromLeft:uint = 2;
 		public static const ContraptionBell:uint = 3;
 		public static const ContraptionPowerupBoxes:uint = 4;
+		public static const ContraptionCannon:uint = 5;
+		public static const ContraptionCannonFromLeft:uint = 6;
+		public static const ContraptionWitch:uint = 7;
 		
 		// powerup index definitions
 		public static const PowerupBlink:uint = 0;
 		public static const PowerupAttractor:uint = 1;
+		public static const PowerupLevitation:uint = 2;
+		public static const PowerupExtender:uint = 3;
+		public static const PowerupExpansion:uint = 4;
+		public static const PowerupPyromancy:uint = 5;
+		public static const PowerupCometRun:uint = 6;
 		
 		// level generator definition
 		public static const Generator:String = "Generator"; // randomly generate elements according to specification
 		
 		// contraption setting definitions
 		public static const ContraptionSettingTrain:String = "ContraptionSettingTrain";
-		public static const ContraptionSettingTrainFromLeft:String = "ContraptionSettingTrainFromLeft";
 		public static const ContraptionSettingHourglass:String = "ContraptionSettingHourglass";
 		public static const ContraptionSettingBell:String = "ContraptionSettingBell";
 		public static const ContraptionSettingPowerupBoxes:String = "ContraptionSettingPowerupBoxes";
+		public static const ContraptionSettingCannon:String = "ContraptionSettingCannon";
+		public static const ContraptionSettingWitch:String = "ContraptionSettingWitch";
 		
 		// bounce power definitions
 //		public static const NormalBouncePower:Number = 0.85;
@@ -113,7 +126,7 @@ package
 		public static const SofEnabled:Boolean = true;
 		
 		// sea of fire dimensions
-		public static const SofWidth:uint = 760;
+		public static const SofWidth:uint = 750;
 		
 		// sea of fire scaling factors
 		public static const SofLayer1ScaleFactor:Number = 1.0;
@@ -123,11 +136,12 @@ package
 		public static const SofLayer5ScaleFactor:Number = 2.5;
 		
 		// sea of fire wave heights
-		public static const SofLayer1HeightOffset:Number = 30;
+		public static const SofLayer1HeightOffset:Number = 45;
 		public static const SofLayer2HeightOffset:Number = 20;
 		public static const SofLayer3HeightOffset:Number = 0;
-		public static const SofLayer4HeightOffset:Number = -30;
-		public static const SofLayer5HeightOffset:Number = -70;
+		public static const SofLayer4HeightOffset:Number = -45;
+		public static const SofLayer5HeightOffset:Number = -95;
+		public static const SofQuadHeightOffset:Number = 50;
 		
 		/** Misc ********************************************************/
 		
@@ -139,6 +153,13 @@ package
 		// background or foreground
 		public static const Background:uint = 0;
 		public static const Foreground:uint = 1;
+		
+		// background and foreground parallax depths
+		public static const BgLayer0ParallaxDepth:Number = 0.02;
+		public static const BgLayer1ParallaxDepth:Number = 0.05;
+		public static const BgLayer2ParallaxDepth:Number = 0.5;
+		// note: player layer has depth 1.0
+		public static const BgLayer4ParallaxDepth:Number = 1.5;
 		
 		// server URIs
 		public static const UriGetUserInfo:String = "user/info";
@@ -184,5 +205,11 @@ package
 		
 		// charm: attractor
 		public static const CharmDurationAttractor:int = 10000; // 10 seconds
+		
+		// acquired coin flight target; y-value is top screen border
+		public static const CoinTargetX:Number = 200;
+		
+		// special indicators total width
+		public static const SpecialsTotalWidth:Number = 400;
 	}
 }

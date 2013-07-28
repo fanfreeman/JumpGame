@@ -2,9 +2,10 @@ package com.jumpGame.gameElements
 {
 	import com.jumpGame.level.Statics;
 	
+	import starling.animation.Transitions;
+	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.MovieClip;
-	import starling.core.Starling;
 	
 	public class Platform extends GameObject implements IPoolable
 	{
@@ -13,13 +14,18 @@ package com.jumpGame.gameElements
 		
 		public var isTouched:Boolean = false;
 		public var canBounce:Boolean = true;
-		protected var size:int;
+		public var size:int;
 		protected var platformAnimation:MovieClip = null;
 		protected var platformImage:Image = null;
+		
+		public var extenderStatus:int; // 0: not extender; -1: left extender; 1: right extender
+		public var extenderParent:Platform;
 		
 		private var _destroyed:Boolean = true; // required by interface
 		
 		public function initialize(size:int):void {
+			this.extenderStatus = 0;
+			this.extenderParent = null;
 			this.dx = 0;
 			this.dy = 0;
 			this.isTouched = false;
@@ -84,11 +90,21 @@ package com.jumpGame.gameElements
 		}
 		
 		public function update(timeDiff:Number):void {
-			// not multiplying by timeDiff here because that's already done in acceleration calculations in main loop
+			// limit max velocity for platformMobile
 			if (this.dx > Constants.PlatformMobileMaxVelocityX) this.dx = Constants.PlatformMobileMaxVelocityX;
 			else if (this.dx < -Constants.PlatformMobileMaxVelocityX) this.dx = -Constants.PlatformMobileMaxVelocityX;
+			
 			this.gx += this.dx * timeDiff;
 			this.gy += this.dy * timeDiff;
+		}
+		
+		public function makeExtender(extenderParent, extenderStatus, targetGx):void {
+			this.extenderStatus = extenderStatus;
+			this.extenderParent = extenderParent;
+			Starling.juggler.tween(this, 0.3, {
+				transition: Transitions.EASE_OUT,
+				gx: targetGx
+			});
 		}
 		
 		/**
@@ -116,7 +132,7 @@ package com.jumpGame.gameElements
 		
 		override public function get width():Number
 		{
-			return this.platformAnimation.texture.width;
+			return this.platformAnimation.width;
 		}
 		
 		override public function get height():Number

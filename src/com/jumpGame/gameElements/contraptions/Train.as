@@ -9,12 +9,11 @@ package com.jumpGame.gameElements.contraptions
 
 	public class Train extends Contraption implements IPoolable
 	{
+		public var isLaunched:Boolean;
+		
 		protected var headImage:Image = null;
 		protected var lookOutAnimation:MovieClip;
 		protected var launchTime:int;
-		protected var isLaunched:Boolean;
-		
-		private var _destroyed:Boolean = true; // required by interface
 		
 		override public function initialize():void {
 			if (headImage == null) {
@@ -23,7 +22,7 @@ package com.jumpGame.gameElements.contraptions
 			}
 			this.lookOutAnimation.visible = true;
 			this.show();
-			this.launchTime = Statics.gameTime + 2000 + int(Math.ceil(Math.random() * 500));
+			this.launchTime = Statics.gameTime + 2200 + int(Math.ceil(Math.random() * 500));
 			this.isLaunched = false;
 		}
 		

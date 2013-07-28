@@ -4,9 +4,7 @@ package com.jumpGame.gameElements
 	{
 		protected var _destroyed:Boolean = true; // required by interface
 		
-		public function initialize():void {
-			
-		}
+		public function initialize():void {}
 		
 		public function update(timeDiff:Number):void {
 			this.gx = this.gx;

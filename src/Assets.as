@@ -40,10 +40,14 @@ package
 		/**
 		 * Background Assets 
 		 */
-		// layer 1
-		[Embed(source="../media/graphics/bgStarrySky.jpg")]
-		public static const BgStarrySky:Class;
+		// layer 0
+		[Embed(source="../media/graphics/layer0_ground.png")]
+		public static const BgLayer0Ground:Class;
 		
+		[Embed(source="../media/graphics/layer0_sky.png")]
+		public static const BgLayer0Sky:Class;
+		
+		// TODO: remove
 		[Embed(source="../media/graphics/bgWelcome.jpg")]
 		public static const BgWelcome:Class;
 		

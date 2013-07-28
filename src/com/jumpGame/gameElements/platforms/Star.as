@@ -8,7 +8,7 @@ package com.jumpGame.gameElements.platforms
 	
 	public class Star extends Platform
 	{
-		private var isKinematic:Boolean;
+		protected var isKinematic:Boolean;
 		
 		override protected function createPlatformArt():void
 		{
@@ -26,6 +26,8 @@ package com.jumpGame.gameElements.platforms
 		}
 		
 		override public function initialize(size:int):void {
+			this.extenderStatus = 0;
+			this.extenderParent = null;
 			this.isTouched = false;
 			this.isKinematic = false;
 			this.dx = 0;
@@ -37,7 +39,7 @@ package com.jumpGame.gameElements.platforms
 		}
 		
 		override public function getBouncePower():Number {
-			return Constants.PowerBouncePower;
+			return Constants.BoostBouncePower;
 		}
 		
 		override public function touch():Boolean {
@@ -67,7 +69,8 @@ package com.jumpGame.gameElements.platforms
 					this.dy = Constants.MaxHeroFallVelocity;
 				}
 			}
-			super.update(timeDiff);
+			this.gx += this.dx * timeDiff;
+			this.gy += this.dy * timeDiff;
 			this.platformImage.rotation += Math.PI / 72;
 		}
 		
@@ -75,6 +78,11 @@ package com.jumpGame.gameElements.platforms
 			this.isKinematic = true;
 			this.dy = Math.random() * bouncePower;
 			this.dx = Math.random() * 0.4 - 0.2;
+		}
+		
+		public function makeKinematicWithDx(dx:Number):void {
+			this.isKinematic = true;
+			this.dx = dx;
 		}
 	}
 }

@@ -12,10 +12,13 @@ package com.jumpGame.gameElements
 		public static var dx:Number = 0.0;
 		public static var dy:Number = 0.0;
 		
+		public static var targetModifierY:Number;
+		
 		// move camera by following hero
 		public static function update(heroGx:Number, heroGy:Number):void {
 			//var targetX:Number = (Camera.nextPlatformX + heroGx) / 2;
 			var targetX:Number = heroGx;
+			var targetY:Number = heroGy + targetModifierY;
 			
 			// move camera by setting
 			// target distance to camera bounds box borders
@@ -47,14 +50,14 @@ package com.jumpGame.gameElements
 			}
 			
 			// y
-			var cameraEasingFactorY:Number = 15 - Math.abs(heroGy - Camera.gy) / 10;
+			var cameraEasingFactorY:Number = 15 - Math.abs(targetY - Camera.gy) / 10;
 			if (cameraEasingFactorY < 5) cameraEasingFactorY = 5;
 			var d2y:Number = 0.0; // camera acceleration
-			if (heroGy >= Camera.gy + Constants.CameraBoundTop) { // move camera up
-				d2y = ((heroGy - Constants.CameraBoundTop - Camera.gy) - Camera.dy * cameraEasingFactorY) / (0.5 * cameraEasingFactorY * cameraEasingFactorY);
+			if (targetY >= Camera.gy + Constants.CameraBoundTop) { // move camera up
+				d2y = ((targetY - Constants.CameraBoundTop - Camera.gy) - Camera.dy * cameraEasingFactorY) / (0.5 * cameraEasingFactorY * cameraEasingFactorY);
 			}
-			else if (heroGy + Constants.CameraBoundBottom <= Camera.gy) { // move camera down
-				d2y = ((heroGy + Constants.CameraBoundBottom - Camera.gy) - Camera.dy * cameraEasingFactorY) / (0.5 * cameraEasingFactorY * cameraEasingFactorY);
+			else if (targetY + Constants.CameraBoundBottom <= Camera.gy) { // move camera down
+				d2y = ((targetY + Constants.CameraBoundBottom - Camera.gy) - Camera.dy * cameraEasingFactorY) / (0.5 * cameraEasingFactorY * cameraEasingFactorY);
 			}
 			else { // bring camera to rest
 				d2y = -Camera.dy / cameraEasingFactorY;

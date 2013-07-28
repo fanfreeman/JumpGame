@@ -54,8 +54,19 @@ package com.jumpGame.ui
 		private static var powerupIconFrame:Image;
 		
 		// on screen message
-		private static var messageText:TextField;
-		private static var messageExpireTime:int;
+		private static var messageText1:TextField;
+		private static var messageText2:TextField;
+		private static var messageText3:TextField;
+		private static var messageExpireTime1:int;
+		private static var messageExpireTime2:int;
+		private static var messageExpireTime3:int;
+		
+		// special ability indicators
+		private static var specialIndicatorsList:Vector.<SpecialIndicator>;
+		
+		// objective achievement effect
+		private static var badgeAnimation:MovieClip;
+		private static var badgeExpireTime:int;
 		
 		public function HUD()
 		{
@@ -194,17 +205,83 @@ package com.jumpGame.ui
 			powerupIconFrame.visible = false;
 			this.addChild(powerupIconFrame);
 			
-			// on screen message
+			// on screen message line 1
 			var fontMessage:Font = Fonts.getFont("Badabb");
-			trace("HUD fontName: " + fontMessage.fontName);
-			trace("HUD fontSize: " + fontMessage.fontSize);
-			messageText = new TextField(stage.stageWidth, stage.stageHeight * 0.5, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
-			messageText.hAlign = HAlign.CENTER;
-			messageText.vAlign = VAlign.TOP;
-			messageText.height = 100;
-			messageText.y = (stage.stageHeight * 20)/100;
-			messageText.visible = false;
-			this.addChild(messageText);
+			messageText1 = new TextField(stage.stageWidth, stage.stageHeight * 0.5, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
+			messageText1.hAlign = HAlign.CENTER;
+			messageText1.vAlign = VAlign.TOP;
+			messageText1.height = 100;
+			messageText1.y = (stage.stageHeight * 20)/100;
+			messageText1.visible = false;
+			this.addChild(messageText1);
+			
+			// on screen message line 2
+			messageText2 = new TextField(stage.stageWidth, stage.stageHeight * 0.5, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
+			messageText2.hAlign = HAlign.CENTER;
+			messageText2.vAlign = VAlign.TOP;
+			messageText2.height = 100;
+			messageText2.y = (stage.stageHeight * 20)/100 + 50;
+			messageText2.visible = false;
+			this.addChild(messageText2);
+			
+			// on screen message line 3
+			messageText3 = new TextField(stage.stageWidth, stage.stageHeight * 0.5, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
+			messageText3.hAlign = HAlign.CENTER;
+			messageText3.vAlign = VAlign.TOP;
+			messageText3.height = 100;
+			messageText3.y = (stage.stageHeight * 20)/100 + 100;
+			messageText3.visible = false;
+			this.addChild(messageText3);
+			
+			// speical ability indicators
+			Statics.numSpecials = 8;
+			specialIndicatorsList = new Vector.<SpecialIndicator>();
+			for (var i:uint = 0; i < Statics.numSpecials; i++) {
+				var indicator:SpecialIndicator = new SpecialIndicator();
+				this.addChild(indicator);
+				specialIndicatorsList.push(indicator);
+			}
+			arrangeSpecialIndicators();
+			
+			// objective effect
+			badgeAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("BadgeFlash"), 30);
+			badgeAnimation.pivotX = Math.ceil(badgeAnimation.width  / 2); // center art on registration point
+			badgeAnimation.pivotY = Math.ceil(badgeAnimation.height / 2);
+			badgeAnimation.x = Constants.StageWidth / 2;
+			badgeAnimation.y = Constants.StageHeight - 130;
+			badgeAnimation.loop = false;
+			badgeAnimation.visible = false;
+			this.addChild(badgeAnimation);
+		}
+		
+		private static function arrangeSpecialIndicators():void {
+			for (var i:uint = 0; i < Statics.numSpecials; i++) {
+				specialIndicatorsList[i].x = (Constants.StageWidth - 50 * Statics.numSpecials) / 2 + (50 * Statics.numSpecials / (Statics.numSpecials + 1)) * (i + 1);
+				specialIndicatorsList[i].y = Constants.StageHeight - 50;
+			}
+		}
+		
+		/**
+		 * Turn off speical ability indicators after one is used
+		 */
+		public static function turnOffSpecials():void {
+			Statics.numSpecials--;
+			// do not remove indicator to suppress garbage collection
+			specialIndicatorsList[Statics.numSpecials].blast();
+			arrangeSpecialIndicators();
+			
+			for (var i:uint = 0; i < Statics.numSpecials; i++) {
+				specialIndicatorsList[i].turnOff();
+			}
+		}
+		
+		/**
+		 * Turn on special ability indicators after cooldown
+		 */
+		public static function turnOnSpecials():void {
+			for (var i:uint = 0; i < Statics.numSpecials; i++) {
+				specialIndicatorsList[i].turnOn();
+			}
 		}
 		
 		public function get bonusTime():int { return _bonusTime; }
@@ -239,16 +316,106 @@ package com.jumpGame.ui
 			return ret;
 		}
 		
-		// display an on screen message
-		public static function showMessage(message:String, duration:Number = 2000):void {
-			messageExpireTime = Statics.gameTime + duration;
-			messageText.text = message;
-			messageText.visible = true;
+		/**
+		 * Display an achievement badge
+		 */
+		public static function showAchievement(message:String):void {
+			Statics.displayingBadge = true;
+			starling.core.Starling.juggler.add(badgeAnimation);
+			badgeAnimation.alpha = 1;
+			badgeAnimation.visible = true;
+			badgeAnimation.play();
+			Sounds.sndGong.play();
+			badgeExpireTime = Statics.gameTime + 4000; // show for three seconds
 		}
 		
-		public static function updateMessage():void {
-			// if message expires, hide on screen message
-			if (Statics.gameTime > messageExpireTime) messageText.visible = false;
+		/** 
+		 * Display an on screen message
+		 * 
+		 * @param forceLine forces display on a particular line
+		 */
+		public static function showMessage(message:String, duration:Number = 2000, forceLine:uint = 0):void {
+			if (forceLine == 0) {
+				// display on line 1
+				if (!messageText1.visible) {
+					messageExpireTime1 = Statics.gameTime + duration;
+					messageText1.text = message;
+					messageText1.visible = true;
+					return;
+				}
+					
+					// display on line 2
+				else if (!messageText2.visible) {
+					messageExpireTime2 = Statics.gameTime + duration;
+					messageText2.text = message;
+					messageText2.visible = true;
+					return;
+				}
+					
+					// display on line 3
+				else if (!messageText3.visible) {
+					messageExpireTime3 = Statics.gameTime + duration;
+					messageText3.text = message;
+					messageText3.visible = true;
+					return;
+				}
+					
+				else {
+					messageText2.visible = false;
+					messageText3.visible = false;
+					messageExpireTime1 = Statics.gameTime + duration;
+					messageText1.text = message;
+					messageText1.visible = true;
+					return;
+				}
+			}
+			else if (forceLine == 1) { // force display on line 1
+				messageExpireTime1 = Statics.gameTime + duration;
+				messageText1.text = message;
+				messageText1.visible = true;
+				return;
+			}
+			else if (forceLine == 2) { // force display on line 2
+				messageExpireTime2 = Statics.gameTime + duration;
+				messageText2.text = message;
+				messageText2.visible = true;
+				return;
+			}
+			else if (forceLine == 3) { // force display on line 3
+				messageExpireTime3 = Statics.gameTime + duration;
+				messageText3.text = message;
+				messageText3.visible = true;
+				return;
+			}
+			else {
+				throw new Error("Invalid message display line");
+			}
+		}
+		
+		public static function update():void {
+			// if a message line expires, hide that line
+			if (Statics.gameTime > messageExpireTime1) messageText1.visible = false;
+			if (Statics.gameTime > messageExpireTime2) messageText2.visible = false;
+			if (Statics.gameTime > messageExpireTime3) messageText3.visible = false;
+			
+			// update achievement badge
+			if (Statics.displayingBadge && Statics.gameTime > badgeExpireTime) {
+				badgeAnimation.stop();
+				starling.core.Starling.juggler.remove(badgeAnimation);
+				Starling.juggler.tween(badgeAnimation, 1, {
+					transition: Transitions.LINEAR,
+					alpha: 0
+				});
+				Statics.displayingBadge = false;
+			}
+			
+			// update ability indicator clipping
+			if (!Statics.specialReady) {
+				var ratio:Number = (Statics.gameTime - Statics.specialUseTime) / (Statics.specialReadyTime - Statics.specialUseTime);
+				for (var i:uint = 0; i < Statics.numSpecials; i++) {
+					specialIndicatorsList[i].updateClipRectByRatio(ratio);
+				}
+			}
 		}
 		
 		public function spinPowerupReel():void {
@@ -344,6 +511,7 @@ package com.jumpGame.ui
 		}
 		
 		public static function completionWarning():void {
+			Sounds.sndClockTick.play();
 			powerupIconFrame.alpha = 0;
 			powerupIcons.alpha = 0;
 			Starling.juggler.tween(powerupIconFrame, 0.5, {

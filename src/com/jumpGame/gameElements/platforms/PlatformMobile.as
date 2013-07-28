@@ -7,7 +7,7 @@ package com.jumpGame.gameElements.platforms
 	
 	public class PlatformMobile extends Platform
 	{
-		private var fixedX:Number = 0.0;
+		public var fixedX:Number = 0.0;
 		private var maxPosChange:Number = 150;
 		private var isMovingRight:Boolean = true;
 		

@@ -10,10 +10,12 @@ package com.jumpGame.gameElements
 		private var waveAnim2:MovieClip;
 		private var flipState:uint = 0;
 		private var _parallaxDepth:Number;
+		private var blurValue:uint;
 		
-		public function SofLayer()
+		public function SofLayer(blurValue:uint)
 		{
 			super();
+			this.blurValue = blurValue;
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -23,14 +25,29 @@ package com.jumpGame.gameElements
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			
 			// add two sea of fire waves side by side
-			waveAnim1 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("Wave"), 24);
-			waveAnim2 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("Wave"), 24);
+			if (this.blurValue == 0) {
+				waveAnim1 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("WaveBlur0"), 16);
+				waveAnim2 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("WaveBlur0"), 16);
+			}
+			else if (this.blurValue == 1) {
+				waveAnim1 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("WaveBlur1"), 16);
+				waveAnim2 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("WaveBlur1"), 16);
+			}
+			else if (this.blurValue == 2) {
+				waveAnim1 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("WaveBlur2"), 16);
+				waveAnim2 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("WaveBlur2"), 16);
+			}
+			
+			waveAnim1.pivotX = Math.ceil(waveAnim1.width / 2);
+			waveAnim1.pivotY = Math.ceil(waveAnim1.height / 2);
 			waveAnim1.x = 0;
 			waveAnim1.y = 0;
 			
+			waveAnim2.pivotX = Math.ceil(waveAnim2.width / 2);
+			waveAnim2.pivotY = Math.ceil(waveAnim2.height / 2);
 			waveAnim2.scaleX = -1;
-			waveAnim2.x = (Constants.SofWidth + 1) * 2;
-			waveAnim2.y = waveAnim1.y;
+			waveAnim2.x = Constants.SofWidth;
+			waveAnim2.y = 0;
 			
 			starling.core.Starling.juggler.add(waveAnim1);
 			starling.core.Starling.juggler.add(waveAnim2);
@@ -39,19 +56,22 @@ package com.jumpGame.gameElements
 			this.addChild(waveAnim2);
 		}
 		
-		// flip a <> wave configuration to a >< configuration
+		/**
+		 * Flip the two wave segments so that they form a continuous line
+		 * >< to <> and vice versa
+		 */
 		public function flip():void {
 			if (this.flipState == 0) {
 				waveAnim1.scaleX = -1;
 				waveAnim2.scaleX = 1;
-				waveAnim1.x = Constants.SofWidth + 1;
-				waveAnim2.x = Constants.SofWidth - 1;
+//				waveAnim1.x = Constants.SofWidth + 1;
+//				waveAnim2.x = Constants.SofWidth - 1;
 				this.flipState = 1;
 			} else {
 				waveAnim1.scaleX = 1;
 				waveAnim2.scaleX = -1;
-				waveAnim1.x = 0;
-				waveAnim2.x = (Constants.SofWidth + 1) * 2;
+//				waveAnim1.x = 0;
+//				waveAnim2.x = (Constants.SofWidth + 1) * 2;
 				this.flipState = 0;
 			}
 		}

@@ -17,10 +17,10 @@ package
 		public static var ParticleLeafTexture:Class;
 		
 		// charge
-		[Embed(source="../media/particles/particleMushroom.pex", mimeType="application/octet-stream")]
+		[Embed(source="../media/particles/charge/particleCharge.pex", mimeType="application/octet-stream")]
 		public static var ParticleChargeXML:Class;
 		
-		[Embed(source="../media/particles/texture.png")]
+		[Embed(source="../media/particles/charge/texture.png")]
 		public static var ParticleChargeTexture:Class;
 		
 		// wind
@@ -37,11 +37,25 @@ package
 		[Embed(source="../media/particles/rain/texture.png")]
 		public static var ParticleRainTexture:Class;
 		
-		// sea of fire
-		[Embed(source="../media/particles/fire/particle.pex", mimeType="application/octet-stream")]
-		public static var ParticleFireXML:Class;
+		// jet
+		[Embed(source="../media/particles/jet/particle.pex", mimeType="application/octet-stream")]
+		public static var ParticleJetXML:Class;
 		
-		[Embed(source="../media/particles/fire/texture.png")]
-		public static var ParticleFireTexture:Class;
+		[Embed(source="../media/particles/jet/texture.png")]
+		public static var ParticleJetTexture:Class;
+		
+		// comet tail
+		[Embed(source="../media/particles/comet/particle.pex", mimeType="application/octet-stream")]
+		public static var ParticleCometXML:Class;
+		
+		[Embed(source="../media/particles/comet/texture.png")]
+		public static var ParticleCometTexture:Class;
+		
+		// sea of fire
+//		[Embed(source="../media/particles/fire/particle.pex", mimeType="application/octet-stream")]
+//		public static var ParticleFireXML:Class;
+//		
+//		[Embed(source="../media/particles/fire/texture.png")]
+//		public static var ParticleFireTexture:Class;
 	}
 }

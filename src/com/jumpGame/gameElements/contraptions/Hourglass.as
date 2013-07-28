@@ -11,8 +11,6 @@ package com.jumpGame.gameElements.contraptions
 		private var hourglassImage:Image = null;
 		private var touched:Boolean = false;
 		
-		private var _destroyed:Boolean = true; // required by interface
-		
 		override public function initialize():void {
 			if (hourglassImage == null) createArt();
 			this.show();

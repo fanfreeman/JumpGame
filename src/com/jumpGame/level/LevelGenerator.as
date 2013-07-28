@@ -90,6 +90,18 @@ package com.jumpGame.level {
 					this.generateRandom(height, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
 					break;
 				
+				case 999999: // designed pattern
+//					this.generateDesigned9000();
+//					break;
+					// 1 per row, 2 per row, 3 per row, 4 per row, 5 per row
+					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
+					// normal, drop, mobile, normalboost, etc.
+					elementDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
+					// size 1, 2, 3, 4, 5
+					sizeDistribution = new Array(0.0, 0.0, 0.2, 0.6, 1.0)
+					this.generateRandom(height, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					break;
+				
 				case 999: // music mode
 					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0); // 1 per row
 					elementDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0); // all normal platforms
@@ -134,7 +146,8 @@ package com.jumpGame.level {
 					
 					var elementClass:String = this.getElementClassByDistribution(elementDistribution);
 					var elementSize:int = 0;
-					if ([Constants.PlatformNormal, Constants.PlatformDrop, Constants.PlatformMobile, Constants.PlatformNormalBoost].indexOf(elementClass) != -1) {
+					if ([Constants.PlatformNormal, Constants.PlatformDrop, Constants.PlatformMobile,
+						Constants.PlatformNormalBoost, Constants.PlatformDropBoost, Constants.PlatformMobileBoost].indexOf(elementClass) != -1) {
 						elementSize = this.getElementSizeByDistribution(sizeDistribution);
 					}
 					this.builder.levelElementsArray.push([gy, gx, elementClass, elementSize]);
@@ -365,27 +378,79 @@ package com.jumpGame.level {
 			}
 		}
 		
-		// easy heart shaped stars
+		// easy fixed heart shaped stars
 		private function generateDesigned2005():void {
-			var gx:Number = Math.random() * 400 - 200;
-			var gy:Number = this.builder.currentY * Constants.UnitHeight;
-			var t:Number = 0;
+			var gx:Number;
+			var gy:Number; 
+			var t:Number; // time factor, used in calculating heart shapes
 			
 			var fx:Number;
 			var fy:Number;
 			
-			var patternArray:Array = new Array();
-			
-			for (var ri:uint = 0; ri < 15; ri++) {
-				t += Math.PI / 8;
-				// get new gx and gy values for new element
-				fx = (16 * Math.sin(t) * Math.sin(t) * Math.sin(t)) * 10;
-				fy = (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * 10;
-				patternArray.push([gy + fy, gx + fx, "Star", 0]);
+			for (var i:uint = 0; i < 10; i++) { // number of hearts to create
+				gx = Math.random() * 400 - 200;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				t = 0;
+				
+				var patternArray:Array = new Array();
+				for (var ri:uint = 0; ri < 15; ri++) {
+					t += Math.PI / 8;
+					// get new gx and gy values for new element
+					fx = (16 * Math.sin(t) * Math.sin(t) * Math.sin(t)) * 10;
+					fy = (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * 10;
+					patternArray.push([gy + fy, gx + fx, "Star", 0]);
+				}
+				// coins
+				patternArray.push([(this.builder.currentY - 2) * Constants.UnitHeight, gx - 250, Constants.Coin]); // coin
+				patternArray.push([(this.builder.currentY - 2) * Constants.UnitHeight, gx + 250, Constants.Coin]); // coin
+				patternArray.push([this.builder.currentY * Constants.UnitHeight, gx - 250, Constants.Coin]); // coin
+				patternArray.push([this.builder.currentY * Constants.UnitHeight, gx + 250, Constants.Coin]); // coin
+				patternArray.push([(this.builder.currentY + 2) * Constants.UnitHeight, gx - 250, Constants.Coin]); // coin
+				patternArray.push([(this.builder.currentY + 2) * Constants.UnitHeight, gx + 250, Constants.Coin]); // coin
+				
+				
+				patternArray.sort(sortOnElementGy);
+				this.builder.levelElementsArray = this.builder.levelElementsArray.concat(patternArray);
+				this.builder.currentY += 8;
 			}
 			
-			patternArray.sort(sortOnElementGy);
-			this.builder.levelElementsArray = this.builder.levelElementsArray.concat(patternArray);
+			// a row of blue stars
+			var numElementsPerRow:int = 6;
+			for (i = 0;  i < numElementsPerRow; i++) { // loop through elements on the same row
+				// get new gx and gy values for new element
+				gx = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1) - Constants.StageWidth / 2;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0]);
+			} // eof loop through elements on the same row
+			
+			this.builder.currentY += 8;
+		}
+		
+		// two sinusoidal lines of stars
+		private function generateDesigned2006():void {
+			var gx:Number = 0;
+			var gy:Number = 0;
+			for (var ri:uint = 0; ri < 80; ri++) {
+				var numElementsPerRow:int = 2;
+				
+				// left line
+				// get new gx and gy values for new element
+				var sinVal:Number = Math.sin(this.builder.currentY / 8);
+				gx = ((Constants.StageWidth) / 4) * sinVal;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0]);
+				
+				// right line
+				// get new gx and gy values for new element
+				gx *= -1;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0]);
+				
+				
+				this.builder.currentY ++;
+				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8), Constants.Coin]); // coin
+				this.builder.currentY ++;
+			}
 			this.builder.currentY += 4;
 		}
 		
@@ -421,6 +486,98 @@ package com.jumpGame.level {
 			} // eof loop through elements on the same row
 			
 			this.builder.currentY += 2;
+		}
+		
+		// hard: two mobiles and one repulsor per row; 8 rows
+		private function generateDesigned9000():void { // test repulsor fields
+			var gx:Number = 0;
+			var gy:Number = 0;
+			for (var ri:uint = 0; ri < 8; ri++) { // loop through rows
+				
+				gx = -250;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "PlatformMobileBoost", 4]);
+				
+				gx = 250;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "PlatformMobileBoost", 4]);
+				
+				gx = Math.random() * 400 - 200
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "Repulsor", 0]);
+				
+				// coins
+				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, Math.random() * 400 - 200, Constants.Coin]);
+				this.builder.currentY++;
+				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, Math.random() * 400 - 200, Constants.Coin]);
+				this.builder.currentY++;
+				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, Math.random() * 400 - 200, Constants.Coin]);
+				this.builder.currentY++;
+			}
+			
+			// a row of blue stars
+			var numElementsPerRow:uint = 6;
+			for (var i:uint = 0;  i < numElementsPerRow; i++) { // loop through elements on the same row
+				// get new gx and gy values for new element
+				gx = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1) - Constants.StageWidth / 2;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0]);
+			} // eof loop through elements on the same row
+			
+			this.builder.currentY += 4;
+		}
+		
+		// DESIGNER TOOL
+		private function generateDesigned999998():void { // test comets
+			var gx:Number = 0;
+			var gy:Number = 0;
+			
+			for (var ri:uint = 0; ri < 80; ri++) {
+				
+				// left line
+				// get new gx and gy values for new element
+				var sinVal:Number = Math.sin(this.builder.currentY / 8);
+				gx = ((Constants.StageWidth) / 4) * sinVal;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0]);
+				
+				// right line
+				// get new gx and gy values for new element
+				gx *= -1;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0]);
+				
+				gx = 300;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "Comet", 0]);
+					
+					
+				this.builder.currentY ++;
+				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8), Constants.Coin]); // coin
+				this.builder.currentY ++;
+			}
+			this.builder.currentY += 4;
+		}
+		
+		
+		
+		// DESIGNER TOOL
+		private function generateDesigned999999():void { // test repulsors
+			var gx:Number = 0;
+			var gy:Number = 0;
+			
+			for (var ri:uint = 0; ri < 80; ri++) {
+				gx = 200;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "PlatformNormal", 4]);
+				
+				gx = -200;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "Repulsor", 0]);
+				
+				this.builder.currentY += 3;
+			}
+			this.builder.currentY += 4;
 		}
 	}
 }

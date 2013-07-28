@@ -21,6 +21,9 @@ package com.jumpGame.gameElements
 		/** Parallax depth - used to decide speed of the animation. */
 		private var _parallaxDepth:Number;
 		
+		// dynamic background elements properties
+		private var moonY:Number;
+		
 		public function BgLayer(_layer:int)
 		{
 			super();
@@ -41,12 +44,25 @@ package com.jumpGame.gameElements
 			this.imageVec = new Vector.<Image>();
 			var image:Image;
 			if (this._layer == 1) {
-				image = new Image(Assets.getTexture("BgStarrySky"));
-				image.blendMode = BlendMode.NONE;
+				image = new Image(Assets.getSprite("AtlasTexture3").getTexture("Moon0000"));
+				image.blendMode = BlendMode.NORMAL;
 				image.pivotX = 0; // set registration point to bottom left corner
 				image.pivotY = image.texture.height;
+				image.x = - image.texture.width;
 				this.addChild(image);
-			} 
+				this.imageVec.push(image); // store in vector
+				
+				image = new Image(Assets.getSprite("AtlasTexture3").getTexture("PirateShip0000"));
+				image.blendMode = BlendMode.NORMAL;
+				image.pivotX = 0; // set registration point to bottom left corner
+				image.pivotY = image.texture.height;
+				image.x = Constants.StageWidth;
+				image.visible = false;
+				this.addChild(image);
+				this.imageVec.push(image); // store in vector
+				
+				this.activeImage = 0;
+			}
 			else if (this._layer == 2) {
 				image = new Image(Assets.getSprite("AtlasTexture3").getTexture("L2Tree10000"));
 				image.blendMode = BlendMode.NORMAL;
@@ -99,6 +115,29 @@ package com.jumpGame.gameElements
 			var newImageIndex:uint = Math.floor(Math.random() * this.imageVec.length);
 			this.imageVec[newImageIndex].visible = true;
 			this.activeImage = newImageIndex;
+			
+			if (this._layer == 1) {
+				this.imageVec[this.activeImage].y = 300; // remove?
+			}
+		}
+		
+		// update moon motion
+		public function update(timeDiff:int):void {
+			// update moon
+			this.imageVec[0].x += 0.01 * timeDiff;
+//			trace("sine: " + Math.cos(this.imageVec[0].x / 240));
+			this.imageVec[0].y = -400 * Math.cos(this.imageVec[0].x / 240) + 300;
+			// move moon back to left
+			if (this.imageVec[0].x > Constants.StageWidth) {
+				this.imageVec[0].x = - this.imageVec[0].texture.width;
+			}
+			
+			// update pirate ship
+			this.imageVec[1].x -= 0.02 * timeDiff;
+			// move pirate ship back to right
+			if (this.imageVec[1].x < - this.imageVec[1].width) {
+				this.imageVec[1].x = Constants.StageWidth;
+			}
 		}
 		
 		/**

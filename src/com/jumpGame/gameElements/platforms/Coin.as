@@ -8,6 +8,8 @@ package com.jumpGame.gameElements.platforms
 	public class Coin extends Platform
 	{
 		private var isKinematic:Boolean;
+		public var isAcquired:Boolean;
+		public var yVelocity:Number;
 		
 		override protected function createPlatformArt():void
 		{
@@ -21,6 +23,7 @@ package com.jumpGame.gameElements.platforms
 		
 		override public function initialize(size:int):void {
 			this.isKinematic = false;
+			this.isAcquired = false;
 			this.dx = 0;
 			this.dy = 0;
 			this.canBounce = false;
@@ -32,9 +35,6 @@ package com.jumpGame.gameElements.platforms
 			if (!this.isTouched) {
 				// play sound effect
 				Sounds.sndBling.play();
-				// remove coin
-				this.visible = false;
-				
 				this.isTouched = true;
 				
 				return true;
@@ -44,13 +44,15 @@ package com.jumpGame.gameElements.platforms
 		}
 		
 		override public function update(timeDiff:Number):void {
-			if (this.isKinematic) {
+			if (this.isKinematic && !this.isAcquired) { // do not apply gravity if acquired
 				this.dy -= Constants.Gravity * timeDiff;
-				if (this.dy < Constants.MaxHeroFallVelocity) {
+//				if (this.dy < Constants.MaxHeroFallVelocity) {
 //					this.dy = Constants.MaxHeroFallVelocity;
-				}
+//				}
 			}
-			super.update(timeDiff);
+//			super.update(timeDiff);
+			this.gx += this.dx * timeDiff;
+			this.gy += this.dy * timeDiff;
 		}
 		
 		public function makeKinematic(bouncePower:Number):void {

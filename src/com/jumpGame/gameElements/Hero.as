@@ -1,9 +1,7 @@
 package com.jumpGame.gameElements
 {
+	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.HUD;
-	
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
 	
 	import starling.core.Starling;
 	import starling.display.MovieClip;
@@ -18,14 +16,16 @@ package com.jumpGame.gameElements
 		public var dy:Number = 0.0;
 		public var canBounce:Boolean = true;
 		public var isDynamic:Boolean = true;
+		public var gravity:Number = Constants.Gravity;
+		public var bouncePowerMultiplier:Number = 1;
 		
-//		private var heroAnimations:Vector.<MovieClip> = new Vector.<MovieClip>();
 		private var animationJump:MovieClip;
 		private var animationHurt:MovieClip;
 		
-		private var abilityTimer:Timer;
-		private var abilityReady:Boolean = true;
 		private var rotationSpeed:Number = 0.0;
+		private var canBounceTime:int;
+		
+		public var d2x:Number = 0;
 		
 		public function Hero()
 		{
@@ -114,31 +114,42 @@ package com.jumpGame.gameElements
 		
 		// return true if ability triggered
 		public function triggerSpecialAbility():Boolean {
-			if (this.abilityReady) {
+			if (Statics.numSpecials <= 0) {
+				HUD.showMessage("No More Specials");
+			}
+			else if (Statics.specialReady) {
+				HUD.turnOffSpecials();
+				
 				// activate ability
 				this.dy = 2.0;
+				Statics.particleCharge.start(0.2);
+				Statics.particleJet.start(1);
 				Sounds.sndAirjump.play();
 				
-				this.abilityReady = false;
-				this.abilityTimer = new Timer(5000, 1);
-				this.abilityTimer.addEventListener(TimerEvent.TIMER_COMPLETE, setAbilityReady);
-				this.abilityTimer.start();
+				Statics.specialReady = false;
+				Statics.specialUseTime = Statics.gameTime;
+				Statics.specialReadyTime = Statics.gameTime + 5000;
 				
 				return true;
+			}
+			else {
+				HUD.showMessage("Special still in Cooldown");
 			}
 			
 			return false;
 		}
 		
-		private function setAbilityReady(event:TimerEvent):void {
-			this.abilityTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, setAbilityReady);
-			this.abilityReady = true;
+		private function setAbilityReady():void {
+			Statics.specialReady = true;
+			HUD.turnOnSpecials()
 			HUD.showMessage("Ability Ready!");
 		}
 		
 		public function bounce(bouncePower:Number):void {
 			if (this.canBounce) {
-				this.dy = bouncePower;
+				bouncePower *= this.bouncePowerMultiplier;
+				if (bouncePower > Constants.MaxHeroBouncePower) this.dy = Constants.MaxHeroBouncePower;
+				else this.dy = bouncePower;
 				animationJump.stop();
 				animationJump.play();
 			}
@@ -148,9 +159,19 @@ package com.jumpGame.gameElements
 		}
 		
 		public function update(timeDiff:Number):void {
+			// check if ability is ready
+			if (!Statics.specialReady && Statics.numSpecials > 0 && Statics.gameTime > Statics.specialReadyTime) {
+				this.setAbilityReady();
+			}
+			
+			// check if bouncing should be restored
+			if (!this.canBounce && Statics.gameTime > this.canBounceTime) {
+				this.restoreCollisionDetection();
+			}
+			
 			// fall down due to gravity
 			if (this.isDynamic) {
-				this.dy -= Constants.Gravity * timeDiff;
+				this.dy -= this.gravity * timeDiff;
 				if (this.dy < Constants.MaxHeroFallVelocity) {
 					this.dy = Constants.MaxHeroFallVelocity;
 				}
@@ -175,16 +196,10 @@ package com.jumpGame.gameElements
 			if (direction == Constants.DirectionUp) {
 				this.dy = bouncePower;
 			} else {
-				this.dy = -bouncePower;
+//				this.dy = -bouncePower;
+				this.dy = 0;
 				this.scaleY *= -1;
 			}
-			
-			this.canBounce = false;
-			
-			// disable collision detection for a while
-			var delayTimer:Timer = new Timer(200, 1);
-			delayTimer.addEventListener(TimerEvent.TIMER_COMPLETE, restoreCollisionDetection);
-			delayTimer.start();
 			
 			// play sound effect
 			var temp:Number = Math.random() * 3;
@@ -195,13 +210,13 @@ package com.jumpGame.gameElements
 			} else if (temp >= 2 && temp < 3) {
 				Sounds.sndBounce3.play();
 			}
+			
+			// disable collision detection for a while
+			this.canBounce = false;
+			this.canBounceTime = Statics.gameTime + 200;
 		}
 		
-		public function restoreCollisionDetection(event:TimerEvent):void {
-			if (event != null) {
-				event.target.removeEventListener(TimerEvent.TIMER_COMPLETE, restoreCollisionDetection);
-			}
-			
+		public function restoreCollisionDetection():void {
 			if (this.scaleY < 0) this.scaleY *= -1;
 			this.canBounce = true;
 		}
@@ -217,11 +232,46 @@ package com.jumpGame.gameElements
 		}
 		
 		public function failBounce():void {
-			this.dy = Constants.NormalBouncePower;
+			this.dy = Constants.BoostBouncePower;
 			animationJump.visible = false;
 			animationHurt.visible = true;
 			animationHurt.stop();
 			animationHurt.play();
+		}
+		
+		public function hide():void {
+			this.animationJump.visible = false;
+		}
+		
+		public function show():void {
+			this.animationJump.visible = true;
+		}
+		
+		/**
+		 * Pushed away by a repulsor
+		 */
+		public function repulse(repulsorGx:Number, repulsorGy:Number):void {
+			var fx:Number = this.gx - repulsorGx;
+			var fy:Number = this.gy - repulsorGy;
+//			trace ("fx: " + fx + " fy: " + fy);
+//			this.dx += fx / 50;
+//			this.dy += fy / 50;
+			
+			// constant force regardless of distance from center
+			var angle:Number = Statics.vectorAngle(repulsorGx, repulsorGy, this.gx, this.gy);
+			this.dx = Math.cos(angle) * 0.75;
+//			this.dy = Math.sin(angle) * 0.5;
+//			if (this.dy < 0) this.dy = 0;
+//			if (this.dy > 0) this.dy *= 3;
+		}
+		
+		public function repulseCannonball(isVertical:Boolean, isFromLeft:Boolean):void {
+			if (isVertical) {
+				this.dy -= 1.0;
+			} else {
+				if (isFromLeft) this.dx += 0.5;
+				else this.dx -= 0.5;
+			}
 		}
 	}
 }

@@ -12,10 +12,9 @@ package com.jumpGame.gameElements.contraptions
 		protected var boxAnimation:MovieClip = null;
 		private var touched:Boolean = false;
 		
-		private var _destroyed:Boolean = true; // required by interface
-		
 		override public function initialize():void {
 			if (this.boxAnimation == null) createArt();
+			Starling.juggler.add(this.boxAnimation);
 			this.show();
 			this.touched = false;
 		}
@@ -27,7 +26,7 @@ package com.jumpGame.gameElements.contraptions
 				this.touched = true;
 				this.visible = false;
 				Sounds.sndGotHourglass.play();
-				HUD.showMessage("Mystery Box!");
+				HUD.showMessage("Mystery Box!", 2000, 1);
 				hud.spinPowerupReel();
 				Statics.powerupsEnabled = false;
 			}

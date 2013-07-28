@@ -10,6 +10,8 @@ package com.jumpGame.gameElements.powerups
 
 	public class Attractor extends GameObject
 	{
+		public var isActivated:Boolean;
+		
 		private var outerRingImage:Image;
 		private var innerRingImage:Image;
 		private var hero:Hero;
@@ -20,18 +22,19 @@ package com.jumpGame.gameElements.powerups
 		public function Attractor(hero:Hero) {
 			this.hero = hero;
 			this.createPowerupArt();
+			this.isActivated = false;
 		}
 		
 		protected function createPowerupArt():void
 		{
-			outerRingImage = new Image(Assets.getSprite("AtlasTexture2").getTexture("MagentRing0000"));
+			outerRingImage = new Image(Assets.getSprite("AtlasTexture2").getTexture("MagnetRing0000"));
 			outerRingImage.pivotX = Math.ceil(outerRingImage.width / 2); // center image on registration point
 			outerRingImage.pivotY = Math.ceil(outerRingImage.height / 2);
 			outerRingImage.visible = false;
 			outerRingImage.alpha = 0;
 			this.addChild(outerRingImage);
 			
-			innerRingImage = new Image(Assets.getSprite("AtlasTexture2").getTexture("MagentRing0000"));
+			innerRingImage = new Image(Assets.getSprite("AtlasTexture2").getTexture("MagnetRing0000"));
 			innerRingImage.pivotX = Math.ceil(innerRingImage.width / 2); // center image on registration point
 			innerRingImage.pivotY = Math.ceil(innerRingImage.height / 2);
 			innerRingImage.scaleX = 0.6;
@@ -59,8 +62,8 @@ package com.jumpGame.gameElements.powerups
 				alpha: 0
 			});
 			
-			Sounds.sndBell.play();
-			Statics.attractorOn = true;
+			Sounds.sndPowerup.play();
+			this.isActivated = true;
 			this.completionWarned = false;
 			this.completionTime = Statics.gameTime + Constants.CharmDurationAttractor;
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
@@ -84,7 +87,7 @@ package com.jumpGame.gameElements.powerups
 		}
 		
 		public function update(timeDiff:Number):void {
-			if (!Statics.attractorOn) return;
+			if (!this.isActivated) return;
 			
 			this.outerRingImage.rotation += 0.004 * timeDiff;
 			this.innerRingImage.rotation += 0.004 * timeDiff;
@@ -101,7 +104,7 @@ package com.jumpGame.gameElements.powerups
 			if (Statics.gameTime > this.completionTime) {
 				outerRingImage.visible = false;
 				innerRingImage.visible = false;
-				Statics.attractorOn = false;
+				this.isActivated = false;
 				
 				// misc reset
 				HUD.clearPowerupReel();

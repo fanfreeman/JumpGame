@@ -72,8 +72,23 @@ package
 		[Embed(source="../media/sounds/train.mp3")]
 		public static const SND_TRAIN:Class;
 		
-		[Embed(source="../media/sounds/train_warning.mp3")]
-		public static const SND_TRAIN_WARNING:Class;
+		[Embed(source="../media/sounds/cannonball_hit.mp3")]
+		public static const SND_CANNONBALL_HIT:Class;
+		
+		[Embed(source="../media/sounds/power_down.mp3")]
+		public static const SND_CRASH:Class;
+		
+		[Embed(source="../media/sounds/cannon_fire.mp3")]
+		public static const SND_CANNON_FIRE:Class;
+		
+		[Embed(source="../media/sounds/gong.mp3")]
+		public static const SND_GONG:Class;
+		
+		[Embed(source="../media/sounds/powerup3.mp3")]
+		public static const SND_POWERUP:Class;
+		
+		[Embed(source="../media/sounds/clock_tick.mp3")]
+		public static const SND_CLOCK_TICK:Class;
 		
 		////////////////////////////////////////////////////////////////////////////////
 		// voice clips
@@ -213,8 +228,13 @@ package
 		public static var sndBoostBounce:Sound = new Sounds.SND_BOOST_BOUNCE() as Sound;
 		public static var sndBoom:Sound = new Sounds.SND_BOOM() as Sound;
 		public static var sndTrain:Sound = new Sounds.SND_TRAIN() as Sound;
-		public static var sndTrainWarning:Sound = new Sounds.SND_TRAIN_WARNING() as Sound;
-		public static var sndVoiceAh:Sound = new Sounds.SND_VOICE_AH() as Sound;
+		public static var sndCannonballHit:Sound = new Sounds.SND_CANNONBALL_HIT() as Sound;
+		public static var sndCrash:Sound = new Sounds.SND_CRASH() as Sound;
+		public static var sndCannonFire:Sound = new Sounds.SND_CANNON_FIRE() as Sound;
+		public static var sndGong:Sound = new Sounds.SND_GONG() as Sound;
+		public static var sndPowerup:Sound = new Sounds.SND_POWERUP() as Sound;
+		public static var sndClockTick:Sound = new Sounds.SND_CLOCK_TICK() as Sound;
+//		public static var sndVoiceAh:Sound = new Sounds.SND_VOICE_AH() as Sound;
 		
 		
 		// notes

@@ -11,12 +11,13 @@ package com.jumpGame.gameElements.powerups
 	
 	public class Blink extends GameObject
 	{
+		public var isActivated:Boolean = false;
+		
 		private var blastAnimation:MovieClip;
 		private var magicCircleImage:Image;
 		
 		private var hero:Hero;
 		private var totalTeleports:uint;
-		private var isActivated:Boolean = false;
 		private var isAnimationActivated:Boolean;
 		private var firstTeleportTime:int;
 		
@@ -54,7 +55,7 @@ package com.jumpGame.gameElements.powerups
 			this.firstTeleportTime = Statics.gameTime + 2000;
 			this.isActivated = true;
 			this.isAnimationActivated = false;
-			Sounds.sndBell.play();
+			Sounds.sndPowerup.play();
 		}
 		
 		public function update(timeDiff:Number):void {
@@ -78,7 +79,7 @@ package com.jumpGame.gameElements.powerups
 				if (blastAnimation.isComplete) {
 					if (this.totalTeleports < 24) { // teleport this many times
 						// teleport
-						blastAnimation.fps += 20;
+						blastAnimation.fps += 10;
 						blastAnimation.stop();
 						blastAnimation.play();
 						//this.hero.isDynamic = false;
@@ -92,6 +93,7 @@ package com.jumpGame.gameElements.powerups
 						blastAnimation.visible = false;
 						Starling.juggler.remove(blastAnimation);
 						this.hero.dy = Constants.SuperBouncePower;
+						Statics.particleJet.start(1);
 						Sounds.sndBoom.play();
 						//this.hero.isDynamic = true;
 						this.isActivated = false;

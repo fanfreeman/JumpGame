@@ -1,32 +1,34 @@
 package com.jumpGame.gameElements.contraptions
 {
 	import com.jumpGame.gameElements.Contraption;
+	import com.jumpGame.level.Statics;
 	
 	import starling.display.Image;
 
 	public class Bell extends Contraption implements IPoolable
 	{
+		public var numDings:uint;
 		private var bellImage:Image;
 		private var dx:Number;
 		private var dy:Number;
 		private var rotationSpeed:Number = Math.PI / 72;
 		private var isTouched:Boolean = false;
 		
-		private var _destroyed:Boolean = true; // required by interface
-		
 		override public function initialize():void {
 			if (bellImage == null) createArt();
 			this.isTouched = false;
 			this.dx = 0;
 			this.dy = 0;
+			this.numDings = 0;
 			this.show();
+			Statics.isBellActive = true;
 		}
 		
 		protected function createArt():void
 		{
 			bellImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Bell0000"));
 			bellImage.pivotX = Math.ceil(bellImage.width / 2); // center image on registration point
-			bellImage.pivotY = Math.ceil(bellImage.height);
+			bellImage.pivotY = Math.ceil(bellImage.height / 2);
 			this.addChild(bellImage);
 		}
 		
@@ -51,6 +53,7 @@ package com.jumpGame.gameElements.contraptions
 			if (!this.isTouched) {
 				this.isTouched = true;
 				Sounds.sndBell.play();
+				this.numDings++;
 				
 				this.dx = -(distanceFromCenter / 100);
 				this.dy = Math.max(heroDy * 2, Constants.PowerBouncePower);
@@ -59,6 +62,12 @@ package com.jumpGame.gameElements.contraptions
 			}
 			
 			return false;
+		}
+		
+		override protected function hide():void
+		{
+			this.visible = false;
+			Statics.isBellActive = false;
 		}
 	}
 }

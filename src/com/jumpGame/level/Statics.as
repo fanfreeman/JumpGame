@@ -8,6 +8,8 @@ package com.jumpGame.level
 		public static var particleLeaf:PDParticleSystem;
 		public static var particleCharge:PDParticleSystem;
 		public static var particleWind:PDParticleSystem;
+		public static var particleJet:PDParticleSystem;
+		public static var particleComet:PDParticleSystem;
 		
 		// normal/bonus/preparation mode
 		public static var gameMode:uint;
@@ -17,6 +19,9 @@ package com.jumpGame.level
 		
 		// game time since start in milliseconds
 		public static var gameTime:int;
+		
+		// max climb distance in pixels (each unit height is 75 pixels)
+		public static var maxDist:Number;
 		
 		// number of seconds of bonus mode time available
 		public static var bonusTime:int;
@@ -40,7 +45,30 @@ package com.jumpGame.level
 		// allows disabling of powerups when one is in progress
 		public static var powerupsEnabled:Boolean
 		
-		// attractor power indicator
-		public static var attractorOn:Boolean;
+		// number of speical abilities left
+		public static var numSpecials:uint;
+		public static var specialUseTime:int;
+		public static var specialReadyTime:int;
+		public static var specialReady:Boolean;
+		
+		// contraption activation status
+		public static var isBellActive:Boolean;
+		public static var isRightCannonActive:Boolean;
+		public static var isLeftCannonActive:Boolean;
+		
+		// objectives
+		public static var displayingBadge:Boolean;
+		
+		public static function distance(x1:Number, y1:Number, x2:Number, y2:Number):Number {
+			var dx:Number = Math.abs(x1 - x2);
+			var dy:Number = Math.abs(y1 - y2);
+			return Math.sqrt(dx * dx + dy * dy);
+		}
+		
+		public static function vectorAngle (x1:Number, y1:Number, x2:Number, y2:Number):Number {
+			var dx:Number = x2 - x1;
+			var dy:Number = y2 - y1;
+			return Math.atan2(dy,dx);
+		}
 	}
 }

@@ -102,17 +102,17 @@ package com.jumpGame.ui
 			scoreContainer.addChild(scoreText);
 			
 			// Navigation buttons.
-			returnBtn = new Button(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnReturn0000"));
+			returnBtn = new Button(Assets.getSprite("AtlasTexture2").getTexture("BtnReturn0000"));
 			returnBtn.y = (stage.stageHeight * 70)/100;
 			returnBtn.addEventListener(Event.TRIGGERED, onReturnClick);
 			this.addChild(returnBtn);
 			
-			continueBtn = new Button(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnContinue0000"));
+			continueBtn = new Button(Assets.getSprite("AtlasTexture2").getTexture("BtnContinue0000"));
 			continueBtn.y = (stage.stageHeight * 70)/100;
 			continueBtn.addEventListener(Event.TRIGGERED, onContinueClick);
 			this.addChild(continueBtn);
 			
-			proceedBtn = new Button(Assets.getSprite("AtlasTexturePlatforms").getTexture("BtnProceed0000"));
+			proceedBtn = new Button(Assets.getSprite("AtlasTexture2").getTexture("BtnProceed0000"));
 			proceedBtn.y = (stage.stageHeight * 70)/100;
 			proceedBtn.addEventListener(Event.TRIGGERED, onProceedClick);
 			this.addChild(proceedBtn);
