@@ -25,24 +25,18 @@ package
 		{
 		}
 		
-		// retrieve user data from the backend, use readData() to read async data
+		/**
+		 * retrieve user data from the backend
+		 */
 		public function retrieveUserData():void {
-			var randomParam:String = "?p=" + Math.floor(Math.random() * (10000000)); // random parameter to avoid getting cached result
-			var loader:URLLoader = new URLLoader();
-			configureListeners(loader);
-			
-			var request:URLRequest = new URLRequest(Constants.UriGetUserInfo);
-			request.method = URLRequestMethod.GET;
-			
-			try {
-				loader.load(request);
-			} catch (error:Error) {
-				trace("Unable to load requested document.");
-			}
+			this.sendGetRequest(Constants.UriGetUserInfo);
 		}
 		
-		// post a piece of user data to the backend
-		// @param data a json string to send
+		/**
+		 * post a piece of user data to the backend
+		 * 
+		 * @param data a json string to send
+		 */
 		public function postUserData(data:String):void {
 			var preSalt:String = "oMgTHIS__$iS?Saltted!@#39-";
 			var afterSalt:String = "-=^pErrf_-_+=f3$ct:)#";
@@ -58,6 +52,48 @@ package
 			variables.data = data;
 			variables.hash = hash;
 			request.data = variables;
+			
+			try {
+				loader.load(request);
+			} catch (error:Error) {
+				trace("Unable to load requested document.");
+			}
+		}
+		
+		/**
+		 * Find a smart match opponent for the current user
+		 */
+		public function findSmartMatch():void {
+			this.sendGetRequest(Constants.UriFindMatch);
+		}
+		
+		/**
+		 * Find a smart match opponent for the current user
+		 */
+		public function createMatch(opponentId:String):void {
+			this.sendGetRequest(Constants.UriCreateMatchFacebook + "?opponent=" + opponentId);
+		}
+		
+		/**
+		 * Resigns a specified match for the current user
+		 */
+		public function resignMatch(gameId:uint):void {
+			this.sendGetRequest(Constants.UriResignMatch + "?match=" + String(gameId));
+		}
+		
+		/**
+		 * Sends a GET request to the backend
+		 * 
+		 * @param url the url to send the request to
+		 */
+		private function sendGetRequest(url:String):void {
+//			var randomParam:String = "?p=" + Math.floor(Math.random() * (10000000)); // random parameter to avoid getting cached result
+			trace("Communicating: " + url);
+			var loader:URLLoader = new URLLoader();
+			configureListeners(loader);
+			
+			var request:URLRequest = new URLRequest(url);
+			request.method = URLRequestMethod.GET;
 			
 			try {
 				loader.load(request);

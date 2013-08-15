@@ -1,7 +1,5 @@
 package com.jumpGame.gameElements.platforms
 {
-	import com.jumpGame.level.Statics;
-	
 	import starling.display.Image;
 
 	public class PlatformNormalBoost extends PlatformNormal
@@ -22,6 +20,8 @@ package com.jumpGame.gameElements.platforms
 			Sounds.sndBoostBounce.play();
 			this.platformAnimation.stop();
 			this.platformAnimation.play();
+			
+			this.gy = this.fixedGy - Constants.PlatformReactionBounce; // reaction bounce
 		}
 	}
 }

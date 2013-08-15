@@ -17,7 +17,6 @@ package com.jumpGame.gameElements
 		public var canBounce:Boolean = true;
 		public var isDynamic:Boolean = true;
 		public var gravity:Number = Constants.Gravity;
-		public var bouncePowerMultiplier:Number = 1;
 		
 		private var animationJump:MovieClip;
 		private var animationHurt:MovieClip;
@@ -147,11 +146,12 @@ package com.jumpGame.gameElements
 		
 		public function bounce(bouncePower:Number):void {
 			if (this.canBounce) {
-				bouncePower *= this.bouncePowerMultiplier;
-				if (bouncePower > Constants.MaxHeroBouncePower) this.dy = Constants.MaxHeroBouncePower;
-				else this.dy = bouncePower;
-				animationJump.stop();
-				animationJump.play();
+				if (bouncePower > this.dy) {
+					if (bouncePower > Constants.MaxHeroBouncePower) this.dy = Constants.MaxHeroBouncePower;
+					else this.dy = bouncePower;
+					animationJump.stop();
+					animationJump.play();
+				}
 			}
 			
 			if (this.dx > 0.2) this.rotationSpeed = Math.PI / 27;
@@ -202,14 +202,15 @@ package com.jumpGame.gameElements
 			}
 			
 			// play sound effect
-			var temp:Number = Math.random() * 3;
-			if (temp < 1) {
-				Sounds.sndBounce1.play();
-			} else if (temp >= 1 && temp < 2) {
-				Sounds.sndBounce2.play();
-			} else if (temp >= 2 && temp < 3) {
-				Sounds.sndBounce3.play();
-			}
+//			var temp:Number = Math.random() * 3;
+//			if (temp < 1) {
+//				Sounds.sndBounce1.play();
+//			} else if (temp >= 1 && temp < 2) {
+//				Sounds.sndBounce2.play();
+//			} else if (temp >= 2 && temp < 3) {
+//				Sounds.sndBounce3.play();
+//			}
+			Sounds.sndBoostBounce.play();
 			
 			// disable collision detection for a while
 			this.canBounce = false;

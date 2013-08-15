@@ -12,6 +12,7 @@ package com.jumpGame.gameElements.powerups
 		public function CometRun(hero:Hero)
 		{
 			this.hero = hero;
+			this.isActivated = false;
 		}
 		
 		public function activate():void {
@@ -26,6 +27,9 @@ package com.jumpGame.gameElements.powerups
 		public function update(timeDiff:Number):void {
 			if (!this.isActivated) return;
 			
+			this.gx = this.hero.gx;
+			this.gy = this.hero.gy - 20;
+			
 			this.hero.dy = 2.5;
 			Statics.cameraShake = 10;
 			
@@ -34,7 +38,7 @@ package com.jumpGame.gameElements.powerups
 				this.hero.dy = 3.0;
 				Statics.particleWind.stop();
 				Statics.particleComet.stop();
-				Statics.particleComet.start(0.5);
+				Statics.particleComet.start(1);
 				this.isActivated = false;
 				Statics.powerupsEnabled = true;
 			}

@@ -51,8 +51,6 @@ package com.jumpGame.gameElements.platforms
 				}
 				else this.scalingUp = true;
 			}
-			
-			
 		}
 	}
 }

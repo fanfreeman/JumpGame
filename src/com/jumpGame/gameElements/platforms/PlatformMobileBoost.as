@@ -20,6 +20,8 @@ package com.jumpGame.gameElements.platforms
 			Sounds.sndBoostBounce.play();
 			this.platformAnimation.stop();
 			this.platformAnimation.play();
+			
+			this.gy = this.fixedGy - Constants.PlatformReactionBounce; // reaction bounce
 		}
 	}
 }

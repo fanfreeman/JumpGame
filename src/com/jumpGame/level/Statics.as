@@ -10,12 +10,16 @@ package com.jumpGame.level
 		public static var particleWind:PDParticleSystem;
 		public static var particleJet:PDParticleSystem;
 		public static var particleComet:PDParticleSystem;
+		public static var particleBounce:PDParticleSystem;
 		
 		// normal/bonus/preparation mode
 		public static var gameMode:uint;
 		
 		// preparation step
 		public static var preparationStep:uint;
+		
+		// game speed multiplicatin factor
+		public static var speedFactor:Number;
 		
 		// game time since start in milliseconds
 		public static var gameTime:int;
@@ -58,6 +62,17 @@ package com.jumpGame.level
 		
 		// objectives
 		public static var displayingBadge:Boolean;
+		
+		// communication
+		public static var playerName:String;
+		public static var opponentName:String;
+		public static var currentRound:uint;
+		public static var roundScores:Array;
+		public static var isPlayer2:Boolean;
+		public static var gameId:uint;
+		public static var opponentFbid:String;
+		public static var userId:String;
+		public static var resignedBy:String;
 		
 		public static function distance(x1:Number, y1:Number, x2:Number, y2:Number):Number {
 			var dx:Number = Math.abs(x1 - x2);

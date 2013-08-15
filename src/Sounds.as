@@ -5,6 +5,7 @@ package
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.net.URLRequest;
+	import flash.events.Event;
 	
 	/**
 	 * This class holds all the sound embeds and objects that are used in the game.
@@ -14,39 +15,20 @@ package
 		/**
 		 * demo sounds 
 		 */
-		[Embed(source="../media/sounds/bgWelcome.mp3")]
-		public static const SND_BG_MAIN:Class;
-		
-		[Embed(source="../media/sounds/eat.mp3")]
-		public static const SND_EAT:Class;
-		
-		[Embed(source="../media/sounds/coffee.mp3")]
-		public static const SND_COFFEE:Class;
-		
 		[Embed(source="../media/sounds/mushroom.mp3")]
 		public static const SND_MUSHROOM:Class;
-		
-		[Embed(source="../media/sounds/hit.mp3")]
-		public static const SND_HIT:Class;
-		
-		[Embed(source="../media/sounds/hurt.mp3")]
-		public static const SND_HURT:Class;
-		
-		[Embed(source="../media/sounds/lose.mp3")]
-		public static const SND_LOSE:Class;
-		
 		// sound effects
 		[Embed(source="../media/sounds/scratch.mp3")]
 		public static const SND_SCRATCH:Class;
 		
-		[Embed(source="../media/sounds/bounce1.mp3")]
-		public static const SND_BOUNCE_1:Class;
-		
+//		[Embed(source="../media/sounds/bounce1.mp3")]
+//		public static const SND_BOUNCE_1:Class;
+//		
 		[Embed(source="../media/sounds/bounce2.mp3")]
 		public static const SND_BOUNCE_2:Class;
-		
-		[Embed(source="../media/sounds/bounce3.mp3")]
-		public static const SND_BOUNCE_3:Class;
+//		
+//		[Embed(source="../media/sounds/bounce3.mp3")]
+//		public static const SND_BOUNCE_3:Class;
 		
 		[Embed(source="../media/sounds/airjump.mp3")]
 		public static const SND_AIRJUMP:Class;
@@ -78,8 +60,8 @@ package
 		[Embed(source="../media/sounds/power_down.mp3")]
 		public static const SND_CRASH:Class;
 		
-		[Embed(source="../media/sounds/cannon_fire.mp3")]
-		public static const SND_CANNON_FIRE:Class;
+//		[Embed(source="../media/sounds/cannon_fire.mp3")]
+//		public static const SND_CANNON_FIRE:Class;
 		
 		[Embed(source="../media/sounds/gong.mp3")]
 		public static const SND_GONG:Class;
@@ -90,10 +72,13 @@ package
 		[Embed(source="../media/sounds/clock_tick.mp3")]
 		public static const SND_CLOCK_TICK:Class;
 		
+		[Embed(source="../media/sounds/distant_explosion.mp3")]
+		public static const SND_DISTANT_EXPLOSION:Class;
+		
 		////////////////////////////////////////////////////////////////////////////////
 		// voice clips
-		[Embed(source="../media/sounds/voice/ah.mp3")]
-		public static const SND_VOICE_AH:Class;
+//		[Embed(source="../media/sounds/voice/ah.mp3")]
+//		public static const SND_VOICE_AH:Class;
 		
 		////////////////////////////////////////////////////////////////////////////////
 		// musical notes
@@ -208,18 +193,12 @@ package
 		
 		/**
 		 * Initialized Sound objects. 
-		 */		
-		public static var sndBgMain:Sound = new Sounds.SND_BG_MAIN() as Sound;
-		public static var sndEat:Sound = new Sounds.SND_EAT() as Sound;
-		public static var sndCoffee:Sound = new Sounds.SND_COFFEE() as Sound;
+		 */
 		public static var sndMushroom:Sound = new Sounds.SND_MUSHROOM() as Sound;
-		public static var sndHit:Sound = new Sounds.SND_HIT() as Sound;
-		public static var sndHurt:Sound = new Sounds.SND_HURT() as Sound;
-		public static var sndLose:Sound = new Sounds.SND_LOSE() as Sound;
 		public static var sndScratch:Sound = new Sounds.SND_SCRATCH() as Sound;
-		public static var sndBounce1:Sound = new Sounds.SND_BOUNCE_1() as Sound;
+//		public static var sndBounce1:Sound = new Sounds.SND_BOUNCE_1() as Sound;
 		public static var sndBounce2:Sound = new Sounds.SND_BOUNCE_2() as Sound;
-		public static var sndBounce3:Sound = new Sounds.SND_BOUNCE_3() as Sound;
+//		public static var sndBounce3:Sound = new Sounds.SND_BOUNCE_3() as Sound;
 		public static var sndAirjump:Sound = new Sounds.SND_AIRJUMP() as Sound;
 		public static var sndTrainHit:Sound = new Sounds.SND_TRAIN_HIT() as Sound;
 		public static var sndGotHourglass:Sound = new Sounds.SND_GOT_HOURGLASS() as Sound;
@@ -230,10 +209,11 @@ package
 		public static var sndTrain:Sound = new Sounds.SND_TRAIN() as Sound;
 		public static var sndCannonballHit:Sound = new Sounds.SND_CANNONBALL_HIT() as Sound;
 		public static var sndCrash:Sound = new Sounds.SND_CRASH() as Sound;
-		public static var sndCannonFire:Sound = new Sounds.SND_CANNON_FIRE() as Sound;
+//		public static var sndCannonFire:Sound = new Sounds.SND_CANNON_FIRE() as Sound;
 		public static var sndGong:Sound = new Sounds.SND_GONG() as Sound;
 		public static var sndPowerup:Sound = new Sounds.SND_POWERUP() as Sound;
 		public static var sndClockTick:Sound = new Sounds.SND_CLOCK_TICK() as Sound;
+		public static var sndDistantExplosion:Sound = new Sounds.SND_DISTANT_EXPLOSION() as Sound;
 //		public static var sndVoiceAh:Sound = new Sounds.SND_VOICE_AH() as Sound;
 		
 		
@@ -275,6 +255,10 @@ package
 												new Sounds.SND_NOTE_35() as Sound,
 												new Sounds.SND_NOTE_36() as Sound];
 		
+		private static var bgmSoundInitial:Sound;
+		private static var bgmSoundFadeout:Sound;
+		private static var bgmSoundUnderscoreLoop:Sound;
+		
 		// sound channels
 		public static var channelBgm:SoundChannel;
 		
@@ -290,10 +274,27 @@ package
 			if (Statics.nextStarNote == 36) Statics.nextStarNote = 0;
 		}
 		
+		public static function loadBgm():void {
+			//bgmSound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/bgFunky.mp3"));
+			bgmSoundInitial = new Sound();
+			bgmSoundInitial.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/ghostCircus.mp3"));
+			
+			bgmSoundFadeout = new Sound();
+			bgmSoundFadeout.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/ghostCircusFadeout.mp3"));
+			
+			bgmSoundUnderscoreLoop = new Sound();
+			bgmSoundUnderscoreLoop.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/ghostCircusUnderscoreLoop.mp3"));
+		}
+		
 		public static function playBgm():void {
-			var sound:Sound=new Sound();
-			sound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/bgFunky.mp3"));  
-			channelBgm = sound.play(0, 999);  
+			channelBgm = bgmSoundInitial.play(); 
+			channelBgm.addEventListener(Event.SOUND_COMPLETE, playBgmFadeout);
+		}
+		
+		public static function playBgmFadeout(event:Event):void {
+			bgmSoundFadeout.play();
+			channelBgm = bgmSoundUnderscoreLoop.play(0, 999);
+			event.target.removeEventListener(event.type, playBgmFadeout);
 		}
 		
 		public static function stopBgm():void {

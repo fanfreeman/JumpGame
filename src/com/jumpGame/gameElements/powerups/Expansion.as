@@ -129,7 +129,6 @@ package com.jumpGame.gameElements.powerups
 //			Starling.juggler.remove(heroAnimation);
 //			heroAnimation.visible = false;
 			//				this.hero.gravity = Constants.Gravity;
-			this.hero.bouncePowerMultiplier = 1;
 //			this.hero.visible = true;
 			this.isActivated = false;
 			

@@ -13,12 +13,6 @@ package
 	 */
 	public class Assets
 	{
-		// TODO: remove
-		[Embed(source="../media/graphics/mySpritesheet.png")]
-		public static const AtlasTextureGame:Class;
-		[Embed(source="../media/graphics/mySpritesheet.xml", mimeType="application/octet-stream")]
-		public static const AtlasXmlGame:Class;
-		
 		// platforms atlas
 		[Embed(source="../media/graphics/platforms.png")]
 		public static const AtlasTexturePlatforms:Class;
@@ -47,10 +41,6 @@ package
 		[Embed(source="../media/graphics/layer0_sky.png")]
 		public static const BgLayer0Sky:Class;
 		
-		// TODO: remove
-		[Embed(source="../media/graphics/bgWelcome.jpg")]
-		public static const BgWelcome:Class;
-		
 		/**
 		 * Texture Cache 
 		 */
@@ -62,17 +52,17 @@ package
 		 * Returns the Texture atlas instance.
 		 * @return the TextureAtlas instance (there is only one instance per app)
 		 */
-		public static function getAtlas():TextureAtlas
-		{
-			if (gameTextureAtlas == null)
-			{
-				var texture:Texture = getTexture("AtlasTextureGame");
-				var xml:XML = XML(new AtlasXmlGame());
-				gameTextureAtlas=new TextureAtlas(texture, xml);
-			}
-			
-			return gameTextureAtlas;
-		}
+//		public static function getAtlas():TextureAtlas
+//		{
+//			if (gameTextureAtlas == null)
+//			{
+//				var texture:Texture = getTexture("AtlasTextureGame");
+//				var xml:XML = XML(new AtlasXmlGame());
+//				gameTextureAtlas=new TextureAtlas(texture, xml);
+//			}
+//			
+//			return gameTextureAtlas;
+//		}
 		
 		/**
 		 * Returns a texture from this class based on a string key.

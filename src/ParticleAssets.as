@@ -51,6 +51,13 @@ package
 		[Embed(source="../media/particles/comet/texture.png")]
 		public static var ParticleCometTexture:Class;
 		
+		// bounce
+		[Embed(source="../media/particles/bounce/particle.pex", mimeType="application/octet-stream")]
+		public static var ParticleBounceXML:Class;
+		
+		[Embed(source="../media/particles/bounce/texture.png")]
+		public static var ParticleBounceTexture:Class;
+		
 		// sea of fire
 //		[Embed(source="../media/particles/fire/particle.pex", mimeType="application/octet-stream")]
 //		public static var ParticleFireXML:Class;

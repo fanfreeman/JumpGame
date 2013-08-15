@@ -7,6 +7,7 @@ package com.jumpGame.level  {
 		
 		private var generator:LevelGenerator;
 		private var difficulty:int = 1;
+		private var nextDifficultyDistance:Number;
 		
 		// parse level definition file
 		public function LevelParser() {
@@ -17,12 +18,12 @@ package com.jumpGame.level  {
 			
 			// initial contraption settings
 			// gy, interval, setting type
-			this.levelElementsArray.push([currentY * Constants.UnitHeight, 30, Constants.ContraptionSettingHourglass]);
-			this.levelElementsArray.push([currentY * Constants.UnitHeight, 30, Constants.ContraptionSettingTrain]);
-			this.levelElementsArray.push([currentY * Constants.UnitHeight, 30, Constants.ContraptionSettingBell]);
-			this.levelElementsArray.push([currentY * Constants.UnitHeight, 30, Constants.ContraptionSettingPowerupBoxes]);
-			this.levelElementsArray.push([currentY * Constants.UnitHeight, 30, Constants.ContraptionSettingCannon]);
-			this.levelElementsArray.push([currentY * Constants.UnitHeight, 30, Constants.ContraptionSettingWitch]);
+			this.levelElementsArray.push([currentY * Constants.UnitHeight, 10, Constants.ContraptionSettingHourglass]);
+			this.levelElementsArray.push([currentY * Constants.UnitHeight, 10, Constants.ContraptionSettingTrain]);
+			this.levelElementsArray.push([currentY * Constants.UnitHeight, 10, Constants.ContraptionSettingBell]);
+			this.levelElementsArray.push([currentY * Constants.UnitHeight, 10, Constants.ContraptionSettingPowerupBoxes]);
+			this.levelElementsArray.push([currentY * Constants.UnitHeight, 10, Constants.ContraptionSettingCannon]);
+			this.levelElementsArray.push([currentY * Constants.UnitHeight, 10, Constants.ContraptionSettingWitch]);
 		}
 		
 		/**
@@ -60,6 +61,18 @@ package com.jumpGame.level  {
 					blockNumber = int(Math.floor(Math.random() * 1) + 7000);
 					this.generator.generate(blockNumber);
 					break;
+				case 8:
+					blockNumber = int(Math.floor(Math.random() * 1) + 8000);
+					this.generator.generate(blockNumber);
+					break;
+				case 9:
+					blockNumber = int(Math.floor(Math.random() * 1) + 9000);
+					this.generator.generate(blockNumber);
+					break;
+				case 10:
+					blockNumber = int(Math.floor(Math.random() * 1) + 10000);
+					this.generator.generate(blockNumber);
+					break;
 					
 				case 999999: // level designer
 					this.generator.generate(999999);
@@ -70,53 +83,47 @@ package com.jumpGame.level  {
 		public function updateDifficulty():void {
 			if (!Constants.isDesignerMode) {
 				// increase difficulty based on time elapsed
-				if (Statics.gameTime > 10 * 1000) { // lvl 1
-					this.difficulty = 2;
-				}
-				
-				if (Statics.gameTime > 30 * 1000) { // lvl 2
-					this.difficulty = 3;
-				}
-				
-				if (Statics.gameTime > 50 * 1000) { // lvl 3
-					this.difficulty = 4;
-				}
-				
-				if (Statics.gameTime > 70 * 1000) { // lvl 4
-					this.difficulty = 5;
-				}
-				
-				if (Statics.gameTime > 90 * 1000) { // lvl 5
-					this.difficulty = 6;
-				}
-				
-				if (Statics.gameTime > 110 * 1000) {
-					this.difficulty = 7;
-				}
+//				if (Statics.gameTime > 10 * 1000) { // lvl 1
+//					this.difficulty = 2;
+//				}
+//				
+//				if (Statics.gameTime > 30 * 1000) { // lvl 2
+//					this.difficulty = 3;
+//					Statics.speedFactor = 1.2;
+//				}
+//				
+//				if (Statics.gameTime > 50 * 1000) { // lvl 3
+//					this.difficulty = 4;
+//					Statics.speedFactor = 1.3;
+//				}
+//				
+//				if (Statics.gameTime > 70 * 1000) { // lvl 4
+//					this.difficulty = 5;
+//					Statics.speedFactor = 1.4;
+//				}
+//				
+//				if (Statics.gameTime > 90 * 1000) { // lvl 5
+//					this.difficulty = 6;
+//					Statics.speedFactor = 1.5;
+//				}
+//				
+//				if (Statics.gameTime > 110 * 1000) {
+//					this.difficulty = 7;
+//				}
 				
 				// increase difficulty based on distance climbed
-				if (Statics.maxDist > 8000) { // lvl 1
+				if (this.difficulty == 1 && Statics.maxDist > 8000) { // lvl 1 lasts shorter
 					this.difficulty = 2;
+					this.nextDifficultyDistance = 8000 + 18000;
 				}
 				
-				if (Statics.maxDist > 26000) { // lvl 2
-					this.difficulty = 3;
-				}
-				
-				if (Statics.maxDist > 44000) { // lvl 3
-					this.difficulty = 4;
-				}
-				
-				if (Statics.maxDist > 62000) { // lvl 4
-					this.difficulty = 5;
-				}
-				
-				if (Statics.maxDist > 80000) { // lvl 5
-					this.difficulty = 6;
-				}
-				
-				if (Statics.maxDist > 98000) {
-					this.difficulty = 7;
+				if (Statics.maxDist > this.nextDifficultyDistance) {
+					this.difficulty++;
+					if (this.difficulty > 10) {
+						this.difficulty = 2;
+						Statics.speedFactor *= 1.1;
+					}
+					this.nextDifficultyDistance += 18000;
 				}
 			}
 		}

@@ -22,9 +22,9 @@ package com.jumpGame.ui
 	public class HUD extends Sprite
 	{
 		// bonus time display
-		private var _bonusTime:int;
-		private var bonusTimeLabel:TextField;
-		private var bonusTimeText:TextField;
+//		private var _bonusTime:int;
+//		private var bonusTimeLabel:TextField;
+//		private var bonusTimeText:TextField;
 		
 		// distance display
 		private var _distance:int;
@@ -67,6 +67,7 @@ package com.jumpGame.ui
 		// objective achievement effect
 		private static var badgeAnimation:MovieClip;
 		private static var badgeExpireTime:int;
+		private static var badgeText:TextField;
 		
 		public function HUD()
 		{
@@ -80,22 +81,22 @@ package com.jumpGame.ui
 			fontScoreLabel = Fonts.getFont("ScoreLabel");
 			fontScoreValue = Fonts.getFont("ScoreValue");
 			
-			// bonus time label
-			bonusTimeLabel = new TextField(150, 20, "L I V E S", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
-			bonusTimeLabel.hAlign = HAlign.RIGHT;
-			bonusTimeLabel.vAlign = VAlign.TOP;
-			bonusTimeLabel.x = 250;
-			bonusTimeLabel.y = 5;
-			this.addChild(bonusTimeLabel);
-			
-			// bonus time
-			bonusTimeText = new TextField(150, 75, "5", fontScoreValue.fontName, fontScoreValue.fontSize, 0xffffff);
-			bonusTimeText.hAlign = HAlign.RIGHT;
-			bonusTimeText.vAlign = VAlign.TOP;
-			bonusTimeText.width = bonusTimeLabel.width;
-			bonusTimeText.x = int(bonusTimeLabel.x + bonusTimeLabel.width - bonusTimeText.width);
-			bonusTimeText.y = bonusTimeLabel.y + bonusTimeLabel.height;
-			this.addChild(bonusTimeText);
+//			// bonus time label
+//			bonusTimeLabel = new TextField(150, 20, "L I V E S", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
+//			bonusTimeLabel.hAlign = HAlign.RIGHT;
+//			bonusTimeLabel.vAlign = VAlign.TOP;
+//			bonusTimeLabel.x = 250;
+//			bonusTimeLabel.y = 5;
+//			this.addChild(bonusTimeLabel);
+//			
+//			// bonus time
+//			bonusTimeText = new TextField(150, 75, "5", fontScoreValue.fontName, fontScoreValue.fontSize, 0xffffff);
+//			bonusTimeText.hAlign = HAlign.RIGHT;
+//			bonusTimeText.vAlign = VAlign.TOP;
+//			bonusTimeText.width = bonusTimeLabel.width;
+//			bonusTimeText.x = int(bonusTimeLabel.x + bonusTimeLabel.width - bonusTimeText.width);
+//			bonusTimeText.y = bonusTimeLabel.y + bonusTimeLabel.height;
+//			this.addChild(bonusTimeText);
 			
 			// distance label
 			distanceLabel = new TextField(150, 20, "D I S T A N C E", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
@@ -116,7 +117,7 @@ package com.jumpGame.ui
 			this.addChild(distanceText);
 			
 			// coins label
-			coinsLabel = new TextField(150, 20, "S C O R E", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
+			coinsLabel = new TextField(150, 20, "C O I N S", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
 			coinsLabel.hAlign = HAlign.RIGHT;
 			coinsLabel.vAlign = VAlign.TOP;
 			
@@ -243,7 +244,7 @@ package com.jumpGame.ui
 			}
 			arrangeSpecialIndicators();
 			
-			// objective effect
+			// objective achievement effect
 			badgeAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("BadgeFlash"), 30);
 			badgeAnimation.pivotX = Math.ceil(badgeAnimation.width  / 2); // center art on registration point
 			badgeAnimation.pivotY = Math.ceil(badgeAnimation.height / 2);
@@ -252,6 +253,16 @@ package com.jumpGame.ui
 			badgeAnimation.loop = false;
 			badgeAnimation.visible = false;
 			this.addChild(badgeAnimation);
+			
+			// objective achievement message
+			var fontShadow:Font = Fonts.getFont("Verdana14");
+			badgeText = new TextField(200, 100, "", fontShadow.fontName, fontShadow.fontSize, 0xffffff);
+			badgeText.hAlign = HAlign.CENTER;
+			badgeText.vAlign = VAlign.CENTER;
+			badgeText.x = stage.stageWidth / 2 - 100;
+			badgeText.y = stage.stageHeight - 130 - 53;
+			badgeText.visible = false;
+			this.addChild(badgeText);
 		}
 		
 		private static function arrangeSpecialIndicators():void {
@@ -284,12 +295,12 @@ package com.jumpGame.ui
 			}
 		}
 		
-		public function get bonusTime():int { return _bonusTime; }
-		public function set bonusTime(value:int):void
-		{
-			_bonusTime = value;
-			bonusTimeText.text = _bonusTime.toString();
-		}
+//		public function get bonusTime():int { return _bonusTime; }
+//		public function set bonusTime(value:int):void
+//		{
+//			_bonusTime = value;
+//			bonusTimeText.text = _bonusTime.toString();
+//		}
 		
 		public function get distance():int { return _distance; }
 		public function set distance(value:int):void
@@ -326,6 +337,9 @@ package com.jumpGame.ui
 			badgeAnimation.visible = true;
 			badgeAnimation.play();
 			Sounds.sndGong.play();
+			badgeText.text = message;
+			badgeText.alpha = 1;
+			badgeText.visible = true;
 			badgeExpireTime = Statics.gameTime + 4000; // show for three seconds
 		}
 		
@@ -403,6 +417,10 @@ package com.jumpGame.ui
 				badgeAnimation.stop();
 				starling.core.Starling.juggler.remove(badgeAnimation);
 				Starling.juggler.tween(badgeAnimation, 1, {
+					transition: Transitions.LINEAR,
+					alpha: 0
+				});
+				Starling.juggler.tween(badgeText, 1, {
 					transition: Transitions.LINEAR,
 					alpha: 0
 				});

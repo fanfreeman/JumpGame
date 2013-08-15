@@ -3,7 +3,6 @@ package
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.screens.InGame;
 	import com.jumpGame.screens.Menu;
-	import com.jumpGame.screens.Welcome;
 	import com.jumpGame.ui.SoundButton;
 	
 	import flash.media.SoundMixer;
@@ -17,7 +16,7 @@ package
 	 */
 	public class Game extends Sprite
 	{
-		private var screenWelcome:Welcome;
+//		private var screenWelcome:Welcome;
 		private var screenMenu:Menu;
 		private var screenInGame:InGame;
 		/** Sound / Mute button. */
@@ -51,15 +50,13 @@ package
 		{
 			this.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
 			
-			
-			
 			// menu screen
 			screenMenu = new Menu();
 			this.addChild(screenMenu);
 			
 			// Welcome screen.
-			screenWelcome = new Welcome();
-			this.addChild(screenWelcome);
+//			screenWelcome = new Welcome();
+//			this.addChild(screenWelcome);
 			
 			// Create and add Sound/Mute button.
 			soundButton = new SoundButton();
@@ -69,24 +66,27 @@ package
 			this.addChild(soundButton)
 			
 			// Initialize the Welcome screen by default. 
-			screenWelcome.initialize();
+			screenMenu.initialize();
+			
+			// start loading bgm
+			Sounds.loadBgm();
 		}
 		
-		/**
-		 * On navigation from different screens. 
-		 * @param event
-		 * MARKED FOR DELETION
-		 */
-		private function onInGameNavigation(event:NavigationEvent):void
-		{
-			switch (event.params.id)
-			{
-				case "about":
-					screenWelcome.initialize();
-					screenWelcome.showAbout();
-					break;
-			}
-		}
+//		/**
+//		 * On navigation from different screens. 
+//		 * @param event
+//		 * MARKED FOR DELETION
+//		 */
+//		private function onInGameNavigation(event:NavigationEvent):void
+//		{
+//			switch (event.params.id)
+//			{
+//				case "about":
+//					screenWelcome.initialize();
+//					screenWelcome.showAbout();
+//					break;
+//			}
+//		}
 		
 		/**
 		 * On click of the sound/mute button. 
@@ -99,8 +99,9 @@ package
 			{
 				Sounds.muted = false;
 				
-				if (screenWelcome.visible) Sounds.sndBgMain.play(0, 999);
-				else if (screenInGame.visible) Sounds.sndBgMain.play(0, 999);
+//				if (screenWelcome.visible) Sounds.sndBgMain.play(0, 999);
+//				else if (screenInGame.visible) Sounds.sndBgMain.play(0, 999);
+//				Sounds.sndBgMain.play(0, 999);
 				
 				soundButton.showUnmuteState();
 			}
@@ -122,11 +123,11 @@ package
 		{
 			switch (event.params.id)
 			{
-				case "welcome":
-					screenWelcome.initialize();
-					break;
+//				case "welcome":
+//					screenWelcome.initialize();
+//					break;
 				case "menu":
-					screenWelcome.disposeTemporarily();
+//					screenWelcome.disposeTemporarily();
 					screenMenu.initialize();
 					
 					// get rid of in game screen first if it is present
@@ -143,26 +144,26 @@ package
 					
 					// create and initialize in game screen
 					screenInGame = new InGame();
-					screenInGame.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
+//					screenInGame.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
 					this.addChild(screenInGame);
 					screenInGame.initializeNormalMode();
 					break;
-				case "continue":
-					
-					break;
-				case "proceed":
-					// get rid of in game screen first if it is present
-					if (screenInGame) {
-						this.removeChild(screenInGame);
-					}
-					screenMenu.disposeTemporarily();
-					
-					// create and initialize in game screen
-					screenInGame = new InGame();
-					screenInGame.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
-					this.addChild(screenInGame);
-					screenInGame.initializeBonusMode();
-					break;
+//				case "continue":
+//					
+//					break;
+//				case "proceed":
+//					// get rid of in game screen first if it is present
+//					if (screenInGame) {
+//						this.removeChild(screenInGame);
+//					}
+//					screenMenu.disposeTemporarily();
+//					
+//					// create and initialize in game screen
+//					screenInGame = new InGame();
+//					screenInGame.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
+//					this.addChild(screenInGame);
+//					screenInGame.initializeBonusMode();
+//					break;
 			}
 		}
 	}

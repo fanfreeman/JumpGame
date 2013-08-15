@@ -57,6 +57,7 @@ package com.jumpGame.screens
 	import starling.animation.Tween;
 	import starling.core.Starling;
 	import starling.display.BlendMode;
+	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.extensions.PDParticleSystem;
@@ -87,6 +88,9 @@ package com.jumpGame.screens
 		private var powerupsList:Vector.<GameObject>;
 		private var powerupsListLength:uint = 0;
 		
+		// comet bright light
+		private var brightLightImage:Image;
+		
 		// ------------------------------------------------------------------------------------------------------------
 		// GAME PROPERTIES AND DATA
 		// ------------------------------------------------------------------------------------------------------------
@@ -96,7 +100,7 @@ package com.jumpGame.screens
 		private var timeDiffReal:int;
 		private var timeDiffControlled:Number;
 		//private var speedFactor:Number = 1.048 * 2; // game speed multiplier [1.099]
-		private var speedFactor:Number = 1.099;
+//		private var speedFactor:Number = 1.099;
 		
 		// coins obtained
 		private var coinsObtained:int = 0;
@@ -239,6 +243,13 @@ package com.jumpGame.screens
 			this.addChild(this.bg);
 			this.setChildIndex(this.bg, 0); // push to back
 			
+			// set up comet bright light
+			brightLightImage = new Image(Assets.getSprite("AtlasTexture2").getTexture("BrightLight0000"));
+			brightLightImage.pivotX = Math.ceil(brightLightImage.width / 2); // center image on registration point
+			brightLightImage.pivotY = Math.ceil(brightLightImage.height / 2);
+			brightLightImage.visible = false;
+			this.addChild(brightLightImage);
+			
 			// set up hero
 			this.hero = new Hero();
 			this.hero.gx = Constants.HERO_INITIAL_X;
@@ -279,6 +290,11 @@ package com.jumpGame.screens
 				Statics.particleComet = new PDParticleSystem(XML(new ParticleAssets.ParticleCometXML()), Texture.fromBitmap(new ParticleAssets.ParticleCometTexture()));
 				Starling.juggler.add(Statics.particleComet);
 				this.addChild(Statics.particleComet);
+				
+				// create bounce particle emitter
+				Statics.particleBounce = new PDParticleSystem(XML(new ParticleAssets.ParticleBounceXML()), Texture.fromBitmap(new ParticleAssets.ParticleBounceTexture()));
+				Starling.juggler.add(Statics.particleBounce);
+				this.addChild(Statics.particleBounce);
 			} else { // software rendering
 				
 				// use a smaller particleJet
@@ -362,6 +378,8 @@ package com.jumpGame.screens
 			this.powerupsList[this.powerupsListLength++] = pyromancy;
 			// power: comet run (not from box)
 			var cometRun:CometRun = new CometRun(this.hero);
+//			this.addChild(cometRun);
+//			this.setChildIndex(cometRun, this.getChildIndex(this.hero)); // push cometRun behind hero
 			this.powerupsList[this.powerupsListLength++] = cometRun;
 			
 			// create platform pools
@@ -421,6 +439,7 @@ package com.jumpGame.screens
 		{
 			// reset static vars
 			Statics.gameMode = Constants.ModeNormal;
+			Statics.speedFactor = 1.099;
 			Statics.preparationStep = Constants.PrepareStep0;
 			Statics.gameTime = 0;
 			Statics.bonusTime = 0;
@@ -442,7 +461,7 @@ package com.jumpGame.screens
 			pauseButton.visible = false;
 			
 			// reset scores
-			hud.bonusTime = 0;
+//			hud.bonusTime = 0;
 			hud.distance = 0;
 			hud.coins = 0;
 			
@@ -458,7 +477,7 @@ package com.jumpGame.screens
 		
 		public function initializeBonusMode():void
 		{
-			this.speedFactor = 1.545;
+			Statics.speedFactor = 1.545;
 			Statics.bonusTime = 300; // test
 			
 			// reset static vars
@@ -471,7 +490,7 @@ package com.jumpGame.screens
 			pauseButton.visible = false;
 			
 			// reset scores
-			hud.bonusTime = 0;
+//			hud.bonusTime = 0;
 			hud.distance = 0;
 			hud.coins = 0;
 			
@@ -615,25 +634,25 @@ package com.jumpGame.screens
 				Statics.preparationStep = Constants.PrepareStep1;
 			}
 			else if (Statics.preparationStep == Constants.PrepareStep1) {
-				if (timeCurrent> 1000) {
+				if (timeCurrent> 850) {
 					HUD.showMessage("3", 1000, 1);
 					Statics.preparationStep = Constants.PrepareStep2;
 				}
 			}
 			else if (Statics.preparationStep == Constants.PrepareStep2) {
-				if (timeCurrent> 2000) {
+				if (timeCurrent> 1700) {
 					HUD.showMessage("2", 1000, 1);
 					Statics.preparationStep = Constants.PrepareStep3;
 				}
 			}
 			else if (Statics.preparationStep == Constants.PrepareStep3) {
-				if (timeCurrent> 3000) {
+				if (timeCurrent> 2550) {
 					HUD.showMessage("1", 1000, 1);
 					Statics.preparationStep = Constants.PrepareStep4;
 				}
 			}
 			else if (Statics.preparationStep == Constants.PrepareStep4) {
-				if (timeCurrent> 4000) {
+				if (timeCurrent> 3400) {
 					HUD.showMessage("JUMP!", 1000, 1);
 					Statics.preparationStep = Constants.PrepareStepDone;
 					this.launchHero();
@@ -655,7 +674,7 @@ package com.jumpGame.screens
 			var timeCurrent:int = getTimer() - this.gameStartTime;
 			this.timeDiffReal = timeCurrent - Statics.gameTime;
 			Statics.gameTime = timeCurrent;
-			this.timeDiffControlled = Number(this.timeDiffReal) * this.speedFactor;
+			this.timeDiffControlled = Number(this.timeDiffReal) * Statics.speedFactor;
 			
 			if (gamePaused) {
 				return;
@@ -676,7 +695,7 @@ package com.jumpGame.screens
 			}
 			//if (Statics.gameMode == Constants.ModeBonus && timeCurrent > 42800) {
 			if (Statics.gameMode == Constants.ModeBonus && this.jumps >= 64) {
-				this.speedFactor = 2.62;
+				Statics.speedFactor = 2.62;
 			}
 			
 			/** update timers in other classes */
@@ -744,13 +763,14 @@ package com.jumpGame.screens
 				// update power: comet run
 				if (this.powerupsList[Constants.PowerupCometRun].isActivated) {
 					this.powerupsList[Constants.PowerupCometRun].update(this.timeDiffControlled);
+					
+					// update bright light
+					brightLightImage.visible = true;
+					brightLightImage.x = this.hero.x;
+					brightLightImage.y = this.hero.y + 20;
+				} else {
+					brightLightImage.visible = false;
 				}
-			}
-			
-			// testing
-			if (!this.objectivesList[0] && Statics.maxDist > 10000) {
-				HUD.showAchievement("Rookie Jumper!");
-				this.objectivesList[0] = true;
 			}
 			/** eof update timers */
 			
@@ -974,22 +994,107 @@ package com.jumpGame.screens
 				}
 				
 				// update hud
-				if (Statics.gameMode == Constants.ModeNormal) {
-					hud.bonusTime = Statics.bonusTime;
-				}
-				else if (Statics.gameMode == Constants.ModeBonus && this.checkWinLose) {
-					// count down time in bonus mode and update hud
-					hud.bonusTime = int(Statics.bonusTimeLeft / 1000);
-					Statics.bonusTimeLeft = Statics.bonusTime * 1000 - Statics.gameTime;
-					if (Statics.bonusTimeLeft <= 0) {
-						HUD.showMessage("Time Up!");
-						this.playerFail();
-						return;
-					}
-				}
-				
+//				if (Statics.gameMode == Constants.ModeNormal) {
+//					hud.bonusTime = Statics.bonusTime;
+//				}
+//				else if (Statics.gameMode == Constants.ModeBonus && this.checkWinLose) {
+//					// count down time in bonus mode and update hud
+//					hud.bonusTime = int(Statics.bonusTimeLeft / 1000);
+//					Statics.bonusTimeLeft = Statics.bonusTime * 1000 - Statics.gameTime;
+//					if (Statics.bonusTimeLeft <= 0) {
+//						HUD.showMessage("Time Up!");
+//						this.playerFail();
+//						return;
+//					}
+//				}
 				hud.distance = Math.round(Statics.maxDist / 100);
 				hud.coins = this.coinsObtained;
+				
+				// climb distance objectives
+				if (!this.objectivesList[0] && Statics.maxDist > 10000) {
+					HUD.showAchievement("Rookie Jumper");
+					this.objectivesList[0] = true;
+				}
+				if (!this.objectivesList[1] && Statics.maxDist > 50000) {
+					HUD.showAchievement("I Can Jump!");
+					this.objectivesList[1] = true;
+				}
+				if (!this.objectivesList[2] && Statics.maxDist > 100000) {
+					HUD.showAchievement("Bouncy");
+					this.objectivesList[2] = true;
+				}
+				if (!this.objectivesList[3] && Statics.maxDist > 200000) {
+					HUD.showAchievement("Acrobatic");
+					this.objectivesList[3] = true;
+				}
+				if (!this.objectivesList[4] && Statics.maxDist > 300000) {
+					HUD.showAchievement("Like a Bunny");
+					this.objectivesList[4] = true;
+				}
+				if (!this.objectivesList[5] && Statics.maxDist > 400000) {
+					HUD.showAchievement("Up!");
+					this.objectivesList[5] = true;
+				}
+				if (!this.objectivesList[6] && Statics.maxDist > 500000) {
+					HUD.showAchievement("Prodigy");
+					this.objectivesList[6] = true;
+				}
+				if (!this.objectivesList[7] && Statics.maxDist > 600000) {
+					HUD.showAchievement("Defying Gravity");
+					this.objectivesList[7] = true;
+				}
+				if (!this.objectivesList[8] && Statics.maxDist > 800000) {
+					HUD.showAchievement("Superman");
+					this.objectivesList[8] = true;
+				}
+				if (!this.objectivesList[9] && Statics.maxDist > 1000000) {
+					HUD.showAchievement("Invincible");
+					this.objectivesList[9] = true;
+				}
+				// eof climb distance objectives
+				
+				// coin collection objectives
+				if (!this.objectivesList[10] && this.coinsObtained > 250) {
+					HUD.showAchievement("Spare Change");
+					this.objectivesList[10] = true;
+				}
+				if (!this.objectivesList[11] && this.coinsObtained > 750) {
+					HUD.showAchievement("In Ur Couch, Stealng Ur Change");
+					this.objectivesList[11] = true;
+				}
+				if (!this.objectivesList[12] && this.coinsObtained > 1500) {
+					HUD.showAchievement("TGI Pay Day");
+					this.objectivesList[12] = true;
+				}
+				if (!this.objectivesList[13] && this.coinsObtained > 2500) {
+					HUD.showAchievement("Money Machine");
+					this.objectivesList[13] = true;
+				}
+				if (!this.objectivesList[14] && this.coinsObtained > 3500) {
+					HUD.showAchievement("It's Raining Gold");
+					this.objectivesList[14] = true;
+				}
+				if (!this.objectivesList[15] && this.coinsObtained > 4500) {
+					HUD.showAchievement("Bank Robber");
+					this.objectivesList[15] = true;
+				}
+				if (!this.objectivesList[16] && this.coinsObtained > 5500) {
+					HUD.showAchievement("Cash Cow");
+					this.objectivesList[16] = true;
+				}
+				if (!this.objectivesList[17] && this.coinsObtained > 7000) {
+					HUD.showAchievement("Wall Street Trader");
+					this.objectivesList[17] = true;
+				}
+				if (!this.objectivesList[18] && this.coinsObtained > 9000) {
+					HUD.showAchievement("Royal Mint");
+					this.objectivesList[18] = true;
+				}
+				if (!this.objectivesList[19] && this.coinsObtained > 15000) {
+					HUD.showAchievement("Revenues Department");
+					this.objectivesList[19] = true;
+				}
+				// eof coin collection objectives
 			} // eof not in preparation mode
 		}
 		
@@ -1122,6 +1227,13 @@ package com.jumpGame.screens
 						this.platformsList[i].heroDy = this.hero.dy;
 					} else if (this.platformsList[i] is Comet) {
 						isComet = true;
+						
+						// show bright light
+						if (!this.powerupsList[Constants.PowerupCometRun].isActivated) {
+							brightLightImage.visible = true;
+							brightLightImage.x = this.platformsList[i].x;
+							brightLightImage.y = this.platformsList[i].y;
+						}
 					} else if (this.platformsList[i] is Repulsor) {
 						platformBounds.inflate(-100, -100); // shrink repulsor bounds
 						isRepulsor = true;
@@ -1165,6 +1277,9 @@ package com.jumpGame.screens
 								if (this.platformsList[i] is StarRed) Statics.particleJet.start(0.5);
 								this.hero.bounce(this.platformsList[i].getBouncePower());
 								Statics.particleLeaf.start(0.2); // play particle effect
+								Statics.particleBounce.emitterX = this.platformsList[i].x;
+								Statics.particleBounce.emitterY = this.platformsList[i].y;
+								Statics.particleBounce.start(0.01);
 								this.jumps++; // record number of jumps
 								this.returnPlatformToPool(i);
 								continue;
@@ -1198,7 +1313,12 @@ package com.jumpGame.screens
 								if (this.platformsList[i].canBounce) {
 									this.hero.bounce(this.platformsList[i].getBouncePower());
 									this.platformsList[i].contact();
+									// particle effects
 									Statics.particleLeaf.start(0.2); // play particle effect
+									Statics.particleBounce.emitterX = this.platformsList[i].x;
+									Statics.particleBounce.emitterY = this.platformsList[i].y;
+									Statics.particleBounce.start(0.01);
+									
 									this.jumps++; // record number of jumps
 									
 									if (Statics.gameMode == Constants.ModeBonus) { // music mode actions
@@ -1482,6 +1602,10 @@ package com.jumpGame.screens
 							if (this.hero.gy > this.contraptionsList[i].gy && this.hero.dy < 0) { // top bounce
 								this.contraptionsList[i].contact();
 								this.hero.bounce(Constants.BoostBouncePower);
+								Statics.particleLeaf.start(0.2); // play particle effect
+								Statics.particleBounce.emitterX = this.contraptionsList[i].x;
+								Statics.particleBounce.emitterY = this.contraptionsList[i].y;
+								Statics.particleBounce.start(0.01);
 							}
 							Statics.particleLeaf.start(0.2); // play particle effect
 						}
@@ -1509,6 +1633,10 @@ package com.jumpGame.screens
 							if (this.hero.gy > this.contraptionsList[i].gy && this.hero.dy < 0) { // top bounce
 								this.contraptionsList[i].contact();
 								this.hero.bounce(Constants.BoostBouncePower);
+								Statics.particleLeaf.start(0.2); // play particle effect
+								Statics.particleBounce.emitterX = this.contraptionsList[i].x;
+								Statics.particleBounce.emitterY = this.contraptionsList[i].y;
+								Statics.particleBounce.start(0.01);
 							}
 							Statics.particleLeaf.start(0.2); // play particle effect
 						}
@@ -1528,6 +1656,11 @@ package com.jumpGame.screens
 				
 				// remove a contraption if it has scrolled below sea of fire
 				if (this.contraptionsList[i].gy < this.fg.sofHeight - this.contraptionsList[i].height) {
+					// canon crash sound effect
+					if (this.contraptionsList[i] is Cannon) {
+						Sounds.sndDistantExplosion.play();
+					}
+					
 					this.returnContraptionToPool(i);
 				}
 			} /** eof contraption behaviors */
@@ -1660,6 +1793,7 @@ package com.jumpGame.screens
 			var tempElement:Platform = ObjectPool.instance.getObj(qualifiedName) as elementClass;
 			if (tempElement == null) throw new Error("Pool is full: " + elementClassName);
 			tempElement.initialize(elementSize);
+			tempElement.fixedGy = y;
 			tempElement.gx = x;
 			tempElement.gy = y;
 			this.addChild(tempElement);

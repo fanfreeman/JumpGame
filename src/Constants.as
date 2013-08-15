@@ -8,7 +8,7 @@ package
 	public class Constants
 	{
 		// level designer mode switch
-		public static const isDesignerMode:Boolean = true;
+		public static const isDesignerMode:Boolean = false;
 		public static const powerupsEnabled:Boolean = true;
 		public static const contraptionsEnabled:Boolean = true;
 		
@@ -164,6 +164,9 @@ package
 		// server URIs
 		public static const UriGetUserInfo:String = "user/info";
 		public static const UriPostUserInfo:String = "user/post";
+		public static const UriFindMatch:String = "user/findmatch";
+		public static const UriCreateMatchFacebook:String = "user/creatematchfb";
+		public static const UriResignMatch:String = "user/resignmatch";
 		
 		// camera
 		public static const CameraEasingTimeY:Number = 10.0;
@@ -211,5 +214,13 @@ package
 		
 		// special indicators total width
 		public static const SpecialsTotalWidth:Number = 400;
+		
+		// platform reaction bounce distance
+		public static const PlatformReactionBounce:Number = 15;
+		
+		// main menu tabs
+		public static const ScreenMatches:String = "ScreenMatches";
+		public static const ScreenUpgrades:String = "ScreenUpgrades";
+		public static const ScreenAchievements:String = "ScreenAchievements";
 	}
 }

@@ -15,11 +15,13 @@ package com.jumpGame.gameElements
 		public var isTouched:Boolean = false;
 		public var canBounce:Boolean = true;
 		public var size:int;
-		protected var platformAnimation:MovieClip = null;
-		protected var platformImage:Image = null;
 		
 		public var extenderStatus:int; // 0: not extender; -1: left extender; 1: right extender
 		public var extenderParent:Platform;
+		
+		public var fixedGy:Number;
+		protected var platformAnimation:MovieClip = null;
+		protected var platformImage:Image = null;
 		
 		private var _destroyed:Boolean = true; // required by interface
 		
@@ -68,21 +70,22 @@ package com.jumpGame.gameElements
 		
 		public function contact():void {
 			// play sound effect
-			if (Statics.gameMode == Constants.ModeNormal) {
-				var temp:Number = Math.random() * 3;
-				if (temp < 1) {
-					Sounds.sndBounce1.play();
-				} else if (temp >= 1 && temp < 2) {
-					Sounds.sndBounce2.play();
-				} else if (temp >= 2 && temp < 3) {
-					Sounds.sndBounce3.play();
-				}
-			}
+//			if (Statics.gameMode == Constants.ModeNormal) {
+//				var temp:Number = Math.random() * 3;
+//				if (temp < 1) {
+//					Sounds.sndBounce1.play();
+//				} else if (temp >= 1 && temp < 2) {
+//					Sounds.sndBounce2.play();
+//				} else if (temp >= 2 && temp < 3) {
+//					Sounds.sndBounce3.play();
+//				}
+//			}
+			Sounds.sndBoostBounce.play();
 			
-			if (this.platformAnimation != null) {
-				this.platformAnimation.stop();
-				this.platformAnimation.play();
-			}
+			this.platformAnimation.stop();
+			this.platformAnimation.play();
+			
+			this.gy = this.fixedGy - Constants.PlatformReactionBounce; // reaction bounce
 		}
 		
 		public function getBouncePower():Number {
@@ -90,6 +93,21 @@ package com.jumpGame.gameElements
 		}
 		
 		public function update(timeDiff:Number):void {
+			// reaction bounceback
+			var cameraEasingFactorY:Number = 15 - Math.abs(this.fixedGy - this.gy) / 10;
+			if (cameraEasingFactorY < 5) cameraEasingFactorY = 5;
+			var d2y:Number = 0.0; // platform acceleration
+			if (this.fixedGy > this.gy) { // move platform up
+				d2y = ((this.fixedGy - this.gy) - this.dy * cameraEasingFactorY) / (0.5 * cameraEasingFactorY * cameraEasingFactorY);
+			}
+			else if (this.fixedGy < this.gy) { // move pltform down
+				d2y = ((this.fixedGy - this.gy) - this.dy * cameraEasingFactorY) / (0.5 * cameraEasingFactorY * cameraEasingFactorY);
+			}
+			else { // bring platform to rest
+				d2y = -this.dy / cameraEasingFactorY;
+			}
+			this.dy += d2y;
+			
 			// limit max velocity for platformMobile
 			if (this.dx > Constants.PlatformMobileMaxVelocityX) this.dx = Constants.PlatformMobileMaxVelocityX;
 			else if (this.dx < -Constants.PlatformMobileMaxVelocityX) this.dx = -Constants.PlatformMobileMaxVelocityX;
