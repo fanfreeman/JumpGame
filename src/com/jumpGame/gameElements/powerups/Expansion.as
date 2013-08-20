@@ -83,7 +83,7 @@ package com.jumpGame.gameElements.powerups
 			
 			this.isActivated = true;
 			this.completionWarned = false;
-			this.completionTime = Statics.gameTime + 10000; // 10 seconds
+			this.completionTime = Statics.gameTime + 10000; // 5 seconds plus 1 second per rank
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 			
 			this.nextLaunchTime = Statics.gameTime + 1000;

@@ -74,6 +74,23 @@ package com.jumpGame.level
 		public static var userId:String;
 		public static var resignedBy:String;
 		
+		// upgrade ranks
+		public static var rankTeleportation:uint;
+		public static var rankAttraction:uint;
+		public static var rankDuplication:uint;
+		public static var rankSafety:uint;
+		public static var rankBarrels:uint;
+		public static var rankCannonballs:uint;
+		public static var rankComet:uint;
+		public static var rankAbilityCooldown:uint;
+		public static var rankAbilityPower:uint;
+		
+		// player wealth
+		public static var playerCoins:int;
+		
+		// upgrade prices
+		public static var upgradePrices:Object;
+		
 		public static function distance(x1:Number, y1:Number, x2:Number, y2:Number):Number {
 			var dx:Number = Math.abs(x1 - x2);
 			var dy:Number = Math.abs(y1 - y2);

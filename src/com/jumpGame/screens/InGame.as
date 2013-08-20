@@ -704,34 +704,34 @@ package com.jumpGame.screens
 			var powerupToActivate:int = this.hud.updatePowerupReel(this.timeDiffReal);
 			if (this.checkWinLose && Constants.powerupsEnabled) {
 				// update powerup reel
-				if (powerupToActivate == 0) {
-					HUD.showMessage("Ancient Power: Teleportation");
-					this.powerupsList[Constants.PowerupBlink].activate();
-				}
-				else if (powerupToActivate == 1) {
-					HUD.showMessage("Ancient Power: Attraction");
-					this.powerupsList[Constants.PowerupAttractor].activate();
-				}
-				else if (powerupToActivate == 2) {
-					HUD.showMessage("Ancient Power: Safety Rocket");
-					this.powerupsList[Constants.PowerupLevitation].activate();
-				}
-				else if (powerupToActivate == 3) {
+//				if (powerupToActivate == 0) {
+//					HUD.showMessage("Ancient Power: Teleportation");
+//					this.powerupsList[Constants.PowerupBlink].activate();
+//				}
+//				else if (powerupToActivate == 1) {
+//					HUD.showMessage("Ancient Power: Attraction");
+//					this.powerupsList[Constants.PowerupAttractor].activate();
+//				}
+//				else if (powerupToActivate == 2) {
+//					HUD.showMessage("Ancient Power: Safety Rocket");
+//					this.powerupsList[Constants.PowerupLevitation].activate();
+//				}
+//				else if (powerupToActivate == 3) {
+//					HUD.showMessage("Ancient Power: Duplication");
+//					this.powerupsList[Constants.PowerupExtender].activate();
+//				}
+//				else if (powerupToActivate == 4) {
+//					HUD.showMessage("Ancient Power: Barrels O' Fire");
+//					this.powerupsList[Constants.PowerupPyromancy].activate();
+//				}
+//				else if (powerupToActivate == 5) {
+//					HUD.showMessage("Ancient Curse: Rain of Cannonballs");
+//					this.powerupsList[Constants.PowerupExpansion].activate();
+//				}
+				if (powerupToActivate >= 0) {
 					HUD.showMessage("Ancient Power: Duplication");
 					this.powerupsList[Constants.PowerupExtender].activate();
 				}
-				else if (powerupToActivate == 4) {
-					HUD.showMessage("Ancient Power: Barrels O' Fire");
-					this.powerupsList[Constants.PowerupPyromancy].activate();
-				}
-				else if (powerupToActivate == 5) {
-					HUD.showMessage("Ancient Curse: Rain of Cannonballs");
-					this.powerupsList[Constants.PowerupExpansion].activate();
-				}
-//				if (powerupToActivate >= 0) {
-//					HUD.showMessage("Ancient Power: Attraction");
-//										this.powerupsList[Constants.PowerupAttractor].activate();
-//				}
 				
 				// update powerups
 				var i:uint;
@@ -1174,7 +1174,7 @@ package com.jumpGame.screens
 			
 			// show game over screen
 			this.setChildIndex(gameOverContainer, this.numChildren - 1);
-			gameOverContainer.initialize(this.coinsObtained, Statics.maxDist / 100);
+			gameOverContainer.initialize(this.coinsObtained, int(Statics.maxDist / 100));
 		}
 		
 		/**

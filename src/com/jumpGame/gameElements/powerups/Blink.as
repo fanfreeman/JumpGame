@@ -77,7 +77,7 @@ package com.jumpGame.gameElements.powerups
 				}
 				
 				if (blastAnimation.isComplete) {
-					if (this.totalTeleports < 24) { // teleport this many times
+					if (this.totalTeleports < 12 + Statics.rankTeleportation * 2) { // teleport this many times
 						// teleport
 						blastAnimation.fps += 10;
 						blastAnimation.stop();

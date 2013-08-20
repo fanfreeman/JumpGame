@@ -67,14 +67,34 @@ package com.jumpGame.screens
 				var dataObj:Object = JSON.parse(data);
 				if (dataObj.hasOwnProperty("status")) {
 					if (dataObj.status == "found") { // found existing player
+						// get basic player info
 						Statics.userId = String(dataObj.user_id);
 						Statics.playerName = dataObj.first_name + " " + dataObj.last_name.substr(0, 1) + ".";
-						if ((int)(dataObj.score) > 0) { // this is an existing player
-							label.text = "Welcome back, " + dataObj.first_name + ". High Score: " + dataObj.score;
-						} else { // this is a new player
-							label.text = "Welcome, " + dataObj.first_name;
-						}
-						// parse matches
+						
+						// get player details
+						// score
+//						if (int(dataObj.high_score) > 0) { // existing player
+//							label.text = "Welcome, " + dataObj.first_name + "! Your High Score: " + dataObj.high_score;
+//						} else { // this is a new player
+//							label.text = "Welcome to You Jump I Jump, " + dataObj.first_name + "!";
+//						}
+						Statics.playerCoins = int(dataObj.coins);
+						label.text = "Coins: " + dataObj.coins;
+						// upgrade ranks
+						Statics.rankTeleportation = int(dataObj.rank_teleportation);
+						Statics.rankAttraction = int(dataObj.rank_attraction);
+						Statics.rankDuplication = int(dataObj.rank_duplication);
+						Statics.rankSafety = int(dataObj.rank_safety);
+						Statics.rankBarrels = int(dataObj.rank_barrels);
+						Statics.rankCannonballs = int(dataObj.rank_cannonballs);
+						Statics.rankComet = int(dataObj.rank_comet);
+						Statics.rankAbilityCooldown = int(dataObj.rank_ability_cooldown);
+						Statics.rankAbilityPower = int(dataObj.rank_ability_power);
+						
+						// upgrade prices
+						Statics.upgradePrices = dataObj.prices;
+						
+						// parse player matches
 						var matchesYourTurnCollection:ListCollection = new ListCollection();
 						var matchesTheirTurnCollection:ListCollection = new ListCollection();
 						var matchesFinishedCollection:ListCollection = new ListCollection();
@@ -155,8 +175,23 @@ package com.jumpGame.screens
 						this.screenMatches.matchDataPopup.initialize(false);
 						this.screenMatches.matchDataPopup.visible = true;
 					}
+					else if (dataObj.status == "purchased") { // successfully made purchase
+						Statics.playerCoins = int(dataObj.coins);
+						label.text = "Coins: " + dataObj.coins;
+						Statics.rankTeleportation = int(dataObj.rank_teleportation);
+						Statics.rankAttraction = int(dataObj.rank_attraction);
+						Statics.rankDuplication = int(dataObj.rank_duplication);
+						Statics.rankSafety = int(dataObj.rank_safety);
+						Statics.rankBarrels = int(dataObj.rank_barrels);
+						Statics.rankCannonballs = int(dataObj.rank_cannonballs);
+						Statics.rankComet = int(dataObj.rank_comet);
+						Statics.rankAbilityCooldown = int(dataObj.rank_ability_cooldown);
+						Statics.rankAbilityPower = int(dataObj.rank_ability_power);
+						Statics.upgradePrices = dataObj.prices;
+						this.screenUpgrades.refresh();
+					}
 					else if (dataObj.status == "error") { // error message received
-						this.displayLoadingNotice("Error: " + dataObj.reason);
+						label.text = "Error: " + dataObj.reason;
 					}
 				} else {
 					this.displayLoadingNotice("Communication Error #2222");
@@ -267,11 +302,16 @@ package com.jumpGame.screens
 				return;
 			}
 			
+			// display the selected screen
 			this.showScreen(this.tabs.selectedItem.action);
 			
 			// when displaying the matches screen, refresh matches
 			if (this.tabs.selectedItem.action == Constants.ScreenMatches) {
 				this.refreshMatches();
+			}
+			// when displaying the upgrades screen, refresh upgrades
+			else if (this.tabs.selectedItem.action == Constants.ScreenUpgrades) {
+				this.screenUpgrades.refresh();
 			}
 		}
 		

@@ -38,6 +38,17 @@ package
 		 * @param data a json string to send
 		 */
 		public function postUserData(data:String):void {
+			this.sendPostRequest(data, Constants.UriPostUserInfo);
+		}
+		
+		public function postPurchaseUpgrade(data:String):void {
+			this.sendPostRequest(data, Constants.UriPurchase);
+		}
+		
+		/**
+		 * Send a post request
+		 */
+		public function sendPostRequest(data:String, url:String):void {
 			var preSalt:String = "oMgTHIS__$iS?Saltted!@#39-";
 			var afterSalt:String = "-=^pErrf_-_+=f3$ct:)#";
 			var hash:String = MD5.hash(preSalt + data + afterSalt + afterSalt);
@@ -45,7 +56,7 @@ package
 			var loader:URLLoader = new URLLoader();
 			configureListeners(loader);
 			
-			var request:URLRequest = new URLRequest(Constants.UriPostUserInfo);
+			var request:URLRequest = new URLRequest(url);
 			request.method = URLRequestMethod.POST;
 			
 			var variables : URLVariables = new URLVariables();
@@ -56,7 +67,7 @@ package
 			try {
 				loader.load(request);
 			} catch (error:Error) {
-				trace("Unable to load requested document.");
+				trace("Unable to send post request");
 			}
 		}
 		

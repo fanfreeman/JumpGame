@@ -275,12 +275,12 @@ package com.jumpGame.ui
 		}
 		
 		// show scores and post to backend
-		public function initialize(score:int, distance:int):void
+		public function initialize(coinsObtained:int, distanceTraveled:int):void
 		{
 			matchDataPopupInitialized = false;
-			roundScore = score + distance;
-			distanceText.text = "Distance: " + distance.toString();
-			coinText.text = "Coins: " + score.toString();
+			roundScore = coinsObtained + distanceTraveled;
+			distanceText.text = "Distance: " + distanceTraveled.toString();
+			coinText.text = "Coins: " + coinsObtained.toString();
 			scoreText.text = "Total Score: " + roundScore.toString();
 			
 			this.visible = true;
@@ -305,6 +305,7 @@ package com.jumpGame.ui
 			
 			// send new score to backend
 			var jsonStr:String = JSON.stringify({
+				coins: coinsObtained,
 				score: roundScore,
 				game_id: Statics.gameId,
 				round: Statics.currentRound

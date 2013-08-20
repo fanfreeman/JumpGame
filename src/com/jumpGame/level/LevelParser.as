@@ -21,7 +21,7 @@ package com.jumpGame.level  {
 			this.levelElementsArray.push([currentY * Constants.UnitHeight, 10, Constants.ContraptionSettingHourglass]);
 			this.levelElementsArray.push([currentY * Constants.UnitHeight, 10, Constants.ContraptionSettingTrain]);
 			this.levelElementsArray.push([currentY * Constants.UnitHeight, 10, Constants.ContraptionSettingBell]);
-			this.levelElementsArray.push([currentY * Constants.UnitHeight, 10, Constants.ContraptionSettingPowerupBoxes]);
+			this.levelElementsArray.push([currentY * Constants.UnitHeight, 15, Constants.ContraptionSettingPowerupBoxes]);
 			this.levelElementsArray.push([currentY * Constants.UnitHeight, 10, Constants.ContraptionSettingCannon]);
 			this.levelElementsArray.push([currentY * Constants.UnitHeight, 10, Constants.ContraptionSettingWitch]);
 		}

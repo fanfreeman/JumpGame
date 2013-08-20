@@ -90,7 +90,7 @@ package com.jumpGame.gameElements.contraptions
 		}
 		
 		private function turnOnThrusters():void {
-			trace("Turning on thrusters!");
+//			trace("Turning on thrusters!");
 			cannonOnImage.visible = true;
 			cannonOffImage.visible = false;
 			this.thrustersOn = true;
@@ -98,7 +98,7 @@ package com.jumpGame.gameElements.contraptions
 		}
 		
 		private function turnOffThrusters():void {
-			trace("Turning off thrusters!");
+//			trace("Turning off thrusters!");
 			cannonOnImage.visible = false;
 			cannonOffImage.visible = true;
 			this.thrustersOn = false;

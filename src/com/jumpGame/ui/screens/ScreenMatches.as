@@ -4,6 +4,7 @@ package com.jumpGame.ui.screens
 	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.MatchDataContainer;
 	import com.jumpGame.screens.Menu;
+	import com.jumpGame.ui.components.MatchItemRenderer;
 	
 	import flash.external.ExternalInterface;
 	
@@ -128,6 +129,8 @@ package com.jumpGame.ui.screens
 			listYourTurn.y = headerYourTurn.y + headerYourTurn.height + 10;
 			listYourTurn.verticalScrollPolicy = Scroller.SCROLL_POLICY_OFF;
 			matchesContainer.addChild(listYourTurn);
+			listYourTurn.itemRendererType = MatchItemRenderer;
+//			listYourTurn.itemRendererName = "MatchItemRenderer";
 			listYourTurn.itemRendererProperties.labelField = "text";
 			listYourTurn.addEventListener(Event.CHANGE, listYourTurnChangeHandler);
 			
