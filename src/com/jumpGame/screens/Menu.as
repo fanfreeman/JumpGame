@@ -3,8 +3,11 @@ package com.jumpGame.screens
 	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.level.Statics;
-	import com.jumpGame.ui.screens.ScreenAchievements;
+	import com.jumpGame.ui.popups.DialogBox;
+	import com.jumpGame.ui.popups.ScreenGetCoins;
+	import com.jumpGame.ui.popups.ScreenGetGems;
 	import com.jumpGame.ui.screens.ScreenMatches;
+	import com.jumpGame.ui.screens.ScreenTownSquare;
 	import com.jumpGame.ui.screens.ScreenUpgrades;
 	
 	import feathers.controls.Label;
@@ -16,6 +19,7 @@ package com.jumpGame.screens
 	import feathers.system.DeviceCapabilities;
 	import feathers.themes.MetalWorksMobileTheme;
 	
+	import starling.animation.Transitions;
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.MovieClip;
@@ -29,7 +33,9 @@ package com.jumpGame.screens
 	public class Menu  extends ScreenNavigator
 	{
 		protected var theme:MetalWorksMobileTheme;
-		private var label:Label;
+		private var coinLabel:Label;
+		private var gemLabel:Label;
+		private var rankLabel:Label;
 		private var fontBadabb:Font;
 		public var communicator:Communicator = null;
 		
@@ -39,9 +45,19 @@ package com.jumpGame.screens
 		private var tabs:TabBar;
 		private var transitionManager:TabBarSlideTransitionManager;
 		
+		// screens
 		private var screenMatches:ScreenMatches;
 		private var screenUpgrades:ScreenUpgrades;
-		private var screenAchievements:ScreenAchievements;
+		private var screenAchievements:ScreenTownSquare;
+		private var screenGetCoins:ScreenGetCoins;
+		private var screenGetGems:ScreenGetGems;
+		
+		// dialog box
+		private var dialogBox:DialogBox;
+		
+		// objective achievement effect
+		private var badgeAnimation:MovieClip;
+		private var badgeText:TextField;
 		
 		public function Menu()
 		{
@@ -79,7 +95,9 @@ package com.jumpGame.screens
 //							label.text = "Welcome to You Jump I Jump, " + dataObj.first_name + "!";
 //						}
 						Statics.playerCoins = int(dataObj.coins);
-						label.text = "Coins: " + dataObj.coins;
+						Statics.playerGems = int(dataObj.gems);
+						coinLabel.text = "Coins: " + dataObj.coins;
+						gemLabel.text = "Gems: " + dataObj.gems;
 						// upgrade ranks
 						Statics.rankTeleportation = int(dataObj.rank_teleportation);
 						Statics.rankAttraction = int(dataObj.rank_attraction);
@@ -175,9 +193,9 @@ package com.jumpGame.screens
 						this.screenMatches.matchDataPopup.initialize(false);
 						this.screenMatches.matchDataPopup.visible = true;
 					}
-					else if (dataObj.status == "purchased") { // successfully made purchase
+					else if (dataObj.status == "purchased_upgrade") { // successfully purchased upgrade
 						Statics.playerCoins = int(dataObj.coins);
-						label.text = "Coins: " + dataObj.coins;
+						coinLabel.text = "Coins: " + dataObj.coins;
 						Statics.rankTeleportation = int(dataObj.rank_teleportation);
 						Statics.rankAttraction = int(dataObj.rank_attraction);
 						Statics.rankDuplication = int(dataObj.rank_duplication);
@@ -189,9 +207,16 @@ package com.jumpGame.screens
 						Statics.rankAbilityPower = int(dataObj.rank_ability_power);
 						Statics.upgradePrices = dataObj.prices;
 						this.screenUpgrades.refresh();
+						this.showAchievement("Self Improvement");
+					}
+					else if (dataObj.status == "purchased_coins") { // successfully purchased coins
+						Statics.playerCoins = int(dataObj.coins);
+						coinLabel.text = "Coins: " + dataObj.coins;
+						Statics.playerGems = int(dataObj.gems);
+						gemLabel.text = "Gems: " + dataObj.gems;
 					}
 					else if (dataObj.status == "error") { // error message received
-						label.text = "Error: " + dataObj.reason;
+						trace("Error: " + dataObj.reason);
 					}
 				} else {
 					this.displayLoadingNotice("Communication Error #2222");
@@ -229,14 +254,32 @@ package com.jumpGame.screens
 			var topBar:Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("UiMainTop0000"));
 			this.addChild(topBar);
 			
-			// score label
-			label = new Label();
-			label.text = "Loading...";
-			label.width = Constants.StageWidth;
-			label.height = 50;
-			label.x = 250;
-			label.y = 7;
-			this.addChild(label);
+			// coin label
+			coinLabel = new Label();
+			coinLabel.text = "Coins: ";
+			coinLabel.width = 160;
+			coinLabel.height = 30;
+			coinLabel.x = 180;
+			coinLabel.y = 7;
+			this.addChild(coinLabel);
+			
+			// gem label
+			gemLabel = new Label();
+			gemLabel.text = "Gems: ";
+			gemLabel.width = 160;
+			gemLabel.height = 30;
+			gemLabel.x = coinLabel.bounds.right + 20;
+			gemLabel.y = 7;
+			this.addChild(gemLabel);
+			
+			// rank label
+			rankLabel = new Label();
+			rankLabel.text = "Rank: ";
+			rankLabel.width = 160;
+			rankLabel.height = 30;
+			rankLabel.x = gemLabel.bounds.right + 20;
+			rankLabel.y = 7;
+			this.addChild(rankLabel);
 			
 			// loading screen
 			createLoadingNotice();
@@ -244,7 +287,8 @@ package com.jumpGame.screens
 			// screens
 			this.screenMatches = new ScreenMatches();
 			this.screenUpgrades = new ScreenUpgrades();
-			this.screenAchievements = new ScreenAchievements();
+			this.screenAchievements = new ScreenTownSquare();
+			
 			this.addEventListener(Event.CHANGE, navigatorChangeHandler);
 			this.addScreen(Constants.ScreenMatches, new ScreenNavigatorItem(screenMatches));
 			this.addScreen(Constants.ScreenUpgrades, new ScreenNavigatorItem(screenUpgrades));
@@ -260,7 +304,7 @@ package com.jumpGame.screens
 				[
 					{ label: "Matches", action: Constants.ScreenMatches },
 					{ label: "Upgrades", action: Constants.ScreenUpgrades },
-					{ label: "Achievements", action: Constants.ScreenAchievements }
+					{ label: "Town Square", action: Constants.ScreenAchievements }
 				]);
 			tabs.addEventListener( Event.CHANGE, tabsChangeHandler );
 			this.addChild(tabs);
@@ -268,6 +312,42 @@ package com.jumpGame.screens
 			// screen transitions
 			this.transitionManager = new TabBarSlideTransitionManager(this, this.tabs);
 			this.transitionManager.duration = 0.4;
+			
+			// custom screens
+			// get coins screen
+			screenGetCoins = new ScreenGetCoins(this);
+			screenGetCoins.visible = false;
+			this.addChild(screenGetCoins);
+			
+			// get gems screen
+			screenGetGems = new ScreenGetGems(this);
+			screenGetGems.visible = false;
+			this.addChild(screenGetGems);
+			
+			// dialog box
+			dialogBox = new DialogBox(this);
+			dialogBox.visible = false;
+			this.addChild(dialogBox);
+			
+			// objective achievement effect
+			badgeAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("BadgeFlash"), 30);
+			badgeAnimation.pivotX = Math.ceil(badgeAnimation.width  / 2); // center art on registration point
+			badgeAnimation.pivotY = Math.ceil(badgeAnimation.height / 2);
+			badgeAnimation.x = Constants.StageWidth / 2;
+			badgeAnimation.y = Constants.StageHeight - 130;
+			badgeAnimation.loop = false;
+			badgeAnimation.visible = false;
+			this.addChild(badgeAnimation);
+			
+			// objective achievement message
+			var fontVerdana14:Font = Fonts.getFont("Verdana14");
+			badgeText = new TextField(200, 100, "", fontVerdana14.fontName, fontVerdana14.fontSize, 0xffffff);
+			badgeText.hAlign = HAlign.CENTER;
+			badgeText.vAlign = VAlign.CENTER;
+			badgeText.x = stage.stageWidth / 2 - 100;
+			badgeText.y = stage.stageHeight - 130 - 53;
+			badgeText.visible = false;
+			this.addChild(badgeText);
 		}
 		
 		private function traceObject(o:Object):void{
@@ -292,6 +372,10 @@ package com.jumpGame.screens
 					break;
 				}
 			}
+			
+			// hide custom screens
+			screenGetCoins.visible = false;
+			screenGetGems.visible = false;
 		}
 		
 		private function tabsChangeHandler(event:Event):void
@@ -313,6 +397,10 @@ package com.jumpGame.screens
 			else if (this.tabs.selectedItem.action == Constants.ScreenUpgrades) {
 				this.screenUpgrades.refresh();
 			}
+			
+			// bring achievement badge to front
+			setChildIndex(badgeAnimation, numChildren - 1);
+			setChildIndex(badgeText, numChildren - 1);
 		}
 		
 		private function createLoadingNotice():void {
@@ -363,7 +451,6 @@ package com.jumpGame.screens
 		}
 		
 		private function refreshMatches():void {
-			label.text = "Connecting to Game Server...";
 			displayLoadingNotice("Refreshing matches...");
 			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
 			this.communicator.retrieveUserData();
@@ -372,6 +459,68 @@ package com.jumpGame.screens
 		public function disposeTemporarily():void
 		{
 			this.visible = false;
+		}
+		
+		/**
+		 * Display achievement badge
+		 */
+		public function showAchievement(message:String):void {
+			starling.core.Starling.juggler.add(badgeAnimation);
+			badgeAnimation.alpha = 1;
+			badgeAnimation.visible = true;
+			badgeAnimation.play();
+			Sounds.sndGong.play();
+			badgeText.text = message;
+			badgeText.alpha = 1;
+			badgeText.visible = true;
+			Starling.juggler.delayCall(hideAchievement, 3);
+		}
+		
+		/**
+		 * Hide the achievement badge
+		 */
+		private function hideAchievement():void {
+			badgeAnimation.stop();
+			starling.core.Starling.juggler.remove(badgeAnimation);
+			Starling.juggler.tween(badgeAnimation, 1, {
+				transition: Transitions.LINEAR,
+				alpha: 0
+			});
+			Starling.juggler.tween(badgeText, 1, {
+				transition: Transitions.LINEAR,
+				alpha: 0
+			});
+		}
+		
+		public function showGetCoinsScreen(event:Event):void {
+			screenGetCoins.refresh();
+			screenGetCoins.visible = true;
+			setChildIndex(screenGetCoins, numChildren - 1);
+		}
+		
+		public function showGetGemsScreen(event:Event):void {
+			screenGetGems.refresh();
+			screenGetGems.visible = true;
+			setChildIndex(screenGetGems, numChildren - 1);
+		}
+		
+		public function showDialogBox(prompt:String, isTwoButton:Boolean, callbackFunction):void {
+			trace("showing dialog box...");
+			dialogBox.show(prompt, isTwoButton, callbackFunction);
+			setChildIndex(dialogBox, numChildren - 1);
+		}
+		
+		public function dialogCloseHandler(event:Event):void {
+			dialogBox.visible = false;
+		}
+		
+		public function dialogCancelHandler(event:Event):void {
+			dialogBox.removeOkButtonListeners(); // remove extra event listeners on the OK button
+			dialogBox.visible = false;
+		}
+		
+		public function hideDialogBox():void {
+			dialogBox.visible = false;
 		}
 	}
 }

@@ -255,8 +255,8 @@ package com.jumpGame.ui
 			this.addChild(badgeAnimation);
 			
 			// objective achievement message
-			var fontShadow:Font = Fonts.getFont("Verdana14");
-			badgeText = new TextField(200, 100, "", fontShadow.fontName, fontShadow.fontSize, 0xffffff);
+			var fontVerdana14:Font = Fonts.getFont("Verdana14");
+			badgeText = new TextField(200, 100, "", fontVerdana14.fontName, fontVerdana14.fontSize, 0xffffff);
 			badgeText.hAlign = HAlign.CENTER;
 			badgeText.vAlign = VAlign.CENTER;
 			badgeText.x = stage.stageWidth / 2 - 100;

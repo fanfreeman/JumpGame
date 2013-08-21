@@ -42,7 +42,11 @@ package
 		}
 		
 		public function postPurchaseUpgrade(data:String):void {
-			this.sendPostRequest(data, Constants.UriPurchase);
+			this.sendPostRequest(data, Constants.UriPurchaseUpgrade);
+		}
+		
+		public function postPurchaseCoins(data:String):void {
+			this.sendPostRequest(data, Constants.UriPurchaseCoins);
 		}
 		
 		/**

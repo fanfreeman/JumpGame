@@ -87,6 +87,7 @@ package com.jumpGame.level
 		
 		// player wealth
 		public static var playerCoins:int;
+		public static var playerGems:int;
 		
 		// upgrade prices
 		public static var upgradePrices:Object;

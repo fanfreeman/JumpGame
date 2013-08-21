@@ -164,7 +164,8 @@ package
 		// server URIs
 		public static const UriGetUserInfo:String = "user/info";
 		public static const UriPostUserInfo:String = "user/post";
-		public static const UriPurchase:String = "user/purchase";
+		public static const UriPurchaseUpgrade:String = "user/purchase/upgrade";
+		public static const UriPurchaseCoins:String = "user/purchase/coins";
 		public static const UriFindMatch:String = "user/findmatch";
 		public static const UriCreateMatchFacebook:String = "user/creatematchfb";
 		public static const UriResignMatch:String = "user/resignmatch";

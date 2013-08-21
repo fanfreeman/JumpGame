@@ -2,7 +2,7 @@ package com.jumpGame.ui.screens
 {
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.level.Statics;
-	import com.jumpGame.ui.MatchDataContainer;
+	import com.jumpGame.ui.popups.MatchDataContainer;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.MatchItemRenderer;
 	

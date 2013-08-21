@@ -16,6 +16,7 @@ package com.jumpGame.ui
 	import starling.text.TextField;
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
+	import com.jumpGame.ui.popups.MatchDataContainer;
 	
 	public class GameOverContainer extends Sprite
 	{
@@ -306,6 +307,7 @@ package com.jumpGame.ui
 			// send new score to backend
 			var jsonStr:String = JSON.stringify({
 				coins: coinsObtained,
+				distance: distanceTraveled,
 				score: roundScore,
 				game_id: Statics.gameId,
 				round: Statics.currentRound
