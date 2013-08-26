@@ -7,6 +7,14 @@ package com.jumpGame.gameElements.platforms
 	
 	public class Coin extends Platform
 	{
+		// properties for revolving around center
+		private var distanceFromCenter:Number;
+		private var revolveVelocity:Number;
+		private var revolveClockwise:Boolean;
+		private var revolveAngle:Number;
+		private var fixedX:Number;
+		private var fixedY:Number;
+		
 		private var isKinematic:Boolean;
 		public var isAcquired:Boolean;
 		public var yVelocity:Number;
@@ -21,7 +29,9 @@ package com.jumpGame.gameElements.platforms
 			this.addChild(platformAnimation);
 		}
 		
-		override public function initialize(size:int):void {
+		override public function initialize(gx, gy, size:int, args = null):void {
+			this.gx = gx;
+			this.gy = gy;
 			this.isKinematic = false;
 			this.isAcquired = false;
 			this.dx = 0;
@@ -29,6 +39,35 @@ package com.jumpGame.gameElements.platforms
 			this.canBounce = false;
 			if (platformAnimation == null) createPlatformArt();
 			this.show();
+			
+			// revolving coin
+			if (args != null) {
+				if (args[0]) { // coin has horizontal velocity
+					this.dx = args[0];
+				}
+				if (args[1]) { // coin has vertical velocity
+					this.dy = args[1];
+				}
+				if (args[2]) { // coin should revolve around center
+					distanceFromCenter = args[2];
+					revolveAngle = 0;
+					fixedX = gx;
+					fixedY = gy;
+					
+					if (args[3] != undefined) revolveVelocity = args[3]; // custom revolve velocity
+					else revolveVelocity = 5 * Math.PI / 180;
+					
+					if (args[4] == false) {
+						revolveClockwise = false; // custom revolve direction
+					} else revolveClockwise = true;
+					
+					if (args[5] != undefined) { // custom starting angle
+						revolveAngle = args[5];
+					}
+				} else {
+					distanceFromCenter = 0;
+				}
+			}
 		}
 		
 		override public function touch():Boolean {
@@ -53,6 +92,14 @@ package com.jumpGame.gameElements.platforms
 //			super.update(timeDiff);
 			this.gx += this.dx * timeDiff;
 			this.gy += this.dy * timeDiff;
+			
+			// check if coin should revolve around center
+			if (distanceFromCenter > 0 && this.dx == 0) {
+				this.gx = fixedX + distanceFromCenter * Math.cos(revolveAngle);
+				this.gy = fixedY + distanceFromCenter * Math.sin(revolveAngle);
+				if (revolveClockwise) revolveAngle -= revolveVelocity;
+				else revolveAngle += revolveVelocity;
+			}
 		}
 		
 		public function makeKinematic(bouncePower:Number):void {

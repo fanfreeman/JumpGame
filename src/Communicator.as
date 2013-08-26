@@ -49,6 +49,10 @@ package
 			this.sendPostRequest(data, Constants.UriPurchaseCoins);
 		}
 		
+		public function postVerifyPurchase(data:String):void {
+			this.sendPostRequest(data, Constants.UriVerifyPurchase);
+		}
+		
 		/**
 		 * Send a post request
 		 */

@@ -1,7 +1,6 @@
 package com.jumpGame.gameElements.platforms
 {
 	import com.jumpGame.gameElements.Platform;
-	import com.jumpGame.level.Statics;
 	
 	import starling.core.Starling;
 	import starling.display.MovieClip;
@@ -49,8 +48,10 @@ package com.jumpGame.gameElements.platforms
 			this.gy += this.dy * timeDiff;
 		}
 		
-		override public function initialize(size:int):void {
-			super.initialize(size);
+		override public function initialize(gx, gy, size:int, args = null):void {
+			this.gx = gx;
+			this.gy = gy;
+			super.initialize(gx, gy, size);
 			this.isFalling = false;
 			this.fallVelocity = 0;
 		}

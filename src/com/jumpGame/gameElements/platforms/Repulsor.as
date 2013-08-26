@@ -27,7 +27,9 @@ package com.jumpGame.gameElements.platforms
 			this.addChild(platformAnimation);
 		}
 		
-		override public function initialize(size:int):void {
+		override public function initialize(gx, gy, size:int, args = null):void {
+			this.gx = gx;
+			this.gy = gy;
 			this.extenderStatus = 0;
 			this.extenderParent = null;
 			this.dx = 0;

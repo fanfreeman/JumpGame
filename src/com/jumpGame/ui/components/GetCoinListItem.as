@@ -1,7 +1,6 @@
 package com.jumpGame.ui.components
 {
 	import com.jumpGame.customObjects.Font;
-	import com.jumpGame.ui.popups.ScreenGetCoins;
 	
 	import feathers.controls.Button;
 	
@@ -62,7 +61,7 @@ package com.jumpGame.ui.components
 			addChild(subtitle);
 			
 			// price
-			priceLabel = new TextField(130, 25, this.data.price + " Gems", fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
+			priceLabel = new TextField(130, 25, this.data.price, fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
 			priceLabel.hAlign = HAlign.RIGHT;
 			priceLabel.vAlign = VAlign.TOP;
 			priceLabel.pivotX = Math.ceil(priceLabel.width);

@@ -1,7 +1,10 @@
 package com.jumpGame.ui.popups
 {
+	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.GetCoinListItem;
+	
+	import flash.external.ExternalInterface;
 	
 	import feathers.controls.Check;
 	import feathers.controls.ScrollContainer;
@@ -17,11 +20,12 @@ package com.jumpGame.ui.popups
 		private var parent:Menu;
 		private var closeButton:Check;
 		private var resizableContainer:ScrollContainer;
-		private var gemBoosterPackListItem:GetCoinListItem;
-		private var gemMegaPackListItem:GetCoinListItem;
-		private var gemSuperPackListItem:GetCoinListItem;
-		private var gemUltraPackListItem:GetCoinListItem;
-		private var gemUltimatePackListItem:GetCoinListItem;
+		private var gemHandfulListItem:GetCoinListItem;
+		private var gemPouchListItem:GetCoinListItem;
+		private var gemSackListItem:GetCoinListItem;
+		private var gemBoxListItem:GetCoinListItem;
+		private var gemChestListItem:GetCoinListItem;
+		private var gemTruckloadListItem:GetCoinListItem;
 		
 		public function ScreenGetGems(parent:Menu)
 		{
@@ -71,28 +75,77 @@ package com.jumpGame.ui.popups
 			this.addChild(resizableContainer);
 			
 			// create gem pack list items
-			// booster pack
-			var gemBoosterPackData:Object = new Object();
-			gemBoosterPackData.title = "Gem Booster Pack";
-			gemBoosterPackData.subtitle = "10 Gems";
-			gemBoosterPackData.price = "0.99";
-			gemBoosterPackData.handler = purchaseGemBoosterPackHandler;
-			gemBoosterPackListItem = new GetCoinListItem(gemBoosterPackData);
-			gemBoosterPackListItem.pivotX = Math.ceil(gemBoosterPackListItem.width / 2);
-			gemBoosterPackListItem.x = resizableContainer.width / 2;
-			resizableContainer.addChild(gemBoosterPackListItem);
-//			
-//			// mega pack
-//			var coinMegaPackData:Object = new Object();
-//			coinMegaPackData.title = "Coin Mega Pack";
-//			coinMegaPackData.subtitle = "50000 Coins";
-//			coinMegaPackData.price = 10;
-//			coinMegaPackData.handler = purchaseCoinMegaPackHandler;
-//			coinMegaPackListItem = new GetCoinListItem(this, coinMegaPackData);
-//			coinMegaPackListItem.pivotX = Math.ceil(coinMegaPackListItem.width / 2);
-//			coinMegaPackListItem.x = resizableContainer.width / 2;
-//			coinMegaPackListItem.y = coinBoosterPackListItem.bounds.bottom + 10;
-//			resizableContainer.addChild(coinMegaPackListItem);
+			// handful
+			var gemHandfulData:Object = new Object();
+			gemHandfulData.title = "Handful of Gems";
+			gemHandfulData.subtitle = "20 Gems";
+			gemHandfulData.price = "$1.99";
+			gemHandfulData.handler = purchaseGemHandfulHandler;
+			gemHandfulListItem = new GetCoinListItem(gemHandfulData);
+			gemHandfulListItem.pivotX = Math.ceil(gemHandfulListItem.width / 2);
+			gemHandfulListItem.x = resizableContainer.width / 2;
+			resizableContainer.addChild(gemHandfulListItem);
+			
+			// pouch
+			var gemPouchData:Object = new Object();
+			gemPouchData.title = "Pouch of Gems";
+			gemPouchData.subtitle = "55 Gems";
+			gemPouchData.price = "$4.99";
+			gemPouchData.handler = purchaseGemPouchHandler;
+			gemPouchListItem = new GetCoinListItem(gemPouchData);
+			gemPouchListItem.pivotX = Math.ceil(gemPouchListItem.width / 2);
+			gemPouchListItem.x = resizableContainer.width / 2;
+			gemPouchListItem.y = gemHandfulListItem.bounds.bottom + 10;
+			resizableContainer.addChild(gemPouchListItem);
+			
+			// sack
+			var gemSackData:Object = new Object();
+			gemSackData.title = "Sack of Gems";
+			gemSackData.subtitle = "115 Gems";
+			gemSackData.price = "$9.99";
+			gemSackData.handler = purchaseGemSackHandler;
+			gemSackListItem = new GetCoinListItem(gemSackData);
+			gemSackListItem.pivotX = Math.ceil(gemSackListItem.width / 2);
+			gemSackListItem.x = resizableContainer.width / 2;
+			gemSackListItem.y = gemPouchListItem.bounds.bottom + 10;
+			resizableContainer.addChild(gemSackListItem);
+			
+			// box
+			var gemBoxData:Object = new Object();
+			gemBoxData.title = "Box of Gems";
+			gemBoxData.subtitle = "240 Gems";
+			gemBoxData.price = "$19.99";
+			gemBoxData.handler = purchaseGemBoxHandler;
+			gemBoxListItem = new GetCoinListItem(gemBoxData);
+			gemBoxListItem.pivotX = Math.ceil(gemBoxListItem.width / 2);
+			gemBoxListItem.x = resizableContainer.width / 2;
+			gemBoxListItem.y = gemSackListItem.bounds.bottom + 10;
+			resizableContainer.addChild(gemBoxListItem);
+			
+			// chest
+			var gemChestData:Object = new Object();
+			gemChestData.title = "Chest of Gems";
+			gemChestData.subtitle = "625 Gems";
+			gemChestData.price = "$49.99";
+			gemChestData.handler = purchaseGemChestHandler;
+			gemChestListItem = new GetCoinListItem(gemChestData);
+			gemChestListItem.pivotX = Math.ceil(gemChestListItem.width / 2);
+			gemChestListItem.x = resizableContainer.width / 2;
+			gemChestListItem.y = gemBoxListItem.bounds.bottom + 10;
+			resizableContainer.addChild(gemChestListItem);
+			
+			// truckload
+			var gemTruckloadData:Object = new Object();
+			gemTruckloadData.title = "Truckload of Gems";
+			gemTruckloadData.subtitle = "1300 Gems";
+			gemTruckloadData.price = "$99.99";
+			gemTruckloadData.handler = purchaseGemTruckloadHandler;
+			gemTruckloadListItem = new GetCoinListItem(gemTruckloadData);
+			gemTruckloadListItem.pivotX = Math.ceil(gemTruckloadListItem.width / 2);
+			gemTruckloadListItem.x = resizableContainer.width / 2;
+			gemTruckloadListItem.y = gemChestListItem.bounds.bottom + 10;
+			resizableContainer.addChild(gemTruckloadListItem);
+
 			
 			// close button
 			closeButton = new Check();
@@ -105,13 +158,75 @@ package com.jumpGame.ui.popups
 			this.addChild(closeButton);
 		}
 		
-		public function purchaseGemBoosterPackHandler(event:Event):void {
-//			var jsonStr:String = JSON.stringify({
-//				item: 'coins_booster'
-//			});
-//			parent.displayLoadingNotice("Purchasing Coins...");
-//			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
-//			parent.communicator.postPurchaseCoins(jsonStr);
+		public function purchaseGemHandfulHandler(event:Event):void {
+			if(ExternalInterface.available){
+				trace("Calling JS...");
+				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_handful");
+				ExternalInterface.addCallback("returnPurchaseStatusToAs", purchaseStatusReturnedFromJs);
+			} else {
+				trace("External interface unavailabe");
+			}
+		}
+		
+		public function purchaseGemPouchHandler(event:Event):void {
+			if(ExternalInterface.available){
+				trace("Calling JS...");
+				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_pouch");
+				ExternalInterface.addCallback("returnPurchaseStatusToAs", purchaseStatusReturnedFromJs);
+			} else {
+				trace("External interface unavailabe");
+			}
+		}
+		
+		public function purchaseGemSackHandler(event:Event):void {
+			if(ExternalInterface.available){
+				trace("Calling JS...");
+				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_sack");
+				ExternalInterface.addCallback("returnPurchaseStatusToAs", purchaseStatusReturnedFromJs);
+			} else {
+				trace("External interface unavailabe");
+			}
+		}
+		
+		public function purchaseGemBoxHandler(event:Event):void {
+			if(ExternalInterface.available){
+				trace("Calling JS...");
+				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_box");
+				ExternalInterface.addCallback("returnPurchaseStatusToAs", purchaseStatusReturnedFromJs);
+			} else {
+				trace("External interface unavailabe");
+			}
+		}
+		
+		public function purchaseGemChestHandler(event:Event):void {
+			if(ExternalInterface.available){
+				trace("Calling JS...");
+				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_chest");
+				ExternalInterface.addCallback("returnPurchaseStatusToAs", purchaseStatusReturnedFromJs);
+			} else {
+				trace("External interface unavailabe");
+			}
+		}
+		
+		public function purchaseGemTruckloadHandler(event:Event):void {
+			if(ExternalInterface.available){
+				trace("Calling JS...");
+				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_truckload");
+				ExternalInterface.addCallback("returnPurchaseStatusToAs", purchaseStatusReturnedFromJs);
+			} else {
+				trace("External interface unavailabe");
+			}
+		}
+		
+		private function purchaseStatusReturnedFromJs(signedRequest:String, paymentId:String):void {
+			var jsonStr:String = JSON.stringify({
+				signed_request: signedRequest,
+				payment_id: paymentId
+			});
+			
+			parent.displayLoadingNotice("Verifying purchase...");
+			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
+			parent.communicator.postVerifyPurchase(jsonStr);
 		}
 		
 		public function refresh():void {

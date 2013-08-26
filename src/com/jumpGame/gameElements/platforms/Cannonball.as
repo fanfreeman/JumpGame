@@ -28,8 +28,10 @@ package com.jumpGame.gameElements.platforms
 //			platformAnimation.y = Math.ceil(platformImage.texture.height / 2);
 		}
 		
-		override public function initialize(size:int):void {
+		override public function initialize(gx, gy, size:int, args = null):void {
 //			this.isWarning = false;
+			this.gx = gx;
+			this.gy = gy;
 			this.isVertical = false;
 			this.extenderStatus = 0;
 			this.extenderParent = null;

@@ -1,7 +1,5 @@
 package com.jumpGame.gameElements
 {
-	import com.jumpGame.level.Statics;
-	
 	import starling.animation.Transitions;
 	import starling.core.Starling;
 	import starling.display.Image;
@@ -25,7 +23,9 @@ package com.jumpGame.gameElements
 		
 		private var _destroyed:Boolean = true; // required by interface
 		
-		public function initialize(size:int):void {
+		public function initialize(gx, gy, size:int, args = null):void {
+			this.gx = gx;
+			this.gy = gy;
 			this.extenderStatus = 0;
 			this.extenderParent = null;
 			this.dx = 0;

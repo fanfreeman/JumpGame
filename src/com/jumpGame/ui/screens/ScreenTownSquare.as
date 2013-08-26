@@ -16,6 +16,7 @@ package com.jumpGame.ui.screens
 	public class ScreenTownSquare extends Screen
 	{
 		private var btnGetCoins:Button;
+		private var btnGetGems:Button;
 		
 		public function ScreenTownSquare()
 		{
@@ -102,7 +103,6 @@ package com.jumpGame.ui.screens
 //			iconQuad5.y = iconQuad4.y;
 //			addChild(iconQuad5);
 			
-			// buttons
 			btnGetCoins = new Button();
 			btnGetCoins.width = sideLength;
 			btnGetCoins.height = sideLength;
@@ -118,16 +118,19 @@ package com.jumpGame.ui.screens
 			iconLabel5.y = btnGetCoins.bounds.bottom + 5;
 			addChild(iconLabel5);
 			
-			var iconQuad6:Quad = new Quad(sideLength, sideLength, 0xff0000);
-			iconQuad6.x = iconQuad3.bounds.left;
-			iconQuad6.y = iconQuad4.y;
-			addChild(iconQuad6);
+			btnGetGems = new Button();
+			btnGetGems.width = sideLength;
+			btnGetGems.height = sideLength;
+			btnGetGems.x = iconQuad3.bounds.left;
+			btnGetGems.y = iconQuad4.y;
+			addChild(btnGetGems);
+			btnGetGems.addEventListener(Event.TRIGGERED, Menu(this.owner).showGetGemsScreen);
 			
 			var iconLabel6:TextField = new TextField(sideLength, 25, "Get Gems", fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
 			iconLabel6.hAlign = HAlign.CENTER;
 			iconLabel6.vAlign = VAlign.TOP;
-			iconLabel6.x = iconQuad6.bounds.left;
-			iconLabel6.y = iconQuad6.bounds.bottom + 5;
+			iconLabel6.x = btnGetGems.bounds.left;
+			iconLabel6.y = btnGetGems.bounds.bottom + 5;
 			addChild(iconLabel6);
 		}
 	}

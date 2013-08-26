@@ -166,6 +166,7 @@ package
 		public static const UriPostUserInfo:String = "user/post";
 		public static const UriPurchaseUpgrade:String = "user/purchase/upgrade";
 		public static const UriPurchaseCoins:String = "user/purchase/coins";
+		public static const UriVerifyPurchase:String = "user/verify/purchase";
 		public static const UriFindMatch:String = "user/findmatch";
 		public static const UriCreateMatchFacebook:String = "user/creatematchfb";
 		public static const UriResignMatch:String = "user/resignmatch";

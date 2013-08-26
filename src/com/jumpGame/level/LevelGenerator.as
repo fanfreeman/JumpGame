@@ -19,20 +19,47 @@ package com.jumpGame.level {
 			
 			switch(type) {
 				// random generation
-				case 1000: // 1 size 5 normal platform per row
+				case 700:
+					this.generateDesigned2001();
+					break;
+				case 701:
+					this.generateBeginnerRadiator();
+					break;
+				case 702:
+					this.generateBeginnerHearts();
+					break;
+				
+				case 800:
 					// 1 per row, 2 per row, 3 per row, 4 per row, 5 per row
-					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
+//					elementsPerRowDistribution = new Array(0.0, 1.0, 1.0, 1.0, 1.0);
+					// normal, drop, mobile, normalboost, etc.
+					elementDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
+					// size 1, 2, 3, 4, 5
+					sizeDistribution = new Array(0.0, 0.0, 0.0, 0.6, 1.0)
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
+					break;
+				
+				case 900: // beginner stars
+					this.generateSineWave();
+					break;
+				case 901: // beginner stars
+					this.generateDesigned2003();
+					break;
+				case 902: // designed pattern
+					this.generateBeginnerSpinningCircles();
+					break;
+				
+				case 1000: // 1 size 5 normal platform per row
 					// normal, drop, mobile, normalboost, etc.
 					elementDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
 					// size 1, 2, 3, 4, 5
 					sizeDistribution = new Array(0.0, 0.0, 0.2, 0.6, 1.0)
-					this.generateRandom(height, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				case 1001: // [1] size [4-5] [normal, drop] platforms per row
-					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
 					elementDistribution = new Array(0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
 					sizeDistribution = new Array(0.0, 0.0, 0.0, 0.5, 1.0)
-					this.generateRandom(height, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				
 				case 2000: // designed pattern
@@ -42,60 +69,63 @@ package com.jumpGame.level {
 					this.generateDesigned2001();
 					break;
 				case 2002: // designed pattern
-					this.generateDesigned2002();
+					this.generateSineWave();
 					break;
 				case 2003: // designed pattern
 					this.generateDesigned2003();
 					break;
 				case 2004: // designed pattern
-					this.generateDesigned2004();
+					this.generateBeginnerRadiator();
 					break;
 				case 2005: // designed pattern
-					this.generateDesigned2005();
+					this.generateBeginnerHearts();
+					break;
+				case 2006: // designed pattern
+					this.generateBeginnerSpinningCircles();
 					break;
 				
 				case 3000: // [1] size [3-5] [normal, drop, mobile, normalboost, mobileboost]
-					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
 					elementDistribution = new Array(0.3, 0.6, 0.9, 0.97, 0.97, 1.0, 1.0, 1.0);
 					sizeDistribution = new Array(0.0, 0.0, 0.3, 1.0, 1.0)
-					this.generateRandom(height, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				case 3001: // [1] size [3-4] [normal, drop, mobile, normalboost, dropboost, mobileboost]
-					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
 					elementDistribution = new Array(0.2, 0.5, 0.8, 0.9, 0.98, 1.0, 1.0, 1.0);
 					sizeDistribution = new Array(0.0, 0.0, 0.5, 1.0, 1.0)
-					this.generateRandom(height, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				
 				case 4000: // designed pattern
 					this.generateDesigned4000();
 					break;
-				
+				case 4001: // designed pattern
+					this.generateEasySpinners();
+					break;
 				
 				case 5000: // [1] size [2-4] [normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
-					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
 					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
 					sizeDistribution = new Array(0.0, 0.4, 0.8, 1.0, 1.0)
-					this.generateRandom(height, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				
 				case 6000: // designed pattern
 					this.generateDesigned2000(2);
 					break;
+				case 6001: // designed pattern
+					this.generateEasySpinningCircles();
 				
 				case 7000:
 					this.generateDesignedMobileReuplsor();
 					break;
 				
 				case 8000:
-					this.generateDesigned2002(2);
+					this.generateSineWave(2);
 					break;
 				
 				case 9000: // [1] size [1-3] [normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
-					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
 					elementDistribution = new Array(0.03, 0.35, 0.8, 0.83, 0.86, 0.9, 0.95, 1.0);
 					sizeDistribution = new Array(0.4, 0.9, 1.0, 1.0, 1.0)
-					this.generateRandom(height, false, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				
 				case 10000:
@@ -103,7 +133,7 @@ package com.jumpGame.level {
 					break;
 				
 				case 999999: // designed pattern
-					this.generateDesigned999999();
+					this.generateSineWave();
 					break;
 //					// 1 per row, 2 per row, 3 per row, 4 per row, 5 per row
 //					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
@@ -115,10 +145,9 @@ package com.jumpGame.level {
 //					break;
 				
 				case 999: // music mode
-					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0); // 1 per row
 					elementDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0); // all normal platforms
 					sizeDistribution = new Array(0.0, 0.0, 0.0, 1.0, 1.0) // all size 4
-					this.generateRandom(height, true, elementDistribution, elementsPerRowDistribution, sizeDistribution);
+					this.generateRandom(height, true, elementDistribution, sizeDistribution, false);
 					break;
 			}
 		}
@@ -127,32 +156,31 @@ package com.jumpGame.level {
 		 * generate random segment according to specifications
 		 * @param height the height of a block to generate
 		 */
-		private function generateRandom(height:int, isBonusMode:Boolean, elementDistribution:Array,
-										elementsPerRowDistribution:Array, sizeDistribution:Array):void {
+		private function generateRandom(height:int, isBonusMode:Boolean, elementDistribution:Array, 
+										sizeDistribution:Array, twoPerRow:Boolean):void {
 			var gx:Number = 0;
 			var gy:Number = 0;
 			var roof:Number = this.builder.currentY + height;
 			
+			var elementsPerRow:uint = 1;
+			if (twoPerRow) elementsPerRow = 2;
+			
 			while (this.builder.currentY < roof) { // one row
-				var numElementsPerRow:uint = this.getNumElementsPerRowByDistribution(elementsPerRowDistribution);
-				for (var i:uint = 0;  i < numElementsPerRow; i++) { // loop through elements on the same row
-					// get new gx and gy values for new element
-					if (isBonusMode) {
-						if (Math.random() < 0.5) { // place next platform toward left
-							gx = this.prevElementX - Constants.MusicModeColumnSpacing;
-						} else { // place next platfrom toward right
-							gx = this.prevElementX + Constants.MusicModeColumnSpacing;
-						}
-						this.prevElementX = gx;
-					} else {
-						gx = Math.random() * 400 - 200 + this.prevElementX; // do not place consecutive platforms too far apart
-						// do not go off sides of screen
-						if (gx < -Constants.StageWidth / 2 + 300) {
-							this.prevElementX = -Constants.StageWidth / 2 + 300;
-						}
-						else if (gx > Constants.StageWidth / 2 - 300) {
-							this.prevElementX = Constants.StageWidth / 2 - 300;
-						}
+				for (var i:uint = 0; i < elementsPerRow; i++) { // loop through elements on the same row
+					var border:Number = Constants.StageWidth / 15;
+					if (elementsPerRow == 2 && i == 0) { // left element
+						gx = Math.random() * (Constants.StageWidth / 2 - border * 2) - (Constants.StageWidth / 2 - border);
+					}
+					else if (elementsPerRow == 2 && i == 1) { // right element
+						gx = Math.random() * (Constants.StageWidth / 2 - border * 2) + (border);
+					}
+					else gx = Math.random() * 400 - 200 + this.prevElementX; // do not place consecutive platforms too far apart
+					// do not go off sides of screen
+					if (gx < -Constants.StageWidth / 2 + 300) {
+						this.prevElementX = -Constants.StageWidth / 2 + 300;
+					}
+					else if (gx > Constants.StageWidth / 2 - 300) {
+						this.prevElementX = Constants.StageWidth / 2 - 300;
 					}
 					gy = this.builder.currentY * Constants.UnitHeight;
 					
@@ -178,22 +206,22 @@ package com.jumpGame.level {
 		} // eof generateRandom()
 		
 		// obtain a number of elements per row for random generation according to distribution
-		private function getNumElementsPerRowByDistribution(elementsPerRowDistribution:Array):uint {
-			var seed:Number = Math.random();
-			if (seed >= elementsPerRowDistribution[0] && seed < elementsPerRowDistribution[1]) {
-				return 2;
-			} 
-			else if (seed >= elementsPerRowDistribution[1] && seed < elementsPerRowDistribution[2]) {
-				return 3;
-			}
-			else if (seed >= elementsPerRowDistribution[2] && seed < elementsPerRowDistribution[3]) {
-				return 4;
-			}
-			else if (seed >= elementsPerRowDistribution[3] && seed < elementsPerRowDistribution[4]) {
-				return 5;
-			}
-			return 1;
-		}
+//		private function getNumElementsPerRowByDistribution(elementsPerRowDistribution:Array):uint {
+//			var seed:Number = Math.random();
+//			if (seed >= elementsPerRowDistribution[0] && seed < elementsPerRowDistribution[1]) {
+//				return 2;
+//			} 
+//			else if (seed >= elementsPerRowDistribution[1] && seed < elementsPerRowDistribution[2]) {
+//				return 3;
+//			}
+//			else if (seed >= elementsPerRowDistribution[2] && seed < elementsPerRowDistribution[3]) {
+//				return 4;
+//			}
+//			else if (seed >= elementsPerRowDistribution[3] && seed < elementsPerRowDistribution[4]) {
+//				return 5;
+//			}
+//			return 1;
+//		}
 		
 		// obtain an element class for random generation according to distribution
 		private function getElementClassByDistribution(elementDistribution:Array):String {
@@ -299,7 +327,7 @@ package com.jumpGame.level {
 		}
 		
 		// easy stars following a sine wave
-		private function generateDesigned2002(difficulty:uint = 1):void {
+		private function generateSineWave(difficulty:uint = 1):void {
 			var gx:Number = 0;
 			var gy:Number = 0;
 			for (var ri:uint = 0; ri < 80; ri++) { // loop through rows
@@ -323,9 +351,14 @@ package com.jumpGame.level {
 				this.builder.currentY ++;
 				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8), Constants.Coin]); // coin
 				this.builder.currentY ++;
-				
-				
 			}
+			// two blue stars at the end
+			gy = this.builder.currentY * Constants.UnitHeight;
+			gx = ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8) + (-0.5) * 100;
+			this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0]);
+			gx = ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8) + (0.5) * 100;
+			this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0]);
+			
 			this.builder.currentY += 4;
 		}
 		
@@ -360,50 +393,67 @@ package com.jumpGame.level {
 		
 		// easy big radiating star with four layers
 		// NOTE: (TODO) this can be optimized by replacing location calculations with precalculated literal values
-		private function generateDesigned2004():void {
-			// pattern center
-			var gx:Number = Math.random() * 400 - 200;
-			var gy:Number = this.builder.currentY * Constants.UnitHeight;
-			
-			var r:Number = Constants.ElementSpacing; // radius
+		private function generateBeginnerRadiator():void {
+			var r:Number;; // radius
 			var angle:Number = Math.PI / 4;
 			var i:uint;
+			var gx:Number;
+			var gy:Number;
 			
-			var patternArray:Array = new Array();
+			for (var ii:uint = 0; ii < 10; ii++) { // number of patterns to create
+				
+				// pattern center
+				gx = Math.random() * 400 - 200;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				r = Constants.ElementSpacing;
+				
+				var patternArray:Array = new Array();
+				
+				// inner circle
+				for (i = 0; i < 4; i++) {
+					patternArray.push([gy + r * Math.sin(angle), gx + r * Math.cos(angle), "Star"]);
+					angle += Math.PI / 2;
+				}
+				
+				// middle circle
+				r = Constants.ElementSpacing * 2;
+				angle = 0;
+				for (i = 0; i < 8; i++) {
+					patternArray.push([gy + r * Math.sin(angle), gx + r * Math.cos(angle), "Star"]);
+					angle += Math.PI / 4;
+				}
+				
+				// outer circle
+				r = Constants.ElementSpacing * 3;
+				angle = 0;
+				for (i = 0; i < 8; i++) {
+					patternArray.push([gy + r * Math.sin(angle), gx + r * Math.cos(angle), "StarMini"]);
+					angle += Math.PI / 4;
+				}
+				
+				// outermost circle of coins
+				r = Constants.ElementSpacing * 4;
+				angle = 0;
+				for (i = 0; i < 8; i++) {
+					patternArray.push([gy + r * Math.sin(angle), gx + r * Math.cos(angle), "Coin"]);
+					angle += Math.PI / 4;
+				}
+				
+				patternArray.sort(sortOnElementGy);
+				this.builder.levelElementsArray = this.builder.levelElementsArray.concat(patternArray);
+				this.builder.currentY += 8;
+			} // eof loop through patterns
 			
-			// inner circle
-			for (i = 0; i < 4; i++) {
-				patternArray.push([gy + r * Math.sin(angle), gx + r * Math.cos(angle), "Star", 0]);
-				angle += Math.PI / 2;
-			}
+			// a row of blue stars
+			var numElementsPerRow:int = 6;
+			for (i = 0;  i < numElementsPerRow; i++) { // loop through elements on the same row
+				// get new gx and gy values for new element
+				gx = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1) - Constants.StageWidth / 2;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0]);
+			} // eof loop through elements on the same row
 			
-			// middle circle
-			r = Constants.ElementSpacing * 2;
-			angle = 0;
-			for (i = 0; i < 8; i++) {
-				patternArray.push([gy + r * Math.sin(angle), gx + r * Math.cos(angle), "Star", 0]);
-				angle += Math.PI / 4;
-			}
-			
-			// outer circle
-			r = Constants.ElementSpacing * 3;
-			angle = 0;
-			for (i = 0; i < 8; i++) {
-				patternArray.push([gy + r * Math.sin(angle), gx + r * Math.cos(angle), "StarMini", 0]);
-				angle += Math.PI / 4;
-			}
-			
-			// outermost circle of coins
-			r = Constants.ElementSpacing * 4;
-			angle = 0;
-			for (i = 0; i < 8; i++) {
-				patternArray.push([gy + r * Math.sin(angle), gx + r * Math.cos(angle), "Coin", 0]);
-				angle += Math.PI / 4;
-			}
-			
-			patternArray.sort(sortOnElementGy);
-			this.builder.levelElementsArray = this.builder.levelElementsArray.concat(patternArray);
-			this.builder.currentY += 4;
+			this.builder.currentY += 8;
 		}
 		
 		// this function accompanies patterns that are based on a math function and require sorting
@@ -421,7 +471,7 @@ package com.jumpGame.level {
 		}
 		
 		// easy fixed heart shaped stars
-		private function generateDesigned2005():void {
+		private function generateBeginnerHearts():void {
 			var gx:Number;
 			var gy:Number; 
 			var t:Number; // time factor, used in calculating heart shapes
@@ -443,13 +493,12 @@ package com.jumpGame.level {
 					patternArray.push([gy + fy, gx + fx, "Star", 0]);
 				}
 				// coins
-				patternArray.push([(this.builder.currentY - 2) * Constants.UnitHeight, gx - 250, Constants.Coin]); // coin
-				patternArray.push([(this.builder.currentY - 2) * Constants.UnitHeight, gx + 250, Constants.Coin]); // coin
-				patternArray.push([this.builder.currentY * Constants.UnitHeight, gx - 250, Constants.Coin]); // coin
-				patternArray.push([this.builder.currentY * Constants.UnitHeight, gx + 250, Constants.Coin]); // coin
-				patternArray.push([(this.builder.currentY + 2) * Constants.UnitHeight, gx - 250, Constants.Coin]); // coin
-				patternArray.push([(this.builder.currentY + 2) * Constants.UnitHeight, gx + 250, Constants.Coin]); // coin
-				
+//				patternArray.push([(this.builder.currentY - 2) * Constants.UnitHeight, gx - 250, Constants.Coin]); // coin
+//				patternArray.push([(this.builder.currentY - 2) * Constants.UnitHeight, gx + 250, Constants.Coin]); // coin
+//				patternArray.push([this.builder.currentY * Constants.UnitHeight, gx - 250, Constants.Coin]); // coin
+//				patternArray.push([this.builder.currentY * Constants.UnitHeight, gx + 250, Constants.Coin]); // coin
+//				patternArray.push([(this.builder.currentY + 2) * Constants.UnitHeight, gx - 250, Constants.Coin]); // coin
+//				patternArray.push([(this.builder.currentY + 2) * Constants.UnitHeight, gx + 250, Constants.Coin]); // coin
 				
 				patternArray.sort(sortOnElementGy);
 				this.builder.levelElementsArray = this.builder.levelElementsArray.concat(patternArray);
@@ -566,6 +615,138 @@ package com.jumpGame.level {
 				this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0]);
 			} // eof loop through elements on the same row
 			
+			this.builder.currentY += 4;
+		}
+		
+		private function generateBeginnerSpinningCircles():void { //
+			var gx:Number = 0;
+			var gy:Number;
+			
+			for (var i:uint = 0; i < 10; i++) { // loop through rows of spinners
+				gx = Math.random() * 400 - 200;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				
+				if (gx < 0) {
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, true]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, true, Math.PI / 4]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, true, Math.PI / 2]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, true, Math.PI * 3 / 4]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, true, Math.PI]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, true, Math.PI * 5 / 4]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, true, Math.PI * 6 / 4]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, true, Math.PI * 7 / 4]);
+				} else {
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, false]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, false, Math.PI / 4]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, false, Math.PI / 2]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, false, Math.PI * 3 / 4]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, false, Math.PI]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, false, Math.PI * 5 / 4]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, false, Math.PI * 6 / 4]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, 2 * Math.PI / 180, false, Math.PI * 7 / 4]);
+				}
+				this.builder.currentY += 8;
+			}
+		}
+			
+		private function generateEasySpinningCircles():void { //
+			var gx:Number = 0;
+			var gy:Number;
+			
+			for (var i:uint = 0; i < 10; i++) { // loop through rows of spinners
+				gx = Math.random() * 400 - 200;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				
+				if (gx < 0) {
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true, Math.PI / 2]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true, Math.PI]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true, Math.PI * 3 / 2]);
+				} else {
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false, Math.PI / 2]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false, Math.PI]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false, Math.PI * 3 / 2]);
+				}
+				
+				if (Math.random() < 0.33) { // coins
+					gx = Math.random() * 400 - 200;
+					gy = (this.builder.currentY + 3) * Constants.UnitHeight;
+					this.builder.levelElementsArray.push([gy, gx, "Coin", 0, 0, 0, 100, null, false]);
+					this.builder.levelElementsArray.push([gy, gx, "Coin", 0, 0, 0, 100, null, false, Math.PI / 2]);
+					this.builder.levelElementsArray.push([gy, gx, "Coin", 0, 0, 0, 100, null, false, Math.PI]);
+					this.builder.levelElementsArray.push([gy, gx, "Coin", 0, 0, 0, 100, null, false, Math.PI * 3 / 2]);
+				}
+				this.builder.currentY += 6;
+			}
+		}
+		
+		private function generateEasySpinners():void { // 5 stars in a line spinner
+			var gx:Number = 0;
+			var gy:Number;
+			
+			for (var i:uint = 0; i < 10; i++) { // loop through rows of spinners
+				gx = Math.random() * 400 - 200;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				
+				if (gx < 0) {
+					this.builder.levelElementsArray.push([gy, gx, "Star"]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, null, true]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true, Math.PI]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, null, true, Math.PI]);
+				} else {
+					this.builder.levelElementsArray.push([gy, gx, "Star"]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, null, false]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false, Math.PI]);
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, null, false, Math.PI]);
+				}
+				this.builder.currentY += 6;
+			}
+		}
+		
+		private function generateDesigned999996():void { // test spinner formations
+			var gx:Number = 0;
+			var gy:Number = this.builder.currentY * Constants.UnitHeight;
+				
+			// repulsor
+			this.builder.levelElementsArray.push([gy, gx, "Repulsor"]);
+			this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true]);
+			this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, null, true]);
+			this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 300, null, true]);
+			this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 400, null, true]);
+			this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true, Math.PI]);
+			this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, null, true, Math.PI]);
+			this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 300, null, true, Math.PI]);
+			this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 400, null, true, Math.PI]);
+				
+			this.builder.currentY += 12;
+		}
+		
+		private function generateDesigned999997():void { // test revolving stars
+			var gx:Number = 0;
+			var gy:Number = 0;
+			
+			for (var ri:uint = 0; ri < 80; ri++) {
+				
+				// left line
+				// get new gx and gy values for new element
+				var sinVal:Number = Math.sin(this.builder.currentY / 8);
+				gx = ((Constants.StageWidth) / 4) * sinVal;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100]);
+				
+				// right line
+				// get new gx and gy values for new element
+				gx *= -1;
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false, 0]);
+				
+				this.builder.currentY ++;
+				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8), Constants.Coin]); // coin
+				this.builder.currentY ++;
+			}
 			this.builder.currentY += 4;
 		}
 		

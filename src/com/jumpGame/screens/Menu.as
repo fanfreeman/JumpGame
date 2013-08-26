@@ -214,6 +214,12 @@ package com.jumpGame.screens
 						coinLabel.text = "Coins: " + dataObj.coins;
 						Statics.playerGems = int(dataObj.gems);
 						gemLabel.text = "Gems: " + dataObj.gems;
+						this.showAchievement("Bling Bling");
+					}
+					else if (dataObj.status == "purchased_gems") { // successfully purchased gems
+						Statics.playerGems = int(dataObj.gems);
+						gemLabel.text = "Gems: " + dataObj.gems;
+						this.showAchievement("Shiny!");
 					}
 					else if (dataObj.status == "error") { // error message received
 						trace("Error: " + dataObj.reason);
@@ -397,10 +403,6 @@ package com.jumpGame.screens
 			else if (this.tabs.selectedItem.action == Constants.ScreenUpgrades) {
 				this.screenUpgrades.refresh();
 			}
-			
-			// bring achievement badge to front
-			setChildIndex(badgeAnimation, numChildren - 1);
-			setChildIndex(badgeText, numChildren - 1);
 		}
 		
 		private function createLoadingNotice():void {
@@ -465,6 +467,10 @@ package com.jumpGame.screens
 		 * Display achievement badge
 		 */
 		public function showAchievement(message:String):void {
+			// bring achievement badge to front
+			setChildIndex(badgeAnimation, numChildren - 1);
+			setChildIndex(badgeText, numChildren - 1);
+			
 			starling.core.Starling.juggler.add(badgeAnimation);
 			badgeAnimation.alpha = 1;
 			badgeAnimation.visible = true;

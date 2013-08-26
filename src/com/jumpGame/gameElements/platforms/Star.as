@@ -6,8 +6,17 @@ package com.jumpGame.gameElements.platforms
 	import starling.display.Image;
 	import starling.display.MovieClip;
 	
+	// gy, gx, "Star", size, dx, dy, distanceFromCenter, revolveVelocity, revolveClockwise, startingAngle
 	public class Star extends Platform
 	{
+		// properties for revolving around center
+		private var distanceFromCenter:Number;
+		private var revolveVelocity:Number;
+		private var revolveClockwise:Boolean;
+		private var revolveAngle:Number;
+		private var fixedX:Number;
+		private var fixedY:Number;
+		
 		protected var isKinematic:Boolean;
 		
 		override protected function createPlatformArt():void
@@ -25,7 +34,9 @@ package com.jumpGame.gameElements.platforms
 			this.addChild(platformAnimation);
 		}
 		
-		override public function initialize(size:int):void {
+		override public function initialize(gx, gy, size:int, args = null):void {
+			this.gx = gx;
+			this.gy = gy;
 			this.extenderStatus = 0;
 			this.extenderParent = null;
 			this.isTouched = false;
@@ -36,6 +47,35 @@ package com.jumpGame.gameElements.platforms
 			if (platformImage == null) createPlatformArt();
 			this.platformImage.visible = true;
 			this.show();
+			
+			// revolving star
+			if (args != null) {
+				if (args[0]) { // star has horizontal velocity
+					this.dx = args[0];
+				}
+				if (args[1]) { // star has vertical velocity
+					this.dy = args[1];
+				}
+				if (args[2] != undefined) { // star should revolve around center
+					distanceFromCenter = args[2];
+					revolveAngle = 0;
+					fixedX = gx;
+					fixedY = gy;
+					
+					if (args[3] != undefined) revolveVelocity = args[3]; // custom revolve velocity
+					else revolveVelocity = 5 * Math.PI / 180;
+					
+					if (args[4] == false) {
+						revolveClockwise = false; // custom revolve direction
+					} else revolveClockwise = true;
+					
+					if (args[5] != undefined) { // custom starting angle
+						revolveAngle = args[5];
+					}
+				} else {
+					distanceFromCenter = 0;
+				}
+			}
 		}
 		
 		override public function getBouncePower():Number {
@@ -72,6 +112,14 @@ package com.jumpGame.gameElements.platforms
 			this.gx += this.dx * timeDiff;
 			this.gy += this.dy * timeDiff;
 			this.platformImage.rotation += Math.PI / 72;
+			
+			// check if star should revolve around center
+			if (distanceFromCenter > 0 && this.dx == 0) {
+				this.gx = fixedX + distanceFromCenter * Math.cos(revolveAngle);
+				this.gy = fixedY + distanceFromCenter * Math.sin(revolveAngle);
+				if (revolveClockwise) revolveAngle -= revolveVelocity;
+				else revolveAngle += revolveVelocity;
+			}
 		}
 		
 		public function makeKinematic(bouncePower:Number):void {

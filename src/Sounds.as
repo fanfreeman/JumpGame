@@ -66,7 +66,7 @@ package
 		[Embed(source="../media/sounds/gong.mp3")]
 		public static const SND_GONG:Class;
 		
-		[Embed(source="../media/sounds/powerup3.mp3")]
+		[Embed(source="../media/sounds/ingame/powerup.mp3")]
 		public static const SND_POWERUP:Class;
 		
 		[Embed(source="../media/sounds/clock_tick.mp3")]
@@ -74,6 +74,9 @@ package
 		
 		[Embed(source="../media/sounds/distant_explosion.mp3")]
 		public static const SND_DISTANT_EXPLOSION:Class;
+		
+		[Embed(source="../media/sounds/ingame/douse.mp3")]
+		public static const SND_DOUSE_FIRE:Class;
 		
 		////////////////////////////////////////////////////////////////////////////////
 		// voice clips
@@ -214,6 +217,7 @@ package
 		public static var sndPowerup:Sound = new Sounds.SND_POWERUP() as Sound;
 		public static var sndClockTick:Sound = new Sounds.SND_CLOCK_TICK() as Sound;
 		public static var sndDistantExplosion:Sound = new Sounds.SND_DISTANT_EXPLOSION() as Sound;
+		public static var sndDouseFire:Sound = new Sounds.SND_DOUSE_FIRE() as Sound;
 //		public static var sndVoiceAh:Sound = new Sounds.SND_VOICE_AH() as Sound;
 		
 		

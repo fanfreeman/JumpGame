@@ -20,8 +20,8 @@ package com.jumpGame.ui.popups
 		private var closeButton:Check;
 		private var resizableContainer:ScrollContainer;
 		private var coinBoosterPackListItem:GetCoinListItem;
-		private var coinMegaPackListItem:GetCoinListItem;
 		private var coinSuperPackListItem:GetCoinListItem;
+		private var coinMegaPackListItem:GetCoinListItem;
 		private var coinUltraPackListItem:GetCoinListItem;
 		private var coinUltimatePackListItem:GetCoinListItem;
 		

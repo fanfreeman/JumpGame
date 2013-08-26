@@ -383,8 +383,8 @@ package com.jumpGame.screens
 			this.powerupsList[this.powerupsListLength++] = cometRun;
 			
 			// create platform pools
-			ObjectPool.instance.registerPool(PlatformNormal, 20, false);
-			ObjectPool.instance.registerPool(PlatformMobile, 80, false);
+			ObjectPool.instance.registerPool(PlatformNormal, 30, false);
+			ObjectPool.instance.registerPool(PlatformMobile, 15, false);
 			ObjectPool.instance.registerPool(PlatformDrop, 15, false);
 			ObjectPool.instance.registerPool(PlatformNormalBoost, 10, false);
 			ObjectPool.instance.registerPool(PlatformDropBoost, 8, false);
@@ -704,34 +704,34 @@ package com.jumpGame.screens
 			var powerupToActivate:int = this.hud.updatePowerupReel(this.timeDiffReal);
 			if (this.checkWinLose && Constants.powerupsEnabled) {
 				// update powerup reel
-//				if (powerupToActivate == 0) {
-//					HUD.showMessage("Ancient Power: Teleportation");
-//					this.powerupsList[Constants.PowerupBlink].activate();
-//				}
-//				else if (powerupToActivate == 1) {
-//					HUD.showMessage("Ancient Power: Attraction");
-//					this.powerupsList[Constants.PowerupAttractor].activate();
-//				}
-//				else if (powerupToActivate == 2) {
-//					HUD.showMessage("Ancient Power: Safety Rocket");
-//					this.powerupsList[Constants.PowerupLevitation].activate();
-//				}
-//				else if (powerupToActivate == 3) {
-//					HUD.showMessage("Ancient Power: Duplication");
-//					this.powerupsList[Constants.PowerupExtender].activate();
-//				}
-//				else if (powerupToActivate == 4) {
-//					HUD.showMessage("Ancient Power: Barrels O' Fire");
-//					this.powerupsList[Constants.PowerupPyromancy].activate();
-//				}
-//				else if (powerupToActivate == 5) {
-//					HUD.showMessage("Ancient Curse: Rain of Cannonballs");
-//					this.powerupsList[Constants.PowerupExpansion].activate();
-//				}
-				if (powerupToActivate >= 0) {
+				if (powerupToActivate == 0) {
+					HUD.showMessage("Ancient Power: Teleportation");
+					this.powerupsList[Constants.PowerupBlink].activate();
+				}
+				else if (powerupToActivate == 1) {
+					HUD.showMessage("Ancient Power: Attraction");
+					this.powerupsList[Constants.PowerupAttractor].activate();
+				}
+				else if (powerupToActivate == 2) {
+					HUD.showMessage("Ancient Power: Safety Rocket");
+					this.powerupsList[Constants.PowerupLevitation].activate();
+				}
+				else if (powerupToActivate == 3) {
 					HUD.showMessage("Ancient Power: Duplication");
 					this.powerupsList[Constants.PowerupExtender].activate();
 				}
+				else if (powerupToActivate == 4) {
+					HUD.showMessage("Ancient Power: Barrels O' Fire");
+					this.powerupsList[Constants.PowerupPyromancy].activate();
+				}
+				else if (powerupToActivate == 5) {
+					HUD.showMessage("Ancient Curse: Rain of Cannonballs");
+					this.powerupsList[Constants.PowerupExpansion].activate();
+				}
+//				if (powerupToActivate >= 0) {
+//					HUD.showMessage("Ancient Power: Duplication");
+//					this.powerupsList[Constants.PowerupExtender].activate();
+//				}
 				
 				// update powerups
 				var i:uint;
@@ -1336,7 +1336,7 @@ package com.jumpGame.screens
 					}
 				} // eof platform collision detection
 				
-				// bof attractor charm
+				// bof power: attraction
 				if (this.powerupsList[Constants.PowerupAttractor].isActivated) {
 //					if ((this.platformsList[i].gy < this.hero.gy + Constants.StageHeight / 2)
 //						&& (this.platformsList[i].gy > this.hero.gy - 100)) { // platform moved into screen
@@ -1381,7 +1381,7 @@ package com.jumpGame.screens
 							this.platformsList[i].dy += d2y * this.timeDiffControlled;
 						}
 					}
-				} // eof attractor power
+				} // eof power:attraction
 				
 				// extender power
 				if (this.powerupsList[Constants.PowerupExtender].isActivated) {
@@ -1407,6 +1407,13 @@ package com.jumpGame.screens
 				
 				// remove a platform if it has scrolled below sea of fire
 				if (this.platformsList[i].gy < this.fg.sofHeight - 100) {
+					if (platformsList[i].y < Constants.StageHeight) { // dousing animation and sound if visible
+						//					Statics.particleBounce.emitterX = this.platformsList[i].x;
+						//					Statics.particleBounce.emitterY = this.platformsList[i].y;
+						//					Statics.particleBounce.start(0.4);
+						Sounds.sndDouseFire.play();
+					}
+					
 					this.returnPlatformToPool(i);
 					continue;
 				}
@@ -1698,24 +1705,23 @@ package com.jumpGame.screens
 					// do not add coins if in bonus mode
 				}
 				else { // add element
-					var newElementIndex:uint = this.addElementFromPool(levelElement[0], levelElement[1], levelElement[2], levelElement[3]);
+					var newElementIndex:uint = this.addElementFromPool(levelElement[0], levelElement[1], levelElement[2], levelElement[3], levelElement[4], levelElement[5], levelElement[6], levelElement[7], levelElement[8], levelElement[9]);	
+					// duplication power, add extended platforms
 					if (this.powerupsList[Constants.PowerupExtender].isActivated && levelElement[2] != "Coin") {
 						var newPlatformExtenderIndex:uint;
 						newPlatformExtenderIndex = addElementFromPool(
 							levelElement[0],
 							-Constants.StageWidth / 2 - this.platformsList[newElementIndex].width,
-							levelElement[2], levelElement[3]);
+							levelElement[2], levelElement[3], levelElement[4], levelElement[5], levelElement[6], levelElement[7], levelElement[8]);
 						this.platformsList[newPlatformExtenderIndex].makeExtender(this.platformsList[newElementIndex],
 							-1, levelElement[1] - this.platformsList[newElementIndex].width);
-//						this.platformsList[newPlatformExtenderIndex].alpha = 0.5;
 						
 						newPlatformExtenderIndex = addElementFromPool(
 							levelElement[0],
 							Constants.StageWidth / 2 + this.platformsList[newElementIndex].width,
-							levelElement[2], levelElement[3]);
+							levelElement[2], levelElement[3], levelElement[4], levelElement[5], levelElement[6], levelElement[7], levelElement[8]);
 						this.platformsList[newPlatformExtenderIndex].makeExtender(this.platformsList[newElementIndex],
 							1, levelElement[1] + this.platformsList[newElementIndex].width);
-//						this.platformsList[newPlatformExtenderIndex].alpha = 0.5;
 					}
 				}
 				this.levelParser.levelElementsArray.splice(0, 1); // remove this entry from level elements array
@@ -1787,15 +1793,13 @@ package com.jumpGame.screens
 		 * Add an element to the stage
 		 * @return uint the platforms array index of the newly added platfrom
 		 */
-		private function addElementFromPool(y:Number, x:Number, elementClassName:String, elementSize:int = 0):uint {
+		private function addElementFromPool(y:Number, x:Number, elementClassName:String, elementSize:int = 0, ... args):uint {
 			var qualifiedName:String = "com.jumpGame.gameElements.platforms::" + elementClassName;
 			var elementClass:Class = getDefinitionByName(qualifiedName) as Class;
 			var tempElement:Platform = ObjectPool.instance.getObj(qualifiedName) as elementClass;
 			if (tempElement == null) throw new Error("Pool is full: " + elementClassName);
-			tempElement.initialize(elementSize);
+			tempElement.initialize(x, y, elementSize, args);
 			tempElement.fixedGy = y;
-			tempElement.gx = x;
-			tempElement.gy = y;
 			this.addChild(tempElement);
 			this.platformsList[platformsListLength++] = tempElement;
 			this.setChildIndex(tempElement, this.getChildIndex(this.hero)); // push newly added element behind hero

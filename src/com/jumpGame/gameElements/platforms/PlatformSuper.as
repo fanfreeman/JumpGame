@@ -11,9 +11,9 @@ package com.jumpGame.gameElements.platforms
 		public var heroDy:Number;
 		public var isPyromancy:Boolean;
 		
-		override public function initialize(size:int):void {
+		override public function initialize(gx, gy, size:int, args = null):void {
 			this.isPyromancy = false;
-			super.initialize(size);
+			super.initialize(gx, gy, size);
 		}
 		
 		override protected function createPlatformArt():void
