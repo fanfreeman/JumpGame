@@ -24,6 +24,8 @@ package com.jumpGame.gameElements
 		private var rotationSpeed:Number = 0.0;
 		private var canBounceTime:int;
 		
+		private var nextBouncePower:Number;
+		
 		public var d2x:Number = 0;
 		
 		public function Hero()
@@ -32,6 +34,7 @@ package com.jumpGame.gameElements
 			
 			this.gx = 0.0;
 			this.gy = 0.0;
+			this.nextBouncePower = 0;
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -146,17 +149,47 @@ package com.jumpGame.gameElements
 		
 		public function bounce(bouncePower:Number):void {
 			if (this.canBounce) {
-				if (bouncePower > this.dy) {
-					if (bouncePower > Constants.MaxHeroBouncePower) this.dy = Constants.MaxHeroBouncePower;
-					else this.dy = bouncePower;
-					animationJump.stop();
-					animationJump.play();
+				if (bouncePower > Constants.MaxHeroBouncePower) this.dy = Constants.MaxHeroBouncePower;
+				else {
+					if (bouncePower > this.dy) this.dy = bouncePower;
+					else if (bouncePower <= 0) this.dy += bouncePower;
 				}
+				animationJump.stop();
+				animationJump.play();
 			}
 			
 			if (this.dx > 0.2) this.rotationSpeed = Math.PI / 27;
 			else if (this.dx < -0.2) this.rotationSpeed = -Math.PI / 27;
 		}
+		
+		/* enable the following to allow hero to bounce against multiple platforms
+		public function bounce(bouncePower:Number):void {
+			if (this.canBounce) {
+				if (bouncePower > Constants.MaxHeroBouncePower) this.nextBouncePower = Constants.MaxHeroBouncePower;
+				else {
+					if (bouncePower > this.dy) this.nextBouncePower = bouncePower;
+					else if (bouncePower <= 0) this.nextBouncePower += bouncePower;
+				}
+			}
+		}
+		
+		// called at the beginning of each enter frame loop
+		public function prepareBounce():void {
+			this.nextBouncePower = this.dy;
+		}
+		
+		// called at the end of each enter frame loop to update the hero's dy
+		public function doBounce():void {
+			if (this.nextBouncePower != this.dy) {
+				this.dy = this.nextBouncePower;
+				animationJump.stop();
+				animationJump.play();
+				
+				if (this.dx > 0.2) this.rotationSpeed = Math.PI / 27;
+				else if (this.dx < -0.2) this.rotationSpeed = -Math.PI / 27;
+			}
+		}
+		*/
 		
 		public function update(timeDiff:Number):void {
 			// check if ability is ready

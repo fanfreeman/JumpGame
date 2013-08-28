@@ -91,7 +91,8 @@ package
 		public static const Generator:String = "Generator"; // randomly generate elements according to specification
 		
 		// contraption setting definitions
-		public static const ContraptionSettingTrain:String = "ContraptionSettingTrain";
+		public static const ContraptionSettingTrainRight:String = "ContraptionSettingTrainRight";
+		public static const ContraptionSettingTrainLeft:String = "ContraptionSettingTrainLeft";
 		public static const ContraptionSettingHourglass:String = "ContraptionSettingHourglass";
 		public static const ContraptionSettingBell:String = "ContraptionSettingBell";
 		public static const ContraptionSettingPowerupBoxes:String = "ContraptionSettingPowerupBoxes";
@@ -107,6 +108,7 @@ package
 		public static const BoostBouncePower:Number = 1.35;
 		public static const PowerBouncePower:Number = 1.6;
 		public static const SuperBouncePower:Number = 2.4;
+		public static const DarkBouncePower:Number = -0.4;
 		
 		// platform attributes
 		public static const PlatformMaxSize:int = 5; // platform max size
@@ -208,9 +210,6 @@ package
 		
 		// power up completion warning, flash reel for this duration
 		public static const PowerupWarningDuration:int = 3000; // 3 seconds
-		
-		// charm: attractor
-		public static const CharmDurationAttractor:int = 10000; // 10 seconds
 		
 		// acquired coin flight target; y-value is top screen border
 		public static const CoinTargetX:Number = 200;

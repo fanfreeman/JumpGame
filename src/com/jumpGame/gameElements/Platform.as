@@ -109,8 +109,8 @@ package com.jumpGame.gameElements
 			this.dy += d2y;
 			
 			// limit max velocity for platformMobile
-			if (this.dx > Constants.PlatformMobileMaxVelocityX) this.dx = Constants.PlatformMobileMaxVelocityX;
-			else if (this.dx < -Constants.PlatformMobileMaxVelocityX) this.dx = -Constants.PlatformMobileMaxVelocityX;
+//			if (this.dx > Constants.PlatformMobileMaxVelocityX) this.dx = Constants.PlatformMobileMaxVelocityX;
+//			else if (this.dx < -Constants.PlatformMobileMaxVelocityX) this.dx = -Constants.PlatformMobileMaxVelocityX;
 			
 			this.gx += this.dx * timeDiff;
 			this.gy += this.dy * timeDiff;

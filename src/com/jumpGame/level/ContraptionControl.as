@@ -14,13 +14,20 @@ package com.jumpGame.level
 			this.checkResults = new Array(8);
 		}
 		
+		public function setIntervalAndScheduleNext(contraptionIndex:uint, interval:Number):void {
+			trace("setting interval of " + contraptionIndex + " to " + interval + " seconds");
+			if (interval == intervals[contraptionIndex]) return;
+			intervals[contraptionIndex] = interval;
+			if (interval > 0) scheduleNext(contraptionIndex);
+		}
+		
 		public function scheduleNext(contraptionIndex:uint):void {
 			//this.pm.seed = Math.random() * Math.floor(int.MAX_VALUE);
 			//var interval:Number = pm.standardNormal() * 2 * this.intervals[contraptionIndex]; // interval in number of seconds
 			var interval:Number = Math.random() * 20 - 10 + this.intervals[contraptionIndex];
 			if (interval < 5) interval = 5;
 			this.expirationTimes[contraptionIndex] = Statics.gameTime + int(interval * 1000);
-			trace("scheduling: " + contraptionIndex + " at " + this.expirationTimes[contraptionIndex] + " for " + interval);
+//			trace("scheduling: " + contraptionIndex + " at " + this.expirationTimes[contraptionIndex] + " for " + interval);
 		}
 		
 		// check if a contraption should be launched

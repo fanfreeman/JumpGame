@@ -6,8 +6,6 @@ package com.jumpGame.gameElements.powerups
 	public class Pyromancy extends GameObject
 	{
 		public var isActivated:Boolean = false;
-		private var nearCompletionTime:int; // star flashing powerup reel icon at this time
-		private var completionTime:int;
 		private var completionWarned:Boolean;
 		
 		private var nextLaunchTime:int;
@@ -18,8 +16,6 @@ package com.jumpGame.gameElements.powerups
 			
 			this.isActivated = true;
 			this.completionWarned = false;
-			this.completionTime = Statics.gameTime + Constants.CharmDurationAttractor;
-			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 			
 			this.numLaunches = 0;
 			this.nextLaunchTime = Statics.gameTime + 1000;
