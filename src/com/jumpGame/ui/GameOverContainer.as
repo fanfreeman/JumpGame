@@ -362,8 +362,8 @@ package com.jumpGame.ui
 				var coin:MovieClip;
 				for (i = 0; i < 20; i++) {
 					coin = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
-					coin.pivotX = Math.ceil(coin.texture.width  / 2);
-					coin.x = Statics.stageWidth / 2;
+					coin.pivotY = Math.ceil(coin.height / 2);
+					coin.x = Math.ceil(Statics.stageWidth / 2) - Math.ceil(achievementPlate1.width / 2) + achievementPlate1.coin.x;
 					coin.y = achievementPlate1.y + achievementPlate1.coin.y;
 					starling.core.Starling.juggler.add(coin);
 					addChild(coin);
@@ -385,9 +385,9 @@ package com.jumpGame.ui
 					var achievementCoins2:Vector.<MovieClip> = new Vector.<MovieClip>();
 					for (i = 0; i < 20; i++) {
 						coin = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
-						coin.pivotX = Math.ceil(coin.texture.width  / 2);
-						coin.x = Statics.stageWidth / 2 + achievementPlate1.coin.x;
-						coin.y = achievementPlate2.y + achievementPlate1.coin.y;
+						coin.pivotY = Math.ceil(coin.height / 2);
+						coin.x = Math.ceil(Statics.stageWidth / 2) - Math.ceil(achievementPlate2.width / 2) + achievementPlate2.coin.x;
+						coin.y = achievementPlate2.y + achievementPlate2.coin.y;
 						starling.core.Starling.juggler.add(coin);
 						addChild(coin);
 						achievementCoins2.push(coin);
@@ -408,9 +408,9 @@ package com.jumpGame.ui
 						var achievementCoins3:Vector.<MovieClip> = new Vector.<MovieClip>();
 						for (i = 0; i < 20; i++) {
 							coin = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
-							coin.pivotX = Math.ceil(coin.texture.width  / 2);
-							coin.x = Statics.stageWidth / 2 + achievementPlate1.coin.x;
-							coin.y = achievementPlate3.y + achievementPlate1.coin.y;
+							coin.pivotY = Math.ceil(coin.height / 2);
+							coin.x = Math.ceil(Statics.stageWidth / 2) - Math.ceil(achievementPlate3.width / 2) + achievementPlate3.coin.x;
+							coin.y = achievementPlate3.y + achievementPlate3.coin.y;
 							starling.core.Starling.juggler.add(coin);
 							addChild(coin);
 							achievementCoins3.push(coin);
