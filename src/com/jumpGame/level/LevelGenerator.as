@@ -353,6 +353,7 @@ package com.jumpGame.level {
 		}
 		
 		// easy stars following a sine wave
+		// difficulty 2 has a column of repulsors in the center
 		private function generateSineWave(difficulty:uint = 1):void {
 			var gx:Number = 0;
 			var gy:Number = 0;
@@ -371,7 +372,7 @@ package com.jumpGame.level {
 				} // eof loop through elements on the same row
 				
 				// add repulsor
-				if (difficulty > 1 && ri % 2 == 0) this.builder.levelElementsArray.push([gy, 0, "Repulsor", 0]);
+				if (difficulty > 1 && ri % 3 == 0) this.builder.levelElementsArray.push([gy, 0, "Repulsor", 0]);
 				
 				// add coin
 				this.builder.currentY ++;
@@ -833,8 +834,6 @@ package com.jumpGame.level {
 			}
 			this.builder.currentY += 4;
 		}
-		
-		
 		
 		// DESIGNER TOOL
 		private function generateDesigned999999():void { // test repulsors

@@ -224,5 +224,30 @@ package
 		public static const ScreenMatches:String = "ScreenMatches";
 		public static const ScreenUpgrades:String = "ScreenUpgrades";
 		public static const ScreenAchievements:String = "ScreenAchievements";
+		
+		public static const AchievementsData:Array = new Array(
+			// id, title, description, reward coins, reward gems
+			new Array(0, "none", "none", 0, 0),
+			new Array(1, "Rookie Jumper", "Jump 100 meters in one round", 100, 0),
+			new Array(2, "I Can Jump!", "Jump 500 meters in one round", 200, 0),
+			new Array(3, "Bouncy", "Jump 1000 meters in one round", 400, 0),
+			new Array(4, "Acrobatic", "Jump 2000 meters in one round", 1000, 0),
+			new Array(5, "Like a Bunny", "Jump 3000 meters in one round", 2000, 0),
+			new Array(6, "Up!", "Jump 4000 meters in one round", 3000, 0),
+			new Array(7, "Prodigy", "Jump 5000 meters in one round", 5000, 0),
+			new Array(8, "Defying Gravity", "Jump 6500 meters in one round", 6000, 0),
+			new Array(9, "Superman", "Jump 8000 meters in one round", 8000, 1),
+			new Array(10, "Invincible", "Jump 10000 meters in one round", 10000, 2),
+			new Array(11, "Spare Change", "Collect 250 coins in one round", 100, 0),
+			new Array(12, "In Ur Couch, Stealng Ur Change", "Collect 500 coins in one round", 200, 0),
+			new Array(13, "Pay Day", "Collect 1000 coins in one round", 400, 0),
+			new Array(14, "Money Machine", "Collect 2000 coins in one round", 1000, 0),
+			new Array(15, "Golden Bells", "Collect 3000 coins in one round", 2000, 0),
+			new Array(16, "It's Raining Gold", "Collect 4000 coins in one round", 3000, 0),
+			new Array(17, "Cash Cow", "Collect 5000 coins in one round", 5000, 0),
+			new Array(18, "Golden Touch", "Collect 6500 coins in one round", 7000, 0),
+			new Array(19, "Royal Mint", "Collect 8000 coins in one round", 10000, 0),
+			new Array(20, "Revenues Department", "Collect 10000 coins in one round", 0, 5)
+		);
 	}
 }

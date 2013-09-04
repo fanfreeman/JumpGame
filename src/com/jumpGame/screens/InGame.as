@@ -134,12 +134,6 @@ package com.jumpGame.screens
 		private var moveMade:uint = 0;
 		
 		// ------------------------------------------------------------------------------------------------------------
-		// OBJECTIVES
-		// ------------------------------------------------------------------------------------------------------------
-		
-		private var objectivesList:Vector.<Boolean>;
-		
-		// ------------------------------------------------------------------------------------------------------------
 		// USER CONTROL
 		// ------------------------------------------------------------------------------------------------------------
 		
@@ -238,12 +232,6 @@ package com.jumpGame.screens
 		 */
 		private function drawGame():void
 		{
-			// set up objectives
-			this.objectivesList = new Vector.<Boolean>();
-			for (var i:uint = 0; i < 35; i++) {
-				this.objectivesList[i] = false;
-			}
-			
 			// set up background
 			this.bg = new Background(Constants.Background);
 			this.addChild(this.bg);
@@ -411,7 +399,7 @@ package com.jumpGame.screens
 			ObjectPool.instance.registerPool(StarMini, 50, false);
 			ObjectPool.instance.registerPool(StarBlue, 150, false);
 			ObjectPool.instance.registerPool(StarRed, 50, false);
-			ObjectPool.instance.registerPool(StarDark, 20, false);
+			ObjectPool.instance.registerPool(StarDark, 50, false);
 			ObjectPool.instance.registerPool(Comet, 30, false);
 			ObjectPool.instance.registerPool(Repulsor, 60, false);
 			ObjectPool.instance.registerPool(Cannonball, 20, false);
@@ -455,7 +443,7 @@ package com.jumpGame.screens
 		{
 			// reset static vars
 			Statics.gameMode = Constants.ModeNormal;
-			Statics.speedFactor = 1.099;
+			Statics.speedFactor = 1;
 			Statics.preparationStep = Constants.PrepareStep0;
 			Statics.gameTime = 0;
 			Statics.bonusTime = 0;
@@ -1034,90 +1022,110 @@ package com.jumpGame.screens
 				hud.coins = this.coinsObtained;
 				
 				// climb distance objectives
-				if (!this.objectivesList[0] && Statics.maxDist > 10000) {
-					HUD.showAchievement("Rookie Jumper");
-					this.objectivesList[0] = true;
+				if (!Statics.achievementsList[1] && Statics.maxDist > 10000) {
+					HUD.showAchievement(Constants.AchievementsData[1][1]);
+					Statics.achievementsList[1] = true;
+					this.gameOverContainer.addNewAchievement(1);
 				}
-				if (!this.objectivesList[1] && Statics.maxDist > 50000) {
-					HUD.showAchievement("I Can Jump!");
-					this.objectivesList[1] = true;
+				if (!Statics.achievementsList[2] && Statics.maxDist > 50000) {
+					HUD.showAchievement(Constants.AchievementsData[2][1]);
+					Statics.achievementsList[2] = true;
+					this.gameOverContainer.addNewAchievement(2);
 				}
-				if (!this.objectivesList[2] && Statics.maxDist > 100000) {
-					HUD.showAchievement("Bouncy");
-					this.objectivesList[2] = true;
+				if (!Statics.achievementsList[3] && Statics.maxDist > 100000) {
+					HUD.showAchievement(Constants.AchievementsData[3][1]);
+					Statics.achievementsList[3] = true;
+					this.gameOverContainer.addNewAchievement(3);
 				}
-				if (!this.objectivesList[3] && Statics.maxDist > 200000) {
-					HUD.showAchievement("Acrobatic");
-					this.objectivesList[3] = true;
+				if (!Statics.achievementsList[4] && Statics.maxDist > 200000) {
+					HUD.showAchievement(Constants.AchievementsData[4][1]);
+					Statics.achievementsList[4] = true;
+					this.gameOverContainer.addNewAchievement(4);
 				}
-				if (!this.objectivesList[4] && Statics.maxDist > 300000) {
-					HUD.showAchievement("Like a Bunny");
-					this.objectivesList[4] = true;
+				if (!Statics.achievementsList[5] && Statics.maxDist > 300000) {
+					HUD.showAchievement(Constants.AchievementsData[5][1]);
+					Statics.achievementsList[5] = true;
+					this.gameOverContainer.addNewAchievement(5);
 				}
-				if (!this.objectivesList[5] && Statics.maxDist > 400000) {
-					HUD.showAchievement("Up!");
-					this.objectivesList[5] = true;
+				if (!Statics.achievementsList[6] && Statics.maxDist > 400000) {
+					HUD.showAchievement(Constants.AchievementsData[6][1]);
+					Statics.achievementsList[6] = true;
+					this.gameOverContainer.addNewAchievement(6);
 				}
-				if (!this.objectivesList[6] && Statics.maxDist > 500000) {
-					HUD.showAchievement("Prodigy");
-					this.objectivesList[6] = true;
+				if (!Statics.achievementsList[7] && Statics.maxDist > 500000) {
+					HUD.showAchievement(Constants.AchievementsData[7][1]);
+					Statics.achievementsList[7] = true;
+					this.gameOverContainer.addNewAchievement(7);
 				}
-				if (!this.objectivesList[7] && Statics.maxDist > 600000) {
-					HUD.showAchievement("Defying Gravity");
-					this.objectivesList[7] = true;
+				if (!Statics.achievementsList[8] && Statics.maxDist > 600000) {
+					HUD.showAchievement(Constants.AchievementsData[8][1]);
+					Statics.achievementsList[8] = true;
+					this.gameOverContainer.addNewAchievement(8);
 				}
-				if (!this.objectivesList[8] && Statics.maxDist > 800000) {
-					HUD.showAchievement("Superman");
-					this.objectivesList[8] = true;
+				if (!Statics.achievementsList[9] && Statics.maxDist > 800000) {
+					HUD.showAchievement(Constants.AchievementsData[9][1]);
+					Statics.achievementsList[9] = true;
+					this.gameOverContainer.addNewAchievement(9);
 				}
-				if (!this.objectivesList[9] && Statics.maxDist > 1000000) {
-					HUD.showAchievement("Invincible");
-					this.objectivesList[9] = true;
+				if (!Statics.achievementsList[10] && Statics.maxDist > 1000000) {
+					HUD.showAchievement(Constants.AchievementsData[10][1]);
+					Statics.achievementsList[10] = true;
+					this.gameOverContainer.addNewAchievement(10);
 				}
-				// eof climb distance objectives
+				// eof climb distance achievements
 				
-				// coin collection objectives
-				if (!this.objectivesList[10] && this.coinsObtained > 250) {
-					HUD.showAchievement("Spare Change");
-					this.objectivesList[10] = true;
+				// coin collection achievements
+				if (!Statics.achievementsList[11] && this.coinsObtained > 250) {
+					HUD.showAchievement(Constants.AchievementsData[11][1]);
+					Statics.achievementsList[11] = true;
+					this.gameOverContainer.addNewAchievement(11);
 				}
-				if (!this.objectivesList[11] && this.coinsObtained > 750) {
-					HUD.showAchievement("In Ur Couch, Stealng Ur Change");
-					this.objectivesList[11] = true;
+				if (!Statics.achievementsList[12] && this.coinsObtained > 500) {
+					HUD.showAchievement(Constants.AchievementsData[12][1]);
+					Statics.achievementsList[12] = true;
+					this.gameOverContainer.addNewAchievement(12);
 				}
-				if (!this.objectivesList[12] && this.coinsObtained > 1500) {
-					HUD.showAchievement("TGI Pay Day");
-					this.objectivesList[12] = true;
+				if (!Statics.achievementsList[13] && this.coinsObtained > 1000) {
+					HUD.showAchievement(Constants.AchievementsData[13][1]);
+					Statics.achievementsList[13] = true;
+					this.gameOverContainer.addNewAchievement(13);
 				}
-				if (!this.objectivesList[13] && this.coinsObtained > 2500) {
-					HUD.showAchievement("Money Machine");
-					this.objectivesList[13] = true;
+				if (!Statics.achievementsList[14] && this.coinsObtained > 2000) {
+					HUD.showAchievement(Constants.AchievementsData[14][1]);
+					Statics.achievementsList[14] = true;
+					this.gameOverContainer.addNewAchievement(14);
 				}
-				if (!this.objectivesList[14] && this.coinsObtained > 3500) {
-					HUD.showAchievement("It's Raining Gold");
-					this.objectivesList[14] = true;
+				if (!Statics.achievementsList[15] && this.coinsObtained > 3000) {
+					HUD.showAchievement(Constants.AchievementsData[15][1]);
+					Statics.achievementsList[15] = true;
+					this.gameOverContainer.addNewAchievement(15);
 				}
-				if (!this.objectivesList[15] && this.coinsObtained > 4500) {
-					HUD.showAchievement("Bank Robber");
-					this.objectivesList[15] = true;
+				if (!Statics.achievementsList[16] && this.coinsObtained > 4000) {
+					HUD.showAchievement(Constants.AchievementsData[16][1]);
+					Statics.achievementsList[16] = true;
+					this.gameOverContainer.addNewAchievement(16);
 				}
-				if (!this.objectivesList[16] && this.coinsObtained > 5500) {
-					HUD.showAchievement("Cash Cow");
-					this.objectivesList[16] = true;
+				if (!Statics.achievementsList[17] && this.coinsObtained > 5000) {
+					HUD.showAchievement(Constants.AchievementsData[17][1]);
+					Statics.achievementsList[17] = true;
+					this.gameOverContainer.addNewAchievement(17);
 				}
-				if (!this.objectivesList[17] && this.coinsObtained > 7000) {
-					HUD.showAchievement("Wall Street Trader");
-					this.objectivesList[17] = true;
+				if (!Statics.achievementsList[18] && this.coinsObtained > 6500) {
+					HUD.showAchievement(Constants.AchievementsData[18][1]);
+					Statics.achievementsList[18] = true;
+					this.gameOverContainer.addNewAchievement(18);
 				}
-				if (!this.objectivesList[18] && this.coinsObtained > 9000) {
-					HUD.showAchievement("Royal Mint");
-					this.objectivesList[18] = true;
+				if (!Statics.achievementsList[19] && this.coinsObtained > 8000) {
+					HUD.showAchievement(Constants.AchievementsData[19][1]);
+					Statics.achievementsList[19] = true;
+					this.gameOverContainer.addNewAchievement(19);
 				}
-				if (!this.objectivesList[19] && this.coinsObtained > 15000) {
-					HUD.showAchievement("Revenues Department");
-					this.objectivesList[19] = true;
+				if (!Statics.achievementsList[20] && this.coinsObtained > 10000) {
+					HUD.showAchievement(Constants.AchievementsData[20][1]);
+					Statics.achievementsList[20] = true;
+					this.gameOverContainer.addNewAchievement(20);
 				}
-				// eof coin collection objectives
+				// eof coin collection achievements
 			} // eof not in preparation mode
 		}
 		

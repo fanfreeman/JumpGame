@@ -4,6 +4,10 @@ package com.jumpGame.level
 
 	public class Statics
 	{
+		// stage sizes
+		public static var stageWidth:int;
+		public static var stageHeight:int;
+		
 		// particle emitters
 		public static var particleLeaf:PDParticleSystem;
 		public static var particleCharge:PDParticleSystem;
@@ -60,8 +64,9 @@ package com.jumpGame.level
 		public static var isRightCannonActive:Boolean;
 		public static var isLeftCannonActive:Boolean;
 		
-		// objectives
+		// achievements
 		public static var displayingBadge:Boolean;
+		public static var achievementsList:Vector.<Boolean>;
 		
 		// communication
 		public static var playerName:String;

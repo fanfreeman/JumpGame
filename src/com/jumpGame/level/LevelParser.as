@@ -36,6 +36,7 @@ package com.jumpGame.level  {
 			var blockNumber:int;
 			switch (this.difficulty) {
 				case 7:
+					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingBell, 20]);
 					blockNumber = int(Math.floor(Math.random() * 3) + 700);
 					this.generator.generate(blockNumber);
 					break;
@@ -67,7 +68,6 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 14:
-					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingBell, 30]);
 					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingWitch, 15]);
 					blockNumber = int(Math.floor(Math.random() * 1) + 5000);
 					this.generator.generate(blockNumber);
@@ -116,28 +116,32 @@ package com.jumpGame.level  {
 				// increase difficulty based on distance climbed
 				if (Statics.maxDist > this.nextDifficultyDistance) {
 					if (this.difficulty == 7) {
-						this.difficulty++;
+						this.raiseDifficulty();
 						this.nextDifficultyDistance += 5000;
 					}
 					else if (this.difficulty == 9) {
-						this.difficulty++;
+						this.raiseDifficulty();
 						this.nextDifficultyDistance += 5000;
 					}
 					else {
-						this.difficulty++;
+						this.raiseDifficulty();
 						if (this.difficulty > 21) {
 							this.difficulty = 12;
-							Statics.speedFactor *= 1.1;
 							this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 15]);
 							this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingCannon, 20]);
 						}
-						this.nextDifficultyDistance += 18000;
+						this.nextDifficultyDistance += 8000;
 					}
 					
 					// add a row of red stars
 					this.generator.addRowRedStars();
 				}
 			}
+		}
+		
+		private function raiseDifficulty():void {
+			this.difficulty++;
+			if (Statics.speedFactor < 1.2) Statics.speedFactor += 0.01;
 		}
 	}
 }

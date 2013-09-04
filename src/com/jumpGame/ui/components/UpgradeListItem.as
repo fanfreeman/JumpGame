@@ -30,11 +30,6 @@ package com.jumpGame.ui.components
 			this.height = 80;
 			this.parent = parent;
 			this.data = data;
-			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
-		}
-		
-		private function addedToStageHandler(event:Event):void
-		{
 			this.createElements();
 		}
 		

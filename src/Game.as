@@ -1,14 +1,22 @@
 package
 {
+//	import com.adobe.images.JPGEncoder;
+	
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.screens.InGame;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.SoundButton;
+	import com.jumpGame.level.Statics;
+//	import com.jumpGame.customObjects.Base64;
 	
+//	import flash.display.BitmapData;
 	import flash.media.SoundMixer;
+//	import flash.external.ExternalInterface;
 	
 	import starling.display.Sprite;
 	import starling.events.Event;
+//	import flash.utils.ByteArray;
+	
 	
 	/**
 	 * This class is the primary Starling Sprite based class
@@ -22,11 +30,15 @@ package
 		/** Sound / Mute button. */
 		private var soundButton:SoundButton;
 		
+//		private var jpgEncoder:JPGEncoder;
+		
 		public function Game()
 		{
 			super();
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+//			this.jpgEncoder = new JPGEncoder();
+//			ExternalInterface.addCallback('exportScreenshot', exportScreenshot);
 		}
 		
 		/**
@@ -37,6 +49,9 @@ package
 		private function onAddedToStage(event:Event):void
 		{
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			
+			Statics.stageWidth = stage.stageWidth;
+			Statics.stageHeight = stage.stageHeight;
 			
 			// Initialize screens.
 			initScreens();
@@ -166,5 +181,21 @@ package
 //					break;
 			}
 		}
+		
+		// creates a screenshot of entire stage in JPEG format
+//		private function exportScreenshot():String {
+//			var result:String = null;
+//			var stageBitmapData:BitmapData = stage.drawToBitmapData();
+//			
+//			var jpgBytes:ByteArray = this.jpgEncoder.encode(stageBitmapData);
+//			if (jpgBytes) {
+//				var screenshotBase64:String = Base64.encodeByteArray(jpgBytes);
+//				if (screenshotBase64) {
+//					result = screenshotBase64;
+//				}
+//			}
+//			
+//			return result;
+//		}
 	}
 }

@@ -112,6 +112,14 @@ package com.jumpGame.screens
 						// upgrade prices
 						Statics.upgradePrices = dataObj.prices;
 						
+						var i:uint;
+						// earned achievements
+						var numAchievements:int = dataObj.achievements.length;
+						for (i = 0; i < numAchievements; i++) { // loop through matches retrieved
+							Statics.achievementsList[int(dataObj.achievements[i].achievement_id)] = true;
+							trace ("achievement " + int(dataObj.achievements[i].achievement_id) + " earned");
+						}
+						
 						// parse player matches
 						var matchesYourTurnCollection:ListCollection = new ListCollection();
 						var matchesTheirTurnCollection:ListCollection = new ListCollection();
@@ -119,7 +127,8 @@ package com.jumpGame.screens
 						this.screenMatches.gamesMyTurn = new Array();
 						this.screenMatches.gamesTheirTurn = new Array();
 						this.screenMatches.gamesFinished = new Array();
-						for (var i:uint = 0; i < dataObj.matches.length; i++) { // loop through matches retrieved
+						var numMatches:uint = dataObj.matches.length;
+						for (i = 0; i < numMatches; i++) { // loop through matches retrieved
 							// get round number
 							var roundScoresArray:Array = [	int(dataObj.matches[i].player1_round1_score),
 															int(dataObj.matches[i].player2_round1_score),
@@ -450,6 +459,12 @@ package com.jumpGame.screens
 		{
 			this.visible = true;
 			this.tabs.selectedIndex = -1; // trigger match data refresh
+			
+			// set up achievements, the element at index 0 is not used in order to sync with db ids
+			Statics.achievementsList = new Vector.<Boolean>();
+			for (var i:uint = 0; i < 36; i++) {
+				Statics.achievementsList[i] = false;
+			}
 		}
 		
 		private function refreshMatches():void {
