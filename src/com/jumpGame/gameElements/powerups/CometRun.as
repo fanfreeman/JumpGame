@@ -19,7 +19,7 @@ package com.jumpGame.gameElements.powerups
 			Statics.particleComet.start();
 			Statics.particleWind.start();
 			
-			Statics.powerupsEnabled = false;
+//			Statics.powerupsEnabled = false;
 			this.isActivated = true;
 			this.completionTime = Statics.gameTime + 5000; // lasts 5 seconds
 		}

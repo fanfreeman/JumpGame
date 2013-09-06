@@ -66,7 +66,7 @@ package
 		[Embed(source="../media/sounds/gong.mp3")]
 		public static const SND_GONG:Class;
 		
-		[Embed(source="../media/sounds/ingame/powerup.mp3")]
+		[Embed(source="../media/sounds/ingame/powerup2.mp3")]
 		public static const SND_POWERUP:Class;
 		
 		[Embed(source="../media/sounds/clock_tick.mp3")]
@@ -275,7 +275,7 @@ package
 		public static function playNextNote():void {
 			Sounds.sndNoteArray[Statics.nextStarNote].play();
 			Statics.nextStarNote++;
-			if (Statics.nextStarNote == 36) Statics.nextStarNote = 0;
+			if (Statics.nextStarNote == 24) Statics.nextStarNote = 0;
 		}
 		
 		public static function loadBgm():void {

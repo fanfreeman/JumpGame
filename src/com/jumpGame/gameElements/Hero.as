@@ -28,6 +28,8 @@ package com.jumpGame.gameElements
 		
 		public var d2x:Number = 0;
 		
+		public var isTransfigured:Boolean = false;
+		
 		public function Hero()
 		{
 			super();

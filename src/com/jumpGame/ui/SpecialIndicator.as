@@ -63,7 +63,7 @@ package com.jumpGame.ui
 			this.addChild(sparklesAnimation);
 			
 			// blast
-			blastAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Blast"), 30);
+			blastAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("Blast"), 30);
 			blastAnimation.pivotX = Math.ceil(blastAnimation.texture.width  / 2); // center art on registration point
 			blastAnimation.pivotY = Math.ceil(blastAnimation.texture.height / 2);
 			blastAnimation.visible = false;

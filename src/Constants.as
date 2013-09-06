@@ -17,7 +17,7 @@ package
 		public static const StageHeight:uint = 650;
 		
 		// element preload window
-		public static const ElementPreloadWindow:Number = 650 / 2;
+		public static const ElementPreloadWindow:Number = 650 / 2 + 100;
 		
 		// screen border on left and right side
 		public static const ScreenBorder:Number = 100;
@@ -223,7 +223,7 @@ package
 		// main menu tabs
 		public static const ScreenMatches:String = "ScreenMatches";
 		public static const ScreenUpgrades:String = "ScreenUpgrades";
-		public static const ScreenAchievements:String = "ScreenAchievements";
+		public static const ScreenTownSquare:String = "ScreenTownSquare";
 		
 		public static const AchievementsData:Array = new Array(
 			// id, title, description, reward coins, reward gems

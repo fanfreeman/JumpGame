@@ -5,6 +5,7 @@ package com.jumpGame.screens
 	import com.jumpGame.gameElements.Contraption;
 	import com.jumpGame.gameElements.Hero;
 	import com.jumpGame.gameElements.Platform;
+	import com.jumpGame.gameElements.Transfiguration;
 	import com.jumpGame.gameElements.contraptions.Bell;
 	import com.jumpGame.gameElements.contraptions.Cannon;
 	import com.jumpGame.gameElements.contraptions.CannonFromLeft;
@@ -120,9 +121,6 @@ package com.jumpGame.screens
 		// GAME INTERACTION 
 		// ------------------------------------------------------------------------------------------------------------
 		
-		// whether game currently in paused state
-		private var gamePaused:Boolean = false;
-		
 		// whether or not to check win/lose condition
 		private var checkWinLose:Boolean = true;
 		
@@ -132,6 +130,9 @@ package com.jumpGame.screens
 		// music mode variables
 		private var moveMadeThisTurn:Boolean = false;
 		private var moveMade:uint = 0;
+		
+		// transfiguration activation
+		private var transfiguration:Transfiguration;
 		
 		// ------------------------------------------------------------------------------------------------------------
 		// USER CONTROL
@@ -238,7 +239,7 @@ package com.jumpGame.screens
 			this.setChildIndex(this.bg, 0); // push to back
 			
 			// set up comet bright light
-			brightLightImage = new Image(Assets.getSprite("AtlasTexture2").getTexture("BrightLight0000"));
+			brightLightImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("BrightLight0000"));
 			brightLightImage.pivotX = Math.ceil(brightLightImage.width / 2); // center image on registration point
 			brightLightImage.pivotY = Math.ceil(brightLightImage.height / 2);
 			brightLightImage.visible = false;
@@ -354,6 +355,10 @@ package com.jumpGame.screens
 			// create contraption control object
 			this.contraptionControl = new ContraptionControl();
 			
+			// transfiguration activation
+			transfiguration = new Transfiguration();
+			this.addChild(transfiguration);
+			
 			// set up powers and charms
 			// power: teleportation
 			var blink:Blink = new Blink(this.hero);
@@ -371,7 +376,7 @@ package com.jumpGame.screens
 			var extender:Extender = new Extender();
 			this.powerupsList[this.powerupsListLength++] = extender;
 			// power: expansion
-			var expansion:Expansion = new Expansion(this.hero);
+			var expansion:Expansion = new Expansion(this.hero, transfiguration);
 			this.addChild(expansion);
 			this.setChildIndex(expansion, this.getChildIndex(hero));
 			this.powerupsList[this.powerupsListLength++] = expansion;
@@ -388,8 +393,8 @@ package com.jumpGame.screens
 			ObjectPool.instance.registerPool(PlatformNormal, 30, false);
 			ObjectPool.instance.registerPool(PlatformMobile, 20, false);
 			ObjectPool.instance.registerPool(PlatformDrop, 20, false);
-			ObjectPool.instance.registerPool(PlatformNormalBoost, 10, false);
-			ObjectPool.instance.registerPool(PlatformDropBoost, 8, false);
+			ObjectPool.instance.registerPool(PlatformNormalBoost, 12, false);
+			ObjectPool.instance.registerPool(PlatformDropBoost, 12, false);
 			ObjectPool.instance.registerPool(PlatformMobileBoost, 80, false);
 			ObjectPool.instance.registerPool(PlatformPower, 8, false);
 			ObjectPool.instance.registerPool(PlatformSuper, 25, false);
@@ -443,6 +448,7 @@ package com.jumpGame.screens
 		{
 			// reset static vars
 			Statics.gameMode = Constants.ModeNormal;
+			Statics.gamePaused = false;
 			Statics.speedFactor = 1;
 			Statics.preparationStep = Constants.PrepareStep0;
 			Statics.gameTime = 0;
@@ -515,8 +521,8 @@ package com.jumpGame.screens
 			event.stopImmediatePropagation();
 			
 			// Pause or unpause the game.
-			if (gamePaused) gamePaused = false;
-			else gamePaused = true;
+			if (Statics.gamePaused) Statics.gamePaused = false;
+			else Statics.gamePaused = true;
 		}
 		
 		/**
@@ -586,7 +592,7 @@ package com.jumpGame.screens
 			this.gameStartTime = getTimer();
 			
 			//test
-//			this.powerupsList[Constants.PowerupAttractor].activate();
+//			this.powerupsList[Constants.PowerupExpansion].activate();
 		}
 		
 		/**
@@ -674,15 +680,20 @@ package com.jumpGame.screens
 		 */
 		private function onGameTick(event:Event):void
 		{
+			// handle pausing
+			var timeCurrent:int;
+			if (Statics.gamePaused) {
+				timeCurrent = getTimer() - this.gameStartTime;
+				this.timeDiffReal = timeCurrent - Statics.gameTime;
+				this.gameStartTime += this.timeDiffReal;
+				return;
+			}
+			
 			// update game time
-			var timeCurrent:int = getTimer() - this.gameStartTime;
+			timeCurrent = getTimer() - this.gameStartTime;
 			this.timeDiffReal = timeCurrent - Statics.gameTime;
 			Statics.gameTime = timeCurrent;
 			this.timeDiffControlled = Number(this.timeDiffReal) * Statics.speedFactor;
-			
-			if (gamePaused) {
-				return;
-			}
 			
 			// if player fails and end game duration has passed, end the game
 			if (!this.checkWinLose && Statics.gameTime > this.endGameTime) {
@@ -963,7 +974,6 @@ package com.jumpGame.screens
 					Statics.particleComet.emitterX = hero.x;
 					Statics.particleComet.emitterY = hero.y;
 					Statics.particleComet.speed = Math.sqrt(hero.dx * hero.dx + hero.dy * hero.dy) * 1000;
-					
 //					Background.particleSeaOfFire.emitterX = Constants.StageWidth / 2;
 //					Background.particleSeaOfFire.emitterY = this.fg.sofQuad.y - 100;
 				}
@@ -987,7 +997,7 @@ package com.jumpGame.screens
 					//if (this.hero.gy < this.fg.sofHeight - 60 || this.hero.gx < -Constants.StageWidth || this.hero.gx > Constants.StageWidth) {
 					if (this.hero.gy < this.fg.sofHeight - 60) { // disable out of bounds for now because it's less fun
 						if (this.checkWinLose) {
-							HUD.showMessage("OH NOES...");
+							HUD.showMessage("Uh Oh...");
 							this.playerFail();
 							return;
 						}
@@ -998,7 +1008,7 @@ package com.jumpGame.screens
 					}
 				} else {
 					if (this.checkWinLose && hero.gy < Camera.gy - Constants.StageHeight / 2) {
-						HUD.showMessage("OH NOES...");
+						HUD.showMessage("Uh Oh...");
 						this.playerFail();
 						return;
 					}
@@ -1133,6 +1143,19 @@ package com.jumpGame.screens
 		 * Player fails, check to see if saves are available
 		 */
 		private function playerFail():void {
+			Statics.gamePaused = true;
+			
+			// stop sounds
+			//SoundMixer.stopAll();
+			Sounds.stopBgm();
+			if (!Sounds.muted) Sounds.sndScratch.play();
+			
+			Starling.juggler.delayCall(playerFailPartTwo, 1);
+		}
+		
+		private function playerFailPartTwo():void {
+			Statics.gamePaused = false;
+			
 			this.hero.failBounce();
 			
 			// end game after short duration
@@ -1143,11 +1166,6 @@ package com.jumpGame.screens
 			
 			// revoke player control of hero
 			this.playerControl = false;
-			
-			// stop sounds
-			//SoundMixer.stopAll();
-			Sounds.stopBgm();
-			if (!Sounds.muted) Sounds.sndScratch.play();
 		}
 		
 //		private function setupBonusMode(event:TimerEvent):void {
@@ -1229,56 +1247,43 @@ package com.jumpGame.screens
 				isRepulsor = false;
 				isCannonball = false;
 				
-				// detect hero/platform collisions if player has not yet lost
-				if (this.checkWinLose && this.hero.canBounce) {
-					//if (this.hero.bounds.intersects(this.platformsList[i].bounds)) {
-					var platformBounds:Rectangle = this.platformsList[i].bounds;
-					if (this.platformsList[i] is Coin) {
-						if (this.platformsList[i].isAcquired) { // make acquired coins fly out
-							this.platformsList[i].dy = this.platformsList[i].yVelocity + Camera.dy / this.timeDiffControlled;
-							if (this.platformsList[i].y < 0) { // already moved out of screen, return to pool
-								this.returnPlatformToPool(i);
-								continue;
-							}
+				var platformBounds:Rectangle = this.platformsList[i].bounds;
+				if (this.platformsList[i] is Coin) {
+					if (this.platformsList[i].isAcquired) { // make acquired coins fly out
+						this.platformsList[i].dy = this.platformsList[i].yVelocity + Camera.dy / this.timeDiffControlled;
+						if (this.platformsList[i].y < 0) { // already moved out of screen, return to pool
+							this.returnPlatformToPool(i);
+							continue;
 						}
-						
-						platformBounds.inflate(50, 50); // enlarge coin bounds
-						isCoin = true;
-					} else if (this.platformsList[i] is Star) {
-						isStar = true;
-					} else if (this.platformsList[i] is PlatformSuper) {
-						isSuper = true;
-						this.platformsList[i].heroDy = this.hero.dy;
-					} else if (this.platformsList[i] is Comet) {
-						isComet = true;
-						
-						// show bright light
-						if (!this.powerupsList[Constants.PowerupCometRun].isActivated) {
-							brightLightImage.visible = true;
-							brightLightImage.x = this.platformsList[i].x;
-							brightLightImage.y = this.platformsList[i].y;
-						}
-					} else if (this.platformsList[i] is Repulsor) {
-						platformBounds.inflate(-100, -100); // shrink repulsor bounds
-						isRepulsor = true;
-					} else if (this.platformsList[i] is Cannonball) {
-						isCannonball = true;
-						platformBounds.inflate(20, 20);
 					}
 					
-					// hero/platform collision detection
+					platformBounds.inflate(50, 50); // enlarge coin bounds
+					isCoin = true;
+				} else if (this.platformsList[i] is Comet) {
+					isComet = true;
+					
+					// show bright light
+					if (!this.powerupsList[Constants.PowerupCometRun].isActivated) {
+						brightLightImage.visible = true;
+						brightLightImage.x = this.platformsList[i].x;
+						brightLightImage.y = this.platformsList[i].y;
+					}
+				} else if (this.platformsList[i] is Star) {
+					isStar = true;
+				} else if (this.platformsList[i] is PlatformSuper) {
+					isSuper = true;
+					this.platformsList[i].heroDy = this.hero.dy;
+				} else if (this.platformsList[i] is Repulsor) {
+					platformBounds.inflate(-100, -100); // shrink repulsor bounds
+					isRepulsor = true;
+				} else if (this.platformsList[i] is Cannonball) {
+					isCannonball = true;
+					platformBounds.inflate(20, 20);
+				}
+				
+				// detect hero/platform collisions if player has not yet lost
+				if (this.checkWinLose && this.hero.canBounce) {
 					var inCollision:Boolean = false;
-//					if (this.powerupsList[Constants.PowerupExpansion].isActivated) {
-//						if (platformBounds.contains(this.hero.x - 25, this.hero.y + 60) ||
-//							platformBounds.contains(this.hero.x     , this.hero.y + 60) ||
-//							platformBounds.contains(this.hero.x + 25, this.hero.y + 60)) {
-//							inCollision = true;
-//						}
-//					}
-//					else if (platformBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
-//						platformBounds.contains(this.hero.x + 10, this.hero.y + 20)) {
-//						inCollision = true;
-//					}
 					if (platformBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
 						platformBounds.contains(this.hero.x + 10, this.hero.y + 20)) {
 						inCollision = true;
@@ -1310,22 +1315,24 @@ package com.jumpGame.screens
 								
 								continue;
 							}
-							else if (isStar) {
-								if (this.platformsList[i] is StarRed) Statics.particleJet.start(0.5);
-								this.hero.bounce(this.platformsList[i].getBouncePower());
-								Statics.particleLeaf.start(0.2); // play particle effect
-								Statics.particleBounce.emitterX = this.platformsList[i].x;
-								Statics.particleBounce.emitterY = this.platformsList[i].y;
-								Statics.particleBounce.start(0.01);
-								this.jumps++; // record number of jumps
-								this.returnPlatformToPool(i);
-								continue;
-							}
 							else if (isComet) {
 								this.powerupsList[Constants.PowerupCometRun].activate();
 								this.jumps++;
 								this.returnPlatformToPool(i);
 								continue;
+							}
+							else if (isStar) {
+								if (!this.hero.isTransfigured) {
+									if (this.platformsList[i] is StarRed) Statics.particleJet.start(0.5);
+									this.hero.bounce(this.platformsList[i].getBouncePower());
+									Statics.particleLeaf.start(0.2); // play particle effect
+									Statics.particleBounce.emitterX = this.platformsList[i].x;
+									Statics.particleBounce.emitterY = this.platformsList[i].y;
+									Statics.particleBounce.start(0.01);
+									this.jumps++; // record number of jumps
+									this.returnPlatformToPool(i);
+									continue;
+								}
 							}
 							else if (isSuper) {
 								this.hero.bounce(this.hero.dy + this.platformsList[i].getBouncePower());
@@ -1357,14 +1364,6 @@ package com.jumpGame.screens
 									Statics.particleBounce.start(0.01);
 									
 									this.jumps++; // record number of jumps
-									
-//									if (Statics.gameMode == Constants.ModeBonus) { // music mode actions
-//										this.hero.gx = this.platformsList[i].gx;
-//										if (this.moveMadeThisTurn) {
-//											this.hero.dx = 0;
-//											this.moveMadeThisTurn = false;
-//										}
-//									}
 								}
 							}
 						}

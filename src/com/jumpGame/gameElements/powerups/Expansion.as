@@ -1,6 +1,7 @@
 package com.jumpGame.gameElements.powerups
 {
 	import com.jumpGame.gameElements.Hero;
+	import com.jumpGame.gameElements.Transfiguration;
 	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.HUD;
 	
@@ -8,9 +9,13 @@ package com.jumpGame.gameElements.powerups
 	import starling.core.Starling;
 	import starling.display.Image;
 
+	/**
+	 * This is actually Transfiguration: Jet Propulsion Broomstick
+	 */
 	public class Expansion extends GameObject
 	{
 		private var hero:Hero;
+		private var transfiguration:Transfiguration;
 		private var chainsImage:Image;
 		private var propellerOffImage:Image;
 		private var propellerLeftImage:Image;
@@ -23,9 +28,10 @@ package com.jumpGame.gameElements.powerups
 		private var completionTime:int;
 		private var completionWarned:Boolean;
 		
-		public function Expansion(hero:Hero)
+		public function Expansion(hero:Hero, transfiguration:Transfiguration)
 		{
 			this.hero = hero;
+			this.transfiguration = transfiguration;
 			this.createPowerupArt();
 		}
 		
@@ -69,6 +75,13 @@ package com.jumpGame.gameElements.powerups
 		
 		public function activate():void {
 			Sounds.sndPowerup.play();
+			
+			// transfiguration animation
+			this.transfiguration.displayActivateBroom(this.hero);
+			
+			this.gx = this.hero.gx;
+			this.gy = this.hero.gy;
+			
 //			this.hero.bouncePowerMultiplier = 1.3;
 			chainsImage.visible = true;
 			propellerOffImage.visible = true;
@@ -83,7 +96,7 @@ package com.jumpGame.gameElements.powerups
 			
 			this.isActivated = true;
 			this.completionWarned = false;
-			this.completionTime = Statics.gameTime + 10000; // 5 seconds plus 1 second per rank
+			this.completionTime = Statics.gameTime + 20000;
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 			
 			this.nextLaunchTime = Statics.gameTime + 1000;
@@ -135,6 +148,8 @@ package com.jumpGame.gameElements.powerups
 			// misc reset
 			HUD.clearPowerupReel();
 			Statics.powerupsEnabled = true;
+			
+			this.transfiguration.displayDeactivateBroom(this.hero);
 		}
 		
 		public function updatePropellers(leftArrow:Boolean, rightArrow:Boolean):void {

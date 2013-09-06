@@ -15,6 +15,7 @@ package com.jumpGame.ui.screens
 	
 	public class ScreenTownSquare extends Screen
 	{
+		private var btnAchievements:Button;
 		private var btnGetCoins:Button;
 		private var btnGetGems:Button;
 		
@@ -47,19 +48,22 @@ package com.jumpGame.ui.screens
 			
 			// icons
 			var sideLength:Number = (scrollQuad.width - 240) / 3;
-			var iconQuad1:Quad = new Quad(sideLength, sideLength, 0xff0000);
-			iconQuad1.x = scrollQuad.bounds.left + 60;
-			iconQuad1.y = scrollQuad.bounds.top + 30;
-			addChild(iconQuad1);
+			btnAchievements = new Button();
+			btnAchievements.width = sideLength;
+			btnAchievements.height = sideLength;
+			btnAchievements.x = scrollQuad.bounds.left + 60;
+			btnAchievements.y = scrollQuad.bounds.top + 30;
+			addChild(btnAchievements);
+			btnAchievements.addEventListener(Event.TRIGGERED, Menu(this.owner).showAchievementsScreen);
 			
 			var iconQuad2:Quad = new Quad(sideLength, sideLength, 0xff0000);
-			iconQuad2.x = iconQuad1.bounds.right + 60;
-			iconQuad2.y = iconQuad1.y;
+			iconQuad2.x = btnAchievements.bounds.right + 60;
+			iconQuad2.y = btnAchievements.y;
 			addChild(iconQuad2);
 			
 			var iconQuad3:Quad = new Quad(sideLength, sideLength, 0xff0000);
 			iconQuad3.x = iconQuad2.bounds.right + 60;
-			iconQuad3.y = iconQuad1.y;
+			iconQuad3.y = btnAchievements.y;
 			addChild(iconQuad3);
 			
 			// icon labels
@@ -67,8 +71,8 @@ package com.jumpGame.ui.screens
 			var iconLabel1:TextField = new TextField(sideLength, 25, "Achievements", fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
 			iconLabel1.hAlign = HAlign.CENTER;
 			iconLabel1.vAlign = VAlign.TOP;
-			iconLabel1.x = iconQuad1.bounds.left;
-			iconLabel1.y = iconQuad1.bounds.bottom + 5;
+			iconLabel1.x = btnAchievements.bounds.left;
+			iconLabel1.y = btnAchievements.bounds.bottom + 5;
 			addChild(iconLabel1);
 			
 			var iconLabel2:TextField = new TextField(sideLength, 25, "Social", fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
@@ -87,7 +91,7 @@ package com.jumpGame.ui.screens
 			
 			// icons second row
 			var iconQuad4:Quad = new Quad(sideLength, sideLength, 0xff0000);
-			iconQuad4.x = iconQuad1.bounds.left;
+			iconQuad4.x = btnAchievements.bounds.left;
 			iconQuad4.y = iconLabel1.bounds.bottom + 30;
 			addChild(iconQuad4);
 			

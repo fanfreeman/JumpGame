@@ -8,6 +8,9 @@ package com.jumpGame.level
 		public static var stageWidth:int;
 		public static var stageHeight:int;
 		
+		// whether game is paused
+		public static var gamePaused:Boolean;
+		
 		// particle emitters
 		public static var particleLeaf:PDParticleSystem;
 		public static var particleCharge:PDParticleSystem;

@@ -150,7 +150,7 @@ package com.jumpGame.level {
 					
 				
 				case 999999: // designed pattern
-					this.generateDesigned2001(3);
+					this.generateDesigned999998();
 					break;
 //					// 1 per row, 2 per row, 3 per row, 4 per row, 5 per row
 //					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);

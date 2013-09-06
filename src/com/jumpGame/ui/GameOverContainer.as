@@ -2,7 +2,6 @@ package com.jumpGame.ui
 {
 	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.events.NavigationEvent;
-	import com.jumpGame.gameElements.platforms.Coin;
 	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.components.AchievementPlate;
 	import com.jumpGame.ui.popups.MatchDataContainer;
@@ -316,25 +315,27 @@ package com.jumpGame.ui
 			Starling.juggler.delayCall(checkForNextAchievementSet, 2);
 			
 			// round coins flyout effect
-			var roundCoins:Vector.<MovieClip> = new Vector.<MovieClip>();
-			var i:uint;
-			var coin:MovieClip;
-			for (i = 0; i < 20; i++) {
-				coin = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
-				coin.pivotX = Math.ceil(coin.texture.width  / 2);
-				coin.x = scoreContainer.x + coinAnimation.x;
-				coin.y = scoreContainer.y + coinAnimation.y;
-				starling.core.Starling.juggler.add(coin);
-				addChild(coin);
-				roundCoins.push(coin);
+			if (coinsObtained > 0) {
+				var roundCoins:Vector.<MovieClip> = new Vector.<MovieClip>();
+				var i:uint;
+				var coin:MovieClip;
+				for (i = 0; i < 20; i++) {
+					coin = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
+					coin.pivotX = Math.ceil(coin.texture.width  / 2);
+					coin.x = scoreContainer.x + coinAnimation.x;
+					coin.y = scoreContainer.y + coinAnimation.y;
+					starling.core.Starling.juggler.add(coin);
+					addChild(coin);
+					roundCoins.push(coin);
+				}
+				Starling.juggler.delayCall(nextCoinFlyout, 1, roundCoins, 0);
 			}
-			this.nextCoinFlyout(roundCoins, 0);
 		}
 		
 		// make one coin fly out of the screen and schedule the next coin
 		private function nextCoinFlyout(coinPool:Vector.<MovieClip>, coinIndex:uint):void {
 			if (coinIndex >= coinPool.length) return;
-			Starling.juggler.tween(coinPool[coinIndex], 0.2, {
+			Starling.juggler.tween(coinPool[coinIndex], 0.3, {
 				transition: Transitions.EASE_IN,
 				x: Statics.stageWidth * 3 / 5,
 				y: -coinPool[coinIndex].height
@@ -349,7 +350,7 @@ package com.jumpGame.ui
 			this.resetAchievementPlates();
 			if (this.newAchievementsArray[this.achievementSetShown * 3] != null) {
 				var data:Array = Constants.AchievementsData[this.newAchievementsArray[this.achievementSetShown * 3]];
-				this.achievementPlate1.initialize(data[1], data[2]);
+				this.achievementPlate1.initialize(data[1], data[2], data[3], data[4]);
 				achievementPlate1.visible = true;
 				Starling.juggler.tween(achievementPlate1, 0.2, {
 					transition: Transitions.EASE_OUT,
@@ -369,11 +370,11 @@ package com.jumpGame.ui
 					addChild(coin);
 					achievementCoins1.push(coin);
 				}
-				Starling.juggler.delayCall(nextCoinFlyout, 0.5, achievementCoins1, 0);
+				Starling.juggler.delayCall(nextCoinFlyout, 1, achievementCoins1, 0);
 				
 				if (this.newAchievementsArray[this.achievementSetShown * 3 + 1] != null) {
 					data = Constants.AchievementsData[this.newAchievementsArray[this.achievementSetShown * 3 + 1]];
-					this.achievementPlate2.initialize(data[1], data[2]);
+					this.achievementPlate2.initialize(data[1], data[2], data[3], data[4]);
 					achievementPlate2.visible = true;
 					Starling.juggler.tween(achievementPlate2, 0.2, {
 						transition: Transitions.EASE_OUT,
@@ -392,11 +393,11 @@ package com.jumpGame.ui
 						addChild(coin);
 						achievementCoins2.push(coin);
 					}
-					Starling.juggler.delayCall(nextCoinFlyout, 1, achievementCoins2, 0);
+					Starling.juggler.delayCall(nextCoinFlyout, 1.5, achievementCoins2, 0);
 					
 					if (this.newAchievementsArray[this.achievementSetShown * 3 + 2] != null) {
 						data = Constants.AchievementsData[this.newAchievementsArray[this.achievementSetShown * 3 + 2]];
-						this.achievementPlate3.initialize(data[1], data[2]);
+						this.achievementPlate3.initialize(data[1], data[2], data[3], data[4]);
 						achievementPlate3.visible = true;
 						Starling.juggler.tween(achievementPlate3, 0.2, {
 							transition: Transitions.EASE_OUT,
@@ -415,7 +416,7 @@ package com.jumpGame.ui
 							addChild(coin);
 							achievementCoins3.push(coin);
 						}
-						Starling.juggler.delayCall(nextCoinFlyout, 1, achievementCoins3, 0);
+						Starling.juggler.delayCall(nextCoinFlyout, 2, achievementCoins3, 0);
 					}
 				}
 			}
@@ -480,7 +481,7 @@ package com.jumpGame.ui
 			
 			var nextUnearnedIndex:uint = this.findNextUnearnedAchievement(0);
 			var data:Array = Constants.AchievementsData[nextUnearnedIndex];
-			this.achievementPlate1.initialize(data[1], data[2]);
+			this.achievementPlate1.initialize(data[1], data[2], data[3], data[4]);
 			achievementPlate1.visible = true;
 			Starling.juggler.tween(achievementPlate1, 0.2, {
 				transition: Transitions.EASE_OUT,
@@ -489,7 +490,7 @@ package com.jumpGame.ui
 			
 			nextUnearnedIndex = this.findNextUnearnedAchievement(nextUnearnedIndex);
 			data = Constants.AchievementsData[nextUnearnedIndex];
-			this.achievementPlate2.initialize(data[1], data[2]);
+			this.achievementPlate2.initialize(data[1], data[2], data[3], data[4]);
 			achievementPlate2.visible = true;
 			Starling.juggler.tween(achievementPlate2, 0.2, {
 				transition: Transitions.EASE_OUT,
@@ -499,7 +500,7 @@ package com.jumpGame.ui
 			
 			nextUnearnedIndex = this.findNextUnearnedAchievement(nextUnearnedIndex);
 			data = Constants.AchievementsData[nextUnearnedIndex];
-			this.achievementPlate3.initialize(data[1], data[2]);
+			this.achievementPlate3.initialize(data[1], data[2], data[3], data[4]);
 			achievementPlate3.visible = true;
 			Starling.juggler.tween(achievementPlate3, 0.2, {
 				transition: Transitions.EASE_OUT,

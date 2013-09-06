@@ -13,6 +13,7 @@ package com.jumpGame.ui.components
 	import starling.text.TextField;
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
+	import starling.core.Starling;
 	
 	public class UpgradeListItem extends Sprite
 	{
@@ -102,6 +103,7 @@ package com.jumpGame.ui.components
 			coinAnimation.scaleY = 0.5;
 			coinAnimation.x = btnAction.bounds.left;
 			coinAnimation.y = priceLabel.bounds.top - 5;
+			Starling.juggler.add(coinAnimation);
 			this.addChild(coinAnimation);
 		}
 		

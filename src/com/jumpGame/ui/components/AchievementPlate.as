@@ -16,6 +16,7 @@ package com.jumpGame.ui.components
 		private var description:TextField;
 		private var checkmarkAnimation:MovieClip;
 		public var coin:MovieClip;
+		private var coinAmountText:TextField;
 		
 		public function AchievementPlate()
 		{
@@ -39,7 +40,7 @@ package com.jumpGame.ui.components
 			addChild(title);
 			
 			// objective description
-			description = new TextField(300, 40, "Jump 1000 meters in one game", fontVerdana23.fontName, fontVerdana23.fontSize, 0xffffff);
+			description = new TextField(400, 40, "Jump 1000 meters in one game", fontVerdana23.fontName, fontVerdana23.fontSize, 0xffffff);
 			description.vAlign = VAlign.TOP;
 			description.hAlign = HAlign.LEFT;
 			description.x = checkbox.bounds.right + 5;
@@ -60,12 +61,12 @@ package com.jumpGame.ui.components
 			// coin animation
 			coin = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
 			coin.pivotY = Math.ceil(coin.height / 2);
-			coin.x = title.bounds.right;
+			coin.x = title.bounds.right + 30;
 			coin.y = (checkbox.bounds.top + checkbox.bounds.bottom) / 2;
 			starling.core.Starling.juggler.add(coin);
 			addChild(coin);
 			// amount text
-			var coinAmountText:TextField = new TextField(100, coin.height, "100", fontLithos42.fontName, fontLithos42.fontSize, 0xffffff);
+			coinAmountText = new TextField(100, coin.height, "0", fontLithos42.fontName, fontLithos42.fontSize, 0xffffff);
 			coinAmountText.vAlign = VAlign.CENTER;
 			coinAmountText.hAlign = HAlign.LEFT;
 			coinAmountText.x = coin.bounds.right - 10;
@@ -73,9 +74,10 @@ package com.jumpGame.ui.components
 			addChild(coinAmountText);
 		}
 		
-		public function initialize(title:String, description:String):void {
+		public function initialize(title:String, description:String, coinReward:uint, gemReward:uint):void {
 			this.title.text = title;
 			this.description.text = description;
+			this.coinAmountText.text = String(coinReward);
 		}
 		
 		public function check():void {

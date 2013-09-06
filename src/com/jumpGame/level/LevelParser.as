@@ -36,7 +36,7 @@ package com.jumpGame.level  {
 			var blockNumber:int;
 			switch (this.difficulty) {
 				case 7:
-					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingBell, 20]);
+					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingBell, 5]);
 					blockNumber = int(Math.floor(Math.random() * 3) + 700);
 					this.generator.generate(blockNumber);
 					break;
@@ -45,6 +45,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 9:
+					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 30]);
 					blockNumber = int(Math.floor(Math.random() * 3) + 900);
 					this.generator.generate(blockNumber);
 					break;
@@ -59,7 +60,6 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 12:
-					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 30]);
 					blockNumber = int(Math.floor(Math.random() * 2) + 3000);
 					this.generator.generate(blockNumber);
 					break;
@@ -141,7 +141,7 @@ package com.jumpGame.level  {
 		
 		private function raiseDifficulty():void {
 			this.difficulty++;
-			if (Statics.speedFactor < 1.2) Statics.speedFactor += 0.01;
+			if (Statics.speedFactor < 1.2) Statics.speedFactor += 0.005;
 		}
 	}
 }

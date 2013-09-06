@@ -4,6 +4,7 @@ package com.jumpGame.screens
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.popups.DialogBox;
+	import com.jumpGame.ui.popups.ScreenAchievements;
 	import com.jumpGame.ui.popups.ScreenGetCoins;
 	import com.jumpGame.ui.popups.ScreenGetGems;
 	import com.jumpGame.ui.screens.ScreenMatches;
@@ -48,7 +49,8 @@ package com.jumpGame.screens
 		// screens
 		private var screenMatches:ScreenMatches;
 		private var screenUpgrades:ScreenUpgrades;
-		private var screenAchievements:ScreenTownSquare;
+		private var screenTownSquare:ScreenTownSquare;
+		private var screenAchievements:ScreenAchievements;
 		private var screenGetCoins:ScreenGetCoins;
 		private var screenGetGems:ScreenGetGems;
 		
@@ -119,6 +121,8 @@ package com.jumpGame.screens
 							Statics.achievementsList[int(dataObj.achievements[i].achievement_id)] = true;
 							trace ("achievement " + int(dataObj.achievements[i].achievement_id) + " earned");
 						}
+						// update achievements screen
+						this.screenAchievements.updateAchievementPlates();
 						
 						// parse player matches
 						var matchesYourTurnCollection:ListCollection = new ListCollection();
@@ -302,12 +306,12 @@ package com.jumpGame.screens
 			// screens
 			this.screenMatches = new ScreenMatches();
 			this.screenUpgrades = new ScreenUpgrades();
-			this.screenAchievements = new ScreenTownSquare();
+			this.screenTownSquare = new ScreenTownSquare();
 			
 			this.addEventListener(Event.CHANGE, navigatorChangeHandler);
 			this.addScreen(Constants.ScreenMatches, new ScreenNavigatorItem(screenMatches));
 			this.addScreen(Constants.ScreenUpgrades, new ScreenNavigatorItem(screenUpgrades));
-			this.addScreen(Constants.ScreenAchievements, new ScreenNavigatorItem(screenAchievements));
+			this.addScreen(Constants.ScreenTownSquare, new ScreenNavigatorItem(screenTownSquare));
 			
 			// tab bar
 			tabs = new TabBar();
@@ -319,7 +323,7 @@ package com.jumpGame.screens
 				[
 					{ label: "Matches", action: Constants.ScreenMatches },
 					{ label: "Upgrades", action: Constants.ScreenUpgrades },
-					{ label: "Town Square", action: Constants.ScreenAchievements }
+					{ label: "Town Square", action: Constants.ScreenTownSquare }
 				]);
 			tabs.addEventListener( Event.CHANGE, tabsChangeHandler );
 			this.addChild(tabs);
@@ -329,6 +333,11 @@ package com.jumpGame.screens
 			this.transitionManager.duration = 0.4;
 			
 			// custom screens
+			// achievements screen
+			screenAchievements = new ScreenAchievements(this);
+			screenAchievements.visible = false;
+			this.addChild(screenAchievements);
+			
 			// get coins screen
 			screenGetCoins = new ScreenGetCoins(this);
 			screenGetCoins.visible = false;
@@ -389,6 +398,7 @@ package com.jumpGame.screens
 			}
 			
 			// hide custom screens
+			screenAchievements.visible = false;
 			screenGetCoins.visible = false;
 			screenGetGems.visible = false;
 		}
@@ -511,6 +521,12 @@ package com.jumpGame.screens
 				transition: Transitions.LINEAR,
 				alpha: 0
 			});
+		}
+		
+		public function showAchievementsScreen(event:Event):void {
+			screenAchievements.refresh();
+			screenAchievements.visible = true;
+			setChildIndex(screenAchievements, numChildren - 1);
 		}
 		
 		public function showGetCoinsScreen(event:Event):void {
