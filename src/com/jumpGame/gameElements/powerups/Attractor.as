@@ -29,14 +29,14 @@ package com.jumpGame.gameElements.powerups
 		
 		protected function createPowerupArt():void
 		{
-			ring1Image = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("AttractionRing0000"));
+			ring1Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("AttractionRing0000"));
 			ring1Image.pivotX = Math.ceil(ring1Image.width / 2); // center image on registration point
 			ring1Image.pivotY = Math.ceil(ring1Image.height / 2);
 			ring1Image.visible = false;
 			ring1Image.alpha = 0;
 			this.addChild(ring1Image);
 			
-			ring2Image = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("AttractionRing0000"));
+			ring2Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("AttractionRing0000"));
 			ring2Image.pivotX = Math.ceil(ring2Image.width / 2); // center image on registration point
 			ring2Image.pivotY = Math.ceil(ring2Image.height / 2);
 			ring2Image.visible = false;
@@ -56,7 +56,7 @@ package com.jumpGame.gameElements.powerups
 			this.nextRing1AppearanceTime = Statics.gameTime + 2000;
 			this.nextRing2AppearanceTime = Statics.gameTime + 1000;
 			
-			Sounds.sndPowerup.play();
+			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
 			this.isActivated = true;
 			this.completionWarned = false;
 			this.completionTime = Statics.gameTime + 10000;

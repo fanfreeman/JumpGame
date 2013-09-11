@@ -86,7 +86,7 @@ package com.jumpGame.gameElements.platforms
 			if (!this.isTouched) {
 				
 				// play sound effect
-				Sounds.playNextNote();
+				if (!Sounds.sfxMuted) Sounds.playNextNote();
 				
 				// remove coin
 				//this.visible = false;

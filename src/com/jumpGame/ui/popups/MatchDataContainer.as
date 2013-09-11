@@ -55,13 +55,13 @@ package com.jumpGame.ui.popups
 			this.addChild(bg);
 			
 			// scroll
-			var scrollTop:Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("ScrollLongTop0000"));
+			var scrollTop:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollLongTop0000"));
 			scrollTop.pivotX = Math.ceil(scrollTop.texture.width / 2);
 			scrollTop.x = stage.stageWidth / 2;
 			scrollTop.y = 20;
 			this.addChild(scrollTop);
 			
-			var scrollBottom:Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("ScrollLongBottom0000"));
+			var scrollBottom:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollLongBottom0000"));
 			scrollBottom.pivotX = Math.ceil(scrollBottom.texture.width / 2);
 			scrollBottom.pivotY = scrollBottom.texture.height;
 			scrollBottom.x = stage.stageWidth / 2;
@@ -76,7 +76,7 @@ package com.jumpGame.ui.popups
 			// eof scroll
 			
 			// vs text image
-			var vsText:Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("VsText0000"));
+			var vsText:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("VsText0000"));
 			vsText.pivotX = Math.ceil(vsText.texture.width / 2);
 			vsText.x = stage.stageWidth / 2;
 			vsText.y = scrollQuad.y + 40;

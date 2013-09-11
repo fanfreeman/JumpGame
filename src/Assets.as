@@ -19,17 +19,23 @@ package
 		[Embed(source="../media/graphics/platforms.xml", mimeType="application/octet-stream")]
 		public static const AtlasXmlPlatforms:Class;
 		
-		// atlas 2
+		// atlas 2: gameplay elements
 		[Embed(source="../media/graphics/atlas2.png")]
 		public static const AtlasTexture2:Class;
 		[Embed(source="../media/graphics/atlas2.xml", mimeType="application/octet-stream")]
 		public static const AtlasXml2:Class;
 		
-		// atlas 3: mostly background elements
+		// atlas 3: gameplay background elements
 		[Embed(source="../media/graphics/atlas3.png")]
 		public static const AtlasTexture3:Class;
 		[Embed(source="../media/graphics/atlas3.xml", mimeType="application/octet-stream")]
 		public static const AtlasXml3:Class;
+		
+		// atlas 4: UI elements
+		[Embed(source="../media/graphics/atlas4.png")]
+		public static const AtlasTexture4:Class;
+		[Embed(source="../media/graphics/atlas4.xml", mimeType="application/octet-stream")]
+		public static const AtlasXml4:Class;
 		
 		/**
 		 * Background Assets 
@@ -97,6 +103,9 @@ package
 						break;
 					case "AtlasTexture3":
 						xml = XML(new AtlasXml3());
+						break;
+					case "AtlasTexture4":
+						xml = XML(new AtlasXml4());
 						break;
 				}
 				 

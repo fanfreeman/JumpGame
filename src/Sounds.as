@@ -302,7 +302,7 @@ package
 		}
 		
 		public static function stopBgm():void {
-			channelBgm.stop();
+			if (channelBgm != null) channelBgm.stop();
 		}
 		
 		public static function playBgmFireAura():void {
@@ -312,9 +312,8 @@ package
 			//sound.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void{ trace(e); }); 
 		}
 		
-		/**
-		 * Sound mute status. 
-		 */
-		public static var muted:Boolean = false;
+		// sound mute status
+		public static var bgmMuted:Boolean = false;
+		public static var sfxMuted:Boolean = false;
 	}
 }

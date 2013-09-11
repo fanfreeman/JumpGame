@@ -55,7 +55,7 @@ package com.jumpGame.gameElements.powerups
 			this.firstTeleportTime = Statics.gameTime + 2000;
 			this.isActivated = true;
 			this.isAnimationActivated = false;
-			Sounds.sndPowerup.play();
+			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
 		}
 		
 		public function update(timeDiff:Number):void {
@@ -94,7 +94,7 @@ package com.jumpGame.gameElements.powerups
 						Starling.juggler.remove(blastAnimation);
 						this.hero.dy = Constants.SuperBouncePower;
 						Statics.particleJet.start(1);
-						Sounds.sndBoom.play();
+						if (!Sounds.sfxMuted) Sounds.sndBoom.play();
 						//this.hero.isDynamic = true;
 						this.isActivated = false;
 						

@@ -40,7 +40,7 @@ package com.jumpGame.gameElements.platforms
 		}
 		
 		override public function contact():void {
-			Sounds.sndBounce2.play();
+			if (!Sounds.sfxMuted) Sounds.sndBounce2.play();
 			platformImage.visible = false;
 			platformAnimation.visible = true;
 			if (this.platformAnimation != null) {

@@ -26,7 +26,7 @@ package com.jumpGame.ui
 		private function createArt():void
 		{
 			// glowing indicator
-			indicatorGlow = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("SpecialGlow0000"));
+			indicatorGlow = new Image(Assets.getSprite("AtlasTexture4").getTexture("SpecialGlow0000"));
 			indicatorGlow.pivotX = Math.ceil(indicatorGlow.texture.width  / 2); // center art on registration point
 			indicatorGlow.pivotY = Math.ceil(indicatorGlow.texture.height / 2);
 //			indicatorGlow.scaleX = 0.6;
@@ -34,7 +34,7 @@ package com.jumpGame.ui
 			this.addChild(indicatorGlow);
 			
 			// dark indicator
-			indicatorDark = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("SpecialDark0000"));
+			indicatorDark = new Image(Assets.getSprite("AtlasTexture4").getTexture("SpecialDark0000"));
 			indicatorDark.pivotX = Math.ceil(indicatorDark.texture.width  / 2); // center art on registration point
 			indicatorDark.pivotY = Math.ceil(indicatorDark.texture.height / 2);
 //			indicatorDark.scaleX = 0.6;
@@ -44,7 +44,7 @@ package com.jumpGame.ui
 			
 			// no glow indicator for cooldown effect
 			indicatorSprite = new Sprite();
-			indicatorNoGlow = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("SpecialNoGlow0000"));
+			indicatorNoGlow = new Image(Assets.getSprite("AtlasTexture4").getTexture("SpecialNoGlow0000"));
 			indicatorNoGlow.pivotX = Math.ceil(indicatorNoGlow.texture.width  / 2); // center art on registration point
 			indicatorNoGlow.pivotY = Math.ceil(indicatorNoGlow.texture.height / 2);
 			//			indicatorNoGlow.scaleX = 0.6;
@@ -55,7 +55,7 @@ package com.jumpGame.ui
 			this.addChild(indicatorSprite);
 			
 			// sparkles
-			sparklesAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("SpecialSparkle"), 10);
+			sparklesAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("SpecialSparkle"), 10);
 			sparklesAnimation.pivotX = Math.ceil(sparklesAnimation.texture.width  / 2); // center art on registration point
 			sparklesAnimation.pivotY = Math.ceil(sparklesAnimation.texture.height / 2);
 			sparklesAnimation.visible = false;
@@ -63,7 +63,7 @@ package com.jumpGame.ui
 			this.addChild(sparklesAnimation);
 			
 			// blast
-			blastAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("Blast"), 30);
+			blastAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("Blast"), 30);
 			blastAnimation.pivotX = Math.ceil(blastAnimation.texture.width  / 2); // center art on registration point
 			blastAnimation.pivotY = Math.ceil(blastAnimation.texture.height / 2);
 			blastAnimation.visible = false;

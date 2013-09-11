@@ -105,7 +105,7 @@ package com.jumpGame.ui
 			
 			// big stars
 			// center
-			starCenter = new Image(Assets.getSprite("AtlasTexture2").getTexture("BigStar0000"));
+			starCenter = new Image(Assets.getSprite("AtlasTexture4").getTexture("BigStar0000"));
 			starCenter.pivotX = Math.ceil(starCenter.width / 2);
 			starCenter.pivotY = Math.ceil(starCenter.height / 2);
 			starCenter.x = Statics.stageWidth / 2;
@@ -114,7 +114,7 @@ package com.jumpGame.ui
 			starCenter.scaleY = 0;
 			this.addChild(starCenter);
 			// left
-			starLeft = new Image(Assets.getSprite("AtlasTexture2").getTexture("BigStar0000"));
+			starLeft = new Image(Assets.getSprite("AtlasTexture4").getTexture("BigStar0000"));
 			starLeft.pivotX = Math.ceil(starLeft.width / 2);
 			starLeft.pivotY = Math.ceil(starLeft.height / 2);
 			starLeft.x = Statics.stageWidth / 2 - starLeft.width - 30;
@@ -124,7 +124,7 @@ package com.jumpGame.ui
 			starLeft.scaleY = 0;
 			this.addChild(starLeft);
 			// right
-			starRight = new Image(Assets.getSprite("AtlasTexture2").getTexture("BigStar0000"));
+			starRight = new Image(Assets.getSprite("AtlasTexture4").getTexture("BigStar0000"));
 			starRight.pivotX = Math.ceil(starRight.width / 2);
 			starRight.pivotY = Math.ceil(starRight.height / 2);
 			starRight.x = Statics.stageWidth / 2 + starRight.width + 30;
@@ -176,7 +176,7 @@ package com.jumpGame.ui
 			scoreContainer.addChild(scoreText);
 			
 			// arrow animation
-			var arrowAnimation:MovieClip = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("ArrowBounce"), 20);
+			var arrowAnimation:MovieClip = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("ArrowBounce"), 20);
 			arrowAnimation.pivotX = Math.ceil(arrowAnimation.texture.width  / 2); // center art on registration point
 //			arrowAnimation.pivotY = Math.ceil(arrowAnimation.texture.height / 2);
 			arrowAnimation.x = Statics.stageWidth / 5 - arrowAnimation.texture.width;
@@ -196,7 +196,7 @@ package com.jumpGame.ui
 			this.createAchievementPlates();
 			
 			// finish button
-			proceedBtn = new Button(Assets.getSprite("AtlasTexture2").getTexture("BtnProceed0000"));
+			proceedBtn = new Button(Assets.getSprite("AtlasTexture4").getTexture("BtnProceed0000"));
 			proceedBtn.pivotX = proceedBtn.width;
 			proceedBtn.pivotY = proceedBtn.height;
 			proceedBtn.scaleX = 0.3;
@@ -256,7 +256,7 @@ package com.jumpGame.ui
 		
 		private function onProceedClick(event:Event):void
 		{
-			if (!Sounds.muted) Sounds.sndMushroom.play();
+			if (!Sounds.sfxMuted) Sounds.sndMushroom.play();
 			
 			// display match data popup
 			if (!matchDataPopupInitialized) { // do not initialize match data popup more than once

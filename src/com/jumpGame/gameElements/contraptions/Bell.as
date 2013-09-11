@@ -52,7 +52,7 @@ package com.jumpGame.gameElements.contraptions
 		public function contact(distanceFromCenter:Number, heroDy:Number):Boolean {
 			if (!this.isTouched) {
 				this.isTouched = true;
-				Sounds.sndBell.play();
+				if (!Sounds.sfxMuted) Sounds.sndBell.play();
 				this.numDings++;
 				
 				this.dx = -(distanceFromCenter / 100);

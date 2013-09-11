@@ -27,9 +27,10 @@ package com.jumpGame.ui
 //		private var bonusTimeText:TextField;
 		
 		// distance display
-		private var _distance:int;
+		private static var _distance:int;
 		private var distanceLabel:TextField;
 		private var distanceText:TextField;
+		private var prevDistance:int = 0;
 		
 		// coins display
 		private var _coins:int;
@@ -61,6 +62,9 @@ package com.jumpGame.ui
 		private static var messageExpireTime2:int;
 		private static var messageExpireTime3:int;
 		
+		// pulsing message
+		private static var pulsingText:TextField;
+		
 		// special ability indicators
 		private static var specialIndicatorsList:Vector.<SpecialIndicator>;
 		
@@ -68,6 +72,11 @@ package com.jumpGame.ui
 		private static var badgeAnimation:MovieClip;
 		private static var badgeExpireTime:int;
 		private static var badgeText:TextField;
+		
+		private static var tweenPulsingText:Tween;
+		private static var distancePrevTimePeriod:int;
+		private static var prevDistanceCalculationTime:int = 0;
+		private static var emaVelocity:Number = 0;
 		
 		public function HUD()
 		{
@@ -139,45 +148,66 @@ package com.jumpGame.ui
 			this.powerupIconsImages = new Vector.<Image>();
 			var iconImage:Image;
 			// reel image 1
-			iconImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("PowerupIcon10000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon10000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = 0;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 2
-			iconImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("PowerupIcon20000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon20000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 1;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 3
-			iconImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("PowerupIcon30000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon30000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 2;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 4
-			iconImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("PowerupIcon40000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon40000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 3;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 5
-			iconImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("PowerupIcon50000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon50000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 4;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 6
-			iconImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("PowerupIcon60000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon60000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 5
+			powerupIcons.addChild(iconImage);
+			this.powerupIconsImages.push(iconImage);
+			// reel image 7
+			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon30000"));
+			iconImage.pivotX = Math.ceil(iconImage.width / 2);
+			iconImage.pivotY = Math.ceil(iconImage.height);
+			iconImage.y = -Constants.PowerupIconHeight * 6;
+			powerupIcons.addChild(iconImage);
+			this.powerupIconsImages.push(iconImage);
+			// reel image 8
+			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon40000"));
+			iconImage.pivotX = Math.ceil(iconImage.width / 2);
+			iconImage.pivotY = Math.ceil(iconImage.height);
+			iconImage.y = -Constants.PowerupIconHeight * 7;
+			powerupIcons.addChild(iconImage);
+			this.powerupIconsImages.push(iconImage);
+			// reel image 9
+			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon50000"));
+			iconImage.pivotX = Math.ceil(iconImage.width / 2);
+			iconImage.pivotY = Math.ceil(iconImage.height);
+			iconImage.y = -Constants.PowerupIconHeight * 8;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// container sprite
@@ -198,7 +228,7 @@ package com.jumpGame.ui
 			sparkleAnimation.loop = false;
 			this.addChild(sparkleAnimation);
 			// icon frame
-			powerupIconFrame = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("IconFrame0000"));
+			powerupIconFrame = new Image(Assets.getSprite("AtlasTexture4").getTexture("IconFrame0000"));
 			powerupIconFrame.pivotX = Math.ceil(powerupIconFrame.width / 2);
 			powerupIconFrame.pivotY = Math.ceil(powerupIconFrame.height / 2);
 			powerupIconFrame.x = 200;
@@ -208,31 +238,43 @@ package com.jumpGame.ui
 			
 			// on screen message line 1
 			var fontMessage:Font = Fonts.getFont("Badabb");
-			messageText1 = new TextField(stage.stageWidth, stage.stageHeight * 0.5, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
+			messageText1 = new TextField(stage.stageWidth, 50, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
 			messageText1.hAlign = HAlign.CENTER;
 			messageText1.vAlign = VAlign.TOP;
-			messageText1.height = 100;
 			messageText1.y = (stage.stageHeight * 20)/100;
 			messageText1.visible = false;
 			this.addChild(messageText1);
 			
 			// on screen message line 2
-			messageText2 = new TextField(stage.stageWidth, stage.stageHeight * 0.5, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
+			messageText2 = new TextField(stage.stageWidth, 50, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
 			messageText2.hAlign = HAlign.CENTER;
 			messageText2.vAlign = VAlign.TOP;
-			messageText2.height = 100;
 			messageText2.y = (stage.stageHeight * 20)/100 + 50;
 			messageText2.visible = false;
 			this.addChild(messageText2);
 			
 			// on screen message line 3
-			messageText3 = new TextField(stage.stageWidth, stage.stageHeight * 0.5, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
+			messageText3 = new TextField(stage.stageWidth, 50, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
 			messageText3.hAlign = HAlign.CENTER;
 			messageText3.vAlign = VAlign.TOP;
-			messageText3.height = 100;
 			messageText3.y = (stage.stageHeight * 20)/100 + 100;
 			messageText3.visible = false;
 			this.addChild(messageText3);
+			
+			// on screen message line 1
+			pulsingText = new TextField(200, 50, "", fontScoreValue.fontName, fontScoreValue.fontSize, 0xf68e56);
+			pulsingText.pivotX = Math.ceil(pulsingText.width / 2);
+			pulsingText.pivotY = Math.ceil(pulsingText.height / 2);
+			pulsingText.hAlign = HAlign.CENTER;
+			pulsingText.vAlign = VAlign.CENTER;
+			pulsingText.x = Statics.stageWidth / 2;
+			pulsingText.y = (Statics.stageHeight * 30)/100;
+			pulsingText.scaleX = 0.5;
+			pulsingText.scaleY = 0.5;
+			pulsingText.visible = false;
+			this.addChild(pulsingText);
+			// tween
+			tweenPulsingText = new Tween(pulsingText, 0.2, Transitions.LINEAR);
 			
 			// speical ability indicators
 			Statics.numSpecials = 8;
@@ -245,7 +287,7 @@ package com.jumpGame.ui
 			arrangeSpecialIndicators();
 			
 			// objective achievement effect
-			badgeAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("BadgeFlash"), 30);
+			badgeAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("BadgeFlash"), 30);
 			badgeAnimation.pivotX = Math.ceil(badgeAnimation.width  / 2); // center art on registration point
 			badgeAnimation.pivotY = Math.ceil(badgeAnimation.height / 2);
 			badgeAnimation.x = Constants.StageWidth / 2;
@@ -305,8 +347,25 @@ package com.jumpGame.ui
 		public function get distance():int { return _distance; }
 		public function set distance(value:int):void
 		{
-			_distance = value;
-			distanceText.text = _distance.toString();
+			if (value > _distance) {
+				_distance = value;
+				distanceText.text = _distance.toString();
+				
+				// update pulsing text
+				// scale values
+				var scaleVal:Number = 0.3 + emaVelocity * 150;
+				
+				pulsingText.visible = true;
+				pulsingText.text = _distance.toString();
+				
+				// rest pulsing text
+				pulsingText.scaleX = 0.2;
+				pulsingText.scaleY = 0.2;
+				tweenPulsingText.reset(pulsingText, 0.2, Transitions.EASE_OUT_BACK);
+				tweenPulsingText.animate("scaleX", scaleVal);
+				tweenPulsingText.animate("scaleY", scaleVal);
+				Starling.juggler.add(tweenPulsingText);
+			}
 		}
 		
 		public function get coins():int { return _coins; }
@@ -336,7 +395,7 @@ package com.jumpGame.ui
 			badgeAnimation.alpha = 1;
 			badgeAnimation.visible = true;
 			badgeAnimation.play();
-			Sounds.sndGong.play();
+			if (!Sounds.sfxMuted) Sounds.sndGong.play();
 			badgeText.text = message;
 			badgeText.alpha = 1;
 			badgeText.visible = true;
@@ -407,6 +466,8 @@ package com.jumpGame.ui
 		}
 		
 		public static function update():void {
+			if (Statics.calculateEmaVelocity && Statics.gameTime > prevDistanceCalculationTime + 200) calculateEMA();
+			
 			// if a message line expires, hide that line
 			if (Statics.gameTime > messageExpireTime1) messageText1.visible = false;
 			if (Statics.gameTime > messageExpireTime2) messageText2.visible = false;
@@ -434,6 +495,15 @@ package com.jumpGame.ui
 					specialIndicatorsList[i].updateClipRectByRatio(ratio);
 				}
 			}
+		}
+		
+		public static function updatePulsingText(distance:int):void {
+//			pulsingText.visible = true;
+//			Starling.juggler.tween(pulsingText, 0.4, {
+//				transition: Transitions.LINEAR,
+//				scaleX: 1.5,
+//				scaleY: 1.5
+//			});
 		}
 		
 		public function spinPowerupReel():void {
@@ -529,7 +599,7 @@ package com.jumpGame.ui
 		}
 		
 		public static function completionWarning():void {
-			Sounds.sndClockTick.play();
+			if (!Sounds.sfxMuted) Sounds.sndClockTick.play();
 			powerupIconFrame.alpha = 0;
 			powerupIcons.alpha = 0;
 			Starling.juggler.tween(powerupIconFrame, 0.5, {
@@ -544,6 +614,22 @@ package com.jumpGame.ui
 				reverse: true,
 				alpha: 1.0
 			});
+		}
+		
+		/**
+		 * Calculate the Exponential Moving Average of hero's velocity
+		 */
+		private static function calculateEMA():void {
+			var timePeriods:int = 15;
+			
+			var distanceThisTimePeriod:int = _distance - distancePrevTimePeriod;
+			var timeThisTimePeriod:int = Statics.gameTime - prevDistanceCalculationTime;
+			
+			var velocityThisTimePeriod:Number = distanceThisTimePeriod / timeThisTimePeriod;
+			emaVelocity = (velocityThisTimePeriod - emaVelocity) * (2 / (timePeriods + 1)) + emaVelocity;
+			
+			distancePrevTimePeriod = _distance;
+			prevDistanceCalculationTime = Statics.gameTime;
 		}
 	}
 }

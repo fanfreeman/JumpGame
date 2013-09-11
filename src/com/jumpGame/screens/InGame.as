@@ -44,6 +44,9 @@ package com.jumpGame.screens
 	import com.jumpGame.gameElements.powerups.Extender;
 	import com.jumpGame.gameElements.powerups.Levitation;
 	import com.jumpGame.gameElements.powerups.Pyromancy;
+	import com.jumpGame.gameElements.powerups.VermilionBird;
+	import com.jumpGame.gameElements.powerups.QueenNagini;
+	import com.jumpGame.gameElements.powerups.MasterDapan;
 	import com.jumpGame.level.ContraptionControl;
 	import com.jumpGame.level.LevelParser;
 	import com.jumpGame.level.Statics;
@@ -143,6 +146,10 @@ package com.jumpGame.screens
 		private var rightArrow:Boolean = false;
 		private var upArrow:Boolean = false;
 		private var downArrow:Boolean = false;
+		
+		// discrete key presses
+		private var discreteLeft:Boolean = false;
+		private var discreteRight:Boolean = false;
 		
 		// whether or not the player has control of the hero
 		private var playerControl:Boolean = true;
@@ -378,7 +385,7 @@ package com.jumpGame.screens
 			// power: expansion
 			var expansion:Expansion = new Expansion(this.hero, transfiguration);
 			this.addChild(expansion);
-			this.setChildIndex(expansion, this.getChildIndex(hero));
+			this.setChildIndex(expansion, this.getChildIndex(hero) + 1); // place just above hero
 			this.powerupsList[this.powerupsListLength++] = expansion;
 			// power: fireworks
 			var pyromancy:Pyromancy = new Pyromancy();
@@ -388,15 +395,30 @@ package com.jumpGame.screens
 //			this.addChild(cometRun);
 //			this.setChildIndex(cometRun, this.getChildIndex(this.hero)); // push cometRun behind hero
 			this.powerupsList[this.powerupsListLength++] = cometRun;
+			// power: vermilion bird
+			var vermilionBird:VermilionBird = new VermilionBird(this.hero, transfiguration);
+			this.addChild(vermilionBird);
+			this.setChildIndex(vermilionBird, this.getChildIndex(hero) + 1); // place just above hero
+			this.powerupsList[this.powerupsListLength++] = vermilionBird;
+			// power: queen nagini
+			var queenNagini:QueenNagini = new QueenNagini(this.hero, transfiguration);
+			this.addChild(queenNagini);
+			this.setChildIndex(queenNagini, this.getChildIndex(hero) + 1); // place just above hero
+			this.powerupsList[this.powerupsListLength++] = queenNagini;
+			// power: master da pan
+			var masterDapan:MasterDapan = new MasterDapan(this.hero, transfiguration);
+			this.addChild(masterDapan);
+			this.setChildIndex(masterDapan, this.getChildIndex(hero) + 1); // place just above hero
+			this.powerupsList[this.powerupsListLength++] = masterDapan;
 			
 			// create platform pools
 			ObjectPool.instance.registerPool(PlatformNormal, 30, false);
-			ObjectPool.instance.registerPool(PlatformMobile, 20, false);
-			ObjectPool.instance.registerPool(PlatformDrop, 20, false);
+			ObjectPool.instance.registerPool(PlatformMobile, 30, false);
+			ObjectPool.instance.registerPool(PlatformDrop, 30, false);
 			ObjectPool.instance.registerPool(PlatformNormalBoost, 12, false);
 			ObjectPool.instance.registerPool(PlatformDropBoost, 12, false);
 			ObjectPool.instance.registerPool(PlatformMobileBoost, 80, false);
-			ObjectPool.instance.registerPool(PlatformPower, 8, false);
+			ObjectPool.instance.registerPool(PlatformPower, 12, false);
 			ObjectPool.instance.registerPool(PlatformSuper, 25, false);
 			ObjectPool.instance.registerPool(Coin, 100, false);
 			ObjectPool.instance.registerPool(BigCoin, 10, false);
@@ -407,7 +429,7 @@ package com.jumpGame.screens
 			ObjectPool.instance.registerPool(StarDark, 50, false);
 			ObjectPool.instance.registerPool(Comet, 30, false);
 			ObjectPool.instance.registerPool(Repulsor, 60, false);
-			ObjectPool.instance.registerPool(Cannonball, 20, false);
+			ObjectPool.instance.registerPool(Cannonball, 100, false);
 			ObjectPool.instance.registerPool(Train, 2, false);
 			ObjectPool.instance.registerPool(TrainFromLeft, 2, false);
 			ObjectPool.instance.registerPool(Cannon, 1, false);
@@ -462,10 +484,12 @@ package com.jumpGame.screens
 			Statics.cameraShake = 0;
 			Statics.maxDist = 0;
 			Statics.displayingBadge = false;
+			Statics.calculateEmaVelocity = false;
+			Statics.invincibilityExpirationTime = 0;
 			Camera.targetModifierY = 0;
 			
 			// play background music
-			if (!Sounds.muted) Sounds.playBgm();
+			if (!Sounds.bgmMuted) Sounds.playBgm();
 			
 			// hide the pause button since the game isn't started yet.
 			pauseButton.visible = false;
@@ -565,7 +589,7 @@ package com.jumpGame.screens
 			Starling.current.nativeOverlay.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressedDown);
 			Starling.current.nativeOverlay.stage.addEventListener(KeyboardEvent.KEY_UP, keyPressedUp);
 			
-			if (Statics.gameMode == Constants.ModeNormal) { // normal mode specific
+//			if (Statics.gameMode == Constants.ModeNormal) { // normal mode specific
 				// start contraptions; must be done after parsing level
 //				this.contraptionControl.scheduleNext(Constants.ContraptionHourglass);
 //				this.contraptionControl.scheduleNext(Constants.ContraptionTrain);
@@ -578,11 +602,11 @@ package com.jumpGame.screens
 				
 				// start scheduling weather effects
 				this.weather.scheduleFirst();
-			}
-			else if (Statics.gameMode == Constants.ModeBonus) { // bonus mode specific
-				//SoundMixer.stopAll();
-				if (!Sounds.muted) Sounds.playBgmFireAura();
-			}
+//			}
+//			else if (Statics.gameMode == Constants.ModeBonus) { // bonus mode specific
+//				//SoundMixer.stopAll();
+//				if (!Sounds.muted) Sounds.playBgmFireAura();
+//			}
 			
 			// emit wind particles
 			Statics.particleWind.start(1.0);
@@ -591,8 +615,11 @@ package com.jumpGame.screens
 			Statics.gameTime = 0;
 			this.gameStartTime = getTimer();
 			
+			// start calculating hero velocity ema
+			Statics.calculateEmaVelocity = true;
+			
 			//test
-//			this.powerupsList[Constants.PowerupExpansion].activate();
+			this.powerupsList[Constants.PowerupExpansion].activate();
 		}
 		
 		/**
@@ -600,8 +627,10 @@ package com.jumpGame.screens
 		 */
 		public function keyPressedDown(event:KeyboardEvent):void {
 			if (event.keyCode == 37 || event.keyCode == 65) { // left arrow or 'a'
+				if (!leftArrow) discreteLeft = true;
 				leftArrow = true;
 			} else if (event.keyCode == 39 || event.keyCode == 68) { // right arrow or 'd'
+				if (!rightArrow) discreteRight = true;
 				rightArrow = true;        
 			} else if (event.keyCode == 38) {
 				upArrow = true;
@@ -741,10 +770,22 @@ package com.jumpGame.screens
 					this.powerupsList[Constants.PowerupPyromancy].activate();
 				}
 				else if (powerupToActivate == 5) {
-					HUD.showMessage("Ancient Curse: Rain of Cannonballs");
+//					HUD.showMessage("Watch out for cannonballs!");
 					this.powerupsList[Constants.PowerupExpansion].activate();
 				}
-//				if (powerupToActivate >= 0) {
+				else if (powerupToActivate == 6) {
+//					HUD.showMessage("Watch out for cannonballs!");
+					this.powerupsList[Constants.PowerupVermilionBird].activate();
+				}
+				else if (powerupToActivate == 7) {
+//					HUD.showMessage("Watch out for cannonballs!");
+					this.powerupsList[Constants.PowerupQueenNagini].activate();
+				}
+				else if (powerupToActivate == 8) {
+//					HUD.showMessage("Watch out for cannonballs!");
+					this.powerupsList[Constants.PowerupMasterDapan].activate();
+				}
+//				if (powerupToActivate >= 0) { // for testing
 //					HUD.showMessage("Ancient Power: Duplication");
 //					this.powerupsList[Constants.PowerupExtender].activate();
 //				}
@@ -761,7 +802,7 @@ package com.jumpGame.screens
 						var newCannonballIndex:uint = addElementFromPool(
 						Camera.gy + Constants.StageHeight / 2 + 21, 
 						Math.random() * Constants.StageWidth * 2 - Constants.StageWidth, "Cannonball");
-						this.platformsList[newCannonballIndex].enableWarning();
+						this.platformsList[newCannonballIndex].setVertical();
 					}
 				}
 				
@@ -787,6 +828,21 @@ package com.jumpGame.screens
 				} else {
 					brightLightImage.visible = false;
 				}
+				
+				// update power: vermilion bird
+				if (this.powerupsList[Constants.PowerupVermilionBird].isActivated) {
+					this.powerupsList[Constants.PowerupVermilionBird].update(this.timeDiffControlled);
+				}
+				
+				// update power: queen nagini
+				if (this.powerupsList[Constants.PowerupQueenNagini].isActivated) {
+					this.powerupsList[Constants.PowerupQueenNagini].update(this.timeDiffControlled);
+				}
+				
+				// update power: master da pan
+				if (this.powerupsList[Constants.PowerupMasterDapan].isActivated) {
+					this.powerupsList[Constants.PowerupMasterDapan].update(this.timeDiffControlled);
+				}
 			}
 			/** eof update timers */
 			
@@ -811,37 +867,37 @@ package com.jumpGame.screens
 				//trace(Camera.nextPlatformX);
 				// handle left and right arrow key input
 				if (this.playerControl) {
-					if (Statics.gameMode == Constants.ModeBonus) {
-						//
-						if (leftArrow) {
-							this.moveMade = 1;
-						}
-						else if (rightArrow) {
-							this.moveMade = 2;
-						}
-						//
-						
-						if (!this.moveMadeThisTurn) {
-							//if (Camera.nextPlatformX < this.hero.gx) { // autopilot
-							//if (this.moveMade == 1) { // left arrow pressed
-							if (leftArrow) {
-								this.hero.turnLeft();
-								this.hero.dx = -0.18;
-								this.moveMadeThisTurn = true;
-							}
-								//else if (Camera.nextPlatformX > this.hero.gx) { // autopilot
-								//else if (this.moveMade == 2) { // right arrow pressed
-							else if (rightArrow) {
-								this.hero.turnRight();
-								this.hero.dx = 0.18;
-								this.moveMadeThisTurn = true;
-							}
-							
-						}
-						
-						//}
-					} else { // normal game mode
-						if (this.powerupsList[Constants.PowerupExpansion].isActivated) { // expansion power up controls
+//					if (Statics.gameMode == Constants.ModeBonus) {
+//						//
+//						if (leftArrow) {
+//							this.moveMade = 1;
+//						}
+//						else if (rightArrow) {
+//							this.moveMade = 2;
+//						}
+//						//
+//						
+//						if (!this.moveMadeThisTurn) {
+//							//if (Camera.nextPlatformX < this.hero.gx) { // autopilot
+//							//if (this.moveMade == 1) { // left arrow pressed
+//							if (leftArrow) {
+//								this.hero.turnLeft();
+//								this.hero.dx = -0.18;
+//								this.moveMadeThisTurn = true;
+//							}
+//								//else if (Camera.nextPlatformX > this.hero.gx) { // autopilot
+//								//else if (this.moveMade == 2) { // right arrow pressed
+//							else if (rightArrow) {
+//								this.hero.turnRight();
+//								this.hero.dx = 0.18;
+//								this.moveMadeThisTurn = true;
+//							}
+//							
+//						}
+//						
+//						//}
+//					} else { // normal game mode
+						if (this.powerupsList[Constants.PowerupExpansion].isActivated) { // broomstick controls
 							// x
 							if (leftArrow) { // left arrow pressed
 								this.hero.turnLeft();
@@ -878,13 +934,77 @@ package com.jumpGame.screens
 							
 							// y
 							if (leftArrow || rightArrow) {
-//								if (this.hero.dy < -0.5) this.hero.dy = -0.5;
 								if (this.hero.dy < 1) this.hero.dy += 0.05;
 							}
 							
 							// propeller art
 							this.powerupsList[Constants.PowerupExpansion].updatePropellers(leftArrow, rightArrow);
-						} else { // normal gameplay
+						} else if (this.powerupsList[Constants.PowerupVermilionBird].isActivated) { // vermilion bird controls
+							// x
+							if (discreteLeft) { // left arrow pressed
+//								trace("discrete left");
+//								if (this.hero.dx > -0.3) this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled * 1;
+//								else this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled;
+								this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled * 5;
+								if (this.hero.dx < -Constants.HeroExpansionMaxSpeedX) {
+									this.hero.dx = -Constants.HeroExpansionMaxSpeedX;
+								}
+								this.hero.dy = 1;
+								this.powerupsList[Constants.PowerupVermilionBird].beatWings();
+							}
+							else if (discreteRight) { // right arrow pressed
+//								trace("discrete right");
+//								if (this.hero.dx < 0.3) this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled * 1;
+//								else this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled;
+								this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled * 5;
+								if (this.hero.dx > Constants.HeroExpansionMaxSpeedX) {
+									this.hero.dx = Constants.HeroExpansionMaxSpeedX;
+								}
+								this.hero.dy = 1;
+								this.powerupsList[Constants.PowerupVermilionBird].beatWings();
+							}
+							else { // no arrow pressed, reset velocity
+								// make hero come to rest
+								if (this.hero.dx < 0) {
+									if (Math.abs(this.hero.dx) < Constants.HeroSpeedX * this.timeDiffControlled * 0.1) {
+										this.hero.dx = 0;
+									} else {
+										this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled * 0.1;
+									}
+								} else if (this.hero.dx > 0) {
+									if (Math.abs(this.hero.dx) < Constants.HeroSpeedX * this.timeDiffControlled * 0.1) {
+										this.hero.dx = 0;
+									} else {
+										this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled * 0.1;
+									}
+								}
+							}
+							
+							// y
+//							if (discreteLeft || discreteRight) {
+//								if (this.hero.dy < 1) this.hero.dy += 0.1;
+//							}
+						} else if (this.powerupsList[Constants.PowerupQueenNagini].isActivated) { // queen nagini controls
+							// x
+							if (discreteLeft) { // left arrow pressed
+								this.powerupsList[Constants.PowerupQueenNagini].blinkLeft();
+							}
+							else if (discreteRight) { // right arrow pressed
+								this.powerupsList[Constants.PowerupQueenNagini].blinkRight();
+							}
+							// y
+							if (this.hero.dy < 1.0) this.hero.dy += 0.05;
+						} else if (this.powerupsList[Constants.PowerupMasterDapan].isActivated) { // master da pan controls
+							// x
+							if (discreteLeft) { // left arrow pressed
+								this.powerupsList[Constants.PowerupMasterDapan].snapToLeft();
+							}
+							else if (discreteRight) { // right arrow pressed
+								this.powerupsList[Constants.PowerupMasterDapan].snapToRight();
+							}
+							// y
+							if (this.hero.dy < 1.0) this.hero.dy += 0.05;
+						} else { // normal instead of transfigured gameplay
 							if (leftArrow) { // left arrow pressed
 								this.hero.turnLeft();
 								//if (this.hero.dx > 0) {this.hero.dx = 0;}
@@ -918,8 +1038,10 @@ package com.jumpGame.screens
 									}
 								}
 							}
-						} // eof normal gameplay
-					} // eof normal game mode
+						} // eof normal instead of transfigured gameplay
+//					} // eof normal instead of bonus game mode
+						discreteLeft = false;
+						discreteRight = false;
 				} /** eof player control */
 				
 				// update hero position, velocity, rotation
@@ -993,26 +1115,31 @@ package com.jumpGame.screens
 				}
 				
 				// we lose if we drop below sea of fire or move out of bounds
-				if (Constants.SofEnabled) {
+//				if (Constants.SofEnabled) {
 					//if (this.hero.gy < this.fg.sofHeight - 60 || this.hero.gx < -Constants.StageWidth || this.hero.gx > Constants.StageWidth) {
 					if (this.hero.gy < this.fg.sofHeight - 60) { // disable out of bounds for now because it's less fun
 						if (this.checkWinLose) {
-							HUD.showMessage("Uh Oh...");
-							this.playerFail();
-							return;
+							if (this.powerupsList[Constants.PowerupExpansion].isActivated) {
+								this.powerupsList[Constants.PowerupExpansion].deactivate();
+							}
+							else {
+								HUD.showMessage("Uh Oh...");
+								this.playerFail();
+								return;
+							}
 						}
 						else if (this.heroHasBouncedOffSof) {
 							this.hero.gy = this.fg.sofHeight - 60; // hide hero just below sof
 							Camera.targetModifierY = 250; // move camera target so we only see the top of sof
 						}
 					}
-				} else {
-					if (this.checkWinLose && hero.gy < Camera.gy - Constants.StageHeight / 2) {
-						HUD.showMessage("Uh Oh...");
-						this.playerFail();
-						return;
-					}
-				}
+//				} else { // test sea of fire turned off
+//					if (this.checkWinLose && hero.gy < Camera.gy - Constants.StageHeight / 2) {
+//						HUD.showMessage("Uh Oh...");
+//						this.playerFail();
+//						return;
+//					}
+//				}
 				
 				// update hud
 //				if (Statics.gameMode == Constants.ModeNormal) {
@@ -1148,7 +1275,7 @@ package com.jumpGame.screens
 			// stop sounds
 			//SoundMixer.stopAll();
 			Sounds.stopBgm();
-			if (!Sounds.muted) Sounds.sndScratch.play();
+			if (!Sounds.sfxMuted) Sounds.sndScratch.play();
 			
 			Starling.juggler.delayCall(playerFailPartTwo, 1);
 		}
@@ -1349,7 +1476,7 @@ package com.jumpGame.screens
 							}
 							else if (isCannonball) {
 								Statics.particleLeaf.start(0.2); // play particle effect
-								this.hero.repulseCannonball(this.platformsList[i].isVertical, this.platformsList[i].dx > 0);
+								if (Statics.gameTime > Statics.invincibilityExpirationTime) this.hero.repulseCannonball(this.platformsList[i].isVertical, this.platformsList[i].dx > 0);
 								this.returnPlatformToPool(i);
 								continue;
 							}
@@ -1447,7 +1574,7 @@ package com.jumpGame.screens
 						//					Statics.particleBounce.emitterX = this.platformsList[i].x;
 						//					Statics.particleBounce.emitterY = this.platformsList[i].y;
 						//					Statics.particleBounce.start(0.4);
-						Sounds.sndDouseFire.play();
+						if (!Sounds.sfxMuted) Sounds.sndDouseFire.play();
 					}
 					
 					this.returnPlatformToPool(i);
@@ -1496,7 +1623,7 @@ package com.jumpGame.screens
 							if (this.hero.gx < this.contraptionsList[i].gx + 100) { // hit by a train
 								this.playerControl = false;
 								this.hero.dx = Constants.TrainVelocity * 2;
-								if (!Sounds.muted) {
+								if (!Sounds.sfxMuted) {
 //									Sounds.sndVoiceAh.play();
 									Sounds.sndTrainHit.play();
 								}
@@ -1532,7 +1659,7 @@ package com.jumpGame.screens
 							if (this.hero.gx > this.contraptionsList[i].gx - 100) { // hit by a train
 								this.playerControl = false;
 								this.hero.dx = -Constants.TrainVelocity * 2;
-								if (!Sounds.muted) {
+								if (!Sounds.sfxMuted) {
 //									Sounds.sndVoiceAh.play();
 									Sounds.sndTrainHit.play();
 								}
@@ -1635,7 +1762,7 @@ package com.jumpGame.screens
 //							newCoinIndex = addElementFromPool(this.contraptionsList[i].gy, this.contraptionsList[i].gx, "Star");
 //							this.platformsList[newCoinIndex].makeKinematicWithDx(-Math.random() * 1 - 0.5);
 //						}
-//						Sounds.sndCannonFire.play(); // play cannon firing sound
+//						if (!Sounds.sfxMuted) Sounds.sndCannonFire.play(); // play cannon firing sound
 					}
 					if (this.checkWinLose) { // check hero/cannon collision if not yet lost
 						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
@@ -1666,7 +1793,7 @@ package com.jumpGame.screens
 //							newCoinIndex = addElementFromPool(this.contraptionsList[i].gy, this.contraptionsList[i].gx, "Star");
 //							this.platformsList[newCoinIndex].makeKinematicWithDx(Math.random() * 1 + 0.5);
 //						}
-//						Sounds.sndCannonFire.play(); // play cannon firing sound
+//						if (!Sounds.sfxMuted) Sounds.sndCannonFire.play(); // play cannon firing sound
 					}
 					if (this.checkWinLose) { // check hero/cannon collision if not yet lost
 						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
@@ -1701,7 +1828,7 @@ package com.jumpGame.screens
 				if (this.contraptionsList[i].gy < this.fg.sofHeight - this.contraptionsList[i].height) {
 					// canon crash sound effect
 					if (this.contraptionsList[i] is Cannon) {
-						Sounds.sndDistantExplosion.play();
+						if (!Sounds.sfxMuted) Sounds.sndDistantExplosion.play();
 					}
 					
 					this.returnContraptionToPool(i);
@@ -1782,7 +1909,7 @@ package com.jumpGame.screens
 		private function launchTrain():void {
 			if (Statics.gameMode == Constants.ModeNormal) { // only dispatch train in normal mode
 				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, Constants.StageWidth / 2, "Train");
-				//Sounds.sndTrainWarning.play();
+				//if (!Sounds.sfxMuted) Sounds.sndTrainWarning.play();
 				this.contraptionControl.scheduleNext(Constants.ContraptionTrain);
 			}
 		}
@@ -1790,7 +1917,7 @@ package com.jumpGame.screens
 		private function launchTrainFromLeft():void {
 			if (Statics.gameMode == Constants.ModeNormal) { // only dispatch train in normal mode
 				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, -Constants.StageWidth / 2, "TrainFromLeft");
-				//Sounds.sndTrainWarning.play();
+				//if (!Sounds.sfxMuted) Sounds.sndTrainWarning.play();
 				this.contraptionControl.scheduleNext(Constants.ContraptionTrainFromLeft);
 			}
 		}

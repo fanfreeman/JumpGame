@@ -264,13 +264,13 @@ package com.jumpGame.screens
 			this.theme = new MetalWorksMobileTheme(this.stage);
 			
 			// bg
-			var bgImage:Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("UiMainBg0000"));
+			var bgImage:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("UiMainBg0000"));
 			bgImage.pivotX = Math.ceil(bgImage.texture.width / 2);
 			bgImage.x = stage.stageWidth / 2;
 			this.addChild(bgImage);
 			
 			// top bar
-			var topBar:Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("UiMainTop0000"));
+			var topBar:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("UiMainTop0000"));
 			this.addChild(topBar);
 			
 			// coin label
@@ -354,7 +354,7 @@ package com.jumpGame.screens
 			this.addChild(dialogBox);
 			
 			// objective achievement effect
-			badgeAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("BadgeFlash"), 30);
+			badgeAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("BadgeFlash"), 30);
 			badgeAnimation.pivotX = Math.ceil(badgeAnimation.width  / 2); // center art on registration point
 			badgeAnimation.pivotY = Math.ceil(badgeAnimation.height / 2);
 			badgeAnimation.x = Constants.StageWidth / 2;
@@ -500,7 +500,7 @@ package com.jumpGame.screens
 			badgeAnimation.alpha = 1;
 			badgeAnimation.visible = true;
 			badgeAnimation.play();
-			Sounds.sndGong.play();
+			if (!Sounds.sfxMuted) Sounds.sndGong.play();
 			badgeText.text = message;
 			badgeText.alpha = 1;
 			badgeText.visible = true;

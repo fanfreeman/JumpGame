@@ -61,13 +61,13 @@ package com.jumpGame.ui.screens
 		override protected function initialize():void
 		{
 			// scroll dialog artwork
-			var scrollTop:Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("ScrollLongTop0000"));
+			var scrollTop:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollLongTop0000"));
 			scrollTop.pivotX = Math.ceil(scrollTop.texture.width / 2);
 			scrollTop.x = stage.stageWidth / 2;
 			scrollTop.y = 60;
 			this.addChild(scrollTop);
 			
-			var scrollBottom:Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("ScrollLongBottom0000"));
+			var scrollBottom:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollLongBottom0000"));
 			scrollBottom.pivotX = Math.ceil(scrollBottom.texture.width / 2);
 			scrollBottom.pivotY = scrollBottom.texture.height;
 			scrollBottom.x = stage.stageWidth / 2;
@@ -115,7 +115,7 @@ package com.jumpGame.ui.screens
 			startGamePicker.addEventListener(Event.CHANGE, buttonGameStartHandler);
 			
 			// your turn header
-			var headerYourTurn:Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("HeaderYourTurn0000"));
+			var headerYourTurn:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("HeaderYourTurn0000"));
 			headerYourTurn.pivotX = Math.ceil(headerYourTurn.texture.width / 2);
 			headerYourTurn.x = matchesContainer.width / 2;
 			headerYourTurn.y = startGamePicker.height + 20;
@@ -135,7 +135,7 @@ package com.jumpGame.ui.screens
 			listYourTurn.addEventListener(Event.CHANGE, listYourTurnChangeHandler);
 			
 			// their turn header
-			headerTheirTurn = new Image(Assets.getSprite("AtlasTexture2").getTexture("HeaderTheirTurn0000"));
+			headerTheirTurn = new Image(Assets.getSprite("AtlasTexture4").getTexture("HeaderTheirTurn0000"));
 			headerTheirTurn.pivotX = Math.ceil(headerTheirTurn.texture.width / 2);
 			headerTheirTurn.x = matchesContainer.width / 2;
 			headerTheirTurn.y = listYourTurn.height + 20;
@@ -154,7 +154,7 @@ package com.jumpGame.ui.screens
 			// eof create scroll container
 			
 			// finished matches header
-			headerFinished = new Image(Assets.getSprite("AtlasTexture2").getTexture("HeaderTheirTurn0000"));
+			headerFinished = new Image(Assets.getSprite("AtlasTexture4").getTexture("HeaderTheirTurn0000"));
 			headerFinished.pivotX = Math.ceil(headerFinished.texture.width / 2);
 			headerFinished.x = matchesContainer.width / 2;
 			headerFinished.y = listTheirTurn.height + 20;

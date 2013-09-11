@@ -128,7 +128,7 @@ package com.jumpGame.gameElements
 				this.dy = 2.0;
 				Statics.particleCharge.start(0.2);
 				Statics.particleJet.start(1);
-				Sounds.sndAirjump.play();
+				if (!Sounds.sfxMuted) Sounds.sndAirjump.play();
 				
 				Statics.specialReady = false;
 				Statics.specialUseTime = Statics.gameTime;
@@ -245,7 +245,7 @@ package com.jumpGame.gameElements
 //			} else if (temp >= 2 && temp < 3) {
 //				Sounds.sndBounce3.play();
 //			}
-			Sounds.sndBoostBounce.play();
+			if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
 			
 			// disable collision detection for a while
 			this.canBounce = false;

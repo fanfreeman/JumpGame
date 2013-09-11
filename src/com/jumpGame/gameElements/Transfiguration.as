@@ -10,7 +10,11 @@ package com.jumpGame.gameElements
 	public class Transfiguration extends GameObject
 	{
 		private var activationBg:Image;
-		private var activationCaption:Image;
+		private var activationCaption:Image; // the actual caption to tween
+		private var activationCaptionBroom:Image;
+		private var activationCaptionVermilion:Image;
+		private var activationCaptionQueen:Image;
+		private var activationCaptionMaster:Image;
 		private var energyWave:Image;
 		
 		public function Transfiguration()
@@ -22,11 +26,33 @@ package com.jumpGame.gameElements
 			activationBg.visible = false;
 			addChild(activationBg);
 			
-			activationCaption = new Image(Assets.getSprite("AtlasTexture2").getTexture("TransfigActivationCaptionBroom0000"));
-			activationCaption.x = Statics.stageWidth;
-			activationCaption.y = Statics.stageHeight * 2.7 / 5 + 10;
-			activationCaption.visible = false;
-			addChild(activationCaption);
+			activationCaptionBroom = new Image(Assets.getSprite("AtlasTexture2").getTexture("TransfigActivationCaptionBroom0000"));
+			activationCaptionBroom.pivotY = Math.ceil(activationCaptionBroom.height / 2);
+			activationCaptionBroom.x = Statics.stageWidth;
+			activationCaptionBroom.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationCaptionBroom.visible = false;
+			addChild(activationCaptionBroom);
+			
+			activationCaptionVermilion = new Image(Assets.getSprite("AtlasTexture2").getTexture("TransfigActivationCaptionVermilion0000"));
+			activationCaptionVermilion.pivotY = Math.ceil(activationCaptionVermilion.height / 2);
+			activationCaptionVermilion.x = Statics.stageWidth;
+			activationCaptionVermilion.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationCaptionVermilion.visible = false;
+			addChild(activationCaptionVermilion);
+			
+			activationCaptionQueen = new Image(Assets.getSprite("AtlasTexture2").getTexture("TransfigActivationCaptionQueen0000"));
+			activationCaptionQueen.pivotY = Math.ceil(activationCaptionQueen.height / 2);
+			activationCaptionQueen.x = Statics.stageWidth;
+			activationCaptionQueen.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationCaptionQueen.visible = false;
+			addChild(activationCaptionQueen);
+			
+			activationCaptionMaster = new Image(Assets.getSprite("AtlasTexture2").getTexture("TransfigActivationCaptionDapan0000"));
+			activationCaptionMaster.pivotY = Math.ceil(activationCaptionMaster.height / 2);
+			activationCaptionMaster.x = Statics.stageWidth;
+			activationCaptionMaster.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationCaptionMaster.visible = false;
+			addChild(activationCaptionMaster);
 			
 			energyWave = new Image(Assets.getSprite("AtlasTexture2").getTexture("MagicCircle0000"));
 			energyWave.pivotX = Math.ceil(energyWave.width / 2);
@@ -37,7 +63,7 @@ package com.jumpGame.gameElements
 			addChild(energyWave);
 		}
 		
-		public function displayActivateBroom(hero:Hero):void {
+		public function displayActivation(hero:Hero, powerup:uint):void {
 			Statics.gamePaused = true;
 			hero.isTransfigured = true;
 			
@@ -58,6 +84,21 @@ package com.jumpGame.gameElements
 				y: Statics.stageHeight * 3 / 5,
 				nextTween: tweenActivationBgSlowmo
 			});
+			
+			switch (powerup) { // assign an appropriate caption
+				case Constants.PowerupExpansion:
+					this.activationCaption = this.activationCaptionBroom;
+					break;
+				case Constants.PowerupVermilionBird:
+					this.activationCaption = this.activationCaptionVermilion;
+					break;
+				case Constants.PowerupQueenNagini:
+					this.activationCaption = this.activationCaptionQueen;
+					break;
+				case Constants.PowerupMasterDapan:
+					this.activationCaption = this.activationCaptionMaster;
+					break;
+			}
 			
 			// tween for activation caption flyout
 			var tweenActivationCaptionFlyout:Tween = new Tween(activationCaption, 0.3, Transitions.EASE_IN);
@@ -81,7 +122,7 @@ package com.jumpGame.gameElements
 			Starling.juggler.delayCall(releaseEnergyWave, 2.2, hero.x, hero.y);
 		}
 		
-		public function displayDeactivateBroom(hero:Hero):void {
+		public function displayDeactivation(hero:Hero):void {
 			hero.isTransfigured = false;
 			this.releaseEnergyWave(hero.x, hero.y);
 		}
@@ -107,7 +148,7 @@ package com.jumpGame.gameElements
 			// caption
 			activationCaption.visible = false;
 			activationCaption.x = Statics.stageWidth;
-			activationCaption.y = Statics.stageHeight * 2.7 / 5 + 10;
+			activationCaption.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
 			
 			// energy wave
 			energyWave.visible = false;

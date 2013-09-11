@@ -22,6 +22,7 @@ package com.jumpGame.gameElements.powerups
 		private var propellerRightImage:Image;
 		private var propellerBothImage:Image;
 		private var nextLaunchTime:int;
+		private var launchInterval:Number;
 		
 		public var isActivated:Boolean = false;
 		private var nearCompletionTime:int;
@@ -74,25 +75,27 @@ package com.jumpGame.gameElements.powerups
 		}
 		
 		public function activate():void {
-			Sounds.sndPowerup.play();
+			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
 			
 			// transfiguration animation
-			this.transfiguration.displayActivateBroom(this.hero);
+			this.transfiguration.displayActivation(this.hero, Constants.PowerupExpansion);
 			
 			this.gx = this.hero.gx;
 			this.gy = this.hero.gy;
+			this.launchInterval = 150;
 			
-//			this.hero.bouncePowerMultiplier = 1.3;
 			chainsImage.visible = true;
 			propellerOffImage.visible = true;
 			Starling.juggler.tween(chainsImage, 1.0, {
 				transition: Transitions.LINEAR,
-				alpha: 0.999
+				alpha: 1
 			});
 			
 			// brief push upward
-			this.hero.dy += 1.5;
-			Statics.particleJet.start(0.1);
+			if (this.hero.dy < 1.5) {
+				this.hero.dy = 1.5;
+				Statics.particleJet.start(0.1);
+			}
 			
 			this.isActivated = true;
 			this.completionWarned = false;
@@ -117,21 +120,12 @@ package com.jumpGame.gameElements.powerups
 			
 			// time up, deactivate
 			if (Statics.gameTime > this.completionTime) {
-				// brief push upward
-				this.hero.dy += 1.5;
-				Statics.particleJet.start(0.1);
-				
-				chainsImage.visible = false;
-				this.propellerOffImage.visible = false;
-				this.propellerLeftImage.visible = false;
-				this.propellerRightImage.visible = false;
-				this.propellerBothImage.visible = false;
-				
 				this.deactivate();
 			}
 			
 			if (Statics.gameTime > this.nextLaunchTime) {
-				this.nextLaunchTime = Statics.gameTime + 150; // schedule next launch time
+				this.nextLaunchTime = int(Statics.gameTime + launchInterval); // schedule next launch time
+				if (launchInterval > 20) launchInterval -= 1;
 				return true;
 			}
 			
@@ -139,17 +133,30 @@ package com.jumpGame.gameElements.powerups
 		}
 		
 		public function deactivate():void {
-//			Starling.juggler.remove(heroAnimation);
-//			heroAnimation.visible = false;
-			//				this.hero.gravity = Constants.Gravity;
-//			this.hero.visible = true;
 			this.isActivated = false;
+			
+			// turn off transfiguration art
+			chainsImage.visible = false;
+			this.propellerOffImage.visible = false;
+			this.propellerLeftImage.visible = false;
+			this.propellerRightImage.visible = false;
+			this.propellerBothImage.visible = false;
 			
 			// misc reset
 			HUD.clearPowerupReel();
 			Statics.powerupsEnabled = true;
 			
-			this.transfiguration.displayDeactivateBroom(this.hero);
+			// brief push upward
+			if (this.hero.dy < 1.5) {
+				this.hero.dy = 1.5;
+				Statics.particleJet.start(0.1);
+			}
+			
+			// set invincibility time
+			Statics.invincibilityExpirationTime = Statics.gameTime + 1000;
+			
+			// transfiguration deactivation effect
+			this.transfiguration.displayDeactivation(this.hero);
 		}
 		
 		public function updatePropellers(leftArrow:Boolean, rightArrow:Boolean):void {

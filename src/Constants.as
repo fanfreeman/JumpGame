@@ -86,6 +86,9 @@ package
 		public static const PowerupExpansion:uint = 4;
 		public static const PowerupPyromancy:uint = 5;
 		public static const PowerupCometRun:uint = 6;
+		public static const PowerupVermilionBird:uint = 7;
+		public static const PowerupQueenNagini:uint = 8;
+		public static const PowerupMasterDapan:uint = 9;
 		
 		// level generator definition
 		public static const Generator:String = "Generator"; // randomly generate elements according to specification

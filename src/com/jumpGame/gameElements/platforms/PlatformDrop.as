@@ -30,7 +30,7 @@ package com.jumpGame.gameElements.platforms
 //					Sounds.sndBounce3.play();
 //				}
 //			}
-			Sounds.sndBoostBounce.play();
+			if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
 			
 			this.platformAnimation.stop();
 			this.platformAnimation.play();

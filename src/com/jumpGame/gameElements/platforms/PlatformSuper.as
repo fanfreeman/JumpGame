@@ -29,7 +29,7 @@ package com.jumpGame.gameElements.platforms
 		}
 		
 		override public function contact():void {
-			Sounds.sndBoom.play();
+			if (!Sounds.sfxMuted) Sounds.sndBoom.play();
 			this.platformAnimation.stop();
 			this.platformAnimation.play();
 			Statics.particleWind.start(1.0);

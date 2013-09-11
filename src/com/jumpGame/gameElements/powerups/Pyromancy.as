@@ -12,7 +12,7 @@ package com.jumpGame.gameElements.powerups
 		private var numLaunches:uint;
 		
 		public function activate():void {
-			Sounds.sndPowerup.play();
+			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
 			
 			this.isActivated = true;
 			this.completionWarned = false;

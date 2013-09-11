@@ -18,7 +18,7 @@ package com.jumpGame.gameElements.platforms
 		
 		override public function contact():void {
 			this.isFalling = true;
-			Sounds.sndBoostBounce.play();
+			if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
 			this.platformAnimation.stop();
 			this.platformAnimation.play();
 		}

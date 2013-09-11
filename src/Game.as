@@ -110,9 +110,9 @@ package
 		 */
 		private function onSoundButtonClick(event:Event = null):void
 		{
-			if (Sounds.muted)
+			if (Sounds.bgmMuted)
 			{
-				Sounds.muted = false;
+				Sounds.bgmMuted = false;
 				
 //				if (screenWelcome.visible) Sounds.sndBgMain.play(0, 999);
 //				else if (screenInGame.visible) Sounds.sndBgMain.play(0, 999);
@@ -122,7 +122,7 @@ package
 			}
 			else
 			{
-				Sounds.muted = true;
+				Sounds.bgmMuted = true;
 				SoundMixer.stopAll();
 				
 				soundButton.showMuteState();

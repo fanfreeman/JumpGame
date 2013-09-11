@@ -28,7 +28,7 @@ package com.jumpGame.ui.components
 			var fontVerdana23:Font = Fonts.getFont("Verdana23");
 			
 			// checkbox
-			var checkbox:Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("Checkbox0000"));
+			var checkbox:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("Checkbox0000"));
 			addChild(checkbox);
 			
 			// objective title
@@ -48,7 +48,7 @@ package com.jumpGame.ui.components
 			addChild(description);
 			
 			// checkmark
-			checkmarkAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("Checkmark"), 40);
+			checkmarkAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("Checkmark"), 40);
 			checkmarkAnimation.x = 15;
 			checkmarkAnimation.y = -10;
 			checkmarkAnimation.loop = false;

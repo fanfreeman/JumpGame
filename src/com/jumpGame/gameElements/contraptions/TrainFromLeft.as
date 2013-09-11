@@ -28,7 +28,7 @@ package com.jumpGame.gameElements.contraptions
 			if (!this.isLaunched) {
 				if (Statics.gameTime > this.launchTime) {
 					this.lookOutAnimation.visible = false;
-					Sounds.sndTrain.play();
+					if (!Sounds.sfxMuted) Sounds.sndTrain.play();
 					this.isLaunched = true;
 				}
 			} else {

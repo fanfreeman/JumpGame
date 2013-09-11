@@ -80,7 +80,7 @@ package com.jumpGame.gameElements
 //					Sounds.sndBounce3.play();
 //				}
 //			}
-			Sounds.sndBoostBounce.play();
+			if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
 			
 			this.platformAnimation.stop();
 			this.platformAnimation.play();

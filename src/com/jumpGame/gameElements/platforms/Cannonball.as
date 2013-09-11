@@ -48,7 +48,7 @@ package com.jumpGame.gameElements.platforms
 			if (!this.isTouched) {
 				
 				// play sound effect
-				Sounds.sndCannonballHit.play();
+				if (!Sounds.sfxMuted) Sounds.sndCannonballHit.play();
 				
 				this.isTouched = true;
 				
@@ -83,7 +83,7 @@ package com.jumpGame.gameElements.platforms
 			this.dx = dx;
 		}
 		
-		public function enableWarning():void {
+		public function setVertical():void {
 //			this.addChild(platformAnimation);
 //			Starling.juggler.add(platformAnimation);
 //			platformAnimation.visible = true;

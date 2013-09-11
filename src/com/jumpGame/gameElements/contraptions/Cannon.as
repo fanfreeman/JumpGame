@@ -115,7 +115,7 @@ package com.jumpGame.gameElements.contraptions
 			if (!this.isTouched) {
 				this.isTouched = true;
 				
-				Sounds.sndCrash.play();
+				if (!Sounds.sfxMuted) Sounds.sndCrash.play();
 				this.rotationSpeed = Math.PI / 18;
 				return true;
 			}

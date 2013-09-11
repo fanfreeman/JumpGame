@@ -44,7 +44,7 @@ package com.jumpGame.gameElements.powerups
 				alpha: 0.999
 			});
 			
-			Sounds.sndPowerup.play();
+			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
 			
 			this.isActivated = true;
 			this.jetFired = false;

@@ -38,13 +38,13 @@ package com.jumpGame.ui.popups
 			this.addChild(bg);
 			
 			// scroll dialog artwork
-			var scrollTop:Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("ScrollLongTop0000"));
+			var scrollTop:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollLongTop0000"));
 			scrollTop.pivotX = Math.ceil(scrollTop.texture.width / 2);
 			scrollTop.x = stage.stageWidth / 2;
 			scrollTop.y = 60;
 			this.addChild(scrollTop);
 			
-			var scrollBottom:Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("ScrollLongBottom0000"));
+			var scrollBottom:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollLongBottom0000"));
 			scrollBottom.pivotX = Math.ceil(scrollBottom.texture.width / 2);
 			scrollBottom.pivotY = scrollBottom.texture.height;
 			scrollBottom.x = stage.stageWidth / 2;

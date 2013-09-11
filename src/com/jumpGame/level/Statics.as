@@ -100,6 +100,12 @@ package com.jumpGame.level
 		// upgrade prices
 		public static var upgradePrices:Object;
 		
+		// calculate hero velocity ema
+		public static var calculateEmaVelocity:Boolean;
+		
+		// temporary invincibility when losing transfiguration
+		public static var invincibilityExpirationTime:int;
+		
 		public static function distance(x1:Number, y1:Number, x2:Number, y2:Number):Number {
 			var dx:Number = Math.abs(x1 - x2);
 			var dy:Number = Math.abs(y1 - y2);

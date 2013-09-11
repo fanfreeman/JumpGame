@@ -74,7 +74,7 @@ package com.jumpGame.gameElements.platforms
 		override public function touch():Boolean {
 			if (!this.isTouched) {
 				// play sound effect
-				Sounds.sndBling.play();
+				if (!Sounds.sfxMuted) Sounds.sndBling.play();
 				this.isTouched = true;
 				
 				return true;
