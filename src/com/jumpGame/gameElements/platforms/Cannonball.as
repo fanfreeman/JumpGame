@@ -1,11 +1,10 @@
 package com.jumpGame.gameElements.platforms
 {
 	import com.jumpGame.gameElements.Platform;
-//	import com.jumpGame.level.Statics;
-//	import com.jumpGame.gameElements.Camera;
-//	
-//	import starling.core.Starling;
+	
 	import starling.display.Image;
+	import starling.display.MovieClip;
+
 //	import starling.display.MovieClip;
 	
 	public class Cannonball extends Platform
@@ -22,8 +21,15 @@ package com.jumpGame.gameElements.platforms
 			platformImage.pivotY = Math.ceil(platformImage.texture.height / 2);
 			this.addChild(platformImage);
 			
+			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("Explosion"), 40);
+			platformAnimation.pivotX = Math.ceil(platformAnimation.texture.width  / 2); // center art on registration point
+			platformAnimation.pivotY = Math.ceil(platformAnimation.texture.height / 2);
+			platformAnimation.loop = false;
+			platformAnimation.stop();
+			this.addChild(platformAnimation);
+			
 			// warning animation
-//			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("Warning0000"), 40);
+//			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("Warning"), 40);
 //			platformAnimation.pivotX = Math.ceil(platformAnimation.width / 2); // set reg point to top center
 //			platformAnimation.y = Math.ceil(platformImage.texture.height / 2);
 		}
@@ -41,6 +47,7 @@ package com.jumpGame.gameElements.platforms
 			this.canBounce = false;
 			if (platformImage == null) createPlatformArt();
 			this.platformImage.visible = true;
+			this.platformAnimation.visible = false;
 			this.show();
 		}
 		
@@ -49,6 +56,12 @@ package com.jumpGame.gameElements.platforms
 				
 				// play sound effect
 				if (!Sounds.sfxMuted) Sounds.sndCannonballHit.play();
+				
+				// explosion animation
+				this.platformImage.visible = false;
+				this.platformAnimation.visible = true;
+				this.platformAnimation.stop();
+				this.platformAnimation.play();
 				
 				this.isTouched = true;
 				

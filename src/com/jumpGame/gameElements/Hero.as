@@ -30,6 +30,8 @@ package com.jumpGame.gameElements
 		
 		public var isTransfigured:Boolean = false;
 		
+		public var controlRestoreTime:int = 0;
+		
 		public function Hero()
 		{
 			super();
@@ -308,6 +310,11 @@ package com.jumpGame.gameElements
 				if (isFromLeft) this.dx += 0.5;
 				else this.dx -= 0.5;
 			}
+		}
+		
+		public function repulseSpikyBomb():void {
+			this.dy -= 2.0;
+			this.controlRestoreTime = Statics.gameTime + 500;
 		}
 	}
 }

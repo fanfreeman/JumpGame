@@ -94,14 +94,18 @@ package com.jumpGame.gameElements.powerups
 			// brief push upward
 			if (this.hero.dy < 1.5) {
 				this.hero.dy = 1.5;
-				Statics.particleJet.start(0.1);
 			}
+			Statics.particleJet.start(0.1);
+			
+			// move camera target up
+			Statics.cameraTargetModifierY = 100;
 			
 			this.isActivated = true;
 			this.completionWarned = false;
 			this.completionTime = Statics.gameTime + 20000;
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 			
+			// schedule first obstacle
 			this.nextLaunchTime = Statics.gameTime + 1000;
 		}
 		
@@ -123,6 +127,7 @@ package com.jumpGame.gameElements.powerups
 				this.deactivate();
 			}
 			
+			// launch obstacle
 			if (Statics.gameTime > this.nextLaunchTime) {
 				this.nextLaunchTime = int(Statics.gameTime + launchInterval); // schedule next launch time
 				if (launchInterval > 20) launchInterval -= 1;
@@ -142,15 +147,18 @@ package com.jumpGame.gameElements.powerups
 			this.propellerRightImage.visible = false;
 			this.propellerBothImage.visible = false;
 			
+			// reset camera target
+			Statics.cameraTargetModifierY = 0;
+			
 			// misc reset
 			HUD.clearPowerupReel();
 			Statics.powerupsEnabled = true;
 			
 			// brief push upward
-			if (this.hero.dy < 1.5) {
-				this.hero.dy = 1.5;
-				Statics.particleJet.start(0.1);
+			if (this.hero.dy < 2) {
+				this.hero.dy = 2;
 			}
+			Statics.particleJet.start(0.1);
 			
 			// set invincibility time
 			Statics.invincibilityExpirationTime = Statics.gameTime + 1000;

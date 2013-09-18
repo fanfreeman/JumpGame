@@ -203,13 +203,6 @@ package com.jumpGame.ui
 			iconImage.y = -Constants.PowerupIconHeight * 7;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
-			// reel image 9
-			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon50000"));
-			iconImage.pivotX = Math.ceil(iconImage.width / 2);
-			iconImage.pivotY = Math.ceil(iconImage.height);
-			iconImage.y = -Constants.PowerupIconHeight * 8;
-			powerupIcons.addChild(iconImage);
-			this.powerupIconsImages.push(iconImage);
 			// container sprite
 			powerupIcons.x = 200;
 			powerupIcons.y = 75;

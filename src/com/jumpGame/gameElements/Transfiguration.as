@@ -92,9 +92,9 @@ package com.jumpGame.gameElements
 				case Constants.PowerupVermilionBird:
 					this.activationCaption = this.activationCaptionVermilion;
 					break;
-				case Constants.PowerupQueenNagini:
-					this.activationCaption = this.activationCaptionQueen;
-					break;
+//				case Constants.PowerupQueenNagini:
+//					this.activationCaption = this.activationCaptionQueen;
+//					break;
 				case Constants.PowerupMasterDapan:
 					this.activationCaption = this.activationCaptionMaster;
 					break;

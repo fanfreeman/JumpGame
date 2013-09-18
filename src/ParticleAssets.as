@@ -58,6 +58,13 @@ package
 		[Embed(source="../media/particles/bounce/texture.png")]
 		public static var ParticleBounceTexture:Class;
 		
+		// explode
+		[Embed(source="../media/particles/explode/particle.pex", mimeType="application/octet-stream")]
+		public static var ParticleExplodeXML:Class;
+		
+		[Embed(source="../media/particles/explode/texture.png")]
+		public static var ParticleExplodeTexture:Class;
+		
 		// sea of fire
 //		[Embed(source="../media/particles/fire/particle.pex", mimeType="application/octet-stream")]
 //		public static var ParticleFireXML:Class;

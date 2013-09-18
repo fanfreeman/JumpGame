@@ -18,6 +18,7 @@ package com.jumpGame.level
 		public static var particleJet:PDParticleSystem;
 		public static var particleComet:PDParticleSystem;
 		public static var particleBounce:PDParticleSystem;
+		public static var particleExplode:PDParticleSystem;
 		
 		// normal/bonus/preparation mode
 		public static var gameMode:uint;
@@ -105,6 +106,9 @@ package com.jumpGame.level
 		
 		// temporary invincibility when losing transfiguration
 		public static var invincibilityExpirationTime:int;
+		
+		// camera target modifier
+		public static var cameraTargetModifierY:Number;
 		
 		public static function distance(x1:Number, y1:Number, x2:Number, y2:Number):Number {
 			var dx:Number = Math.abs(x1 - x2);

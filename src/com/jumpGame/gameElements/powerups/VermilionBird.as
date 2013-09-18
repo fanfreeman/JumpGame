@@ -14,6 +14,8 @@ package com.jumpGame.gameElements.powerups
 		private var transfiguration:Transfiguration;
 		private var flightAnimation:MovieClip;
 		private var glideAnimation:MovieClip;
+		private var nextLaunchTime:int;
+		private var launchInterval:Number;
 		
 		public var isActivated:Boolean = false;
 		private var nearCompletionTime:int;
@@ -54,6 +56,7 @@ package com.jumpGame.gameElements.powerups
 			
 			this.gx = this.hero.gx;
 			this.gy = this.hero.gy;
+			this.launchInterval = 1000;
 			
 			hero.visible = false;
 			starling.core.Starling.juggler.add(glideAnimation);
@@ -66,13 +69,19 @@ package com.jumpGame.gameElements.powerups
 			// brief push upward
 			if (this.hero.dy < 1.5) {
 				this.hero.dy = 1.5;
-				Statics.particleJet.start(0.1);
 			}
+			Statics.particleJet.start(0.1);
+			
+			// move camera target up
+			Statics.cameraTargetModifierY = 200;
 			
 			this.isActivated = true;
 			this.completionWarned = false;
 			this.completionTime = Statics.gameTime + 20000;
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
+			
+			// schedule first obstacle
+			this.nextLaunchTime = Statics.gameTime + 1000;
 		}
 		
 		public function update(timeDiff:Number):Boolean {
@@ -97,13 +106,14 @@ package com.jumpGame.gameElements.powerups
 			
 			// time up, deactivate
 			if (Statics.gameTime > this.completionTime) {
-				// brief push upward
-				if (this.hero.dy < 1.5) {
-					this.hero.dy = 1.5;
-					Statics.particleJet.start(0.1);
-				}
-				
 				this.deactivate();
+			}
+			
+			// launch obstacle
+			if (Statics.gameTime > this.nextLaunchTime) {
+				this.nextLaunchTime = int(Statics.gameTime + launchInterval); // schedule next launch time
+				if (launchInterval > 50) launchInterval -= 50;
+				return true;
 			}
 			
 			return false;
@@ -117,10 +127,23 @@ package com.jumpGame.gameElements.powerups
 			starling.core.Starling.juggler.remove(glideAnimation);
 			this.isActivated = false;
 			
+			// reset camera target
+			Statics.cameraTargetModifierY = 0;
+			
 			// misc reset
 			HUD.clearPowerupReel();
 			Statics.powerupsEnabled = true;
 			
+			// brief push upward
+			if (this.hero.dy < 2.5) {
+				this.hero.dy = 2.5;
+			}
+			Statics.particleJet.start(0.1);
+			
+			// set invincibility time
+			Statics.invincibilityExpirationTime = Statics.gameTime + 1000;
+			
+			// transfiguration deactivation effect
 			this.transfiguration.displayDeactivation(this.hero);
 		}
 		

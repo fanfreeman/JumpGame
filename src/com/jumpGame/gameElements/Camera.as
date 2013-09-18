@@ -12,13 +12,11 @@ package com.jumpGame.gameElements
 		public static var dx:Number = 0.0;
 		public static var dy:Number = 0.0;
 		
-		public static var targetModifierY:Number;
-		
 		// move camera by following hero
 		public static function update(heroGx:Number, heroGy:Number):void {
 			//var targetX:Number = (Camera.nextPlatformX + heroGx) / 2;
 			var targetX:Number = heroGx;
-			var targetY:Number = heroGy + targetModifierY;
+			var targetY:Number = heroGy + Statics.cameraTargetModifierY;
 			
 			// move camera by setting
 			// target distance to camera bounds box borders

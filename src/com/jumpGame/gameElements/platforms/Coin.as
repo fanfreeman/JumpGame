@@ -25,7 +25,6 @@ package com.jumpGame.gameElements.platforms
 			platformAnimation.pivotX = Math.ceil(platformAnimation.texture.width  / 2); // center art on registration point
 			platformAnimation.pivotY = Math.ceil(platformAnimation.texture.height / 2);
 			starling.core.Starling.juggler.add(platformAnimation);
-			platformAnimation.loop = true;
 			this.addChild(platformAnimation);
 		}
 		
