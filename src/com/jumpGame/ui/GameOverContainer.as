@@ -275,9 +275,15 @@ package com.jumpGame.ui
 			matchDataPopupInitialized = false;
 			roundScore = coinsObtained + distanceTraveled;
 			
+			// check if coin doubler in possession
+			var coinsObtainedFinal:int = coinsObtained;
+			if (Statics.rankCoinDoubler == 1) {
+				coinsObtainedFinal = coinsObtained * 2;
+			}
+			
 			// send new score to backend
 			var jsonStr:String = JSON.stringify({
-				coins: coinsObtained,
+				coins: coinsObtainedFinal,
 				distance: distanceTraveled,
 				score: roundScore,
 				game_id: Statics.gameId,
@@ -289,7 +295,11 @@ package com.jumpGame.ui
 			
 			// update score display
 			distanceText.text = "Distance: " + distanceTraveled.toString();
-			coinText.text = "Coins: " + coinsObtained.toString();
+			if (Statics.rankCoinDoubler == 1) {
+				coinText.text = "Coins: " + coinsObtained.toString() + " x 2 = " + coinsObtainedFinal.toString();
+			} else {
+				coinText.text = "Coins: " + coinsObtained.toString();
+			}
 			scoreText.text = "Total Score: " + roundScore.toString();
 			this.visible = true;
 			

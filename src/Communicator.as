@@ -33,6 +33,27 @@ package
 		}
 		
 		/**
+		 * retrieve global rankings from the backend
+		 */
+		public function retrieveRankingsGlobal():void {
+			this.sendGetRequest(Constants.UriGetRankingsGlobal);
+		}
+		
+		/**
+		 * retrieve friends rankings from the backend
+		 */
+		public function retrieveRankingsFriends():void {
+			this.sendGetRequest(Constants.UriGetRankingsFriends);
+		}
+		
+		/**
+		 * send round begin notification to backend; subtracts a life
+		 */
+		public function sendRoundBegin():void {
+			this.sendGetRequest(Constants.UriGetRoundBegin);
+		}
+		
+		/**
 		 * post a piece of user data to the backend
 		 * 
 		 * @param data a json string to send

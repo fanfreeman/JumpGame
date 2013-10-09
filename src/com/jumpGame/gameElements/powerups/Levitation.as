@@ -49,7 +49,7 @@ package com.jumpGame.gameElements.powerups
 			this.isActivated = true;
 			this.jetFired = false;
 			this.completionWarned = false;
-			this.completionTime = Statics.gameTime + 10000;
+			this.completionTime = Statics.gameTime + 5000 + Statics.rankSafety * 1000; // duration
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 		}
 		

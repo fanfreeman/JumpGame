@@ -99,8 +99,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function refresh():void {
-			// fix close button
-			closeButton.isSelected = true;
+			closeButton.isSelected = true; // fix close button
 		}
 		
 		private function buttonCloseHandler(event:Event):void {

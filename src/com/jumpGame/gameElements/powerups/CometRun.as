@@ -19,9 +19,11 @@ package com.jumpGame.gameElements.powerups
 			Statics.particleComet.start();
 			Statics.particleWind.start();
 			
+			this.hero.showSuper(); // show hero super animation
+			
 //			Statics.powerupsEnabled = false;
 			this.isActivated = true;
-			this.completionTime = Statics.gameTime + 5000; // lasts 5 seconds
+			this.completionTime = Statics.gameTime + 2000 + Statics.rankComet * 500; // duration
 		}
 		
 		public function update(timeDiff:Number):void {
@@ -36,6 +38,7 @@ package com.jumpGame.gameElements.powerups
 			// time up, deactivate
 			if (Statics.gameTime > this.completionTime) {
 				this.hero.dy = 3.0;
+				this.hero.hideSuper(); // hide hero super animation
 				Statics.particleWind.stop();
 				Statics.particleComet.stop();
 				Statics.particleComet.start(1);

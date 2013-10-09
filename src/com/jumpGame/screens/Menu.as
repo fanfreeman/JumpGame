@@ -7,9 +7,14 @@ package com.jumpGame.screens
 	import com.jumpGame.ui.popups.ScreenAchievements;
 	import com.jumpGame.ui.popups.ScreenGetCoins;
 	import com.jumpGame.ui.popups.ScreenGetGems;
+	import com.jumpGame.ui.popups.ScreenProfile;
+	import com.jumpGame.ui.popups.ScreenRankings;
 	import com.jumpGame.ui.screens.ScreenMatches;
 	import com.jumpGame.ui.screens.ScreenTownSquare;
 	import com.jumpGame.ui.screens.ScreenUpgrades;
+	
+	import flash.external.ExternalInterface;
+	import flash.utils.getTimer;
 	
 	import feathers.controls.Label;
 	import feathers.controls.ScreenNavigator;
@@ -37,6 +42,7 @@ package com.jumpGame.screens
 		private var coinLabel:Label;
 		private var gemLabel:Label;
 		private var rankLabel:Label;
+		private var countdownLabel:Label;
 		private var fontBadabb:Font;
 		public var communicator:Communicator = null;
 		
@@ -50,7 +56,10 @@ package com.jumpGame.screens
 		private var screenMatches:ScreenMatches;
 		private var screenUpgrades:ScreenUpgrades;
 		private var screenTownSquare:ScreenTownSquare;
+		
 		private var screenAchievements:ScreenAchievements;
+		private var screenRankings:ScreenRankings;
+		private var screenProfile:ScreenProfile;
 		private var screenGetCoins:ScreenGetCoins;
 		private var screenGetGems:ScreenGetGems;
 		
@@ -60,6 +69,18 @@ package com.jumpGame.screens
 		// objective achievement effect
 		private var badgeAnimation:MovieClip;
 		private var badgeText:TextField;
+		
+		// countdown
+		private var timeTillLifeCountdown:int = -1;
+		private var timeUpdated:int;
+		private var lives:int;
+		
+		// life giving
+		private var lifeRequests:String; // incoming requests for life
+		private var lifeReceipts:String; // received life from these
+//		private var numLifeReceived:uint; // number of lives received
+		
+		private var countdownActive:Boolean;
 		
 		public function Menu()
 		{
@@ -87,7 +108,10 @@ package com.jumpGame.screens
 					if (dataObj.status == "found") { // found existing player
 						// get basic player info
 						Statics.userId = String(dataObj.user_id);
+						Statics.firstName = dataObj.first_name;
+						Statics.lastName = dataObj.last_name;
 						Statics.playerName = dataObj.first_name + " " + dataObj.last_name.substr(0, 1) + ".";
+						Statics.playerHighScore = dataObj.high_score;
 						
 						// get player details
 						// score
@@ -100,6 +124,11 @@ package com.jumpGame.screens
 						Statics.playerGems = int(dataObj.gems);
 						coinLabel.text = "Coins: " + dataObj.coins;
 						gemLabel.text = "Gems: " + dataObj.gems;
+						this.lives = int(dataObj.lives);
+						rankLabel.text = "Lives: " + dataObj.lives;
+						this.timeTillLifeCountdown = int(dataObj.time_till_next_life);
+						this.timeUpdated = getTimer();
+						
 						// upgrade ranks
 						Statics.rankTeleportation = int(dataObj.rank_teleportation);
 						Statics.rankAttraction = int(dataObj.rank_attraction);
@@ -110,12 +139,14 @@ package com.jumpGame.screens
 						Statics.rankComet = int(dataObj.rank_comet);
 						Statics.rankAbilityCooldown = int(dataObj.rank_ability_cooldown);
 						Statics.rankAbilityPower = int(dataObj.rank_ability_power);
+						Statics.rankExtraAbility = int(dataObj.rank_extra_ability);
+						Statics.rankCoinDoubler = int(dataObj.rank_coin_doubler);
 						
 						// upgrade prices
 						Statics.upgradePrices = dataObj.prices;
 						
 						var i:uint;
-						// earned achievements
+						// get earned achievements
 						var numAchievements:int = dataObj.achievements.length;
 						for (i = 0; i < numAchievements; i++) { // loop through matches retrieved
 							Statics.achievementsList[int(dataObj.achievements[i].achievement_id)] = true;
@@ -149,39 +180,39 @@ package com.jumpGame.screens
 							
 							// check if game has been resigned
 							if (String(dataObj.matches[i].resigned_by) == Statics.userId) { // current player resigned this game
-								matchesFinishedCollection.addItem({ text: "You resigned match against " + opponentName + "\n" + dataObj.matches[i].time_text});
+								matchesFinishedCollection.addItem({ title: "You resigned match against " + opponentName, caption: dataObj.matches[i].time_text});
 								this.screenMatches.gamesFinished.push(dataObj.matches[i]);
 							}
 							else if (String(dataObj.matches[i].resigned_by) != "0") { // the opponent resigned this game
-								matchesFinishedCollection.addItem({ text: opponentName + " resigned match against you" + "\n" + dataObj.matches[i].time_text});
+								matchesFinishedCollection.addItem({ title: opponentName + " resigned match against you", caption: dataObj.matches[i].time_text});
 								this.screenMatches.gamesFinished.push(dataObj.matches[i]);
 							}
 							else { // no one resigned this game
 								if (roundNumber >= 6) { // matched has ended
-									matchesFinishedCollection.addItem({ text: "Match against " + opponentName + "\n" + dataObj.matches[i].time_text});
+									matchesFinishedCollection.addItem({ title: "Match against " + opponentName, caption: dataObj.matches[i].time_text});
 									this.screenMatches.gamesFinished.push(dataObj.matches[i]);
 								} else { // match not yet ended
 									if (Boolean(int(dataObj.matches[i].is_player_2))) { // is player 2
 										if (roundNumber == 1) { // my first turn, allow resigning from match
-											matchesYourTurnCollection.addItem({ text: opponentName + " has challenged you to a match!" + "\n" + dataObj.matches[i].time_text});
+											matchesYourTurnCollection.addItem({ title: opponentName + " has challenged you to a match!", caption: dataObj.matches[i].time_text});
 											this.screenMatches.gamesMyTurn.push(dataObj.matches[i]);
 										} else { // turn 3 or turn 5
 											if (roundNumber % 2 == 1) {
-												matchesYourTurnCollection.addItem({ text: "Your turn against " + opponentName + "\n" + dataObj.matches[i].time_text});
+												matchesYourTurnCollection.addItem({ title: "Your turn against " + opponentName, caption: dataObj.matches[i].time_text});
 												this.screenMatches.gamesMyTurn.push(dataObj.matches[i]);
 											}
 											else {
-												matchesTheirTurnCollection.addItem({ text: opponentName + "'s turn" + "\n" + dataObj.matches[i].time_text});
+												matchesTheirTurnCollection.addItem({ title: opponentName + "'s turn", caption: dataObj.matches[i].time_text});
 												this.screenMatches.gamesTheirTurn.push(dataObj.matches[i]);
 											}
 										}
 									} else { // is player 1
 										if (roundNumber % 2 == 0) {
-											matchesYourTurnCollection.addItem({ text: "Your turn against " + opponentName + "\n" + dataObj.matches[i].time_text });
+											matchesYourTurnCollection.addItem({ title: "Your turn against " + opponentName, caption: dataObj.matches[i].time_text });
 											this.screenMatches.gamesMyTurn.push(dataObj.matches[i]);
 										}
 										else {
-											matchesTheirTurnCollection.addItem({ text: opponentName + "'s turn" + "\n" + dataObj.matches[i].time_text });
+											matchesTheirTurnCollection.addItem({ title: opponentName + "'s turn", caption: dataObj.matches[i].time_text });
 											this.screenMatches.gamesTheirTurn.push(dataObj.matches[i]);
 										}
 									}
@@ -193,7 +224,36 @@ package com.jumpGame.screens
 						this.screenMatches.listFinished.dataProvider = matchesFinishedCollection;
 						this.screenMatches.updateLists();
 						
+						// show start game button
 						this.screenMatches.startGamePicker.visible = true;
+						
+						// process life requests
+						var numLifeRequests:uint = dataObj.life_requests.length;
+						var nameString:String = "";
+						this.lifeRequests = "";
+						if (numLifeRequests > 0) {
+							for (i = 0; i < numLifeRequests; i++) { // loop through life requests
+								nameString = nameString + dataObj.life_requests[i].name + " ";
+								if (this.lifeRequests == "") this.lifeRequests += dataObj.life_requests[i].id;
+								else this.lifeRequests = this.lifeRequests + "," + dataObj.life_requests[i].id;
+//								trace("request id: " + dataObj.life_requests[i].id + " name: " + dataObj.life_requests[i].name);
+							}
+							if (numLifeRequests > 1) this.showDialogBox(nameString + "have asked you for a life, help them out?", true, sendLife); // plural
+							else this.showDialogBox(nameString + "has asked you for a life, help them out?", true, sendLife); // singular
+						}
+						
+						// process life receipts
+						var numLifeReceipts:uint = dataObj.life_receipts.length;
+//						this.numLifeReceived = numLifeReceipts;
+						this.lifeReceipts = "";
+						if (numLifeReceipts > 0) {
+							for (i = 0; i < numLifeReceipts; i++) { // loop through life receipts
+								nameString = nameString + dataObj.life_receipts[i].name + " ";
+								if (this.lifeReceipts == "") this.lifeReceipts += dataObj.life_receipts[i].id;
+								else this.lifeReceipts = this.lifeReceipts + "," + dataObj.life_receipts[i].id;
+							}
+							this.showDialogBox(nameString + "sent you a life. Accept and return the favor?", true, returnLife);
+						}
 					}
 					else if (dataObj.status == "new_match") { // new game created
 						// display match data popup
@@ -206,9 +266,23 @@ package com.jumpGame.screens
 						this.screenMatches.matchDataPopup.initialize(false);
 						this.screenMatches.matchDataPopup.visible = true;
 					}
+					else if (dataObj.status == "rankings") {
+						var rankingsGlobalCollection:ListCollection = new ListCollection();
+						this.screenRankings.rankingsGlobal = new Array();
+						var numRankings:int = dataObj.rankings.length;
+						for (i = 0; i < numRankings; i++) { // loop through rankings retrieved
+							rankingsGlobalCollection.addItem({ title: dataObj.rankings[i].firstname + " " + dataObj.rankings[i].lastname, caption: dataObj.rankings[i].high_score});
+							this.screenRankings.rankingsGlobal.push(dataObj.rankings[i]);
+						}
+						this.screenRankings.listGlobal.dataProvider = rankingsGlobalCollection;
+						
+						this.screenRankings.refresh();
+					}
 					else if (dataObj.status == "purchased_upgrade") { // successfully purchased upgrade
 						Statics.playerCoins = int(dataObj.coins);
 						coinLabel.text = "Coins: " + dataObj.coins;
+						Statics.playerGems = int(dataObj.gems);
+						gemLabel.text = "Gems: " + dataObj.gems;
 						Statics.rankTeleportation = int(dataObj.rank_teleportation);
 						Statics.rankAttraction = int(dataObj.rank_attraction);
 						Statics.rankDuplication = int(dataObj.rank_duplication);
@@ -218,6 +292,8 @@ package com.jumpGame.screens
 						Statics.rankComet = int(dataObj.rank_comet);
 						Statics.rankAbilityCooldown = int(dataObj.rank_ability_cooldown);
 						Statics.rankAbilityPower = int(dataObj.rank_ability_power);
+						Statics.rankExtraAbility = int(dataObj.rank_extra_ability);
+						Statics.rankCoinDoubler = int(dataObj.rank_coin_doubler);
 						Statics.upgradePrices = dataObj.prices;
 						this.screenUpgrades.refresh();
 						this.showAchievement("Self Improvement");
@@ -293,12 +369,20 @@ package com.jumpGame.screens
 			
 			// rank label
 			rankLabel = new Label();
-			rankLabel.text = "Rank: ";
-			rankLabel.width = 160;
+			rankLabel.text = "Lives: ";
+			rankLabel.width = 80;
 			rankLabel.height = 30;
 			rankLabel.x = gemLabel.bounds.right + 20;
 			rankLabel.y = 7;
 			this.addChild(rankLabel);
+			
+			// time till next life label
+			countdownLabel = new Label();
+			countdownLabel.width = 160;
+			countdownLabel.height = 30;
+			countdownLabel.x = rankLabel.bounds.right + 20;
+			countdownLabel.y = 7;
+			this.addChild(countdownLabel);
 			
 			// loading screen
 			createLoadingNotice();
@@ -337,6 +421,16 @@ package com.jumpGame.screens
 			screenAchievements = new ScreenAchievements(this);
 			screenAchievements.visible = false;
 			this.addChild(screenAchievements);
+			
+			// rankings screen
+			screenRankings = new ScreenRankings(this);
+			screenRankings.visible = false;
+			this.addChild(screenRankings);
+			
+			// profile screen
+			screenProfile = new ScreenProfile(this);
+			screenProfile.visible = false;
+			this.addChild(screenProfile);
 			
 			// get coins screen
 			screenGetCoins = new ScreenGetCoins(this);
@@ -399,6 +493,8 @@ package com.jumpGame.screens
 			
 			// hide custom screens
 			screenAchievements.visible = false;
+			screenRankings.visible = false;
+			screenProfile.visible = false;
 			screenGetCoins.visible = false;
 			screenGetGems.visible = false;
 		}
@@ -475,12 +571,27 @@ package com.jumpGame.screens
 			for (var i:uint = 0; i < 36; i++) {
 				Statics.achievementsList[i] = false;
 			}
+			
+			this.countdownActive = true;
+			this.updateCountdown();
 		}
 		
 		private function refreshMatches():void {
 			displayLoadingNotice("Refreshing matches...");
 			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
 			this.communicator.retrieveUserData();
+		}
+		
+		public function refreshRankingsGlobal():void {
+			displayLoadingNotice("Refreshing rankings...");
+			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
+			this.communicator.retrieveRankingsGlobal();
+		}
+		
+		public function refreshRankingsFriends():void {
+			displayLoadingNotice("Refreshing rankings...");
+			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
+			this.communicator.retrieveRankingsFriends();
 		}
 		
 		public function disposeTemporarily():void
@@ -529,6 +640,28 @@ package com.jumpGame.screens
 			setChildIndex(screenAchievements, numChildren - 1);
 		}
 		
+		public function showRankingsScreen(event:Event):void {
+			this.refreshRankingsGlobal();
+			screenRankings.visible = true;
+			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
+		}
+		
+		public function showProfileScreen(event:Event):void {
+			screenProfile.visible = true;
+			setChildIndex(screenProfile, numChildren - 1);
+			var playerData:Object = new Object();
+			playerData.firstname = Statics.firstName;
+			playerData.lastname = Statics.lastName;
+			playerData.high_score = Statics.playerHighScore;
+			screenProfile.refresh(playerData);
+		}
+		
+		public function showProfileScreenGivenData(playerData:Object):void {
+			screenProfile.visible = true;
+			setChildIndex(screenProfile, numChildren - 1);
+			screenProfile.refresh(playerData);
+		}
+		
 		public function showGetCoinsScreen(event:Event):void {
 			screenGetCoins.refresh();
 			screenGetCoins.visible = true;
@@ -541,7 +674,7 @@ package com.jumpGame.screens
 			setChildIndex(screenGetGems, numChildren - 1);
 		}
 		
-		public function showDialogBox(prompt:String, isTwoButton:Boolean, callbackFunction):void {
+		public function showDialogBox(prompt:String, isTwoButton:Boolean, callbackFunction = null):void {
 			trace("showing dialog box...");
 			dialogBox.show(prompt, isTwoButton, callbackFunction);
 			setChildIndex(dialogBox, numChildren - 1);
@@ -558,6 +691,89 @@ package com.jumpGame.screens
 		
 		public function hideDialogBox():void {
 			dialogBox.visible = false;
+		}
+		
+		public function roundBegin():Boolean {
+			if (this.lives < 1) {
+				this.showDialogBox("You do not have enough lives, would you like to ask friends for more?", true, showAskFriendsForLives);
+				return false;
+			}
+			
+			// disable life countdown
+			this.deactivateCountdown();
+			
+			// heart fly out animation
+			this.lives--;
+//			rankLabel.text = "Lives: " + String(this.lives);
+			
+			this.communicator.sendRoundBegin();
+			return true;
+		}
+		
+		// show the apprequests dialog to pick friends to ask for lives
+		private function showAskFriendsForLives():void {
+			if(ExternalInterface.available){
+				trace("Calling JS...");
+				ExternalInterface.call("selectFriendsForLife");
+//				ExternalInterface.addCallback("returnFriendsForLifeToAs", friendsForLifeReturnedFromAs);
+			} else {
+				trace("External interface unavailabe");
+			}
+			
+			this.hideDialogBox();
+		}
+		
+		// call js to send life
+		private function sendLife():void {
+			if(ExternalInterface.available){
+				trace("Calling JS...");
+				ExternalInterface.call("sendLife", this.lifeRequests);
+			} else {
+				trace("External interface unavailabe");
+			}
+			
+			this.hideDialogBox();
+		}
+		
+		// call js to return the favor of sending a life
+		private function returnLife():void {
+			// add lives received to current lives (this is already done in backend)
+//			this.lives += this.numLifeReceived;
+//			if (this.lives > 5) this.lives = 5;
+//			rankLabel.text = "Lives: " + String(this.lives);
+			
+			if(ExternalInterface.available){
+				trace("Calling JS... " + this.lifeReceipts);
+				ExternalInterface.call("sendLife", this.lifeReceipts);
+			} else {
+				trace("External interface unavailabe");
+			}
+			
+			this.hideDialogBox();
+		}
+		
+		public function updateCountdown():void {
+			if (this.timeTillLifeCountdown != -1 && this.lives < 5) {
+				var timeCurrent:int = getTimer() - this.timeUpdated;
+				var elapsedSeconds:int = int(timeCurrent / 1000);
+				var remainingSeconds:int = this.timeTillLifeCountdown - elapsedSeconds;
+				if (remainingSeconds <= 0) {
+					this.timeTillLifeCountdown += Constants.SecondsPerLife;
+					this.lives++;
+					rankLabel.text = "Lives: " + String(this.lives);
+				}
+				
+				if (this.lives == 5 && remainingSeconds <= 0) countdownLabel.text = ""; // hide '0' on full life
+				else countdownLabel.text = String(remainingSeconds);
+			} else {
+				countdownLabel.text = "";
+			}
+			
+			if (this.countdownActive) Starling.juggler.delayCall(updateCountdown, 1);
+		}
+		
+		public function deactivateCountdown():void {
+			this.countdownActive = false;
 		}
 	}
 }

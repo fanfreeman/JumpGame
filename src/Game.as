@@ -155,6 +155,7 @@ package
 					if (screenInGame) {
 						this.removeChild(screenInGame);
 					}
+					if (!screenMenu.roundBegin()) return; // send round begin notification to backend
 					screenMenu.disposeTemporarily();
 					
 					// create and initialize in game screen

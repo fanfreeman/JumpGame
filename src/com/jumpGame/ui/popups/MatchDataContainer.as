@@ -272,7 +272,6 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonPlayHandler(event:Event):void {
-			trace("button clicked");
 			if (btnPlay.label == "Done") {
 				ExternalInterface.call("sendTurnRequest", Statics.opponentFbid, Statics.gameId);
 				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "menu"}, true));

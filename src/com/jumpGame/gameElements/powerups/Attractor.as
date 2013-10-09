@@ -59,7 +59,7 @@ package com.jumpGame.gameElements.powerups
 			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
 			this.isActivated = true;
 			this.completionWarned = false;
-			this.completionTime = Statics.gameTime + 10000;
+			this.completionTime = Statics.gameTime + 5000 + Statics.rankAttraction * 1000;
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 		}
 		

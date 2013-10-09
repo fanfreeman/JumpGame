@@ -270,7 +270,7 @@ package com.jumpGame.ui
 			tweenPulsingText = new Tween(pulsingText, 0.2, Transitions.LINEAR);
 			
 			// speical ability indicators
-			Statics.numSpecials = 8;
+			Statics.numSpecials = 2 + Statics.rankExtraAbility * 1;
 			specialIndicatorsList = new Vector.<SpecialIndicator>();
 			for (var i:uint = 0; i < Statics.numSpecials; i++) {
 				var indicator:SpecialIndicator = new SpecialIndicator();

@@ -74,6 +74,9 @@ package com.jumpGame.level
 		
 		// communication
 		public static var playerName:String;
+		public static var firstName:String;
+		public static var lastName:String;
+		public static var playerHighScore:String;
 		public static var opponentName:String;
 		public static var currentRound:uint;
 		public static var roundScores:Array;
@@ -93,6 +96,8 @@ package com.jumpGame.level
 		public static var rankComet:uint;
 		public static var rankAbilityCooldown:uint;
 		public static var rankAbilityPower:uint;
+		public static var rankExtraAbility:uint;
+		public static var rankCoinDoubler:uint;
 		
 		// player wealth
 		public static var playerCoins:int;

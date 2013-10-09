@@ -625,7 +625,7 @@ package com.jumpGame.screens
 			Statics.calculateEmaVelocity = true;
 			
 			//test
-//			this.powerupsList[Constants.PowerupMasterDapan].activate();
+			this.powerupsList[Constants.PowerupMasterDapan].activate();
 		}
 		
 		/**
@@ -785,8 +785,8 @@ package com.jumpGame.screens
 					this.powerupsList[Constants.PowerupMasterDapan].activate();
 				}
 //				if (powerupToActivate >= 0) { // for testing
-//					HUD.showMessage("Ancient Power: Duplication");
-//					this.powerupsList[Constants.PowerupMasterDapan].activate();
+//					HUD.showMessage("Ancient Power: Teleportation");
+//					this.powerupsList[Constants.PowerupCometRun].activate();
 //				}
 				
 				// update powerups
@@ -1017,7 +1017,7 @@ package com.jumpGame.screens
 								this.hero.turnLeft();
 								//if (this.hero.dx > 0) {this.hero.dx = 0;}
 								if (this.hero.dx > -0.2) this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled * 2;
-								else this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled;
+								else this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled * 1;
 								if (this.hero.dx < -Constants.HeroMaxSpeedX) {
 									this.hero.dx = -Constants.HeroMaxSpeedX;
 								}
@@ -1026,7 +1026,7 @@ package com.jumpGame.screens
 								this.hero.turnRight();
 								//if (this.hero.dx < 0) {this.hero.dx = 0;}
 								if (this.hero.dx < 0.2) this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled * 2;
-								else this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled;
+								else this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled * 1;
 								if (this.hero.dx > Constants.HeroMaxSpeedX) {
 									this.hero.dx = Constants.HeroMaxSpeedX;
 								}
@@ -1489,7 +1489,7 @@ package com.jumpGame.screens
 								if (!this.hero.isTransfigured) {
 									if (this.platformsList[i] is StarRed) Statics.particleJet.start(0.5);
 									this.hero.bounce(this.platformsList[i].getBouncePower());
-									Statics.particleLeaf.start(0.2); // play particle effect
+//									Statics.particleLeaf.start(0.2); // play particle effect
 									Statics.particleBounce.emitterX = this.platformsList[i].x;
 									Statics.particleBounce.emitterY = this.platformsList[i].y;
 									Statics.particleBounce.start(0.01);
@@ -1502,7 +1502,7 @@ package com.jumpGame.screens
 //								this.hero.bounce(this.hero.dy + this.platformsList[i].getBouncePower());
 								this.hero.bounce(this.platformsList[i].getBouncePower());
 								this.platformsList[i].contact();
-								Statics.particleLeaf.start(0.2); // play particle effect
+//								Statics.particleLeaf.start(0.2); // play particle effect
 								Statics.particleJet.start(0.5);
 								this.jumps++; // record number of jumps
 								this.returnPlatformToPool(i);
@@ -1513,13 +1513,13 @@ package com.jumpGame.screens
 								this.platformsList[i].contact();
 							}
 							else if (isCannonball) {
-								Statics.particleLeaf.start(0.2); // play particle effect
+//								Statics.particleLeaf.start(0.2); // play particle effect
 								if (Statics.gameTime > Statics.invincibilityExpirationTime) this.hero.repulseCannonball(this.platformsList[i].isVertical, this.platformsList[i].dx > 0);
 //								this.returnPlatformToPool(i);
 //								continue;
 							}
 							else if (isSpikyBomb) {
-								Statics.particleLeaf.start(0.2); // play particle effect
+//								Statics.particleLeaf.start(0.2); // play particle effect
 								if (Statics.gameTime > Statics.invincibilityExpirationTime) this.hero.repulseSpikyBomb();
 								Statics.particleExplode.emitterX = hero.x;
 								Statics.particleExplode.emitterY = hero.y;
@@ -1685,7 +1685,7 @@ package com.jumpGame.screens
 								else { // bottom bounce
 									this.hero.bounceAndFade(Constants.DirectionDown, Constants.NormalBouncePower);
 								}
-								Statics.particleLeaf.start(0.2); // play particle effect
+//								Statics.particleLeaf.start(0.2); // play particle effect
 								numCoinsToDrop = int(Math.ceil(Math.random() * 20));
 								for (ci = 0; ci < numCoinsToDrop; ci++) {
 									newCoinIndex = addElementFromPool(this.hero.gy, this.hero.gx, "Coin");
@@ -1721,7 +1721,7 @@ package com.jumpGame.screens
 								else { // bottom bounce
 									this.hero.bounceAndFade(Constants.DirectionDown, Constants.NormalBouncePower);
 								}
-								Statics.particleLeaf.start(0.2); // play particle effect
+//								Statics.particleLeaf.start(0.2); // play particle effect
 								numCoinsToDrop = int(Math.ceil(Math.random() * 20));
 								for (ci = 0; ci < numCoinsToDrop; ci++) {
 									newCoinIndex = addElementFromPool(this.hero.gy, this.hero.gx, "Coin");
@@ -1820,12 +1820,12 @@ package com.jumpGame.screens
 							if (this.hero.gy > this.contraptionsList[i].gy && this.hero.dy < 0) { // top bounce
 								this.contraptionsList[i].contact();
 								this.hero.bounce(Constants.BoostBouncePower);
-								Statics.particleLeaf.start(0.2); // play particle effect
+//								Statics.particleLeaf.start(0.2); // play particle effect
 								Statics.particleBounce.emitterX = this.contraptionsList[i].x;
 								Statics.particleBounce.emitterY = this.contraptionsList[i].y;
 								Statics.particleBounce.start(0.01);
 							}
-							Statics.particleLeaf.start(0.2); // play particle effect
+//							Statics.particleLeaf.start(0.2); // play particle effect
 						}
 					}
 				} /** eof cannon behaviors */
@@ -1851,12 +1851,12 @@ package com.jumpGame.screens
 							if (this.hero.gy > this.contraptionsList[i].gy && this.hero.dy < 0) { // top bounce
 								this.contraptionsList[i].contact();
 								this.hero.bounce(Constants.BoostBouncePower);
-								Statics.particleLeaf.start(0.2); // play particle effect
+//								Statics.particleLeaf.start(0.2); // play particle effect
 								Statics.particleBounce.emitterX = this.contraptionsList[i].x;
 								Statics.particleBounce.emitterY = this.contraptionsList[i].y;
 								Statics.particleBounce.start(0.01);
 							}
-							Statics.particleLeaf.start(0.2); // play particle effect
+//							Statics.particleLeaf.start(0.2); // play particle effect
 						}
 					}
 				} /** eof cannon from left behaviors */

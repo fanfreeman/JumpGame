@@ -280,19 +280,24 @@ package
 		
 		public static function loadBgm():void {
 			//bgmSound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/bgFunky.mp3"));
+//			bgmSoundInitial = new Sound();
+//			bgmSoundInitial.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/ghostCircus.mp3"));
+//			
+//			bgmSoundFadeout = new Sound();
+//			bgmSoundFadeout.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/ghostCircusFadeout.mp3"));
+//			
+//			bgmSoundUnderscoreLoop = new Sound();
+//			bgmSoundUnderscoreLoop.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/ghostCircusUnderscoreLoop.mp3"));
+			
 			bgmSoundInitial = new Sound();
-			bgmSoundInitial.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/ghostCircus.mp3"));
-			
-			bgmSoundFadeout = new Sound();
-			bgmSoundFadeout.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/ghostCircusFadeout.mp3"));
-			
-			bgmSoundUnderscoreLoop = new Sound();
-			bgmSoundUnderscoreLoop.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/ghostCircusUnderscoreLoop.mp3"));
+			bgmSoundInitial.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/chaoz_airflow.mp3"));
 		}
 		
 		public static function playBgm():void {
-			channelBgm = bgmSoundInitial.play(); 
-			channelBgm.addEventListener(Event.SOUND_COMPLETE, playBgmFadeout);
+//			channelBgm = bgmSoundInitial.play(); 
+//			channelBgm.addEventListener(Event.SOUND_COMPLETE, playBgmFadeout);
+			
+			channelBgm = bgmSoundInitial.play(0, 999); 
 		}
 		
 		public static function playBgmFadeout(event:Event):void {

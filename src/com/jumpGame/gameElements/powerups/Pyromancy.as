@@ -27,7 +27,7 @@ package com.jumpGame.gameElements.powerups
 			if (Statics.gameTime > this.nextLaunchTime) {
 				// laucnh
 				this.numLaunches++;
-				if (this.numLaunches >= 20) {
+				if (this.numLaunches >= 20 + Statics.rankBarrels * 2) {
 					// deactivate
 					this.isActivated = false;
 					

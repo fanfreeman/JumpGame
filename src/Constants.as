@@ -47,7 +47,7 @@ package
 		
 		public static const HeroMaxSpeedX:Number = 0.5;
 		public static const HeroExpansionMaxSpeedX:Number = 0.5;
-		public static const HeroSpeedX:Number = 0.002;
+		public static const HeroSpeedX:Number = 0.004;
 		
 		/** Level Elements ********************************************************/
 		// level element name definitions
@@ -175,6 +175,9 @@ package
 		public static const UriFindMatch:String = "user/findmatch";
 		public static const UriCreateMatchFacebook:String = "user/creatematchfb";
 		public static const UriResignMatch:String = "user/resignmatch";
+		public static const UriGetRoundBegin:String = "user/round/begin";
+		public static const UriGetRankingsGlobal:String = "rankings/global";
+		public static const UriGetRankingsFriends:String = "rankings/friends";
 		
 		// camera
 		public static const CameraEasingTimeY:Number = 10.0;
@@ -227,6 +230,21 @@ package
 		public static const ScreenMatches:String = "ScreenMatches";
 		public static const ScreenUpgrades:String = "ScreenUpgrades";
 		public static const ScreenTownSquare:String = "ScreenTownSquare";
+		
+		// upgrade id strings
+		public static const UpgradeTeleportationId:String = "UpgradeTeleportationId";
+		public static const UpgradeAttractionId:String = "UpgradeAttractionId";
+		public static const UpgradeDuplicationId:String = "UpgradeDuplicationId";
+		public static const UpgradeSafetyRocketId:String = "UpgradeSafetyRocketId";
+		public static const UpgradeBarrelsId:String = "UpgradeBarrelsId";
+		public static const UpgradeCometId:String = "UpgradeCometId";
+		public static const UpgradeAbilityCooldownId:String = "UpgradeAbilityCooldownId";
+		public static const UpgradeAbilityPowerId:String = "UpgradeAbilityPowerId";
+		public static const UpgradeExtraAbilityId:String = "UpgradeExtraAbilityId";
+		public static const UpgradeCoinDoublerId:String = "UpgradeCoinDoublerId";
+		
+		// seconds per life
+		public static const SecondsPerLife:uint = 1800;
 		
 		public static const AchievementsData:Array = new Array(
 			// id, title, description, reward coins, reward gems

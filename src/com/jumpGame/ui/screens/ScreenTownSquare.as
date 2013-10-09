@@ -16,6 +16,9 @@ package com.jumpGame.ui.screens
 	public class ScreenTownSquare extends Screen
 	{
 		private var btnAchievements:Button;
+		private var btnRankings:Button;
+		private var btnProfile:Button;
+		private var btnCharacters:Button;
 		private var btnGetCoins:Button;
 		private var btnGetGems:Button;
 		
@@ -46,8 +49,9 @@ package com.jumpGame.ui.screens
 			addChild(scrollQuad);
 			// eof scroll dialog artwork
 			
-			// icons
+			// buttons first row
 			var sideLength:Number = (scrollQuad.width - 240) / 3;
+			// achievements button
 			btnAchievements = new Button();
 			btnAchievements.width = sideLength;
 			btnAchievements.height = sideLength;
@@ -56,17 +60,25 @@ package com.jumpGame.ui.screens
 			addChild(btnAchievements);
 			btnAchievements.addEventListener(Event.TRIGGERED, Menu(this.owner).showAchievementsScreen);
 			
-			var iconQuad2:Quad = new Quad(sideLength, sideLength, 0xff0000);
-			iconQuad2.x = btnAchievements.bounds.right + 60;
-			iconQuad2.y = btnAchievements.y;
-			addChild(iconQuad2);
+			// rankings button
+			btnRankings = new Button();
+			btnRankings.width = sideLength;
+			btnRankings.height = sideLength;
+			btnRankings.x = btnAchievements.bounds.right + 60;
+			btnRankings.y = btnAchievements.y;
+			addChild(btnRankings);
+			btnRankings.addEventListener(Event.TRIGGERED, Menu(this.owner).showRankingsScreen);
 			
-			var iconQuad3:Quad = new Quad(sideLength, sideLength, 0xff0000);
-			iconQuad3.x = iconQuad2.bounds.right + 60;
-			iconQuad3.y = btnAchievements.y;
-			addChild(iconQuad3);
+			// profile button
+			btnProfile = new Button();
+			btnProfile.width = sideLength;
+			btnProfile.height = sideLength;
+			btnProfile.x = btnRankings.bounds.right + 60;
+			btnProfile.y = btnAchievements.y;
+			addChild(btnProfile);
+			btnProfile.addEventListener(Event.TRIGGERED, Menu(this.owner).showProfileScreen);
 			
-			// icon labels
+			// button labels
 			var fontVerdana23:Font = Fonts.getFont("Verdana23");
 			var iconLabel1:TextField = new TextField(sideLength, 25, "Achievements", fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
 			iconLabel1.hAlign = HAlign.CENTER;
@@ -75,43 +87,43 @@ package com.jumpGame.ui.screens
 			iconLabel1.y = btnAchievements.bounds.bottom + 5;
 			addChild(iconLabel1);
 			
-			var iconLabel2:TextField = new TextField(sideLength, 25, "Social", fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
+			var iconLabel2:TextField = new TextField(sideLength, 25, "Rankings", fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
 			iconLabel2.hAlign = HAlign.CENTER;
 			iconLabel2.vAlign = VAlign.TOP;
-			iconLabel2.x = iconQuad2.bounds.left;
+			iconLabel2.x = btnRankings.bounds.left;
 			iconLabel2.y = iconLabel1.y;
 			addChild(iconLabel2);
 			
 			var iconLabel3:TextField = new TextField(sideLength, 25, "My Profile", fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
 			iconLabel3.hAlign = HAlign.CENTER;
 			iconLabel3.vAlign = VAlign.TOP;
-			iconLabel3.x = iconQuad3.bounds.left;
+			iconLabel3.x = btnProfile.bounds.left;
 			iconLabel3.y = iconLabel1.y;
 			addChild(iconLabel3);
 			
-			// icons second row
-			var iconQuad4:Quad = new Quad(sideLength, sideLength, 0xff0000);
-			iconQuad4.x = btnAchievements.bounds.left;
-			iconQuad4.y = iconLabel1.bounds.bottom + 30;
-			addChild(iconQuad4);
+			// buttons second row
+			// characters button
+			btnCharacters = new Button();
+			btnCharacters.width = sideLength;
+			btnCharacters.height = sideLength;
+			btnCharacters.x = btnAchievements.bounds.left;
+			btnCharacters.y = iconLabel1.bounds.bottom + 30;
+			addChild(btnCharacters);
+//			btnCharacters.addEventListener(Event.TRIGGERED, Menu(this.owner).showCharactersScreen);
 			
 			var iconLabel4:TextField = new TextField(sideLength, 25, "Characters", fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
 			iconLabel4.hAlign = HAlign.CENTER;
 			iconLabel4.vAlign = VAlign.TOP;
-			iconLabel4.x = iconQuad4.bounds.left;
-			iconLabel4.y = iconQuad4.bounds.bottom + 5;
+			iconLabel4.x = btnCharacters.bounds.left;
+			iconLabel4.y = btnCharacters.bounds.bottom + 5;
 			addChild(iconLabel4);
 			
-//			var iconQuad5:Quad = new Quad(sideLength, sideLength, 0xff0000);
-//			iconQuad5.x = iconQuad2.bounds.left;
-//			iconQuad5.y = iconQuad4.y;
-//			addChild(iconQuad5);
-			
+			// get coins button
 			btnGetCoins = new Button();
 			btnGetCoins.width = sideLength;
 			btnGetCoins.height = sideLength;
-			btnGetCoins.x = iconQuad2.bounds.left;
-			btnGetCoins.y = iconQuad4.y;
+			btnGetCoins.x = btnRankings.bounds.left;
+			btnGetCoins.y = btnCharacters.y;
 			addChild(btnGetCoins);
 			btnGetCoins.addEventListener(Event.TRIGGERED, Menu(this.owner).showGetCoinsScreen);
 			
@@ -122,11 +134,12 @@ package com.jumpGame.ui.screens
 			iconLabel5.y = btnGetCoins.bounds.bottom + 5;
 			addChild(iconLabel5);
 			
+			// get gems button
 			btnGetGems = new Button();
 			btnGetGems.width = sideLength;
 			btnGetGems.height = sideLength;
-			btnGetGems.x = iconQuad3.bounds.left;
-			btnGetGems.y = iconQuad4.y;
+			btnGetGems.x = btnProfile.bounds.left;
+			btnGetGems.y = btnCharacters.y;
 			addChild(btnGetGems);
 			btnGetGems.addEventListener(Event.TRIGGERED, Menu(this.owner).showGetGemsScreen);
 			

@@ -130,8 +130,8 @@ package com.jumpGame.ui.screens
 			listYourTurn.verticalScrollPolicy = Scroller.SCROLL_POLICY_OFF;
 			matchesContainer.addChild(listYourTurn);
 			listYourTurn.itemRendererType = MatchItemRenderer;
-//			listYourTurn.itemRendererName = "MatchItemRenderer";
-			listYourTurn.itemRendererProperties.labelField = "text";
+			listYourTurn.itemRendererProperties.titleField = "title";
+			listYourTurn.itemRendererProperties.captionField = "caption";
 			listYourTurn.addEventListener(Event.CHANGE, listYourTurnChangeHandler);
 			
 			// their turn header
@@ -149,9 +149,10 @@ package com.jumpGame.ui.screens
 			listTheirTurn.y = headerTheirTurn.y + headerTheirTurn.height + 10;
 			listTheirTurn.verticalScrollPolicy = Scroller.SCROLL_POLICY_OFF;
 			matchesContainer.addChild(listTheirTurn);
-			listTheirTurn.itemRendererProperties.labelField = "text";
+			listTheirTurn.itemRendererType = MatchItemRenderer;
+			listTheirTurn.itemRendererProperties.titleField = "title";
+			listTheirTurn.itemRendererProperties.captionField = "caption";
 			listTheirTurn.addEventListener(Event.CHANGE, listTheirTurnChangeHandler);
-			// eof create scroll container
 			
 			// finished matches header
 			headerFinished = new Image(Assets.getSprite("AtlasTexture4").getTexture("HeaderTheirTurn0000"));
@@ -168,12 +169,15 @@ package com.jumpGame.ui.screens
 			listFinished.y = headerFinished.bounds.bottom + 10;
 			listFinished.verticalScrollPolicy = Scroller.SCROLL_POLICY_OFF;
 			matchesContainer.addChild(listFinished);
-			listFinished.itemRendererProperties.labelField = "text";
+			listFinished.itemRendererType = MatchItemRenderer;
+			listFinished.itemRendererProperties.titleField = "title";
+			listFinished.itemRendererProperties.captionField = "caption";
 			listFinished.addEventListener(Event.CHANGE, listFinishedChangeHandler);
 			// eof create scroll container
 			
 			listYourTurn.selectedIndex = -1;
 			listTheirTurn.selectedIndex = -1;
+			listFinished.selectedIndex = -1;
 		}
 		
 		private function buttonGameStartHandler(event:Event):void {
