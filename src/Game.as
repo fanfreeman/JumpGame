@@ -69,6 +69,11 @@ package
 			screenMenu = new Menu();
 			this.addChild(screenMenu);
 			
+			// game screen
+			screenInGame = new InGame();
+			screenInGame.visible = false;
+			this.addChild(screenInGame);
+			
 			// Welcome screen.
 //			screenWelcome = new Welcome();
 //			this.addChild(screenWelcome);
@@ -142,26 +147,22 @@ package
 //					screenWelcome.initialize();
 //					break;
 				case "menu":
-//					screenWelcome.disposeTemporarily();
-					screenMenu.initialize();
-					
 					// get rid of in game screen first if it is present
 					if (screenInGame) {
-						this.removeChild(screenInGame);
+//						this.removeChild(screenInGame);
+						screenInGame.visible = false;
 					}
+					screenMenu.initialize();
 					break;
 				case "play":
 					// get rid of in game screen first if it is present
-					if (screenInGame) {
-						this.removeChild(screenInGame);
-					}
+//					if (screenInGame) {
+//						this.removeChild(screenInGame);
+//					}
 					if (!screenMenu.roundBegin()) return; // send round begin notification to backend
 					screenMenu.disposeTemporarily();
 					
-					// create and initialize in game screen
-					screenInGame = new InGame();
-//					screenInGame.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
-					this.addChild(screenInGame);
+					// initialize in game screen
 					screenInGame.initializeNormalMode();
 					break;
 //				case "continue":

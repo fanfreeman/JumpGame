@@ -271,7 +271,10 @@ package com.jumpGame.screens
 						this.screenRankings.rankingsGlobal = new Array();
 						var numRankings:int = dataObj.rankings.length;
 						for (i = 0; i < numRankings; i++) { // loop through rankings retrieved
-							rankingsGlobalCollection.addItem({ title: dataObj.rankings[i].firstname + " " + dataObj.rankings[i].lastname, caption: dataObj.rankings[i].high_score});
+							rankingsGlobalCollection.addItem({ title: dataObj.rankings[i].firstname + " " + dataObj.rankings[i].lastname, 
+								caption: dataObj.rankings[i].high_score,
+								picture_url: dataObj.rankings[i].picture_url
+							});
 							this.screenRankings.rankingsGlobal.push(dataObj.rankings[i]);
 						}
 						this.screenRankings.listGlobal.dataProvider = rankingsGlobalCollection;
@@ -309,6 +312,13 @@ package com.jumpGame.screens
 						Statics.playerGems = int(dataObj.gems);
 						gemLabel.text = "Gems: " + dataObj.gems;
 						this.showAchievement("Shiny!");
+					}
+					else if (dataObj.status == "purchased_lives") { // successfully purchased lives
+						Statics.playerGems = int(dataObj.gems);
+						gemLabel.text = "Gems: " + dataObj.gems;
+						this.lives = 5;
+						rankLabel.text = "Lives: 5";
+						this.showAchievement("My Life Will Go On");
 					}
 					else if (dataObj.status == "error") { // error message received
 						trace("Error: " + dataObj.reason);
@@ -615,13 +625,13 @@ package com.jumpGame.screens
 			badgeText.text = message;
 			badgeText.alpha = 1;
 			badgeText.visible = true;
-			Starling.juggler.delayCall(hideAchievement, 3);
+			Starling.juggler.delayCall(fadeOutAchievement, 3);
 		}
 		
 		/**
-		 * Hide the achievement badge
+		 * Fade out the achievement badge
 		 */
-		private function hideAchievement():void {
+		private function fadeOutAchievement():void {
 			badgeAnimation.stop();
 			starling.core.Starling.juggler.remove(badgeAnimation);
 			Starling.juggler.tween(badgeAnimation, 1, {
@@ -632,6 +642,15 @@ package com.jumpGame.screens
 				transition: Transitions.LINEAR,
 				alpha: 0
 			});
+			Starling.juggler.delayCall(hideAchievement, 1);
+		}
+		
+		/**
+		 * Hide the achievement badge
+		 */
+		private function hideAchievement():void {
+			badgeAnimation.visible = false;
+			badgeText.visible = false;
 		}
 		
 		public function showAchievementsScreen(event:Event):void {
@@ -695,7 +714,8 @@ package com.jumpGame.screens
 		
 		public function roundBegin():Boolean {
 			if (this.lives < 1) {
-				this.showDialogBox("You do not have enough lives, would you like to ask friends for more?", true, showAskFriendsForLives);
+				//this.showDialogBox("You do not have enough lives, would you like to ask friends for more?", true, showAskFriendsForLives);
+				this.showDialogBox("You do not have enough lives, would you like to purchase a full set for " + Constants.SetOfLivesCost + " gems?", true, purchaseLivesWithGems);
 				return false;
 			}
 			
@@ -721,6 +741,24 @@ package com.jumpGame.screens
 			}
 			
 			this.hideDialogBox();
+		}
+		
+		// show the facebook dialog to purchase a full set of lives with gems
+		private function purchaseLivesWithGems():void {
+			this.hideDialogBox();
+			
+			if (Statics.playerGems < Constants.SetOfLivesCost) { // player can't afford this
+				// show get gems prompt
+				this.showDialogBox("You do not have enough gems,\n would you like to get more?", true, showGetGemsScreen);
+				return;
+			}
+			
+			var jsonStr:String = JSON.stringify({
+				item: 'lives'
+			});
+			this.displayLoadingNotice("Conjuring some lives...");
+			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
+			this.communicator.postPurchaseLives(jsonStr);
 		}
 		
 		// call js to send life

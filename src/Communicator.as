@@ -66,10 +66,15 @@ package
 			this.sendPostRequest(data, Constants.UriPurchaseUpgrade);
 		}
 		
+		public function postPurchaseLives(data:String):void {
+			this.sendPostRequest(data, Constants.UriPurchaseLives);
+		}
+		
 		public function postPurchaseCoins(data:String):void {
 			this.sendPostRequest(data, Constants.UriPurchaseCoins);
 		}
 		
+		// verify purchase of gems with real currency
 		public function postVerifyPurchase(data:String):void {
 			this.sendPostRequest(data, Constants.UriVerifyPurchase);
 		}

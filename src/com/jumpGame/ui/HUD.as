@@ -30,7 +30,7 @@ package com.jumpGame.ui
 		private static var _distance:int;
 		private var distanceLabel:TextField;
 		private var distanceText:TextField;
-		private var prevDistance:int = 0;
+		private var prevDistance:int;
 		
 		// coins display
 		private var _coins:int;
@@ -44,12 +44,12 @@ package com.jumpGame.ui
 		// powerup reel
 		private var powerupIconsImages:Vector.<Image>;
 		private static var powerupIcons:Sprite;
-		private var powerupReelVelocity:Number = 0;
-		private var isSpinningUp:Boolean = true;
-		private var totalDistanceScrolled:int = 0;
-		private var stopDistanceSet:Boolean = false;
+		private var powerupReelVelocity:Number;
+		private var isSpinningUp:Boolean;
+		private var totalDistanceScrolled:int;
+		private var stopDistanceSet:Boolean;
 		private var stopDistance:int;
-		private var isReelSpinning:Boolean = false;
+		private var isReelSpinning:Boolean;
 		private var sparkleAnimation:starling.display.MovieClip;
 		private var iconTween:Tween;
 		private static var powerupIconFrame:Image;
@@ -75,8 +75,48 @@ package com.jumpGame.ui
 		
 		private static var tweenPulsingText:Tween;
 		private static var distancePrevTimePeriod:int;
-		private static var prevDistanceCalculationTime:int = 0;
-		private static var emaVelocity:Number = 0;
+		private static var prevDistanceCalculationTime:int;
+		private static var emaVelocity:Number;
+		
+		public function initialize():void {
+			_distance = 0;
+			_coins = 0;
+			prevDistance = 0;
+			powerupReelVelocity = 0;
+			isSpinningUp = true;
+			totalDistanceScrolled = 0;
+			stopDistanceSet = false;
+			isReelSpinning = false;
+			distancePrevTimePeriod = 0;
+			prevDistanceCalculationTime = 0;
+			emaVelocity = 0;
+			powerupIcons.visible = false;
+			messageText1.visible = false;
+			messageText2.visible = false;
+			messageText3.visible = false;
+			pulsingText.scaleX = 0.5;
+			pulsingText.scaleY = 0.5;
+			pulsingText.visible = false;
+			badgeAnimation.visible = false;
+			badgeText.visible = false;
+			distanceText.text = "0";
+			coinsText.text = "0";
+			
+			// speical ability indicators
+			Statics.numSpecials = 2 + Statics.rankExtraAbility * 1;
+			var numExistingIndicators:uint = specialIndicatorsList.length;
+			if (Statics.numSpecials > numExistingIndicators) { // if purchased extra ability, add more indicators
+				for (var i:uint = 0; i < (Statics.numSpecials - numExistingIndicators); i++) {
+					var indicator:SpecialIndicator = new SpecialIndicator();
+					this.addChild(indicator);
+					specialIndicatorsList.push(indicator);
+				}
+			}
+			arrangeSpecialIndicators();
+			for (i = 0; i < Statics.numSpecials; i++) { // initialize all indicators
+				specialIndicatorsList[i].initialize();
+			}
+		}
 		
 		public function HUD()
 		{
@@ -89,23 +129,6 @@ package com.jumpGame.ui
 			// get fonts for score labels and values
 			fontScoreLabel = Fonts.getFont("ScoreLabel");
 			fontScoreValue = Fonts.getFont("ScoreValue");
-			
-//			// bonus time label
-//			bonusTimeLabel = new TextField(150, 20, "L I V E S", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
-//			bonusTimeLabel.hAlign = HAlign.RIGHT;
-//			bonusTimeLabel.vAlign = VAlign.TOP;
-//			bonusTimeLabel.x = 250;
-//			bonusTimeLabel.y = 5;
-//			this.addChild(bonusTimeLabel);
-//			
-//			// bonus time
-//			bonusTimeText = new TextField(150, 75, "5", fontScoreValue.fontName, fontScoreValue.fontSize, 0xffffff);
-//			bonusTimeText.hAlign = HAlign.RIGHT;
-//			bonusTimeText.vAlign = VAlign.TOP;
-//			bonusTimeText.width = bonusTimeLabel.width;
-//			bonusTimeText.x = int(bonusTimeLabel.x + bonusTimeLabel.width - bonusTimeText.width);
-//			bonusTimeText.y = bonusTimeLabel.y + bonusTimeLabel.height;
-//			this.addChild(bonusTimeText);
 			
 			// distance label
 			distanceLabel = new TextField(150, 20, "D I S T A N C E", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
@@ -120,7 +143,6 @@ package com.jumpGame.ui
 			distanceText.hAlign = HAlign.RIGHT;
 			distanceText.vAlign = VAlign.TOP;
 			distanceText.width = distanceLabel.width;
-			
 			distanceText.x = int(distanceLabel.x + distanceLabel.width - distanceText.width);
 			distanceText.y = distanceLabel.y + distanceLabel.height;
 			this.addChild(distanceText);
@@ -129,7 +151,6 @@ package com.jumpGame.ui
 			coinsLabel = new TextField(150, 20, "C O I N S", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
 			coinsLabel.hAlign = HAlign.RIGHT;
 			coinsLabel.vAlign = VAlign.TOP;
-			
 			coinsLabel.x = int(distanceLabel.x - coinsLabel.width - 50);
 			coinsLabel.y = 5;
 			this.addChild(coinsLabel);
@@ -207,7 +228,6 @@ package com.jumpGame.ui
 			powerupIcons.x = 200;
 			powerupIcons.y = 75;
 			powerupIcons.clipRect = new Rectangle(-60, 0, 120, -60);
-			powerupIcons.visible = false;
 			this.addChild(powerupIcons);
 			// sparkle animation
 			sparkleAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Sparkle"), 30);
@@ -235,7 +255,6 @@ package com.jumpGame.ui
 			messageText1.hAlign = HAlign.CENTER;
 			messageText1.vAlign = VAlign.TOP;
 			messageText1.y = (stage.stageHeight * 20)/100;
-			messageText1.visible = false;
 			this.addChild(messageText1);
 			
 			// on screen message line 2
@@ -243,7 +262,6 @@ package com.jumpGame.ui
 			messageText2.hAlign = HAlign.CENTER;
 			messageText2.vAlign = VAlign.TOP;
 			messageText2.y = (stage.stageHeight * 20)/100 + 50;
-			messageText2.visible = false;
 			this.addChild(messageText2);
 			
 			// on screen message line 3
@@ -251,7 +269,6 @@ package com.jumpGame.ui
 			messageText3.hAlign = HAlign.CENTER;
 			messageText3.vAlign = VAlign.TOP;
 			messageText3.y = (stage.stageHeight * 20)/100 + 100;
-			messageText3.visible = false;
 			this.addChild(messageText3);
 			
 			// on screen message line 1
@@ -262,15 +279,11 @@ package com.jumpGame.ui
 			pulsingText.vAlign = VAlign.CENTER;
 			pulsingText.x = Statics.stageWidth / 2;
 			pulsingText.y = (Statics.stageHeight * 30)/100;
-			pulsingText.scaleX = 0.5;
-			pulsingText.scaleY = 0.5;
-			pulsingText.visible = false;
 			this.addChild(pulsingText);
 			// tween
 			tweenPulsingText = new Tween(pulsingText, 0.2, Transitions.LINEAR);
 			
-			// speical ability indicators
-			Statics.numSpecials = 2 + Statics.rankExtraAbility * 1;
+			Statics.numSpecials = 2;
 			specialIndicatorsList = new Vector.<SpecialIndicator>();
 			for (var i:uint = 0; i < Statics.numSpecials; i++) {
 				var indicator:SpecialIndicator = new SpecialIndicator();
@@ -286,7 +299,6 @@ package com.jumpGame.ui
 			badgeAnimation.x = Constants.StageWidth / 2;
 			badgeAnimation.y = Constants.StageHeight - 130;
 			badgeAnimation.loop = false;
-			badgeAnimation.visible = false;
 			this.addChild(badgeAnimation);
 			
 			// objective achievement message
@@ -296,7 +308,6 @@ package com.jumpGame.ui
 			badgeText.vAlign = VAlign.CENTER;
 			badgeText.x = stage.stageWidth / 2 - 100;
 			badgeText.y = stage.stageHeight - 130 - 53;
-			badgeText.visible = false;
 			this.addChild(badgeText);
 		}
 		
@@ -351,7 +362,7 @@ package com.jumpGame.ui
 				pulsingText.visible = true;
 				pulsingText.text = _distance.toString();
 				
-				// rest pulsing text
+				// reset pulsing text
 				pulsingText.scaleX = 0.2;
 				pulsingText.scaleY = 0.2;
 				tweenPulsingText.reset(pulsingText, 0.2, Transitions.EASE_OUT_BACK);
@@ -364,8 +375,10 @@ package com.jumpGame.ui
 		public function get coins():int { return _coins; }
 		public function set coins(value:int):void
 		{
-			_coins = value;
-			coinsText.text = _coins.toString();
+			if (_coins != value) {
+				_coins = value;
+				coinsText.text = _coins.toString();
+			}
 		}
 		
 		/**
@@ -490,14 +503,14 @@ package com.jumpGame.ui
 			}
 		}
 		
-		public static function updatePulsingText(distance:int):void {
+//		public static function updatePulsingText(distance:int):void {
 //			pulsingText.visible = true;
 //			Starling.juggler.tween(pulsingText, 0.4, {
 //				transition: Transitions.LINEAR,
 //				scaleX: 1.5,
 //				scaleY: 1.5
 //			});
-		}
+//		}
 		
 		public function spinPowerupReel():void {
 			powerupIconFrame.visible = true;

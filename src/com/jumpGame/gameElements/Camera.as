@@ -30,22 +30,22 @@ package com.jumpGame.gameElements
 			// d = vt + 0.5 * at^2
 			
 			// x
-			if (Statics.gameMode == Constants.ModeBonus) {
-				var cameraEasingFactorX:Number = 20 - Math.abs(targetX - Camera.gx) / 10;
-				if (cameraEasingFactorX < 5) cameraEasingFactorX = 5;
-				var d2x:Number = 0.0; // camera acceleration
-				if (targetX >= Camera.gx + Constants.CameraBoundRight) { // move camera right
-					d2x = ((targetX - Constants.CameraBoundRight - Camera.gx) - Camera.dx * cameraEasingFactorX) / (0.5 * cameraEasingFactorX * cameraEasingFactorX);
-				}
-				else if (targetX + Constants.CameraBoundLeft <= Camera.gx) { // move camera left
-					d2x = ((targetX + Constants.CameraBoundLeft - Camera.gx) - Camera.dx * cameraEasingFactorX) / (0.5 * cameraEasingFactorX * cameraEasingFactorX);
-				}
-				else { // bring camera to rest
-					d2x = -Camera.dx / cameraEasingFactorX;
-				}
-				Camera.dx += d2x;
-				Camera.gx += Camera.dx;
-			}
+//			if (Statics.gameMode == Constants.ModeBonus) {
+//				var cameraEasingFactorX:Number = 20 - Math.abs(targetX - Camera.gx) / 10;
+//				if (cameraEasingFactorX < 5) cameraEasingFactorX = 5;
+//				var d2x:Number = 0.0; // camera acceleration
+//				if (targetX >= Camera.gx + Constants.CameraBoundRight) { // move camera right
+//					d2x = ((targetX - Constants.CameraBoundRight - Camera.gx) - Camera.dx * cameraEasingFactorX) / (0.5 * cameraEasingFactorX * cameraEasingFactorX);
+//				}
+//				else if (targetX + Constants.CameraBoundLeft <= Camera.gx) { // move camera left
+//					d2x = ((targetX + Constants.CameraBoundLeft - Camera.gx) - Camera.dx * cameraEasingFactorX) / (0.5 * cameraEasingFactorX * cameraEasingFactorX);
+//				}
+//				else { // bring camera to rest
+//					d2x = -Camera.dx / cameraEasingFactorX;
+//				}
+//				Camera.dx += d2x;
+//				Camera.gx += Camera.dx;
+//			}
 			
 			// y
 			var cameraEasingFactorY:Number = 15 - Math.abs(targetY - Camera.gy) / 10;

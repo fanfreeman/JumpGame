@@ -10,7 +10,7 @@ package
 		// level designer mode switch
 		public static const isDesignerMode:Boolean = false;
 		public static const powerupsEnabled:Boolean = true;
-		public static const contraptionsEnabled:Boolean = true;
+//		public static const contraptionsEnabled:Boolean = true;
 		
 		// stage size
 		public static const StageWidth:uint = 756;
@@ -170,6 +170,7 @@ package
 		public static const UriGetUserInfo:String = "user/info";
 		public static const UriPostUserInfo:String = "user/post";
 		public static const UriPurchaseUpgrade:String = "user/purchase/upgrade";
+		public static const UriPurchaseLives:String = "user/purchase/lives";
 		public static const UriPurchaseCoins:String = "user/purchase/coins";
 		public static const UriVerifyPurchase:String = "user/verify/purchase";
 		public static const UriFindMatch:String = "user/findmatch";
@@ -199,7 +200,7 @@ package
 		public static const PrepareStep4:uint = 4;
 		public static const PrepareStepDone:uint = 5;
 		public static const ModeNormal:uint = 5;
-		public static const ModeBonus:uint = 6;
+//		public static const ModeBonus:uint = 6;
 		
 		// music mode specific
 		public static const MusicModeColumnSpacing:Number = 200;
@@ -245,6 +246,12 @@ package
 		
 		// seconds per life
 		public static const SecondsPerLife:uint = 1800;
+		
+		// cost of full set of lives in gems
+		public static const SetOfLivesCost:uint = 10;
+		
+		// attractor area of effect radius
+		public static const AttractorRadius:uint = StageHeight / 2;
 		
 		public static const AchievementsData:Array = new Array(
 			// id, title, description, reward coins, reward gems

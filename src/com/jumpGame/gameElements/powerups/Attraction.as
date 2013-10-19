@@ -8,7 +8,7 @@ package com.jumpGame.gameElements.powerups
 	import starling.core.Starling;
 	import starling.display.Image;
 
-	public class Attractor extends GameObject
+	public class Attraction extends GameObject
 	{
 		public var isActivated:Boolean;
 		
@@ -21,7 +21,7 @@ package com.jumpGame.gameElements.powerups
 		private var nextRing1AppearanceTime:int;
 		private var nextRing2AppearanceTime:int;
 		
-		public function Attractor(hero:Hero) {
+		public function Attraction(hero:Hero) {
 			this.hero = hero;
 			this.createPowerupArt();
 			this.isActivated = false;
@@ -58,6 +58,7 @@ package com.jumpGame.gameElements.powerups
 			
 			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
 			this.isActivated = true;
+			Statics.powerupAttractionEnabled = true;
 			this.completionWarned = false;
 			this.completionTime = Statics.gameTime + 5000 + Statics.rankAttraction * 1000;
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
@@ -108,6 +109,7 @@ package com.jumpGame.gameElements.powerups
 				ring1Image.visible = false;
 				ring2Image.visible = false;
 				this.isActivated = false;
+				Statics.powerupAttractionEnabled = false;
 				
 				// misc reset
 				HUD.clearPowerupReel();

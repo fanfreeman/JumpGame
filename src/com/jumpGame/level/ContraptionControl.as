@@ -15,7 +15,7 @@ package com.jumpGame.level
 		}
 		
 		public function setIntervalAndScheduleNext(contraptionIndex:uint, interval:Number):void {
-			trace("setting interval of " + contraptionIndex + " to " + interval + " seconds");
+//			trace("setting interval of " + contraptionIndex + " to " + interval + " seconds");
 			if (interval == intervals[contraptionIndex]) return;
 			intervals[contraptionIndex] = interval;
 			if (interval > 0) scheduleNext(contraptionIndex);

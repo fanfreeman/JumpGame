@@ -11,6 +11,9 @@ package com.jumpGame.level
 		// whether game is paused
 		public static var gamePaused:Boolean;
 		
+		// contraption control
+		public static var contraptionsEnabled:Boolean;
+		
 		// particle emitters
 		public static var particleLeaf:PDParticleSystem;
 		public static var particleCharge:PDParticleSystem;
@@ -114,6 +117,8 @@ package com.jumpGame.level
 		
 		// camera target modifier
 		public static var cameraTargetModifierY:Number;
+		
+		public static var powerupAttractionEnabled:Boolean;
 		
 		public static function distance(x1:Number, y1:Number, x2:Number, y2:Number):Number {
 			var dx:Number = Math.abs(x1 - x2);

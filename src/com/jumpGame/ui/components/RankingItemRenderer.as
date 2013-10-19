@@ -1,23 +1,30 @@
 package com.jumpGame.ui.components
 {
+	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.events.Event;
 	import flash.geom.Point;
+	import flash.net.URLRequest;
+	import flash.system.Security;
 	
 	import feathers.controls.Label;
 	import feathers.controls.List;
+	import feathers.controls.renderers.IListItemRenderer;
+	import feathers.core.FeathersControl;
 	
+	import starling.display.Image;
 	import starling.events.Event;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
-	import feathers.core.FeathersControl;
-	import feathers.controls.renderers.IListItemRenderer;
+	import starling.textures.Texture;
 
 	public class RankingItemRenderer extends FeathersControl implements IListItemRenderer
 	{
 		public function RankingItemRenderer()
 		{
 			this.addEventListener(TouchEvent.TOUCH, touchHandler);
-			this.addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
+			this.addEventListener(starling.events.Event.REMOVED_FROM_STAGE, removedFromStageHandler);
 		}
 		
 		protected var _titleField:String;
@@ -54,8 +61,27 @@ package com.jumpGame.ui.components
 			this.invalidate(INVALIDATION_FLAG_DATA);
 		}
 		
+		protected var _pictureField:String;
+		
+		public function get pictureField():String
+		{
+			return this._pictureField;
+		}
+		
+		public function set pictureField(value:String):void
+		{
+			if(this._pictureField == value)
+			{
+				return;
+			}
+			this._pictureField = value;
+			this.invalidate(INVALIDATION_FLAG_DATA);
+		}
+		
 		protected var titleLabel:Label;
 		protected var captionLabel:Label;
+		protected var profilePicture:Image;
+		protected var loader:Loader;
 		
 		protected var _index:int = -1;
 		
@@ -123,13 +149,13 @@ package com.jumpGame.ui.components
 			}
 			this._isSelected = value;
 			this.invalidate(INVALIDATION_FLAG_SELECTED);
-			this.dispatchEventWith(Event.CHANGE);
+			this.dispatchEventWith(starling.events.Event.CHANGE);
 		}
 		
 		override protected function initialize():void
 		{
 			this.width = 600;
-			this.height = 30;
+			this.height = 55;
 			
 			if (!this.titleLabel) {
 				this.titleLabel = new Label();
@@ -139,6 +165,11 @@ package com.jumpGame.ui.components
 			if (!this.captionLabel) {
 				this.captionLabel = new Label();
 				this.addChild(this.captionLabel);
+			}
+			
+			if (!this.profilePicture) {
+				this.profilePicture = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000"));
+				this.addChild(this.profilePicture);
 			}
 		}
 		
@@ -191,6 +222,18 @@ package com.jumpGame.ui.components
 			{
 				this.titleLabel.text = this.itemToTitle(this._data);
 				this.captionLabel.text = this.itemToCaption(this._data);
+				
+				// load profile picture
+				var profilePicUrl:String = this.itemToPictureUrl(this._data);
+				if (profilePicUrl == "none") {
+					this.profilePicture.texture = Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000");
+					this.profilePicture.readjustSize();
+				} else {
+					Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
+					loader = new Loader();
+					loader.load(new URLRequest(profilePicUrl));
+					loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onPictureLoadComplete);
+				}
 			}
 			else
 			{
@@ -199,13 +242,21 @@ package com.jumpGame.ui.components
 			}
 		}
 		
+		protected function onPictureLoadComplete(event:flash.events.Event):void
+		{
+			var loadedBitmap:Bitmap = event.currentTarget.loader.content as Bitmap;
+			this.profilePicture.texture = Texture.fromBitmap(loadedBitmap);
+			this.profilePicture.readjustSize();
+		}
+		
 		protected function layout():void
 		{
 			this.titleLabel.width = 250;
-			this.titleLabel.height = 30;
+			this.titleLabel.height = 50;
+			this.titleLabel.x = 60;
 			
 			this.captionLabel.width = 250;
-			this.captionLabel.height = 30;
+			this.captionLabel.height = 50;
 			this.captionLabel.x = 330;
 		}
 		
@@ -223,6 +274,15 @@ package com.jumpGame.ui.components
 			if(this._captionField != null && item && item.hasOwnProperty(this._captionField))
 			{
 				return item[this._captionField].toString();
+			}
+			return "";
+		}
+		
+		public function itemToPictureUrl(item:Object):String
+		{
+			if(this._pictureField != null && item && item.hasOwnProperty(this._pictureField))
+			{
+				return item[this._pictureField].toString();
 			}
 			return "";
 		}
@@ -280,7 +340,7 @@ package com.jumpGame.ui.components
 			}
 		}
 		
-		protected function removedFromStageHandler(event:Event):void
+		protected function removedFromStageHandler(event:starling.events.Event):void
 		{
 			this.touchPointID = -1;
 		}

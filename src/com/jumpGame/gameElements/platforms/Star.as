@@ -29,8 +29,9 @@ package com.jumpGame.gameElements.platforms
 			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Sparkle"), 60);
 			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
 			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
-			starling.core.Starling.juggler.add(platformAnimation);
+			platformAnimation.stop();
 			platformAnimation.loop = false;
+			starling.core.Starling.juggler.add(platformAnimation);
 			this.addChild(platformAnimation);
 		}
 		
@@ -46,9 +47,10 @@ package com.jumpGame.gameElements.platforms
 			this.canBounce = false;
 			if (platformImage == null) createPlatformArt();
 			this.platformImage.visible = true;
+			platformAnimation.stop();
 			this.show();
 			
-			// revolving star
+			// extra args
 			if (args != null) {
 				if (args[0]) { // star has horizontal velocity
 					this.dx = args[0];
@@ -91,7 +93,6 @@ package com.jumpGame.gameElements.platforms
 				// remove coin
 				//this.visible = false;
 				this.platformImage.visible = false;
-				this.platformAnimation.stop();
 				this.platformAnimation.play();
 				
 				this.isTouched = true;

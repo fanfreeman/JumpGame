@@ -112,7 +112,7 @@ package com.jumpGame.gameElements.powerups
 			// launch obstacle
 			if (Statics.gameTime > this.nextLaunchTime) {
 				this.nextLaunchTime = int(Statics.gameTime + launchInterval); // schedule next launch time
-				if (launchInterval > 50) launchInterval -= 50;
+				if (launchInterval > 200) launchInterval -= 40;
 				return true;
 			}
 			

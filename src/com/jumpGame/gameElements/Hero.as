@@ -12,37 +12,33 @@ package com.jumpGame.gameElements
 	 */
 	public class Hero extends GameObject
 	{
-		public var dx:Number = 0.0;
-		public var dy:Number = 0.0;
-		private var dxPrev:Number = 0.0;
-		private var dyPrev:Number = 0.0;
+		public var dx:Number;
+		public var dy:Number;
+		private var dxPrev:Number;
+		private var dyPrev:Number;
 		
-		public var canBounce:Boolean = true;
-		public var isDynamic:Boolean = true;
-		public var gravity:Number = Constants.Gravity;
+		public var canBounce:Boolean;
+		public var isDynamic:Boolean;
+		public var gravity:Number;
 		
 		private var animationJump:MovieClip;
 		private var animationHurt:MovieClip;
 		private var animationSuper:MovieClip;
 		
-		private var rotationSpeed:Number = 0.0;
+		private var rotationSpeed:Number;
 		private var canBounceTime:int;
 		
 		private var nextBouncePower:Number;
 		
-		public var d2x:Number = 0;
+		public var d2x:Number;
 		
-		public var isTransfigured:Boolean = false;
+		public var isTransfigured:Boolean;
 		
-		public var controlRestoreTime:int = 0;
+		public var controlRestoreTime:int;
 		
 		public function Hero()
 		{
 			super();
-			
-			this.gx = 0.0;
-			this.gy = 0.0;
-			this.nextBouncePower = 0;
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -56,22 +52,31 @@ package com.jumpGame.gameElements
 		{
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			
-//			this.createHeroWalkAnim();
 			this.createHeroJumpAnim();
 			this.createHeroFailAnim();
 			this.createHeroSuperAnim();
 		}
 		
-//		private function createHeroWalkAnim():void {
-//			var heroWalkAnim:MovieClip = new MovieClip(Assets.getSprite("SpriteTextureScarecrow").getTextures("walk.swf/"), 24);
-//			heroWalkAnim.scaleX = 0.6;
-//			heroWalkAnim.scaleY = 0.6;
-//			heroWalkAnim.pivotX = Math.ceil(heroWalkAnim.texture.width / 2);
-//			heroWalkAnim.pivotY = Math.ceil(heroWalkAnim.texture.height / 2);
-//			starling.core.Starling.juggler.add(heroWalkAnim);
-//			this.addChild(heroWalkAnim);
-//			this.heroAnimations[Constants.HeroAnimWalk] = heroWalkAnim;
-//		}
+		public function initialize():void {
+			this.visible = false;
+			this.gx = Constants.HERO_INITIAL_X;
+			this.gy = Constants.HERO_INITIAL_Y;
+			this.nextBouncePower = 0;
+			dx = 0.0;
+			dy = Constants.HeroInitialVelocityY;
+			dxPrev = 0.0;
+			dyPrev = 0.0;
+			canBounce = true;
+			isDynamic = true;
+			gravity = Constants.Gravity;
+			rotationSpeed = 0.0;
+			d2x = 0;
+			isTransfigured = false;
+			controlRestoreTime = 0;
+			animationJump.visible = true;
+			animationHurt.visible = false;
+			animationSuper.visible = false;
+		}
 		
 		private function createHeroJumpAnim():void {
 			animationJump = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("CharBoyJump"), 24);
@@ -79,10 +84,9 @@ package com.jumpGame.gameElements
 //			animationJump.scaleY = 0.6;
 			animationJump.pivotX = Math.ceil(animationJump.texture.width  / 2);
 			animationJump.pivotY = Math.ceil(animationJump.texture.height / 2);
+			animationJump.loop = false;
 			starling.core.Starling.juggler.add(animationJump);
 			this.addChild(animationJump);
-			// hide this by default
-			animationJump.loop = false;
 		}
 		
 		private function createHeroFailAnim():void {
@@ -91,10 +95,8 @@ package com.jumpGame.gameElements
 //			animationHurt.scaleY = 0.6;
 			animationHurt.pivotX = Math.ceil(animationHurt.width  / 2);
 			animationHurt.pivotY = Math.ceil(animationHurt.height / 2);
-			this.addChild(animationHurt);
-			// hide this by default
-			animationHurt.visible = false;
 			animationHurt.loop = false;
+			this.addChild(animationHurt);
 		}
 		
 		private function createHeroSuperAnim():void {
@@ -102,8 +104,6 @@ package com.jumpGame.gameElements
 			animationSuper.pivotX = Math.ceil(animationSuper.width  / 2);
 			animationSuper.pivotY = Math.ceil(animationSuper.height / 2);
 			this.addChild(animationSuper);
-			// hide this by default
-			animationSuper.visible = false;
 		}
 		
 		override public function get width():Number
@@ -331,21 +331,37 @@ package com.jumpGame.gameElements
 		}
 		
 		/**
-		 * Pushed away by a repulsor
+		 * Pushing away by a repulsor
 		 */
 		public function repulse(repulsorGx:Number, repulsorGy:Number):void {
-			var fx:Number = this.gx - repulsorGx;
-			var fy:Number = this.gy - repulsorGy;
-//			trace ("fx: " + fx + " fy: " + fy);
-//			this.dx += fx / 50;
-//			this.dy += fy / 50;
+//			var fx:Number = this.gx - repulsorGx;
+//			var fy:Number = this.gy - repulsorGy;
+//			// constant force regardless of distance from center
+//			var angle:Number = Statics.vectorAngle(repulsorGx, repulsorGy, this.gx, this.gy);
+//			this.dx = Math.cos(angle) * 0.75;
+			if (this.gx > repulsorGx + 10) this.dx = 0.75;
+			else if (this.gx < repulsorGx - 10) this.dx = -0.75;
+//			if (this.dy < 1.5) this.dy += (1.5 - this.dy);
+		}
+		
+		public function repulseOffBouncer(repulsorGx:Number, repulsorGy:Number):void {
+			if (this.gx > repulsorGx + 10) this.dx = 1.35;
+			else if (this.gx < repulsorGx - 10) this.dx = -1.35;
+			if (this.dy < 1.65) this.dy += (1.65 - this.dy);
+		}
+		
+		/**
+		 * Attraction by an attractor platform
+		 */
+		public function attract(timeDiff:Number, attractorGx:Number, attractorGy:Number):void {
+			var fx:Number = attractorGx - this.gx;
+			var fy:Number = attractorGy - this.gy;
 			
-			// constant force regardless of distance from center
-			var angle:Number = Statics.vectorAngle(repulsorGx, repulsorGy, this.gx, this.gy);
-			this.dx = Math.cos(angle) * 0.75;
-//			this.dy = Math.sin(angle) * 0.5;
-//			if (this.dy < 0) this.dy = 0;
-//			if (this.dy > 0) this.dy *= 3;
+			if (fx > 0) fx = (775 - fx) / 3;
+			else if (fx < 0) fx = (-775 - fx) / 3;
+			
+			if (Math.abs(this.dx) < 1) this.dx += fx * timeDiff * 0.00002;
+			if (fy > 0 && this.dy < 1.5) this.dy += 30 * timeDiff * 0.00005;
 		}
 		
 		public function repulseCannonball(isVertical:Boolean, isFromLeft:Boolean):void {

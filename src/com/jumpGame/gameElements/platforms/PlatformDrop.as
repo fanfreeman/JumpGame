@@ -43,7 +43,6 @@ package com.jumpGame.gameElements.platforms
 				this.fallVelocity -= Constants.PlatformDropFallVelocity;
 				this.gy += timeDiff * this.fallVelocity;
 			}
-//			super.update(timeDiff);
 			this.gx += this.dx * timeDiff;
 			this.gy += this.dy * timeDiff;
 		}
@@ -54,6 +53,16 @@ package com.jumpGame.gameElements.platforms
 			super.initialize(gx, gy, size);
 			this.isFalling = false;
 			this.fallVelocity = 0;
+			
+			// extra args
+			if (args != null) {
+				if (args[0]) { // star has horizontal velocity
+					this.dx = args[0];
+				}
+				if (args[1]) { // star has vertical velocity
+					this.dy = args[1];
+				}
+			}
 		}
 	}
 }

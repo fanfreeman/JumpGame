@@ -18,6 +18,7 @@ package com.jumpGame.gameElements
 		public var extenderParent:Platform;
 		
 		public var fixedGy:Number;
+		private var fixedDy:Number;
 		protected var platformAnimation:MovieClip = null;
 		protected var platformImage:Image = null;
 		
@@ -36,6 +37,18 @@ package com.jumpGame.gameElements
 			else this.size = size;
 			this.rescale();
 			this.show();
+			this.fixedGy = gy;
+			this.fixedDy = 0;
+			
+			// extra args
+			if (args != null) {
+				if (args[0]) { // star has horizontal velocity
+					this.dx = args[0];
+				}
+				if (args[1]) { // star has vertical velocity
+					this.fixedDy = args[1];
+				}
+			}
 		}
 		
 		protected function rescale():void {
@@ -114,6 +127,8 @@ package com.jumpGame.gameElements
 			
 			this.gx += this.dx * timeDiff;
 			this.gy += this.dy * timeDiff;
+			
+			this.fixedGy += this.fixedDy * timeDiff;
 		}
 		
 		public function makeExtender(extenderParent, extenderStatus, targetGx):void {

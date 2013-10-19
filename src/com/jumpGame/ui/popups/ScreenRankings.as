@@ -109,6 +109,7 @@ package com.jumpGame.ui.popups
 			listGlobal.itemRendererType = RankingItemRenderer;
 			listGlobal.itemRendererProperties.titleField = "title";
 			listGlobal.itemRendererProperties.captionField = "caption";
+			listGlobal.itemRendererProperties.pictureField = "picture_url";
 			listGlobal.addEventListener(Event.CHANGE, listGlobalChangeHandler);
 			
 			// close button

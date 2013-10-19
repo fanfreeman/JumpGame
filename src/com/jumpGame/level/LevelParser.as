@@ -2,19 +2,29 @@ package com.jumpGame.level  {
 	
 	public class LevelParser {
 		
-		public var currentY:int = 0;  // the global y in height units the level parser has reached
+		public var currentY:int;  // the global y in height units the level parser has reached
 		public var levelElementsArray:Array;
 		
 		private var generator:LevelGenerator;
-		private var difficulty:int = 7;
-		private var nextDifficultyDistance:Number = 18000;
+		private var difficulty:int;
+		private var nextDifficultyDistance:Number;
+		
+		private var repetitions:uint; // number of times the entire difficulty sequence has repeated
 		
 		// parse level definition file
-		public function LevelParser() {
-			if (Constants.isDesignerMode) this.difficulty = 999999;
-			
+		public function LevelParser() { // create new objects here
 			this.levelElementsArray = new Array(); // array used to store generated level elements
 			this.generator = new LevelGenerator(this);
+		}
+		
+		public function initialize():void { // reset properties here
+			currentY = 0;
+			nextDifficultyDistance = 18000; // distance of the very first difficulty level
+			difficulty = 7;
+			repetitions = 0;
+			
+			if (Constants.isDesignerMode) this.difficulty = 999999;
+			this.levelElementsArray.length = 0; // clear this array
 			
 			// initial contraption settings
 			// gy, interval, setting type
@@ -36,7 +46,7 @@ package com.jumpGame.level  {
 			var blockNumber:int;
 			switch (this.difficulty) {
 				case 7:
-					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingBell, 5]);
+					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingBell, 10]);
 					blockNumber = int(Math.floor(Math.random() * 3) + 700);
 					this.generator.generate(blockNumber);
 					break;
@@ -46,7 +56,7 @@ package com.jumpGame.level  {
 					break;
 				case 9:
 					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 30]);
-					blockNumber = int(Math.floor(Math.random() * 3) + 900);
+					blockNumber = int(Math.floor(Math.random() * 4) + 900);
 					this.generator.generate(blockNumber);
 					break;
 				case 10:
@@ -64,7 +74,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 13:
-					blockNumber = int(Math.floor(Math.random() * 2) + 4000);
+					blockNumber = int(Math.floor(Math.random() * 4) + 4000);
 					this.generator.generate(blockNumber);
 					break;
 				case 14:
@@ -73,18 +83,18 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 15:
-					blockNumber = int(Math.floor(Math.random() * 2) + 6000);
+					blockNumber = int(Math.floor(Math.random() * 4) + 6000);
 					this.generator.generate(blockNumber);
 					break;
 				case 16:
 					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingTrainRight, 10]);
 					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingTrainLeft, 10]);
-					blockNumber = int(Math.floor(Math.random() * 1) + 7000);
+					blockNumber = int(Math.floor(Math.random() * 2) + 7000);
 					this.generator.generate(blockNumber);
 					break;
 				case 17:
 					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 20]);
-					blockNumber = int(Math.floor(Math.random() * 1) + 8000);
+					blockNumber = int(Math.floor(Math.random() * 5) + 8000);
 					this.generator.generate(blockNumber);
 					break;
 				case 18:
@@ -93,7 +103,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 19:
-					blockNumber = int(Math.floor(Math.random() * 1) + 10000);
+					blockNumber = int(Math.floor(Math.random() * 5) + 10000);
 					this.generator.generate(blockNumber);
 					break;
 				case 20:
@@ -101,7 +111,43 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 21:
-					blockNumber = int(Math.floor(Math.random() * 1) + 12000);
+					blockNumber = int(Math.floor(Math.random() * 4) + 12000);
+					this.generator.generate(blockNumber);
+					break;
+				case 22:
+					blockNumber = int(Math.floor(Math.random() * 1) + 13000);
+					this.generator.generate(blockNumber);
+					break;
+				case 23:
+					blockNumber = int(Math.floor(Math.random() * 3) + 14000);
+					this.generator.generate(blockNumber);
+					break;
+				case 24:
+					blockNumber = int(Math.floor(Math.random() * 1) + 15000);
+					this.generator.generate(blockNumber);
+					break;
+				case 25:
+//					this.disableContraptions();
+					Statics.contraptionsEnabled = false;
+					blockNumber = int(Math.floor(Math.random() * 2) + 16000);
+					this.generator.generate(blockNumber);
+					break;
+				case 26:
+					blockNumber = int(Math.floor(Math.random() * 2) + 17000);
+					this.generator.generate(blockNumber);
+					break;
+				case 27:
+					blockNumber = int(Math.floor(Math.random() * 3) + 18000);
+					this.generator.generate(blockNumber);
+					break;
+				case 28:
+					blockNumber = int(Math.floor(Math.random() * 2) + 19000);
+					this.generator.generate(blockNumber);
+					break;
+				case 29:
+//					this.reenableContraptions();
+					Statics.contraptionsEnabled = true;
+					blockNumber = int(Math.floor(Math.random() * 2) + 20000);
 					this.generator.generate(blockNumber);
 					break;
 					
@@ -109,7 +155,22 @@ package com.jumpGame.level  {
 					this.generator.generate(999999);
 					break;
 			}
+			
+			this.generator.addRowBlueStars();
+			this.updateDifficulty();
 		}
+		
+//		private function disableContraptions():void {
+//			this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingWitch, 0]);
+//			this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingBell, 0]);
+//			this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 0]);
+//		}
+//		
+//		private function reenableContraptions():void {
+//			this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingWitch, 10]);
+//			this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingBell, 10]);
+//			this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 20]);
+//		}
 		
 		public function updateDifficulty():void {
 			if (!Constants.isDesignerMode) {
@@ -117,20 +178,28 @@ package com.jumpGame.level  {
 				if (Statics.maxDist > this.nextDifficultyDistance) {
 					if (this.difficulty == 7) {
 						this.raiseDifficulty();
-						this.nextDifficultyDistance += 5000;
+						this.nextDifficultyDistance = Statics.maxDist + 5000;
 					}
 					else if (this.difficulty == 9) {
 						this.raiseDifficulty();
-						this.nextDifficultyDistance += 5000;
+						this.nextDifficultyDistance = Statics.maxDist + 5000;
 					}
 					else {
 						this.raiseDifficulty();
-						if (this.difficulty > 21) {
+						if (this.difficulty > 29) {
 							this.difficulty = 12;
-							this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 15]);
-							this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingCannon, 20]);
+							if (this.repetitions == 0) {
+								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 15]);
+								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingCannon, 20]);
+							}
+							else {
+								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 10]);
+								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingCannon, 15]);
+							}
+							this.repetitions++;
 						}
-						this.nextDifficultyDistance += 8000;
+						if (this.difficulty % 2 == 0) this.nextDifficultyDistance = Statics.maxDist + 8000;
+						else this.nextDifficultyDistance = Statics.maxDist + 16000; // star levels are longer
 					}
 					
 					// add a row of red stars

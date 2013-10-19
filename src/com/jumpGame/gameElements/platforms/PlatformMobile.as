@@ -1,6 +1,7 @@
 package com.jumpGame.gameElements.platforms
 {
 	import com.jumpGame.gameElements.Platform;
+	import com.jumpGame.level.Statics;
 	
 	import starling.core.Starling;
 	import starling.display.MovieClip;
@@ -38,8 +39,8 @@ package com.jumpGame.gameElements.platforms
 					this.isMovingRight = true;
 				}
 			}
-			if (this.dx > Constants.PlatformMobileMaxVelocityX) this.dx = Constants.PlatformMobileMaxVelocityX;
-			else if (this.dx < -Constants.PlatformMobileMaxVelocityX) this.dx = -Constants.PlatformMobileMaxVelocityX;
+			if (this.dx > Constants.PlatformMobileMaxVelocityX && !Statics.powerupAttractionEnabled) this.dx = Constants.PlatformMobileMaxVelocityX;
+			else if (this.dx < -Constants.PlatformMobileMaxVelocityX && !Statics.powerupAttractionEnabled) this.dx = -Constants.PlatformMobileMaxVelocityX;
 			super.update(timeDiff);
 		}
 	}
