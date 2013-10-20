@@ -186,7 +186,7 @@ package com.jumpGame.level  {
 					}
 					else {
 						this.raiseDifficulty();
-						if (this.difficulty > 29) {
+						if (this.difficulty > 27) {
 							this.difficulty = 12;
 							if (this.repetitions == 0) {
 								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 15]);

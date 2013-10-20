@@ -86,6 +86,10 @@ package com.jumpGame.screens
 		// hero
 		private var hero:Hero;
 		
+		// hero out of stage indicator
+		private var heroPointerLeft:Image;
+		private var heroPointerRight:Image;
+		
 		// platforms
 		private var platformsList:Vector.<Platform>;
 		private var platformsListLength:uint;
@@ -250,6 +254,19 @@ package com.jumpGame.screens
 			// set up hero
 			this.hero = new Hero();
 			this.addChild(hero);
+			
+			// set up hero out of stage indicators
+			heroPointerLeft = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Arrow0000"));
+			heroPointerLeft.pivotY = Math.ceil(heroPointerLeft.texture.height / 2);
+			heroPointerLeft.visible = false;
+			this.addChild(heroPointerLeft);
+			
+			heroPointerRight = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Arrow0000"));
+			heroPointerRight.scaleX = -1;
+			heroPointerRight.pivotY = Math.ceil(heroPointerRight.texture.height / 2);
+			heroPointerRight.x = Statics.stageWidth;
+			heroPointerRight.visible = false;
+			this.addChild(heroPointerRight);
 			
 			// set up foreground
 			this.fg = new Background(Constants.Foreground);
@@ -1099,6 +1116,17 @@ package com.jumpGame.screens
 //						this.hero.gx > Constants.StageWidth / 2 + 100) {
 //						HUD.showMessage("Warning: Leaving Survivable Area");
 //					}
+					// hero out of stage indicators
+					if (this.hero.x < 0) {
+						this.heroPointerLeft.y = this.hero.y;
+						if (!this.heroPointerLeft.visible) this.heroPointerLeft.visible = true;
+					}
+					else if (this.heroPointerLeft.visible) this.heroPointerLeft.visible = false;
+					if (this.hero.x > Statics.stageWidth) {
+						this.heroPointerRight.y = this.hero.y;
+						if (!this.heroPointerRight.visible) this.heroPointerRight.visible = true;
+					}
+					else if (this.heroPointerRight.visible) this.heroPointerRight.visible = false;
 				} else {
 					// mark hero as bounced out of sea of fire
 					if (this.hero.gy > this.fg.sofHeight - 60) {

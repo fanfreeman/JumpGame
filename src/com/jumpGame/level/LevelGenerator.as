@@ -229,6 +229,12 @@ package com.jumpGame.level {
 				case 17001:
 					this.generateSingleRisingMobile(3);
 					break;
+//				case 17002:
+//					this.generateSingleRisingMobile(2);
+//					break;
+//				case 17003:
+//					this.generateSingleRisingMobile(4);
+//					break;
 				
 				case 18000:
 					this.generateDesigned2000(10);
@@ -238,13 +244,6 @@ package com.jumpGame.level {
 					break;
 				case 18002:
 					this.generateStarCrossLarge(4);
-					break;
-				
-				case 19000:
-					this.generateSingleRisingMobile(2);
-					break;
-				case 19001:
-					this.generateSingleRisingMobile(4);
 					break;
 				
 				case 20000:
@@ -267,8 +266,8 @@ package com.jumpGame.level {
 				
 				case 999999: // designed pattern
 //					elementDistribution = new Array(0.1, 0.4, 0.7, 0.77, 0.84, 0.91, 0.98, 1.0);
-//					this.generateDesigned2000(8);
-					this.generateStarCrossLarge(5);
+					this.generateDesigned2000(11);
+//					this.generateStarCrossLarge(4);
 					break;
 //					// 1 per row, 2 per row, 3 per row, 4 per row, 5 per row
 //					elementsPerRowDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0);
