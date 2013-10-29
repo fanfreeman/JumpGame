@@ -14,11 +14,13 @@ package com.jumpGame.gameElements.powerups
 		private var hero:Hero;
 		private var transfiguration:Transfiguration;
 		private var runAnimation:MovieClip;
+		private var jumpAnimation:MovieClip;
 		private var nextLaunchTime:int;
 		private var launchInterval:Number;
 		private var isDynamicDisabled:Boolean;
 //		private var incrementalHeroDy:Number;
 //		private var shouldSnapToRightBorder:Boolean;
+		private var isControlDisabled:Boolean; // temporarily take away control from player after jumping
 		
 		public var isActivated:Boolean = false;
 		private var nearCompletionTime:int;
@@ -37,21 +39,38 @@ package com.jumpGame.gameElements.powerups
 			runAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("TransfigAnimCatRun"), 20);
 			runAnimation.pivotX = Math.ceil(runAnimation.texture.width  / 2); // center art on registration point
 			runAnimation.pivotY = Math.ceil(runAnimation.texture.height / 2);
-			runAnimation.stop();
+//			runAnimation.stop();
 			runAnimation.visible = false;
 			this.addChild(runAnimation);
+			
+			jumpAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("TransfigAnimCatJump"), 60);
+			jumpAnimation.pivotX = Math.ceil(jumpAnimation.texture.width  / 2); // center art on registration point
+			jumpAnimation.pivotY = Math.ceil(jumpAnimation.texture.height / 2);
+			jumpAnimation.loop = false;
+			jumpAnimation.stop();
+			jumpAnimation.visible = false;
+			jumpAnimation.alpha = 0;
+			this.addChild(jumpAnimation);
 		}
 		
 		public function activate():void {
 			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
+			this.isActivated = true;
 			
 			// transfiguration animation
-			this.transfiguration.displayActivation(this.hero, Constants.PowerupMasterDapan);
+			this.transfiguration.displayActivation(Constants.PowerupMasterDapan);
 			
 			this.gx = this.hero.gx;
 			this.gy = this.hero.gy;
 			this.launchInterval = 1000;
-			Statics.particleJet.start();
+//			Statics.particleJet.start();
+//			Statics.particleCharge.start();
+			Statics.particleBounce.emitterX = this.x;
+			Statics.particleBounce.emitterY = (this.y + this.bounds.bottom) / 2;
+			Statics.particleBounce.start();
+			Statics.particleCharge.emitterX = this.x;
+			Statics.particleCharge.emitterY = this.y;
+			Statics.particleCharge.start(1);
 			
 			// disable hero falldown due to gravity
 //			hero.isDynamic = false;
@@ -60,32 +79,32 @@ package com.jumpGame.gameElements.powerups
 			
 			hero.visible = false;
 			starling.core.Starling.juggler.add(runAnimation);
-			runAnimation.visible = true;
-			runAnimation.play();
+			starling.core.Starling.juggler.add(jumpAnimation);
+//			jumpAnimation.visible = true;
+//			jumpAnimation.play();
+			this.prepareShow();
 			
 			// move hero
 			//			if (this.hero.dy < 1.5 && Statics.gameTime > this.hero.controlRestoreTime) this.hero.dy = 0;
 //			this.incrementalHeroDy = 0;
 			
-//			shouldSnapToRightBorder = true;
-			
 //			var targetLeft:int = -Statics.stageWidth / 2 + 35; // position of left screen border
-			var targetRight:int = Statics.stageWidth / 2 - 35; // position of right screen border
-			Starling.juggler.tween(hero, 1, {
-				transition: Transitions.EASE_OUT_BOUNCE,
-				gx: targetRight
-			});
+//			var targetRight:int = Statics.stageWidth / 2 - 35; // position of right screen border
+//			Starling.juggler.tween(hero, 1, {
+//				transition: Transitions.EASE_OUT_BOUNCE,
+//				gx: targetRight
+//			});
+			Starling.juggler.delayCall(prepareMove, 2);
 			
 			// brief push upward
 			if (this.hero.dy < 2) {
 				this.hero.dy = 2;
 			}
-			Statics.particleJet.start(0.1);
+//			Statics.particleJet.start(0.1);
 			
 			// move camera target up
 			Statics.cameraTargetModifierY = 250;
 			
-			this.isActivated = true;
 			this.completionWarned = false;
 			this.completionTime = Statics.gameTime + 20000;
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
@@ -94,18 +113,38 @@ package com.jumpGame.gameElements.powerups
 			this.nextLaunchTime = Statics.gameTime + 2000;
 		}
 		
+		private function arrivingOnRight():void {
+			if (this.isActivated) {
+				this.jumpAnimation.stop();
+				this.jumpAnimation.visible = false;
+				this.runAnimation.visible = true;
+				this.scaleX = 1;
+			}
+		}
+		
+		private function arrivingOnLeft():void {
+			if (this.isActivated) {
+				this.jumpAnimation.stop();
+				this.jumpAnimation.visible = false;
+				this.runAnimation.visible = true;
+				this.scaleX = -1;
+			}
+		}
+		
 		public function update(timeDiff:Number):Boolean {
 			if (!this.isActivated) return false;
 			
 			this.hero.dx = 0;
 			this.gx = this.hero.gx;
 			this.gy = this.hero.gy;
+			Statics.particleBounce.emitterX = this.x;
+			Statics.particleBounce.emitterY = (this.y + this.bounds.bottom) / 2;
 //			this.snapToBorder(timeDiff);
-			if (this.hero.gx > 0) this.scaleX = 1;
-			else this.scaleX = -1;
+//			if (this.hero.gx > 100) this.arrivingOnRight();
+//			else if (this.hero.gx < -100) this.arrivingOnLeft();
 //			this.hero.dy = 0.5 + this.incrementalHeroDy;
 			
-			if (this.hero.dy < 0.4 && !this.isDynamicDisabled) {
+			if (this.hero.dy < 0.4 && !this.isDynamicDisabled) { // stop falling due to gravity once slowed down
 				this.hero.isDynamic = false;
 				this.isDynamicDisabled = true;
 			}
@@ -133,11 +172,19 @@ package com.jumpGame.gameElements.powerups
 		}
 		
 		public function deactivate():void {
-			Statics.particleJet.stop();
+			this.isActivated = false;
+			
+//			Statics.particleJet.stop();
+//			Statics.particleCharge.stop();
+			Statics.particleBounce.stop();
 			hero.visible = true;
+			runAnimation.stop();
 			runAnimation.visible = false;
 			starling.core.Starling.juggler.remove(runAnimation);
-			this.isActivated = false;
+			jumpAnimation.stop();
+			jumpAnimation.visible = false;
+			jumpAnimation.alpha = 0;
+			starling.core.Starling.juggler.remove(jumpAnimation);
 			
 			// restore hero falldown due to gravity
 			this.hero.isDynamic = true;
@@ -163,7 +210,7 @@ package com.jumpGame.gameElements.powerups
 			Statics.invincibilityExpirationTime = Statics.gameTime + 1000;
 			
 			// transfiguration deactivation effect
-			this.transfiguration.displayDeactivation(this.hero);
+			this.transfiguration.displayDeactivation();
 		}
 		
 //		public function snapToBorder(timeDiff:Number):void {
@@ -196,22 +243,62 @@ package com.jumpGame.gameElements.powerups
 //		}
 		
 		public function snapToLeft():void {
-//			shouldSnapToRightBorder = false;
-			
-			var targetLeft:int = -Statics.stageWidth / 2 + 35; // position of left screen border
-			Starling.juggler.tween(hero, 0.5, {
-				transition: Transitions.EASE_OUT_BOUNCE,
-				gx: targetLeft
-			});
+			if (!isControlDisabled && this.isActivated) {
+				isControlDisabled = true;
+				Statics.particleCharge.start(0.5);
+				runAnimation.visible = false;
+				jumpAnimation.visible = true;
+				jumpAnimation.play();
+				
+				var targetLeft:int = -Statics.stageWidth / 2 + 35; // position of left screen border
+				Starling.juggler.tween(hero, 0.8, {
+					transition: Transitions.EASE_OUT_IN,
+					gx: targetLeft,
+					onComplete: function():void { arrivingOnLeft(); isControlDisabled = false; }
+				});
+			}
 		}
 		
 		public function snapToRight():void {
-//			shouldSnapToRightBorder = true;
-			
+			if (!isControlDisabled && this.isActivated) {
+				isControlDisabled = true;
+				Statics.particleCharge.start(0.5);
+				runAnimation.visible = false;
+				jumpAnimation.visible = true;
+				jumpAnimation.play();
+				
+				var targetRight:int = Statics.stageWidth / 2 - 35; // position of right screen border
+				Starling.juggler.tween(hero, 0.8, {
+					transition: Transitions.EASE_OUT_IN,
+					gx: targetRight,
+					onComplete: function():void { arrivingOnRight(); isControlDisabled = false; }
+				});
+			}
+		}
+		
+		/** 
+		 * On activation, show jump animation
+		 */
+		private function prepareShow():void {
+			isControlDisabled = true;
+			runAnimation.visible = false;
+			jumpAnimation.visible = true;
+			jumpAnimation.play();
+			Starling.juggler.tween(jumpAnimation, 1, {
+				transition: Transitions.LINEAR,
+				alpha: 1
+			});
+		}
+		
+		/**
+		 * On activation, move to right border after transfiguration transition animation
+		 */
+		private function prepareMove():void {
 			var targetRight:int = Statics.stageWidth / 2 - 35; // position of right screen border
-			Starling.juggler.tween(hero, 0.5, {
-				transition: Transitions.EASE_OUT_BOUNCE,
-				gx: targetRight
+			Starling.juggler.tween(hero, 1, {
+				transition: Transitions.EASE_OUT_IN,
+				gx: targetRight,
+				onComplete: function():void { arrivingOnRight(); isControlDisabled = false; }
 			});
 		}
 	}

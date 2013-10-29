@@ -37,6 +37,18 @@ package
 		[Embed(source="../media/graphics/atlas4.xml", mimeType="application/octet-stream")]
 		public static const AtlasXml4:Class;
 		
+		// atlas 5: gameplay foreground elements
+		[Embed(source="../media/graphics/atlas5_fg.png")]
+		public static const AtlasTexture5:Class;
+		[Embed(source="../media/graphics/atlas5_fg.xml", mimeType="application/octet-stream")]
+		public static const AtlasXml5:Class;
+		
+		// atlas 6: background dragon/stingray
+		[Embed(source="../media/graphics/atlas6_drgn.png")]
+		public static const AtlasTexture6:Class;
+		[Embed(source="../media/graphics/atlas6_drgn.xml", mimeType="application/octet-stream")]
+		public static const AtlasXml6:Class;
+		
 		/**
 		 * Background Assets 
 		 */
@@ -106,6 +118,12 @@ package
 						break;
 					case "AtlasTexture4":
 						xml = XML(new AtlasXml4());
+						break;
+					case "AtlasTexture5":
+						xml = XML(new AtlasXml5());
+						break;
+					case "AtlasTexture6":
+						xml = XML(new AtlasXml6());
 						break;
 				}
 				 

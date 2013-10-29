@@ -8,24 +8,24 @@ package com.jumpGame.gameElements.platforms
 
 	public class SpikyBomb extends Platform
 	{
-		private var spikyBombAnimation:MovieClip;
+//		private var spikyBombAnimation:MovieClip;
 		//		private var isWarning:Boolean;
 		//		private var dropTime:int;
 		
 		override protected function createPlatformArt():void
 		{
-			spikyBombAnimation = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("ObstacleSpiky"), 20);
-			spikyBombAnimation.pivotX = Math.ceil(spikyBombAnimation.texture.width  / 2); // center art on registration point
-			spikyBombAnimation.pivotY = Math.ceil(spikyBombAnimation.texture.height / 2);
-			starling.core.Starling.juggler.add(spikyBombAnimation);
-			this.addChild(spikyBombAnimation);
-			
-			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("Explosion"), 40);
-			platformAnimation.pivotX = Math.ceil(platformAnimation.texture.width  / 2); // center art on registration point
-			platformAnimation.pivotY = Math.ceil(platformAnimation.texture.height / 2);
-			platformAnimation.loop = false;
-			platformAnimation.stop();
+			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("ObstacleSpiky"), 20);
+			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
+			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
+			starling.core.Starling.juggler.add(platformAnimation);
 			this.addChild(platformAnimation);
+			
+			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("Explosion"), 40);
+			bounceAnimation.pivotX = Math.ceil(bounceAnimation.width  / 2); // center art on registration point
+			bounceAnimation.pivotY = Math.ceil(bounceAnimation.height / 2);
+			bounceAnimation.loop = false;
+			bounceAnimation.visible = false;
+			this.addChild(bounceAnimation);
 			
 			// warning animation
 			//			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("Warning0000"), 40);
@@ -44,7 +44,6 @@ package com.jumpGame.gameElements.platforms
 			this.dy = 0;
 			this.canBounce = false;
 			if (platformAnimation == null) createPlatformArt();
-			this.platformAnimation.visible = false;
 			this.show();
 		}
 		
@@ -55,10 +54,10 @@ package com.jumpGame.gameElements.platforms
 				if (!Sounds.sfxMuted) Sounds.sndBoom.play();
 				
 				// explosion animation
-				this.spikyBombAnimation.visible = false;
-				this.platformAnimation.visible = true;
-				this.platformAnimation.stop();
-				this.platformAnimation.play();
+				platformAnimation.visible = false;
+				bounceAnimation.visible = true;
+				Starling.juggler.add(this.bounceAnimation);
+				bounceAnimation.play();
 				
 				// reset camera target
 				Statics.cameraTargetModifierY = 0;
@@ -88,6 +87,7 @@ package com.jumpGame.gameElements.platforms
 			
 			this.gx += this.dx * timeDiff;
 			this.gy += this.dy * timeDiff;
+			this.platformAnimation.rotation += Math.PI / 72;
 			//			}
 		}
 	}

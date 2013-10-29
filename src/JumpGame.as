@@ -7,6 +7,8 @@ package
 	import flash.events.ProgressEvent;
 	import flash.utils.getDefinitionByName;
 	import flash.ui.ContextMenu;
+//	import flash.display3D.Context3DRenderMode;
+//	import flash.display3D.Context3DProfile;
 	
 	[SWF(width = "756", height = "650", frameRate = "60", backgroundColor = "#4a4137")]
 	
@@ -85,7 +87,8 @@ package
 			//getDefinitionByName() will let us access the classes without importing
 			const StarlingType:Class = getDefinitionByName("starling.core.Starling") as Class;
 			const GameType:Class = getDefinitionByName("Game") as Class;
-			this._starling = new StarlingType(GameType, this.stage);
+			this._starling = new StarlingType(GameType, this.stage); // baseline_constrained
+//			this._starling = new StarlingType(GameType, this.stage, null, null, Context3DRenderMode.AUTO, Context3DProfile.BASELINE_EXTENDED);
 			this._starling.antiAliasing = 1;
 			this._starling.showStats = true;
 			this._starling.showStatsAt("left", "bottom");

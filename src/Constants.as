@@ -8,7 +8,7 @@ package
 	public class Constants
 	{
 		// level designer mode switch
-		public static const isDesignerMode:Boolean = false;
+		public static const isDesignerMode:Boolean = true;
 		public static const powerupsEnabled:Boolean = true;
 //		public static const contraptionsEnabled:Boolean = true;
 		
@@ -114,7 +114,7 @@ package
 		public static const DarkBouncePower:Number = -0.4;
 		
 		// platform attributes
-		public static const PlatformMaxSize:int = 5; // platform max size
+		public static const PlatformMaxSize:int = 3; // platform max size
 		public static const PlatformDropFallVelocity:Number = 0.06; // platform drop
 		public static const PlatformMobileMaxVelocityX:Number = 0.15;
 		
@@ -129,6 +129,9 @@ package
 		/** Sea of Fire ********************************************************/
 		// enable sea of fire or not
 		public static const SofEnabled:Boolean = true;
+		
+		// sea of fire height at game start
+		public static const InitialSofHeight:Number = -600;
 		
 		// sea of fire dimensions
 		public static const SofWidth:uint = 750;
@@ -160,11 +163,24 @@ package
 		public static const Foreground:uint = 1;
 		
 		// background and foreground parallax depths
-		public static const BgLayer0ParallaxDepth:Number = 0.02;
-		public static const BgLayer1ParallaxDepth:Number = 0.05;
-		public static const BgLayer2ParallaxDepth:Number = 0.5;
+		public static const BgLayer0ParallaxDepth:Number = 0.01;
+		public static const BgLayerPlanetsParallaxDepth:Number = 0.02;
+		public static const BgLayerCreaturesParallaxDepth:Number = 0.02;
+		public static const BgLayerCloudsParallaxDepth:Number = 0.025;
+		public static const BgLayerIslandsSmallParallaxDepth:Number = 0.03;
+		public static const BgLayerIslandsLargeParallaxDepth:Number = 0.05;
+		public static const BgLayerBridgesParallaxDepth:Number = 0.1;
 		// note: player layer has depth 1.0
-		public static const BgLayer4ParallaxDepth:Number = 1.5;
+		public static const bgLayerBranchesParallaxDepth:Number = 1.25;
+		
+		// background and foreground cycling durations
+		public static const BgLayerPlanetsDuration:int = 60000;
+		public static const BgLayerCreaturesDuration:int = 120000;
+		public static const BgLayerCloudsDuration:int = 15000;
+		public static const BgLayerIslandsSmallDuration:int = 20000;
+		public static const BgLayerIslandsLargeDuration:int = 80000;
+		public static const BgLayerBridgesDuration:int = 45000;
+		public static const BgLayerBranchesDuration:int = 5000;
 		
 		// server URIs
 		public static const UriGetUserInfo:String = "user/info";
@@ -199,7 +215,7 @@ package
 		public static const PrepareStep3:uint = 3;
 		public static const PrepareStep4:uint = 4;
 		public static const PrepareStepDone:uint = 5;
-		public static const ModeNormal:uint = 5;
+//		public static const ModeNormal:uint = 5;
 //		public static const ModeBonus:uint = 6;
 		
 		// music mode specific

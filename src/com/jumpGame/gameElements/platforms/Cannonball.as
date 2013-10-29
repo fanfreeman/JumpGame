@@ -2,6 +2,7 @@ package com.jumpGame.gameElements.platforms
 {
 	import com.jumpGame.gameElements.Platform;
 	
+	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.MovieClip;
 
@@ -21,12 +22,13 @@ package com.jumpGame.gameElements.platforms
 			platformImage.pivotY = Math.ceil(platformImage.texture.height / 2);
 			this.addChild(platformImage);
 			
-			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("Explosion"), 40);
-			platformAnimation.pivotX = Math.ceil(platformAnimation.texture.width  / 2); // center art on registration point
-			platformAnimation.pivotY = Math.ceil(platformAnimation.texture.height / 2);
-			platformAnimation.loop = false;
-			platformAnimation.stop();
-			this.addChild(platformAnimation);
+			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("Explosion"), 40);
+			bounceAnimation.pivotX = Math.ceil(bounceAnimation.texture.width  / 2); // center art on registration point
+			bounceAnimation.pivotY = Math.ceil(bounceAnimation.texture.height / 2);
+			bounceAnimation.loop = false;
+			bounceAnimation.visible = false;
+//			platformAnimation.stop();
+			this.addChild(bounceAnimation);
 			
 			// warning animation
 //			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("Warning"), 40);
@@ -47,7 +49,7 @@ package com.jumpGame.gameElements.platforms
 			this.canBounce = false;
 			if (platformImage == null) createPlatformArt();
 			this.platformImage.visible = true;
-			this.platformAnimation.visible = false;
+//			this.platformAnimation.visible = false;
 			this.show();
 		}
 		
@@ -58,10 +60,10 @@ package com.jumpGame.gameElements.platforms
 				if (!Sounds.sfxMuted) Sounds.sndCannonballHit.play();
 				
 				// explosion animation
-				this.platformImage.visible = false;
-				this.platformAnimation.visible = true;
-				this.platformAnimation.stop();
-				this.platformAnimation.play();
+				platformImage.visible = false;
+				bounceAnimation.visible = true;
+				Starling.juggler.add(bounceAnimation);
+				bounceAnimation.play();
 				
 				this.isTouched = true;
 				

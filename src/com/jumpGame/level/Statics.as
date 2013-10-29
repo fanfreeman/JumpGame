@@ -39,7 +39,7 @@ package com.jumpGame.level
 		public static var maxDist:Number;
 		
 		// number of seconds of bonus mode time available
-		public static var bonusTime:int;
+//		public static var bonusTime:int;
 		
 		// number of milliseconds of bonus mode time left
 		public static var bonusTimeLeft:int;
@@ -120,12 +120,18 @@ package com.jumpGame.level
 		
 		public static var powerupAttractionEnabled:Boolean;
 		
+		/**
+		 * Find the distance between two points
+		 */
 		public static function distance(x1:Number, y1:Number, x2:Number, y2:Number):Number {
 			var dx:Number = Math.abs(x1 - x2);
 			var dy:Number = Math.abs(y1 - y2);
 			return Math.sqrt(dx * dx + dy * dy);
 		}
 		
+		/**
+		 * Find the angle of the vector formed from point 1 to point 2
+		 */
 		public static function vectorAngle (x1:Number, y1:Number, x2:Number, y2:Number):Number {
 			var dx:Number = x2 - x1;
 			var dy:Number = y2 - y1;

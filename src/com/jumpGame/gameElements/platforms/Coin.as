@@ -22,8 +22,8 @@ package com.jumpGame.gameElements.platforms
 		override protected function createPlatformArt():void
 		{
 			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
-			platformAnimation.pivotX = Math.ceil(platformAnimation.texture.width  / 2); // center art on registration point
-			platformAnimation.pivotY = Math.ceil(platformAnimation.texture.height / 2);
+			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
+			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
 			starling.core.Starling.juggler.add(platformAnimation);
 			this.addChild(platformAnimation);
 		}

@@ -13,13 +13,15 @@ package com.jumpGame.gameElements
 		private var activationCaption:Image; // the actual caption to tween
 		private var activationCaptionBroom:Image;
 		private var activationCaptionVermilion:Image;
-		private var activationCaptionQueen:Image;
 		private var activationCaptionMaster:Image;
 		private var energyWave:Image;
+		private var hero:Hero;
 		
-		public function Transfiguration()
+		public function Transfiguration(hero:Hero)
 		{
 			super();
+			
+			this.hero = hero;
 			
 			activationBg = new Image(Assets.getSprite("AtlasTexture2").getTexture("TransfigActivationBg0000"));
 			activationBg.y = Statics.stageHeight;
@@ -40,13 +42,6 @@ package com.jumpGame.gameElements
 			activationCaptionVermilion.visible = false;
 			addChild(activationCaptionVermilion);
 			
-			activationCaptionQueen = new Image(Assets.getSprite("AtlasTexture2").getTexture("TransfigActivationCaptionQueen0000"));
-			activationCaptionQueen.pivotY = Math.ceil(activationCaptionQueen.height / 2);
-			activationCaptionQueen.x = Statics.stageWidth;
-			activationCaptionQueen.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
-			activationCaptionQueen.visible = false;
-			addChild(activationCaptionQueen);
-			
 			activationCaptionMaster = new Image(Assets.getSprite("AtlasTexture2").getTexture("TransfigActivationCaptionDapan0000"));
 			activationCaptionMaster.pivotY = Math.ceil(activationCaptionMaster.height / 2);
 			activationCaptionMaster.x = Statics.stageWidth;
@@ -63,14 +58,14 @@ package com.jumpGame.gameElements
 			addChild(energyWave);
 		}
 		
-		public function displayActivation(hero:Hero, powerup:uint):void {
+		public function displayActivation(powerup:uint):void {
 			Statics.gamePaused = true;
 			hero.isTransfigured = true;
 			
 			// tween for activation bg flyout
 			var tweenActivationBgFlyout:Tween = new Tween(activationBg, 0.3, Transitions.EASE_IN);
 			tweenActivationBgFlyout.animate("y", -activationBg.height);
-			tweenActivationBgFlyout.onComplete = resetTransfigurationActivation;
+//			tweenActivationBgFlyout.onComplete = resetTransfigurationActivation;
 			
 			// tween for activation bg slow motion
 			var tweenActivationBgSlowmo:Tween = new Tween(activationBg, 1.8, Transitions.EASE_OUT);
@@ -92,9 +87,6 @@ package com.jumpGame.gameElements
 				case Constants.PowerupVermilionBird:
 					this.activationCaption = this.activationCaptionVermilion;
 					break;
-//				case Constants.PowerupQueenNagini:
-//					this.activationCaption = this.activationCaptionQueen;
-//					break;
 				case Constants.PowerupMasterDapan:
 					this.activationCaption = this.activationCaptionMaster;
 					break;
@@ -119,16 +111,16 @@ package com.jumpGame.gameElements
 			});
 			
 			// energy wave tween
-			Starling.juggler.delayCall(releaseEnergyWave, 2.2, hero.x, hero.y);
+			Starling.juggler.delayCall(releaseEnergyWave, 2.2);
 		}
 		
-		public function displayDeactivation(hero:Hero):void {
+		public function displayDeactivation():void {
 			hero.isTransfigured = false;
-			this.releaseEnergyWave(hero.x, hero.y);
+			this.releaseEnergyWave();
 		}
 		
-		private function releaseEnergyWave(heroX:Number, heroY:Number):void {
-			energyWave.x = heroX;
+		private function releaseEnergyWave():void {
+			energyWave.x = hero.x;
 			energyWave.y = Statics.stageHeight / 2;
 			energyWave.visible = true;
 			Starling.juggler.tween(energyWave, 0.7, {
@@ -158,6 +150,11 @@ package com.jumpGame.gameElements
 			
 			// unpause game
 			Statics.gamePaused = false;
+			
+			// brief push upward
+			Statics.particleJet.emitterX = hero.x;
+			Statics.particleJet.emitterY = hero.y;
+			Statics.particleJet.start(0.2);
 		}
 	}
 }

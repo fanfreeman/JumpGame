@@ -110,6 +110,9 @@ package com.jumpGame.level {
 				case 4003:
 					this.generateMovingStarsHorizontal();
 					break;
+				case 4004:
+					this.generateStarsCircularMotion();
+					break;
 				
 				case 5000: // [2] size [2-4] [normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
 					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
@@ -266,7 +269,7 @@ package com.jumpGame.level {
 				
 				case 999999: // designed pattern
 //					elementDistribution = new Array(0.1, 0.4, 0.7, 0.77, 0.84, 0.91, 0.98, 1.0);
-					this.generateDesigned2000(11);
+					this.generateDesigned999999();
 //					this.generateStarCrossLarge(4);
 					break;
 //					// 1 per row, 2 per row, 3 per row, 4 per row, 5 per row
@@ -1166,6 +1169,36 @@ package com.jumpGame.level {
 			}
 		}
 		
+		private function generateStarsCircularMotion():void {
+			var gx:Number = 0;
+			var gy:Number;
+			
+			for (var i:uint = 0; i < 10; i++) { // loop through rows of spinners
+				gx = Math.random() * 400 - 200;
+				gy = this.builder.currentY * Constants.UnitHeight;
+
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 120, (Math.random() * 2 + 1) * Math.PI / 180, true]);
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 240, (Math.random() * 2 + 1) * Math.PI / 180, true]);
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 360, (Math.random() * 2 + 1) * Math.PI / 180, true]);
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 480, (Math.random() * 2 + 1) * Math.PI / 180, true]);
+
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 120, (Math.random() * 2 + 1) * Math.PI / 180, false, Math.PI]);
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 240, (Math.random() * 2 + 1) * Math.PI / 180, false, Math.PI]);
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 360, (Math.random() * 2 + 1) * Math.PI / 180, false, Math.PI]);
+				this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 480, (Math.random() * 2 + 1) * Math.PI / 180, false, Math.PI]);
+
+//				if (Math.random() < 0.33) { // coins
+//					gx = Math.random() * 400 - 200;
+//					gy = (this.builder.currentY + 3) * Constants.UnitHeight;
+//					this.builder.levelElementsArray.push([gy, gx, "Coin", 0, 0, 0, 100, null, false]);
+//					this.builder.levelElementsArray.push([gy, gx, "Coin", 0, 0, 0, 100, null, false, Math.PI / 2]);
+//					this.builder.levelElementsArray.push([gy, gx, "Coin", 0, 0, 0, 100, null, false, Math.PI]);
+//					this.builder.levelElementsArray.push([gy, gx, "Coin", 0, 0, 0, 100, null, false, Math.PI * 3 / 2]);
+//				}
+				this.builder.currentY += 5;
+			}
+		}
+		
 		private function generateEasySpinners():void { // 5 stars in a line spinner
 			var gx:Number = 0;
 			var gy:Number;
@@ -1454,12 +1487,12 @@ package com.jumpGame.level {
 			for (var ri:uint = 0; ri < 80; ri++) {
 				gx = 200;
 				gy = this.builder.currentY * Constants.UnitHeight;
-				this.builder.levelElementsArray.push([gy, gx, "PlatformNormal", 4]);
+				this.builder.levelElementsArray.push([gy, gx, "PlatformMobileBoost", 3]);
 				
-				if (Math.random() < 0.33) {
+				if (Math.random() < 0.3) {
 					gx = Math.random() * 600 - 300;
 					gy = this.builder.currentY * Constants.UnitHeight;
-					this.builder.levelElementsArray.push([gy, gx, "Attractor", 0]);
+//					this.builder.levelElementsArray.push([gy, gx, "Attractor", 4]);
 				}
 				
 				this.builder.currentY += 3;

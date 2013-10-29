@@ -14,10 +14,20 @@ package com.jumpGame.gameElements.platforms
 		
 		override protected function createPlatformArt():void
 		{
-			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformMobile"), 12);
+			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformMobileIdle"), 30);
+			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
+			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
 			starling.core.Starling.juggler.add(platformAnimation);
-			platformAnimation.loop = false;
+//			platformAnimation.loop = false;
 			this.addChild(platformAnimation);
+			
+			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformMobileBounce"), 15);
+			bounceAnimation.pivotX = Math.ceil(bounceAnimation.width  / 2); // center art on registration point
+			bounceAnimation.pivotY = Math.ceil(bounceAnimation.height / 2);
+			bounceAnimation.stop();
+			bounceAnimation.loop = false;
+			bounceAnimation.visible = false;
+			this.addChild(bounceAnimation);
 		}
 		
 		public override function update(timeDiff:Number):void {

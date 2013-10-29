@@ -26,16 +26,16 @@ package com.jumpGame.gameElements
 			
 			// add two sea of fire waves side by side
 			if (this.blurValue == 0) {
-				waveAnim1 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("WaveBlur0"), 16);
-				waveAnim2 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("WaveBlur0"), 16);
+				waveAnim1 = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("WaveBlur0"), 16);
+				waveAnim2 = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("WaveBlur0"), 16);
 			}
 			else if (this.blurValue == 1) {
-				waveAnim1 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("WaveBlur1"), 16);
-				waveAnim2 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("WaveBlur1"), 16);
+				waveAnim1 = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("WaveBlur1"), 16);
+				waveAnim2 = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("WaveBlur1"), 16);
 			}
 			else if (this.blurValue == 2) {
-				waveAnim1 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("WaveBlur2"), 16);
-				waveAnim2 = new MovieClip(Assets.getSprite("AtlasTexture3").getTextures("WaveBlur2"), 16);
+				waveAnim1 = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("WaveBlur2"), 16);
+				waveAnim2 = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("WaveBlur2"), 16);
 			}
 			
 			waveAnim1.pivotX = Math.ceil(waveAnim1.width / 2);

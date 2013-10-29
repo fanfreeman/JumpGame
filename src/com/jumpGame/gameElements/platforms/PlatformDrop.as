@@ -12,29 +12,28 @@ package com.jumpGame.gameElements.platforms
 		
 		override protected function createPlatformArt():void
 		{
-			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformDrop"), 12);
+			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformDropIdle"), 30);
+			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
+			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
 			starling.core.Starling.juggler.add(platformAnimation);
-			platformAnimation.loop = false;
+//			platformAnimation.loop = false;
 			this.addChild(platformAnimation);
+			
+			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformDropBounce"), 15);
+			bounceAnimation.pivotX = Math.ceil(bounceAnimation.width  / 2); // center art on registration point
+			bounceAnimation.pivotY = Math.ceil(bounceAnimation.height / 2);
+			bounceAnimation.stop();
+			bounceAnimation.loop = false;
+			bounceAnimation.visible = false;
+			this.addChild(bounceAnimation);
 		}
 		
 		override public function contact():void {
-			// play sound effect
-//			if (Statics.gameMode == Constants.ModeNormal) {
-//				var temp:Number = Math.random() * 3;
-//				if (temp < 1) {
-//					Sounds.sndBounce1.play();
-//				} else if (temp >= 1 && temp < 2) {
-//					Sounds.sndBounce2.play();
-//				} else if (temp >= 2 && temp < 3) {
-//					Sounds.sndBounce3.play();
-//				}
-//			}
-			if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
-			
-			this.platformAnimation.stop();
-			this.platformAnimation.play();
-			
+//			if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
+//			
+//			this.platformAnimation.stop();
+//			this.platformAnimation.play();
+			super.contact();
 			this.isFalling = true;
 		}
 		

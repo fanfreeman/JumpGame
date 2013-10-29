@@ -79,7 +79,7 @@ package com.jumpGame.gameElements
 		}
 		
 		private function createHeroJumpAnim():void {
-			animationJump = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("CharBoyJump"), 24);
+			animationJump = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharBoyJump"), 10);
 //			animationJump.scaleX = 0.6;
 //			animationJump.scaleY = 0.6;
 			animationJump.pivotX = Math.ceil(animationJump.texture.width  / 2);
@@ -90,7 +90,7 @@ package com.jumpGame.gameElements
 		}
 		
 		private function createHeroFailAnim():void {
-			animationHurt = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("CharBoyHurt"), 24);
+			animationHurt = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharBoyHurt"), 24);
 //			animationHurt.scaleX = 0.6;
 //			animationHurt.scaleY = 0.6;
 			animationHurt.pivotX = Math.ceil(animationHurt.width  / 2);
@@ -100,7 +100,7 @@ package com.jumpGame.gameElements
 		}
 		
 		private function createHeroSuperAnim():void {
-			animationSuper = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("CharBoySuper"), 24);
+			animationSuper = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharBoySuper"), 24);
 			animationSuper.pivotX = Math.ceil(animationSuper.width  / 2);
 			animationSuper.pivotY = Math.ceil(animationSuper.height / 2);
 			this.addChild(animationSuper);

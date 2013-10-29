@@ -18,7 +18,7 @@ package com.jumpGame.level  {
 		}
 		
 		public function initialize():void { // reset properties here
-			currentY = 0;
+			currentY = 30;
 			nextDifficultyDistance = 18000; // distance of the very first difficulty level
 			difficulty = 7;
 			repetitions = 0;
@@ -74,7 +74,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 13:
-					blockNumber = int(Math.floor(Math.random() * 4) + 4000);
+					blockNumber = int(Math.floor(Math.random() * 5) + 4000);
 					this.generator.generate(blockNumber);
 					break;
 				case 14:

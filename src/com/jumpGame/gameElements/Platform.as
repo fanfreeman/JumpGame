@@ -20,6 +20,7 @@ package com.jumpGame.gameElements
 		public var fixedGy:Number;
 		private var fixedDy:Number;
 		protected var platformAnimation:MovieClip = null;
+		protected var bounceAnimation:MovieClip = null;
 		protected var platformImage:Image = null;
 		
 		private var _destroyed:Boolean = true; // required by interface
@@ -33,10 +34,10 @@ package com.jumpGame.gameElements
 			this.dy = 0;
 			this.isTouched = false;
 			if (platformAnimation == null && platformImage == null) createPlatformArt();
+			
 			if (size == 0) this.size = 4;
 			else this.size = size;
 			this.rescale();
-			this.show();
 			this.fixedGy = gy;
 			this.fixedDy = 0;
 			
@@ -49,21 +50,26 @@ package com.jumpGame.gameElements
 					this.fixedDy = args[1];
 				}
 			}
+			
+			this.show();
 		}
 		
 		protected function rescale():void {
 			if (platformAnimation != null) {
 				platformAnimation.scaleX = this.size / Constants.PlatformMaxSize;
-				platformAnimation.scaleY = 4 / Constants.PlatformMaxSize;
-				platformAnimation.pivotX = Math.ceil(platformAnimation.texture.width  / 2); // center art on registration point
-				platformAnimation.pivotY = Math.ceil(platformAnimation.texture.height / 2);
+//				if (this.size > Constants.PlatformMaxSize) platformAnimation.scaleY = this.size / Constants.PlatformMaxSize;
+//				else platformAnimation.scaleY = 1;
 			}
 			
-			if (platformImage != null) {
+			if (platformImage != null && this.size < Constants.PlatformMaxSize) {
 				platformImage.scaleX = this.size / Constants.PlatformMaxSize;
 				platformImage.scaleY = this.size / Constants.PlatformMaxSize;
-				platformImage.pivotX = Math.ceil(platformImage.width / 2); // center art on registration point
-				platformImage.pivotY = Math.ceil(platformImage.height / 2);
+			}
+			
+			if (bounceAnimation != null) {
+				bounceAnimation.scaleX = this.size / Constants.PlatformMaxSize;
+//				if (this.size > Constants.PlatformMaxSize) bounceAnimation.scaleY = this.size / Constants.PlatformMaxSize;
+//				else bounceAnimation.scaleY = 1;
 			}
 		}
 		
@@ -95,8 +101,15 @@ package com.jumpGame.gameElements
 //			}
 			if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
 			
-			this.platformAnimation.stop();
-			this.platformAnimation.play();
+			if (this.bounceAnimation != null) {
+				platformAnimation.visible = false;
+				bounceAnimation.visible = true;
+				Starling.juggler.add(this.bounceAnimation);
+				bounceAnimation.play();
+			} else {
+				this.platformAnimation.stop();
+				this.platformAnimation.play();
+			}
 			
 			this.gy = this.fixedGy - Constants.PlatformReactionBounce; // reaction bounce
 		}
@@ -149,6 +162,11 @@ package com.jumpGame.gameElements
 //			if (this.platformImage != null) this.platformImage.visible = false;
 			//Starling.juggler.remove(this.platformAnimation);
 			if (this.platformAnimation != null) Starling.juggler.remove(this.platformAnimation);
+			if (this.bounceAnimation != null) {
+				Starling.juggler.remove(this.bounceAnimation);
+				this.bounceAnimation.stop();
+				this.bounceAnimation.visible = false;
+			}
 			this.visible = false;
 		}
 		
@@ -159,18 +177,25 @@ package com.jumpGame.gameElements
 		{
 //			if (this.platformAnimation != null) this.platformAnimation.visible = true;
 //			if (this.platformImage != null) this.platformImage.visible = true;
-			if (this.platformAnimation != null) Starling.juggler.add(this.platformAnimation);
+			if (this.platformAnimation != null) {
+				Starling.juggler.add(this.platformAnimation);
+				this.platformAnimation.visible = true;
+			}
 			this.visible = true;
 		}
 		
 		override public function get width():Number
 		{
+			if (platformAnimation != null) return this.platformAnimation.width;
+			else return platformImage.width;
 			return this.platformAnimation.width;
 		}
 		
 		override public function get height():Number
 		{
-			return this.platformAnimation.texture.height;
+			if (platformAnimation != null) return this.platformAnimation.height;
+			else return platformImage.height;
+//			return this.platformAnimation.height;
 		}
 		
 		// methods required by interface

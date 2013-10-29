@@ -35,7 +35,7 @@ package com.jumpGame.gameElements.contraptions
 				this.touched = true;
 				this.visible = false;
 				if (!Sounds.sfxMuted) Sounds.sndGotHourglass.play();
-				Statics.bonusTime += 5;
+//				Statics.bonusTime += 5;
 				HUD.showMessage("Bonus Time!");
 			}
 		}

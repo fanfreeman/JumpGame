@@ -56,8 +56,6 @@ package com.jumpGame.screens
 	import com.jumpGame.ui.GameOverContainer;
 	import com.jumpGame.ui.HUD;
 	import com.jumpGame.ui.PauseButton;
-	import com.oaxoa.fx.LightningType;
-	import com.oaxoa.fx.MyLightning;
 	
 	import flash.events.KeyboardEvent;
 	import flash.geom.Rectangle;
@@ -72,6 +70,7 @@ package com.jumpGame.screens
 	import starling.events.Event;
 	import starling.extensions.PDParticleSystem;
 	import starling.textures.Texture;
+	import com.jumpGame.gameElements.Lightning;
 	
 	public class InGame extends Sprite
 	{
@@ -166,7 +165,7 @@ package com.jumpGame.screens
 		private var weather:Weather;
 		
 		// lightning
-		private var lightning:MyLightning;
+		private var lightning:Lightning;
 		
 		// ------------------------------------------------------------------------------------------------------------
 		// HUD
@@ -256,12 +255,12 @@ package com.jumpGame.screens
 			this.addChild(hero);
 			
 			// set up hero out of stage indicators
-			heroPointerLeft = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Arrow0000"));
+			heroPointerLeft = new Image(Assets.getSprite("AtlasTexture2").getTexture("Arrow0000"));
 			heroPointerLeft.pivotY = Math.ceil(heroPointerLeft.texture.height / 2);
 			heroPointerLeft.visible = false;
 			this.addChild(heroPointerLeft);
 			
-			heroPointerRight = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Arrow0000"));
+			heroPointerRight = new Image(Assets.getSprite("AtlasTexture2").getTexture("Arrow0000"));
 			heroPointerRight.scaleX = -1;
 			heroPointerRight.pivotY = Math.ceil(heroPointerRight.texture.height / 2);
 			heroPointerRight.x = Statics.stageWidth;
@@ -345,9 +344,11 @@ package com.jumpGame.screens
 			this.addChild(weather);
 			
 			//lightning
-			lightning = new MyLightning();
-			lightning.init(0,0,0,0,LightningType.DISCHARGE,0xddeeff);
-			Starling.current.nativeOverlay.addChild(lightning);
+//			lightning = new MyLightning();
+//			lightning.init(0,0,0,0,LightningType.DISCHARGE,0xddeeff);
+//			Starling.current.nativeOverlay.addChild(lightning);
+			lightning = new Lightning();
+			this.addChild(lightning);
 			
 			// create level builder object
 			this.levelParser = new LevelParser();
@@ -356,7 +357,7 @@ package com.jumpGame.screens
 			this.contraptionControl = new ContraptionControl();
 			
 			// transfiguration activation
-			transfiguration = new Transfiguration();
+			transfiguration = new Transfiguration(this.hero);
 			this.addChild(transfiguration);
 			
 			// set up powerups
@@ -460,6 +461,28 @@ package com.jumpGame.screens
 		 */
 		public function initializeNormalMode():void
 		{
+			// reset static vars
+//			Statics.gameMode = Constants.ModeNormal;
+			Statics.gamePaused = false;
+			Statics.speedFactor = 1;
+			Statics.preparationStep = Constants.PrepareStep0;
+			Statics.gameTime = 0;
+//			Statics.bonusTime = 0;
+			Statics.nextStarNote = 0;
+			Statics.powerupsEnabled = true;
+			Statics.specialReady = true;
+			Statics.isBellActive = false;
+			Statics.isRightCannonActive = false;
+			Statics.isLeftCannonActive = false;
+			Statics.cameraShake = 0;
+			Statics.maxDist = 0;
+			Statics.displayingBadge = false;
+			Statics.calculateEmaVelocity = false;
+			Statics.invincibilityExpirationTime = 0;
+			Statics.cameraTargetModifierY = 0;
+			Statics.powerupAttractionEnabled = false;
+			Statics.contraptionsEnabled = true;
+			
 			gameOverContainer.visible = false;
 			this.visible = true;
 			this.hud.initialize();
@@ -485,28 +508,6 @@ package com.jumpGame.screens
 			this.discreteLeft = false;
 			this.discreteRight = false;
 			this.playerControl = true;
-			
-			// reset static vars
-			Statics.gameMode = Constants.ModeNormal;
-			Statics.gamePaused = false;
-			Statics.speedFactor = 1;
-			Statics.preparationStep = Constants.PrepareStep0;
-			Statics.gameTime = 0;
-			Statics.bonusTime = 0;
-			Statics.nextStarNote = 0;
-			Statics.powerupsEnabled = true;
-			Statics.specialReady = true;
-			Statics.isBellActive = false;
-			Statics.isRightCannonActive = false;
-			Statics.isLeftCannonActive = false;
-			Statics.cameraShake = 0;
-			Statics.maxDist = 0;
-			Statics.displayingBadge = false;
-			Statics.calculateEmaVelocity = false;
-			Statics.invincibilityExpirationTime = 0;
-			Statics.cameraTargetModifierY = 0;
-			Statics.powerupAttractionEnabled = false;
-			Statics.contraptionsEnabled = true;
 			
 			// initial level parser
 			this.levelParser.initialize();
@@ -642,7 +643,7 @@ package com.jumpGame.screens
 			Statics.calculateEmaVelocity = true;
 			
 			//test
-//			this.powerupsList[Constants.PowerupAttractor].activate();
+			this.powerupsList[Constants.PowerupExpansion].activate();
 		}
 		
 		/**
@@ -950,11 +951,14 @@ package com.jumpGame.screens
 							
 							// y
 							if (leftArrow || rightArrow) {
-								if (this.hero.dy < 1) this.hero.dy += 0.05;
+								this.powerupsList[Constants.PowerupExpansion].engineOn();
+								
+							} else {
+								this.powerupsList[Constants.PowerupExpansion].engineOff();
 							}
 							
 							// propeller art
-							this.powerupsList[Constants.PowerupExpansion].updatePropellers(leftArrow, rightArrow);
+//							this.powerupsList[Constants.PowerupExpansion].updatePropellers(leftArrow, rightArrow);
 						} else if (this.powerupsList[Constants.PowerupVermilionBird].isActivated) { // vermilion bird controls
 							// x
 							if (discreteLeft && Statics.gameTime > this.hero.controlRestoreTime) { // left arrow pressed
@@ -1465,6 +1469,11 @@ package com.jumpGame.screens
 				} else if (this.platformsList[i] is SpikyBomb) {
 					isSpikyBomb = true;
 					platformBounds.inflate(20, 20);
+				} else if (this.platformsList[i] is PlatformDrop || this.platformsList[i] is PlatformMobile) {
+					var shrinkage:Number = -this.platformsList[i].size * 8;
+					platformBounds.inflate(shrinkage, shrinkage);
+				} else { // all other platforms
+					platformBounds.inflate(-16, -16);
 				}
 				
 				// detect hero/platform collisions if player has not yet lost
@@ -1542,11 +1551,11 @@ package com.jumpGame.screens
 								this.platformsList[i].contact();
 							}
 							else if (isAttractor) {
-								this.hero.attract(this.timeDiffControlled, this.platformsList[i].gx, this.platformsList[i].gy);
-//								this.platformsList[i].contact();
-								
+								if (!this.hero.isTransfigured) {
+									this.hero.attract(this.timeDiffControlled, this.platformsList[i].gx, this.platformsList[i].gy);
+								}
 								//lightning
-								lightning.visible = true;
+								lightning.show();
 								lightning.updatePosition(this.platformsList[i].x, this.platformsList[i].y, this.hero.x, this.hero.y);
 							}
 							else if (isCannonball) {
@@ -1565,7 +1574,7 @@ package com.jumpGame.screens
 //								this.returnPlatformToPool(i);
 //								continue;
 							}
-							else if (this.hero.dy < 0) { // all other platforms: only if hero is falling
+							else if (this.hero.dy < 0 && !this.hero.isTransfigured) { // all other platforms: only if hero is falling
 								if (this.platformsList[i].canBounce) {
 									this.hero.bounce(this.platformsList[i].getBouncePower());
 									this.platformsList[i].contact();
@@ -1669,7 +1678,7 @@ package com.jumpGame.screens
 			} // eof loop through platforms
 			
 			//lightning
-			if (!hasAttractor) this.lightning.visible = false;
+			if (!hasAttractor) this.lightning.hide();
 			
 			// update next platform position
 			if (smallestPlatformIndex != -1) {
@@ -1982,40 +1991,41 @@ package com.jumpGame.screens
 		} /** eof scrollElements() */
 		
 		private function summonHourglass():void {
-			if (Statics.gameMode == Constants.ModeNormal) { // only summon hourglass in normal mode
+//			if (Statics.gameMode == Constants.ModeNormal) { // only summon hourglass in normal mode
 				var gx:Number = Math.random() * (Constants.StageWidth - Constants.ScreenBorder) 
 					- (Constants.StageWidth - Constants.ScreenBorder) / 2;
 				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, gx, "Hourglass");
 				this.contraptionControl.scheduleNext(Constants.ContraptionHourglass);
-			}
+//			}
 		}
 		
 		private function launchTrain():void {
-			if (Statics.gameMode == Constants.ModeNormal) { // only dispatch train in normal mode
+//			if (Statics.gameMode == Constants.ModeNormal) { // only dispatch train in normal mode
 				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, Constants.StageWidth / 2, "Train");
 				//if (!Sounds.sfxMuted) Sounds.sndTrainWarning.play();
 				this.contraptionControl.scheduleNext(Constants.ContraptionTrain);
-			}
+//			}
 		}
 		
 		private function launchTrainFromLeft():void {
-			if (Statics.gameMode == Constants.ModeNormal) { // only dispatch train in normal mode
+//			if (Statics.gameMode == Constants.ModeNormal) { // only dispatch train in normal mode
 				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, -Constants.StageWidth / 2, "TrainFromLeft");
 				//if (!Sounds.sfxMuted) Sounds.sndTrainWarning.play();
 				this.contraptionControl.scheduleNext(Constants.ContraptionTrainFromLeft);
-			}
+//			}
 		}
 		
 		private function dropBell():void {
 //			trace("Dropping bell...");
-			if (Statics.gameMode == Constants.ModeNormal) { // only summon bell in normal mode
+//			if (Statics.gameMode == Constants.ModeNormal) { // only summon bell in normal mode
 				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight, 0, "Bell");
 				this.contraptionControl.scheduleNext(Constants.ContraptionBell);
-			}
+//			}
 		}
 		
 		private function summonPowerupBoxes():void {
-			if (Statics.gameMode == Constants.ModeNormal && Statics.powerupsEnabled) { // only summon powerup boxes in normal mode
+//			if (Statics.gameMode == Constants.ModeNormal && Statics.powerupsEnabled) { // only summon powerup boxes in normal mode
+			if (Statics.powerupsEnabled) { // only summon powerup boxes in normal mode
 				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, -300, "PowerupBoxPink");
 				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, -150, "PowerupBoxGreen");
 				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, 0, "PowerupBoxFire");
