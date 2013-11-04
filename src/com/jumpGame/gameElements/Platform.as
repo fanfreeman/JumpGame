@@ -104,7 +104,7 @@ package com.jumpGame.gameElements
 			if (this.bounceAnimation != null) {
 				platformAnimation.visible = false;
 				bounceAnimation.visible = true;
-				Starling.juggler.add(this.bounceAnimation);
+				bounceAnimation.stop();
 				bounceAnimation.play();
 			} else {
 				this.platformAnimation.stop();
@@ -180,6 +180,9 @@ package com.jumpGame.gameElements
 			if (this.platformAnimation != null) {
 				Starling.juggler.add(this.platformAnimation);
 				this.platformAnimation.visible = true;
+			}
+			if (this.bounceAnimation != null) {
+				Starling.juggler.add(this.bounceAnimation);
 			}
 			this.visible = true;
 		}

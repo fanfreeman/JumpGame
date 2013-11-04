@@ -3,21 +3,33 @@ package com.jumpGame.gameElements.platforms
 	import com.jumpGame.gameElements.Platform;
 	
 	import starling.core.Starling;
-	import starling.display.Image;
 	import starling.display.MovieClip;
+	import starling.filters.ColorMatrixFilter;
 	
 	public class Repulsor extends Platform
 	{
 		override protected function createPlatformArt():void
 		{
-			platformImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Pulsar0000"));
-			platformImage.pivotX = Math.ceil(platformImage.width  / 2); // center art on registration point
-			platformImage.pivotY = Math.ceil(platformImage.height / 2);
-			this.addChild(platformImage);
+//			platformImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Pulsar0000"));
+//			platformImage.pivotX = Math.ceil(platformImage.width  / 2); // center art on registration point
+//			platformImage.pivotY = Math.ceil(platformImage.height / 2);
+//			this.addChild(platformImage);
+			
+			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Repulsor"), 24);
+			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
+			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
+			starling.core.Starling.juggler.add(platformAnimation);
+			this.addChild(platformAnimation);
+			
+			var hueFilter:ColorMatrixFilter = new ColorMatrixFilter();
+			hueFilter.adjustHue(0.2);
 			
 			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PulseRed"), 30);
+			bounceAnimation.filter = hueFilter;
 			bounceAnimation.pivotX = Math.ceil(bounceAnimation.width  / 2); // center art on registration point
 			bounceAnimation.pivotY = Math.ceil(bounceAnimation.height / 2);
+			bounceAnimation.stop();
+			Starling.juggler.add(this.bounceAnimation);
 			bounceAnimation.scaleX = 2;
 			bounceAnimation.scaleY = 2;
 			bounceAnimation.loop = false;
@@ -40,17 +52,20 @@ package com.jumpGame.gameElements.platforms
 		override public function contact():void {
 			if (!Sounds.sfxMuted) Sounds.sndBounce2.play();
 			
-			platformImage.visible = false;
+			platformAnimation.visible = false;
 			bounceAnimation.visible = true;
-			Starling.juggler.add(this.bounceAnimation);
+			bounceAnimation.stop();
 			bounceAnimation.play();
 		}
 		
 		override public function update(timeDiff:Number):void {
-			if (this.bounceAnimation.isComplete) this.platformImage.visible = true;
+			if (bounceAnimation.visible && this.bounceAnimation.isComplete) {
+				bounceAnimation.visible = false;
+				this.platformAnimation.visible = true;
+			}
 			this.gx += this.dx * timeDiff;
 			this.gy += this.dy * timeDiff;
-			this.platformImage.rotation += Math.PI / 72;
+			this.platformAnimation.rotation += Math.PI / 72;
 		}
 	}
 }

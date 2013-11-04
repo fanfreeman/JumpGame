@@ -4,6 +4,7 @@ package com.jumpGame.screens
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.popups.DialogBox;
+	import com.jumpGame.ui.popups.MatchDataContainer;
 	import com.jumpGame.ui.popups.ScreenAchievements;
 	import com.jumpGame.ui.popups.ScreenGetCoins;
 	import com.jumpGame.ui.popups.ScreenGetGems;
@@ -16,7 +17,7 @@ package com.jumpGame.screens
 	import flash.external.ExternalInterface;
 	import flash.utils.getTimer;
 	
-	import feathers.controls.Label;
+	import feathers.controls.Button;
 	import feathers.controls.ScreenNavigator;
 	import feathers.controls.ScreenNavigatorItem;
 	import feathers.controls.TabBar;
@@ -39,10 +40,10 @@ package com.jumpGame.screens
 	public class Menu  extends ScreenNavigator
 	{
 		protected var theme:MetalWorksMobileTheme;
-		private var coinLabel:Label;
-		private var gemLabel:Label;
-		private var rankLabel:Label;
-		private var countdownLabel:Label;
+		private var coinLabel:TextField;
+		private var gemLabel:TextField;
+		private var lifeLabel:TextField;
+		private var countdownLabel:TextField;
 		private var fontBadabb:Font;
 		public var communicator:Communicator = null;
 		
@@ -82,11 +83,14 @@ package com.jumpGame.screens
 		
 		private var countdownActive:Boolean;
 		
+		// match details popup
+		public var matchDataPopup:MatchDataContainer;
+		
 		public function Menu()
 		{
 			super();
 			
-			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, addedToStageHandler);
 			
 			// Javascript Callbacks
 //			ExternalInterface.addCallback("returnFbId", returnFbId);
@@ -108,26 +112,32 @@ package com.jumpGame.screens
 					if (dataObj.status == "found") { // found existing player
 						// get basic player info
 						Statics.userId = String(dataObj.user_id);
+						Statics.facebookId = dataObj.facebook_id;
 						Statics.firstName = dataObj.first_name;
 						Statics.lastName = dataObj.last_name;
 						Statics.playerName = dataObj.first_name + " " + dataObj.last_name.substr(0, 1) + ".";
 						Statics.playerHighScore = dataObj.high_score;
-						
-						// get player details
-						// score
-//						if (int(dataObj.high_score) > 0) { // existing player
-//							label.text = "Welcome, " + dataObj.first_name + "! Your High Score: " + dataObj.high_score;
-//						} else { // this is a new player
-//							label.text = "Welcome to You Jump I Jump, " + dataObj.first_name + "!";
-//						}
 						Statics.playerCoins = int(dataObj.coins);
 						Statics.playerGems = int(dataObj.gems);
-						coinLabel.text = "Coins: " + dataObj.coins;
-						gemLabel.text = "Gems: " + dataObj.gems;
+						coinLabel.text = dataObj.coins;
+						gemLabel.text = dataObj.gems;
 						this.lives = int(dataObj.lives);
-						rankLabel.text = "Lives: " + dataObj.lives;
+						lifeLabel.text = dataObj.lives;
 						this.timeTillLifeCountdown = int(dataObj.time_till_next_life);
 						this.timeUpdated = getTimer();
+						
+						// get player profile picture
+//						if (Statics.playerPictureBitmap == null && dataObj.picture != "none") {
+//							Statics.playerPictureWidth = uint(dataObj.picture_width);
+//							loader.load(new URLRequest(dataObj.picture));
+//							loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onPictureLoadComplete);
+//						}
+						if (Statics.playerPictureBitmap == null) {
+							matchDataPopup.getProfilePictureUrlFromJs(dataObj.facebook_id);
+//							Statics.playerPictureWidth = uint(dataObj.picture_width);
+//							loader.load(new URLRequest(dataObj.picture));
+//							loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onPictureLoadComplete);
+						}
 						
 						// upgrade ranks
 						Statics.rankTeleportation = int(dataObj.rank_teleportation);
@@ -194,7 +204,7 @@ package com.jumpGame.screens
 								} else { // match not yet ended
 									if (Boolean(int(dataObj.matches[i].is_player_2))) { // is player 2
 										if (roundNumber == 1) { // my first turn, allow resigning from match
-											matchesYourTurnCollection.addItem({ title: opponentName + " has challenged you to a match!", caption: dataObj.matches[i].time_text});
+											matchesYourTurnCollection.addItem({ title: opponentName + " challenges you to a match!", caption: dataObj.matches[i].time_text});
 											this.screenMatches.gamesMyTurn.push(dataObj.matches[i]);
 										} else { // turn 3 or turn 5
 											if (roundNumber % 2 == 1) {
@@ -257,14 +267,14 @@ package com.jumpGame.screens
 					}
 					else if (dataObj.status == "new_match") { // new game created
 						// display match data popup
-						Statics.opponentName = dataObj.opponent_first_name + " " + dataObj.opponent_last_name.toString().substr(0, 1) + ".";
+//						Statics.opponentName = dataObj.opponent_first_name + " " + dataObj.opponent_last_name.toString().substr(0, 1) + ".";
+						Statics.opponentName = dataObj.opponent_first_name + "\n" + dataObj.opponent_last_name;
 						Statics.roundScores = [0, 0, 0, 0, 0, 0];
 						Statics.isPlayer2 = false;
 						Statics.gameId = dataObj.game_id;
 						Statics.opponentFbid = dataObj.opponent_fbid;
 						Statics.resignedBy = '0';
-						this.screenMatches.matchDataPopup.initialize(false);
-						this.screenMatches.matchDataPopup.visible = true;
+						this.showMatchDetailsPopup(false);
 					}
 					else if (dataObj.status == "rankings") {
 						var rankingsGlobalCollection:ListCollection = new ListCollection();
@@ -283,9 +293,9 @@ package com.jumpGame.screens
 					}
 					else if (dataObj.status == "purchased_upgrade") { // successfully purchased upgrade
 						Statics.playerCoins = int(dataObj.coins);
-						coinLabel.text = "Coins: " + dataObj.coins;
+						coinLabel.text = dataObj.coins;
 						Statics.playerGems = int(dataObj.gems);
-						gemLabel.text = "Gems: " + dataObj.gems;
+						gemLabel.text = dataObj.gems;
 						Statics.rankTeleportation = int(dataObj.rank_teleportation);
 						Statics.rankAttraction = int(dataObj.rank_attraction);
 						Statics.rankDuplication = int(dataObj.rank_duplication);
@@ -303,21 +313,21 @@ package com.jumpGame.screens
 					}
 					else if (dataObj.status == "purchased_coins") { // successfully purchased coins
 						Statics.playerCoins = int(dataObj.coins);
-						coinLabel.text = "Coins: " + dataObj.coins;
+						coinLabel.text = dataObj.coins;
 						Statics.playerGems = int(dataObj.gems);
-						gemLabel.text = "Gems: " + dataObj.gems;
+						gemLabel.text = dataObj.gems;
 						this.showAchievement("Bling Bling");
 					}
 					else if (dataObj.status == "purchased_gems") { // successfully purchased gems
 						Statics.playerGems = int(dataObj.gems);
-						gemLabel.text = "Gems: " + dataObj.gems;
+						gemLabel.text = dataObj.gems;
 						this.showAchievement("Shiny!");
 					}
 					else if (dataObj.status == "purchased_lives") { // successfully purchased lives
 						Statics.playerGems = int(dataObj.gems);
-						gemLabel.text = "Gems: " + dataObj.gems;
+						gemLabel.text = dataObj.gems;
 						this.lives = 5;
-						rankLabel.text = "Lives: 5";
+						lifeLabel.text = "5";
 						this.showAchievement("My Life Will Go On");
 					}
 					else if (dataObj.status == "error") { // error message received
@@ -344,10 +354,10 @@ package com.jumpGame.screens
 //			trace("Facebook id: " + fbId);
 //		}
 		
-		private function addedToStageHandler(event:Event):void
+		private function addedToStageHandler(event:starling.events.Event):void
 		{
 			DeviceCapabilities.dpi = 326; //simulate iPhone Retina resolution
-			this.theme = new MetalWorksMobileTheme(this.stage);
+//			this.theme = new MetalWorksMobileTheme(this.stage);
 			
 			// bg
 			var bgImage:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("UiMainBg0000"));
@@ -359,40 +369,106 @@ package com.jumpGame.screens
 			var topBar:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("UiMainTop0000"));
 			this.addChild(topBar);
 			
+			// bottom bar
+			var bottomBar:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("UiMainBottom0000"));
+			bottomBar.pivotY = bottomBar.height;
+			bottomBar.y = Statics.stageHeight;
+			this.addChild(bottomBar);
+			
+			// rank badge
+			var rankBadge:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("RankBadge10000"));
+			rankBadge.x = 15;
+			rankBadge.y = 5;
+			this.addChild(rankBadge);
+			
+			// top bar label font
+			var fontVerdana23:Font = Fonts.getFont("Badaboom25");
+			var topBarLabelsY:Number = 24;
+			var topBarButtonsY:Number = 20;
+			
 			// coin label
-			coinLabel = new Label();
-			coinLabel.text = "Coins: ";
-			coinLabel.width = 160;
-			coinLabel.height = 30;
-			coinLabel.x = 180;
-			coinLabel.y = 7;
+			coinLabel = new TextField(120, 25, "", fontVerdana23.fontName, fontVerdana23.fontSize, 0xffffff);
+			coinLabel.hAlign = HAlign.LEFT;
+			coinLabel.vAlign = VAlign.TOP;
+			coinLabel.x = 120;
+			coinLabel.y = topBarLabelsY;
 			this.addChild(coinLabel);
 			
+			// add coins button
+			var buttonAddCoins:Button = new Button();
+			buttonAddCoins.useHandCursor = true;
+			buttonAddCoins.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"))
+			buttonAddCoins.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"));
+			buttonAddCoins.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"));
+			buttonAddCoins.hoverSkin.filter = Statics.btnBrightnessFilter;
+			buttonAddCoins.downSkin.filter = Statics.btnInvertFilter;
+			buttonAddCoins.x = 212;
+			buttonAddCoins.y = topBarButtonsY;
+			buttonAddCoins.addEventListener(starling.events.Event.TRIGGERED, showGetCoinsScreen);
+			this.addChild(buttonAddCoins);
+			
 			// gem label
-			gemLabel = new Label();
-			gemLabel.text = "Gems: ";
-			gemLabel.width = 160;
-			gemLabel.height = 30;
-			gemLabel.x = coinLabel.bounds.right + 20;
-			gemLabel.y = 7;
+			gemLabel = new TextField(120, 25, "", fontVerdana23.fontName, fontVerdana23.fontSize, 0xffffff);
+			gemLabel.hAlign = HAlign.LEFT;
+			gemLabel.vAlign = VAlign.TOP;
+			gemLabel.x = 286;
+			gemLabel.y = topBarLabelsY;
 			this.addChild(gemLabel);
 			
+			// add gems button
+			var buttonAddGems:Button = new Button();
+			buttonAddGems.useHandCursor = true;
+			buttonAddGems.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"))
+			buttonAddGems.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"));
+			buttonAddGems.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"));
+			buttonAddGems.hoverSkin.filter = Statics.btnBrightnessFilter;
+			buttonAddGems.downSkin.filter = Statics.btnInvertFilter;
+			buttonAddGems.x = 379;
+			buttonAddGems.y = topBarButtonsY;
+			buttonAddGems.addEventListener(starling.events.Event.TRIGGERED, showGetGemsScreen);
+			this.addChild(buttonAddGems);
+			
 			// rank label
-			rankLabel = new Label();
-			rankLabel.text = "Lives: ";
-			rankLabel.width = 80;
-			rankLabel.height = 30;
-			rankLabel.x = gemLabel.bounds.right + 20;
-			rankLabel.y = 7;
-			this.addChild(rankLabel);
+			lifeLabel = new TextField(15, 25, "", fontVerdana23.fontName, fontVerdana23.fontSize, 0xffffff);
+			lifeLabel.hAlign = HAlign.LEFT;
+			lifeLabel.vAlign = VAlign.TOP;
+			lifeLabel.x = 431;
+			lifeLabel.y = topBarLabelsY;
+			this.addChild(lifeLabel);
+			
+			// add lives button
+			var buttonAddLives:Button = new Button();
+			buttonAddLives.useHandCursor = true;
+			buttonAddLives.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"))
+			buttonAddLives.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"));
+			buttonAddLives.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"));
+			buttonAddLives.hoverSkin.filter = Statics.btnBrightnessFilter;
+			buttonAddLives.downSkin.filter = Statics.btnInvertFilter;
+			buttonAddLives.x = 545;
+			buttonAddLives.y = topBarButtonsY;
+			buttonAddLives.addEventListener(starling.events.Event.TRIGGERED, showGetLivesPopup);
+			this.addChild(buttonAddLives);
 			
 			// time till next life label
-			countdownLabel = new Label();
-			countdownLabel.width = 160;
-			countdownLabel.height = 30;
-			countdownLabel.x = rankLabel.bounds.right + 20;
-			countdownLabel.y = 7;
+			countdownLabel = new TextField(80, 25, "", fontVerdana23.fontName, fontVerdana23.fontSize, 0xffffff);
+			countdownLabel.hAlign = HAlign.LEFT;
+			countdownLabel.vAlign = VAlign.TOP;
+			countdownLabel.x = lifeLabel.bounds.right + 20;
+			countdownLabel.y = topBarLabelsY;
 			this.addChild(countdownLabel);
+			
+			// invite friends button
+			var buttonInviteFriends:Button = new Button();
+			buttonInviteFriends.useHandCursor = true;
+			buttonInviteFriends.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonInviteFriends0000"))
+			buttonInviteFriends.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonInviteFriends0000"));
+			buttonInviteFriends.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonInviteFriends0000"));
+			buttonInviteFriends.hoverSkin.filter = Statics.btnBrightnessFilter;
+			buttonInviteFriends.downSkin.filter = Statics.btnInvertFilter;
+			buttonInviteFriends.x = 597;
+			buttonInviteFriends.y = topBarButtonsY;
+			buttonInviteFriends.addEventListener(starling.events.Event.TRIGGERED, inviteFriends);
+			this.addChild(buttonInviteFriends);
 			
 			// loading screen
 			createLoadingNotice();
@@ -402,15 +478,58 @@ package com.jumpGame.screens
 			this.screenUpgrades = new ScreenUpgrades();
 			this.screenTownSquare = new ScreenTownSquare();
 			
-			this.addEventListener(Event.CHANGE, navigatorChangeHandler);
+			this.addEventListener(starling.events.Event.CHANGE, navigatorChangeHandler);
 			this.addScreen(Constants.ScreenMatches, new ScreenNavigatorItem(screenMatches));
 			this.addScreen(Constants.ScreenUpgrades, new ScreenNavigatorItem(screenUpgrades));
 			this.addScreen(Constants.ScreenTownSquare, new ScreenNavigatorItem(screenTownSquare));
 			
 			// tab bar
 			tabs = new TabBar();
+			tabs.useHandCursor = true;
+			// middle tab button
+			tabs.tabFactory = function():Button
+			{
+				var tab:Button = new Button();
+				tab.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonMiddle0000"));
+				tab.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonMiddle0000"));
+				tab.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonMiddle0000"));
+				tab.defaultSelectedSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonMiddle0000"));
+				
+				tab.hoverSkin.filter = Statics.btnBrightnessFilter;
+				tab.downSkin.filter = Statics.btnInvertFilter;
+				tab.defaultSelectedSkin.filter = Statics.btnContrastFilter;
+				return tab;
+			};
+			// left tab button
+			tabs.firstTabFactory = function():Button
+			{
+				var tab:Button = new Button();
+				tab.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonLeft0000"));
+				tab.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonLeft0000"));
+				tab.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonLeft0000"));
+				tab.defaultSelectedSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonLeft0000"));
+				
+				tab.hoverSkin.filter = Statics.btnBrightnessFilter;
+				tab.downSkin.filter = Statics.btnInvertFilter;
+				tab.defaultSelectedSkin.filter = Statics.btnContrastFilter;
+				return tab;
+			};
+			// right tab button
+			tabs.lastTabFactory = function():Button
+			{
+				var tab:Button = new Button();
+				tab.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonRight0000"));
+				tab.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonRight0000"));
+				tab.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonRight0000"));
+				tab.defaultSelectedSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonRight0000"));
+				
+				tab.hoverSkin.filter = Statics.btnBrightnessFilter;
+				tab.downSkin.filter = Statics.btnInvertFilter;
+				tab.defaultSelectedSkin.filter = Statics.btnContrastFilter;
+				return tab;
+			};
 			tabs.width = stage.stageWidth;
-			tabs.height = 60;
+			tabs.height = 48;
 			tabs.pivotY = tabs.height;
 			tabs.y = stage.stageHeight;
 			tabs.dataProvider = new ListCollection(
@@ -419,7 +538,7 @@ package com.jumpGame.screens
 					{ label: "Upgrades", action: Constants.ScreenUpgrades },
 					{ label: "Town Square", action: Constants.ScreenTownSquare }
 				]);
-			tabs.addEventListener( Event.CHANGE, tabsChangeHandler );
+			tabs.addEventListener(starling.events.Event.CHANGE, tabsChangeHandler);
 			this.addChild(tabs);
 			
 			// screen transitions
@@ -427,6 +546,11 @@ package com.jumpGame.screens
 			this.transitionManager.duration = 0.4;
 			
 			// custom screens
+			// match details popup
+			matchDataPopup = new MatchDataContainer();
+			matchDataPopup.visible = false;
+			this.addChild(matchDataPopup);
+			
 			// achievements screen
 			screenAchievements = new ScreenAchievements(this);
 			screenAchievements.visible = false;
@@ -486,7 +610,7 @@ package com.jumpGame.screens
 			trace('\n');
 		}
 		
-		private function navigatorChangeHandler(event:Event):void
+		private function navigatorChangeHandler(event:starling.events.Event):void
 		{
 			// when screen changes, also update tab bar selection
 			const dataProvider:ListCollection = this.tabs.dataProvider;
@@ -509,11 +633,12 @@ package com.jumpGame.screens
 			screenGetGems.visible = false;
 		}
 		
-		private function tabsChangeHandler(event:Event):void
+		private function tabsChangeHandler(event:starling.events.Event):void
 		{
+			trace("tabs change");
 			// trigger match data refresh
+			
 			if (this.tabs.selectedIndex == -1) {
-				this.tabs.selectedIndex = 0;
 				return;
 			}
 			
@@ -522,10 +647,12 @@ package com.jumpGame.screens
 			
 			// when displaying the matches screen, refresh matches
 			if (this.tabs.selectedItem.action == Constants.ScreenMatches) {
+				this.screenMatches.visible = true;
 				this.refreshMatches();
 			}
 			// when displaying the upgrades screen, refresh upgrades
 			else if (this.tabs.selectedItem.action == Constants.ScreenUpgrades) {
+				this.screenUpgrades.visible = true;
 				this.screenUpgrades.refresh();
 			}
 		}
@@ -574,7 +701,9 @@ package com.jumpGame.screens
 		public function initialize():void
 		{
 			this.visible = true;
-			this.tabs.selectedIndex = -1; // trigger match data refresh
+			this.tabs.selectedIndex = -1;
+			this.tabs.validate();
+			this.tabs.selectedIndex = 0; // trigger match data refresh
 			
 			// set up achievements, the element at index 0 is not used in order to sync with db ids
 			Statics.achievementsList = new Vector.<Boolean>();
@@ -653,19 +782,24 @@ package com.jumpGame.screens
 			badgeText.visible = false;
 		}
 		
-		public function showAchievementsScreen(event:Event):void {
+		public function showMatchDetailsPopup(isDone:Boolean):void {
+			matchDataPopup.initialize(isDone);
+			setChildIndex(matchDataPopup, numChildren - 1);
+		}
+		
+		public function showAchievementsScreen(event:starling.events.Event):void {
 			screenAchievements.refresh();
 			screenAchievements.visible = true;
 			setChildIndex(screenAchievements, numChildren - 1);
 		}
 		
-		public function showRankingsScreen(event:Event):void {
+		public function showRankingsScreen(event:starling.events.Event):void {
 			this.refreshRankingsGlobal();
 			screenRankings.visible = true;
 			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
 		}
 		
-		public function showProfileScreen(event:Event):void {
+		public function showProfileScreen(event:starling.events.Event):void {
 			screenProfile.visible = true;
 			setChildIndex(screenProfile, numChildren - 1);
 			var playerData:Object = new Object();
@@ -681,13 +815,13 @@ package com.jumpGame.screens
 			screenProfile.refresh(playerData);
 		}
 		
-		public function showGetCoinsScreen(event:Event):void {
+		public function showGetCoinsScreen(event:starling.events.Event):void {
 			screenGetCoins.refresh();
 			screenGetCoins.visible = true;
 			setChildIndex(screenGetCoins, numChildren - 1);
 		}
 		
-		public function showGetGemsScreen(event:Event):void {
+		public function showGetGemsScreen(event:starling.events.Event):void {
 			screenGetGems.refresh();
 			screenGetGems.visible = true;
 			setChildIndex(screenGetGems, numChildren - 1);
@@ -699,11 +833,11 @@ package com.jumpGame.screens
 			setChildIndex(dialogBox, numChildren - 1);
 		}
 		
-		public function dialogCloseHandler(event:Event):void {
+		public function dialogCloseHandler(event:starling.events.Event):void {
 			dialogBox.visible = false;
 		}
 		
-		public function dialogCancelHandler(event:Event):void {
+		public function dialogCancelHandler(event:starling.events.Event):void {
 			dialogBox.removeOkButtonListeners(); // remove extra event listeners on the OK button
 			dialogBox.visible = false;
 		}
@@ -798,13 +932,13 @@ package com.jumpGame.screens
 				if (remainingSeconds <= 0) {
 					this.timeTillLifeCountdown += Constants.SecondsPerLife;
 					this.lives++;
-					rankLabel.text = "Lives: " + String(this.lives);
+					lifeLabel.text = String(this.lives);
 				}
 				
-				if (this.lives == 5 && remainingSeconds <= 0) countdownLabel.text = ""; // hide '0' on full life
-				else countdownLabel.text = String(remainingSeconds);
+				if (this.lives == 5 && remainingSeconds <= 0) countdownLabel.text = "full"; // hide '0' on full life
+				else countdownLabel.text = this.formatTime(remainingSeconds);
 			} else {
-				countdownLabel.text = "";
+				countdownLabel.text = "full";
 			}
 			
 			if (this.countdownActive) Starling.juggler.delayCall(updateCountdown, 1);
@@ -812,6 +946,34 @@ package com.jumpGame.screens
 		
 		public function deactivateCountdown():void {
 			this.countdownActive = false;
+		}
+		
+		public function buttonClosePopupHandler(event:starling.events.Event):void {
+			this.tabs.selectedIndex = -1;
+			this.screenMatches.visible = false;
+			this.screenUpgrades.visible = false;
+		}
+		
+		private function showGetLivesPopup(event:starling.events.Event):void {
+			this.showDialogBox("Would you like to purchase a full set of lives for " + Constants.SetOfLivesCost + " gems?", true, purchaseLivesWithGems);
+		}
+		
+		private function inviteFriends(event:starling.events.Event):void {
+			if(ExternalInterface.available){
+				trace("Calling JS...");
+				ExternalInterface.call("inviteFriends");
+			} else {
+				trace("External interface unavailabe");
+			}
+			
+			this.hideDialogBox();
+		}
+		
+		private function formatTime(totalSeconds:int):String {
+			var seconds:uint = totalSeconds % 60;
+			var minutes:uint = (totalSeconds - seconds) / 60;
+			if (seconds < 10) return String(minutes) + ":0" + String(seconds);
+			else return String(minutes) + ":" + String(seconds);
 		}
 	}
 }

@@ -5,13 +5,13 @@ package com.jumpGame.ui.screens
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.UpgradeItemRenderer;
 	
+	import feathers.controls.Button;
 	import feathers.controls.List;
 	import feathers.controls.Screen;
 	import feathers.controls.Scroller;
 	import feathers.data.ListCollection;
 	
 	import starling.display.Image;
-	import starling.display.Quad;
 	import starling.events.Event;
 	
 	public class ScreenUpgrades extends Screen
@@ -25,34 +25,43 @@ package com.jumpGame.ui.screens
 		
 		override protected function initialize():void
 		{
-			// scroll dialog artwork
-			var scrollTop:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollLongTop0000"));
-			scrollTop.pivotX = Math.ceil(scrollTop.texture.width / 2);
-			scrollTop.x = Statics.stageWidth / 2;
-			scrollTop.y = 60;
-			this.addChild(scrollTop);
+			// popup artwork
+			var popup:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupLarge0000"));
+			popup.pivotX = Math.ceil(popup.width / 2);
+			popup.pivotY = Math.ceil(popup.height / 2);
+			popup.x = Statics.stageWidth / 2;
+			popup.y = Statics.stageHeight / 2;
+			this.addChild(popup);
 			
-			var scrollBottom:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollLongBottom0000"));
-			scrollBottom.pivotX = Math.ceil(scrollBottom.texture.width / 2);
-			scrollBottom.pivotY = scrollBottom.texture.height;
-			scrollBottom.x = Statics.stageWidth / 2;
-			scrollBottom.y = Statics.stageHeight - 70;
-			this.addChild(scrollBottom);
+			// popup header
+			var popupHeader:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupHeaderUpgrades0000"));
+			popupHeader.pivotX = Math.ceil(popupHeader.width / 2);
+			popupHeader.x = Statics.stageWidth / 2;
+			popupHeader.y = popup.bounds.top + 24;
+			this.addChild(popupHeader);
 			
-			var scrollQuad:Quad = new Quad(scrollTop.texture.width - 54, scrollBottom.y - scrollTop.y - scrollTop.texture.height - scrollBottom.texture.height + 2, 0xf1b892);
-			scrollQuad.pivotX = Math.ceil(scrollQuad.width / 2);
-			scrollQuad.x = Statics.stageWidth / 2;
-			scrollQuad.y = scrollTop.y + scrollTop.texture.height - 1;
-			addChild(scrollQuad);
-			// eof scroll dialog artwork
+			// popup close button
+			var buttonClose:Button = new Button();
+			buttonClose.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.hoverSkin.filter = Statics.btnBrightnessFilter;
+			buttonClose.downSkin.filter = Statics.btnInvertFilter;
+			buttonClose.useHandCursor = true;
+			buttonClose.addEventListener(Event.TRIGGERED, Menu(this.owner).buttonClosePopupHandler);
+			this.addChild(buttonClose);
+			buttonClose.validate();
+			buttonClose.pivotX = buttonClose.width;
+			buttonClose.x = popup.bounds.right - 25;
+			buttonClose.y = popup.bounds.top + 28;
 			
 			// list of upgrades
 			upgradesList = new List();
-			upgradesList.width = scrollQuad.width - 40;
-			upgradesList.height = scrollQuad.height - 40;
+			upgradesList.width = 560;
+			upgradesList.height = 400;
 			upgradesList.pivotX = Math.ceil(upgradesList.width / 2);
 			upgradesList.x = Statics.stageWidth / 2;
-			upgradesList.y = scrollQuad.bounds.top + 20;
+			upgradesList.y = popup.bounds.top + 100;
 			upgradesList.horizontalScrollPolicy = Scroller.SCROLL_POLICY_OFF;
 			addChild(upgradesList);
 			upgradesList.itemRendererType = UpgradeItemRenderer;

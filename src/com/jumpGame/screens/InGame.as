@@ -127,9 +127,6 @@ package com.jumpGame.screens
 		// GAME INTERACTION 
 		// ------------------------------------------------------------------------------------------------------------
 		
-		// whether or not to check win/lose condition
-		private var checkWinLose:Boolean;
-		
 		// time to end the game
 		private var endGameTime:int;
 		
@@ -482,6 +479,7 @@ package com.jumpGame.screens
 			Statics.cameraTargetModifierY = 0;
 			Statics.powerupAttractionEnabled = false;
 			Statics.contraptionsEnabled = true;
+			Statics.checkWinLose = true;
 			
 			gameOverContainer.visible = false;
 			this.visible = true;
@@ -500,7 +498,6 @@ package com.jumpGame.screens
 			this.contraptionsListLength = 0;
 			this.lightning.visible = false;
 			this.coinsObtained = 0;
-			this.checkWinLose = true;
 			this.leftArrow = false;
 			this.rightArrow = false;
 			this.upArrow = false;
@@ -643,7 +640,7 @@ package com.jumpGame.screens
 			Statics.calculateEmaVelocity = true;
 			
 			//test
-			this.powerupsList[Constants.PowerupExpansion].activate();
+//			this.powerupsList[Constants.PowerupExpansion].activate();
 		}
 		
 		/**
@@ -742,7 +739,7 @@ package com.jumpGame.screens
 			this.timeDiffControlled = Number(this.timeDiffReal) * Statics.speedFactor;
 			
 			// if player fails and end game duration has passed, end the game
-			if (!this.checkWinLose && Statics.gameTime > this.endGameTime) {
+			if (!Statics.checkWinLose && Statics.gameTime > this.endGameTime) {
 				this.endGame();
 				return;
 			}
@@ -1114,7 +1111,7 @@ package com.jumpGame.screens
 				}
 				
 				// misc win/loss conditions
-				if (this.checkWinLose) {
+				if (Statics.checkWinLose) {
 					// left and right border warning
 //					if (this.hero.gx < -Constants.StageWidth / 2 - 100 || 
 //						this.hero.gx > Constants.StageWidth / 2 + 100) {
@@ -1142,7 +1139,7 @@ package com.jumpGame.screens
 //				if (Constants.SofEnabled) {
 					//if (this.hero.gy < this.fg.sofHeight - 60 || this.hero.gx < -Constants.StageWidth || this.hero.gx > Constants.StageWidth) {
 					if (this.hero.gy < this.fg.sofHeight - 60) { // disable out of bounds for now because it's less fun
-						if (this.checkWinLose) {
+						if (Statics.checkWinLose) {
 							if (this.powerupsList[Constants.PowerupExpansion].isActivated) {
 								this.powerupsList[Constants.PowerupExpansion].deactivate();
 								
@@ -1337,7 +1334,7 @@ package com.jumpGame.screens
 			this.endGameTime = Statics.gameTime + 3000;
 			
 			// stop checking win/lose condition
-			this.checkWinLose = false;
+			Statics.checkWinLose = false;
 			
 			// revoke player control of hero
 			this.playerControl = false;
@@ -1477,7 +1474,7 @@ package com.jumpGame.screens
 				}
 				
 				// detect hero/platform collisions if player has not yet lost
-				if (this.checkWinLose && this.hero.canBounce) {
+				if (Statics.checkWinLose && this.hero.canBounce) {
 					var inCollision:Boolean = false;
 					if (isAttractor && Statics.distance(this.hero.x, this.hero.y, platformsList[i].x, platformsList[i].y) < Constants.AttractorRadius) {
 //					if (isAttractor) {
@@ -1695,7 +1692,7 @@ package com.jumpGame.screens
 				var contraptionBounds:Rectangle = this.contraptionsList[i].bounds;
 				
 				if (Object(this.contraptionsList[i]).constructor == Hourglass) { /** hourglass behaviors */
-					if (this.checkWinLose) { // check hero/hourglass collision if not yet lost
+					if (Statics.checkWinLose) { // check hero/hourglass collision if not yet lost
 						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
 							contraptionBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
 							contraptionBounds.contains(this.hero.x - 10, this.hero.y - 20) ||
@@ -1706,7 +1703,7 @@ package com.jumpGame.screens
 				} /** eof hourglass behaviors */
 				
 				else if (Object(this.contraptionsList[i]).constructor == Train) { /** train behaviors */
-					if (this.checkWinLose && this.hero.canBounce && this.contraptionsList[i].isLaunched) { // check hero/train collision if not yet lost
+					if (Statics.checkWinLose && this.hero.canBounce && this.contraptionsList[i].isLaunched) { // check hero/train collision if not yet lost
 						contraptionBounds.left += 120;
 						contraptionBounds.inflate(-50, -50); // shrink train bounds
 						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
@@ -1742,7 +1739,7 @@ package com.jumpGame.screens
 				} /** eof train behaviors */
 				
 				else if (Object(this.contraptionsList[i]).constructor == TrainFromLeft) { /** train from left behaviors */
-					if (this.checkWinLose && this.hero.canBounce && this.contraptionsList[i].isLaunched) { // check hero/train collision if not yet lost
+					if (Statics.checkWinLose && this.hero.canBounce && this.contraptionsList[i].isLaunched) { // check hero/train collision if not yet lost
 						contraptionBounds.right -= 120;
 						contraptionBounds.inflate(-50, -50); // shrink train bounds
 						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
@@ -1778,7 +1775,7 @@ package com.jumpGame.screens
 				} /** eof train from left behaviors */
 				
 				else if (Object(this.contraptionsList[i]).constructor == Bell) { /** bell behaviors */
-					if (this.checkWinLose) { // check hero/bell collision if not yet lost
+					if (Statics.checkWinLose) { // check hero/bell collision if not yet lost
 //						contraptionBounds.inflate(-100, -100); // shrink bell bounds
 //						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
 //							contraptionBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
@@ -1834,7 +1831,7 @@ package com.jumpGame.screens
 				} /** eof bell behaviors */
 				
 				else if (this.contraptionsList[i] is PowerupBox) { /** powerup boxes behaviors */
-					if (this.checkWinLose) { // check hero/hourglass collision if not yet lost
+					if (Statics.checkWinLose) { // check hero/hourglass collision if not yet lost
 						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
 							contraptionBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
 							contraptionBounds.contains(this.hero.x - 10, this.hero.y - 20) ||
@@ -1857,7 +1854,7 @@ package com.jumpGame.screens
 //						}
 //						if (!Sounds.sfxMuted) Sounds.sndCannonFire.play(); // play cannon firing sound
 					}
-					if (this.checkWinLose) { // check hero/cannon collision if not yet lost
+					if (Statics.checkWinLose) { // check hero/cannon collision if not yet lost
 						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
 							contraptionBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
 							contraptionBounds.contains(this.hero.x - 10, this.hero.y - 20) ||
@@ -1888,7 +1885,7 @@ package com.jumpGame.screens
 //						}
 //						if (!Sounds.sfxMuted) Sounds.sndCannonFire.play(); // play cannon firing sound
 					}
-					if (this.checkWinLose) { // check hero/cannon collision if not yet lost
+					if (Statics.checkWinLose) { // check hero/cannon collision if not yet lost
 						if (contraptionBounds.contains(this.hero.x - 10, this.hero.y + 20) ||
 							contraptionBounds.contains(this.hero.x + 10, this.hero.y + 20) ||
 							contraptionBounds.contains(this.hero.x - 10, this.hero.y - 20) ||

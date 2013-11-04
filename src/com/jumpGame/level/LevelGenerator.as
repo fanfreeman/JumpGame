@@ -225,6 +225,12 @@ package com.jumpGame.level {
 				case 16001:
 					this.generateStarCrossLarge(2);
 					break;
+				case 16002:
+					this.generateBarrels();
+					break;
+				case 16003:
+					this.generateBouncers();
+					break;
 				
 				case 17000:
 					this.generateSingleRisingMobile();
@@ -269,7 +275,7 @@ package com.jumpGame.level {
 				
 				case 999999: // designed pattern
 //					elementDistribution = new Array(0.1, 0.4, 0.7, 0.77, 0.84, 0.91, 0.98, 1.0);
-					this.generateDesigned999999();
+					this.generateBouncers();
 //					this.generateStarCrossLarge(4);
 					break;
 //					// 1 per row, 2 per row, 3 per row, 4 per row, 5 per row
@@ -1447,6 +1453,46 @@ package com.jumpGame.level {
 			else this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0, velocityX]);
 		}
 		
+		/** all barrels and attractors */
+		private function generateBarrels():void {
+			var gx:Number;
+			var gy:Number;
+			var targetY:int = this.builder.currentY + 60;
+			while(this.builder.currentY < targetY) {
+				gx = Math.random() * 600 - 300
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "PlatformSuper"]);
+				
+				if (Math.random() < 0.33) {
+					gx = Math.random() * 600 - 300
+					gy = (this.builder.currentY + 2) * Constants.UnitHeight;
+					this.builder.levelElementsArray.push([gy, gx, "Attractor"]);
+				}
+				
+				this.builder.currentY += 4;
+			}
+		}
+		
+		/** all bouncers */
+		private function generateBouncers():void {
+			var gx:Number;
+			var gy:Number;
+			var targetY:int = this.builder.currentY + 60;
+			while(this.builder.currentY < targetY) {
+				gx = Math.random() * 600 - 300
+				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx, "Bouncer"]);
+				
+				if (Math.random() < 0.33) {
+					gx = Math.random() * 600 - 300
+					gy = (this.builder.currentY + 2) * Constants.UnitHeight;
+					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0.5]);
+				}
+				
+				this.builder.currentY += 4;
+			}
+		}
+		
 		// DESIGNER TOOL
 		private function generateDesigned999998():void { // test comets
 			var gx:Number = 0;
@@ -1487,12 +1533,12 @@ package com.jumpGame.level {
 			for (var ri:uint = 0; ri < 80; ri++) {
 				gx = 200;
 				gy = this.builder.currentY * Constants.UnitHeight;
-				this.builder.levelElementsArray.push([gy, gx, "PlatformMobileBoost", 3]);
+				this.builder.levelElementsArray.push([gy, gx, "PlatformNormal", 4]);
 				
 				if (Math.random() < 0.3) {
 					gx = Math.random() * 600 - 300;
 					gy = this.builder.currentY * Constants.UnitHeight;
-//					this.builder.levelElementsArray.push([gy, gx, "Attractor", 4]);
+					this.builder.levelElementsArray.push([gy, gx, "Bouncer", 4]);
 				}
 				
 				this.builder.currentY += 3;

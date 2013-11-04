@@ -100,7 +100,7 @@ package com.jumpGame.gameElements.powerups
 //				alpha: 1
 //			});
 			
-			hero.visible = false;
+//			hero.visible = false;
 			
 			Statics.particleCharge.emitterX = this.x;
 			Statics.particleCharge.emitterY = this.y;

@@ -4,6 +4,7 @@ package com.jumpGame.gameElements.platforms
 	
 	import starling.core.Starling;
 	import starling.display.MovieClip;
+	import starling.filters.ColorMatrixFilter;
 	
 	public class Bouncer extends Platform
 	{
@@ -15,9 +16,15 @@ package com.jumpGame.gameElements.platforms
 			starling.core.Starling.juggler.add(platformAnimation);
 			this.addChild(platformAnimation);
 			
+			var hueFilter:ColorMatrixFilter = new ColorMatrixFilter();
+			hueFilter.adjustHue(-0.7);
+			
 			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PulseRed"), 30);
+			bounceAnimation.filter = hueFilter;
 			bounceAnimation.pivotX = Math.ceil(bounceAnimation.width  / 2); // center art on registration point
 			bounceAnimation.pivotY = Math.ceil(bounceAnimation.height / 2);
+			bounceAnimation.stop();
+			Starling.juggler.add(this.bounceAnimation);
 			bounceAnimation.scaleX = 2;
 			bounceAnimation.scaleY = 2;
 			bounceAnimation.loop = false;
@@ -44,7 +51,7 @@ package com.jumpGame.gameElements.platforms
 			
 			platformAnimation.visible = false;
 			bounceAnimation.visible = true;
-			Starling.juggler.add(this.bounceAnimation);
+			bounceAnimation.stop();
 			bounceAnimation.play();
 		}
 		

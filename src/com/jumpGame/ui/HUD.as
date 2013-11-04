@@ -211,14 +211,14 @@ package com.jumpGame.ui
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 7
-			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon30000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon70000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 6;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 8
-			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon40000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon80000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 7;

@@ -19,6 +19,7 @@ package com.jumpGame.gameElements.platforms
 			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformNormalBounce"), 15);
 			bounceAnimation.pivotX = Math.ceil(bounceAnimation.width  / 2); // center art on registration point
 			bounceAnimation.pivotY = Math.ceil(bounceAnimation.height / 2);
+			Starling.juggler.add(this.bounceAnimation);
 			bounceAnimation.stop();
 			bounceAnimation.loop = false;
 			bounceAnimation.visible = false;

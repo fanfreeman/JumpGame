@@ -23,7 +23,9 @@ package com.jumpGame.gameElements
 		
 		private var animationJump:MovieClip;
 		private var animationHurt:MovieClip;
+		private var animationBrace:MovieClip;
 		private var animationSuper:MovieClip;
+		private var animationPoof:MovieClip;
 		
 		private var rotationSpeed:Number;
 		private var canBounceTime:int;
@@ -52,9 +54,7 @@ package com.jumpGame.gameElements
 		{
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			
-			this.createHeroJumpAnim();
-			this.createHeroFailAnim();
-			this.createHeroSuperAnim();
+			this.createHeroArt();
 		}
 		
 		public function initialize():void {
@@ -74,36 +74,43 @@ package com.jumpGame.gameElements
 			isTransfigured = false;
 			controlRestoreTime = 0;
 			animationJump.visible = true;
+			animationBrace.visible = false;
 			animationHurt.visible = false;
 			animationSuper.visible = false;
+			animationPoof.visible = false;
 		}
 		
-		private function createHeroJumpAnim():void {
+		private function createHeroArt():void {
 			animationJump = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharBoyJump"), 10);
-//			animationJump.scaleX = 0.6;
-//			animationJump.scaleY = 0.6;
 			animationJump.pivotX = Math.ceil(animationJump.texture.width  / 2);
 			animationJump.pivotY = Math.ceil(animationJump.texture.height / 2);
 			animationJump.loop = false;
 			starling.core.Starling.juggler.add(animationJump);
 			this.addChild(animationJump);
-		}
-		
-		private function createHeroFailAnim():void {
+			
+			animationBrace = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharBoyBrace"), 10);
+			animationBrace.pivotX = Math.ceil(animationBrace.texture.width  / 2);
+			animationBrace.pivotY = Math.ceil(animationBrace.texture.height / 2);
+			animationBrace.loop = false;
+			starling.core.Starling.juggler.add(animationBrace);
+			this.addChild(animationBrace);
+			
 			animationHurt = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharBoyHurt"), 24);
-//			animationHurt.scaleX = 0.6;
-//			animationHurt.scaleY = 0.6;
 			animationHurt.pivotX = Math.ceil(animationHurt.width  / 2);
 			animationHurt.pivotY = Math.ceil(animationHurt.height / 2);
 			animationHurt.loop = false;
 			this.addChild(animationHurt);
-		}
-		
-		private function createHeroSuperAnim():void {
+			
 			animationSuper = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharBoySuper"), 24);
 			animationSuper.pivotX = Math.ceil(animationSuper.width  / 2);
 			animationSuper.pivotY = Math.ceil(animationSuper.height / 2);
 			this.addChild(animationSuper);
+			
+			animationPoof = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("TransfigAnimPoof"), 24);
+			animationPoof.pivotX = Math.ceil(animationPoof.width  / 2); // center art on registration point
+			animationPoof.pivotY = Math.ceil(animationPoof.height / 2);
+			animationPoof.loop = false;
+			this.addChild(animationPoof);
 		}
 		
 		override public function get width():Number
@@ -171,12 +178,18 @@ package com.jumpGame.gameElements
 					if (bouncePower > this.dy) this.dy = bouncePower;
 					else if (bouncePower <= 0) this.dy += bouncePower;
 				}
+				
+				// jump animation
+				animationBrace.stop();
+				animationBrace.visible = false;
+				animationJump.visible = true;
 				animationJump.stop();
 				animationJump.play();
+				
+				// rotate hero
+				if (this.dx > 0.2) this.rotationSpeed = Math.PI / 27;
+				else if (this.dx < -0.2) this.rotationSpeed = -Math.PI / 27;
 			}
-			
-			if (this.dx > 0.2) this.rotationSpeed = Math.PI / 27;
-			else if (this.dx < -0.2) this.rotationSpeed = -Math.PI / 27;
 		}
 		
 		/* enable the following to allow hero to bounce against multiple platforms
@@ -242,11 +255,25 @@ package com.jumpGame.gameElements
 			// stop bounce rotation after a full spin
 			var prevRotation:Number = animationJump.rotation;
 			animationJump.rotation += this.rotationSpeed;
+			animationBrace.rotation += this.rotationSpeed;
 			if ((prevRotation < 0 && animationJump.rotation >= 0 || 
 				prevRotation > 0 && animationJump.rotation <= 0) &&
 				Math.abs(prevRotation) < 1) {
 				animationJump.rotation = 0;
+				animationBrace.rotation = 0;
 				this.rotationSpeed = 0;
+			}
+			
+			// hide poof
+			if (animationPoof.isComplete) {
+				this.hidePoof();
+			}
+			
+			// show brace animation
+			if (dyAvg < 0 && Statics.checkWinLose) { // don't show brace animation again for fail bounce
+				animationJump.visible = false;
+				animationBrace.visible = true;
+				animationBrace.play();
 			}
 		}
 		
@@ -287,6 +314,9 @@ package com.jumpGame.gameElements
 			} else {
 				animationJump.scaleX = -1;
 				animationJump.pivotX = Math.ceil(animationJump.texture.width  / 2);
+				
+				animationBrace.scaleX = -1;
+				animationBrace.pivotX = Math.ceil(animationBrace.texture.width  / 2);
 			}
 		}
 		
@@ -297,12 +327,16 @@ package com.jumpGame.gameElements
 			} else {
 				animationJump.scaleX = 1;
 				animationJump.pivotX = Math.ceil(animationJump.texture.width  / 2);
+				
+				animationBrace.scaleX = 1;
+				animationBrace.pivotX = Math.ceil(animationJump.texture.width  / 2);
 			}
 		}
 		
 		public function failBounce():void {
 			this.dy = Constants.BoostBouncePower;
 			animationJump.visible = false;
+			animationBrace.visible = false;
 			animationHurt.visible = true;
 			starling.core.Starling.juggler.add(animationHurt);
 			animationHurt.stop();
@@ -311,9 +345,10 @@ package com.jumpGame.gameElements
 		
 		public function showSuper():void {
 			animationJump.visible = false;
+			animationBrace.visible = false;
 			animationSuper.visible = true;
 			starling.core.Starling.juggler.add(animationSuper);
-			animationHurt.play();
+			animationSuper.play();
 		}
 		
 		public function hideSuper():void {
@@ -322,12 +357,14 @@ package com.jumpGame.gameElements
 			animationJump.visible = true;
 		}
 		
-		public function hide():void {
-			this.animationJump.visible = false;
+		public function show():void {
+			animationJump.visible = true;
 		}
 		
-		public function show():void {
-			this.animationJump.visible = true;
+		public function hide():void {
+			animationJump.visible = false;
+			animationBrace.visible = false;
+			animationSuper.visible = false;
 		}
 		
 		/**
@@ -376,6 +413,26 @@ package com.jumpGame.gameElements
 		public function repulseSpikyBomb():void {
 			this.dy -= 2.0;
 			this.controlRestoreTime = Statics.gameTime + 500;
+		}
+		
+		/**
+		 * Show tranfiguration poof animation
+		 */
+		public function showPoof():void {
+			this.hide();
+			animationPoof.visible = true;
+			starling.core.Starling.juggler.add(animationPoof);
+			animationPoof.play();
+		}
+		
+		/**
+		 * Hide transfiguration poof animation
+		 */
+		private function hidePoof():void {
+			animationPoof.stop();
+			starling.core.Starling.juggler.remove(animationPoof);
+			animationPoof.visible = false;
+			this.show();
 		}
 	}
 }

@@ -62,10 +62,13 @@ package com.jumpGame.gameElements
 			Statics.gamePaused = true;
 			hero.isTransfigured = true;
 			
+			// show poof
+			this.hero.showPoof();
+			
 			// tween for activation bg flyout
 			var tweenActivationBgFlyout:Tween = new Tween(activationBg, 0.3, Transitions.EASE_IN);
 			tweenActivationBgFlyout.animate("y", -activationBg.height);
-//			tweenActivationBgFlyout.onComplete = resetTransfigurationActivation;
+			tweenActivationBgFlyout.onComplete = resetTransfigurationActivation;
 			
 			// tween for activation bg slow motion
 			var tweenActivationBgSlowmo:Tween = new Tween(activationBg, 1.8, Transitions.EASE_OUT);
@@ -115,6 +118,9 @@ package com.jumpGame.gameElements
 		}
 		
 		public function displayDeactivation():void {
+			// show poof
+			this.hero.showPoof();
+			
 			hero.isTransfigured = false;
 			this.releaseEnergyWave();
 		}
@@ -129,7 +135,7 @@ package com.jumpGame.gameElements
 				scaleY: 3,
 				alpha: 0
 			});
-			Starling.juggler.delayCall(resetTransfigurationActivation, 0.7);
+			Starling.juggler.delayCall(resetEnergyWave, 0.7);
 		}
 		
 		private function resetTransfigurationActivation():void {
@@ -142,12 +148,6 @@ package com.jumpGame.gameElements
 			activationCaption.x = Statics.stageWidth;
 			activationCaption.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
 			
-			// energy wave
-			energyWave.visible = false;
-			energyWave.scaleX = 0;
-			energyWave.scaleY = 0;
-			energyWave.alpha = 1;
-			
 			// unpause game
 			Statics.gamePaused = false;
 			
@@ -155,6 +155,14 @@ package com.jumpGame.gameElements
 			Statics.particleJet.emitterX = hero.x;
 			Statics.particleJet.emitterY = hero.y;
 			Statics.particleJet.start(0.2);
+		}
+		
+		private function resetEnergyWave():void {
+			// energy wave
+			energyWave.visible = false;
+			energyWave.scaleX = 0;
+			energyWave.scaleY = 0;
+			energyWave.alpha = 1;
 		}
 	}
 }

@@ -1,16 +1,25 @@
 package com.jumpGame.ui.components
 {
+	import com.jumpGame.level.Statics;
+	
+	import flash.geom.Point;
+	import flash.text.TextFormatAlign;
+	
+	import feathers.controls.Button;
 	import feathers.controls.Label;
 	import feathers.controls.List;
 	import feathers.controls.renderers.IListItemRenderer;
+	import feathers.controls.text.BitmapFontTextRenderer;
 	import feathers.core.FeathersControl;
+	import feathers.core.ITextRenderer;
+	import feathers.text.BitmapFontTextFormat;
 	
-	import starling.events.TouchEvent;
+	import starling.display.Image;
 	import starling.events.Event;
 	import starling.events.Touch;
+	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
-	
-	import flash.geom.Point;
+	import starling.textures.TextureSmoothing;
 	
 	public class MatchItemRenderer extends FeathersControl implements IListItemRenderer
 	{
@@ -128,16 +137,55 @@ package com.jumpGame.ui.components
 		
 		override protected function initialize():void
 		{
-			this.width = 300;
-			this.height = 70;
+			this.width = 560;
+			this.height = 78;
+			this.useHandCursor = true;
 			
+			var itemBgButton:Button = new Button();
+			var itemBgImage:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
+			itemBgButton.defaultSkin = itemBgImage;
+			itemBgButton.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
+			itemBgButton.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
+			itemBgButton.hoverSkin.filter = Statics.btnBrightnessFilter;
+			itemBgButton.downSkin.filter = Statics.btnInvertFilter;
+			itemBgButton.x = (this.width - itemBgImage.width) / 2;
+			this.addChild(itemBgButton);
+			
+//			var itemBg:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
+//			itemBg.x = (this.width - itemBg.width) / 2;
+//			this.addChild(itemBg);
+//			
 			if (!this.titleLabel) {
 				this.titleLabel = new Label();
+				titleLabel.touchable = false;
+				titleLabel.textRendererFactory = function():ITextRenderer
+				{
+					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
+					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("Materhorn24"));
+					textFormat.align = TextFormatAlign.CENTER;
+					textRenderer.textFormat = textFormat;
+					textRenderer.smoothing = TextureSmoothing.NONE;
+					return textRenderer;
+				}
+				titleLabel.width = this.width;
+				titleLabel.y = 11;
 				this.addChild(this.titleLabel);
 			}
 			
 			if (!this.captionLabel) {
 				this.captionLabel = new Label();
+				captionLabel.touchable = false;
+				captionLabel.textRendererFactory = function():ITextRenderer
+				{
+					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
+					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("BellGothicBlack13"));
+					textFormat.align = TextFormatAlign.CENTER;
+					textRenderer.textFormat = textFormat;
+					textRenderer.smoothing = TextureSmoothing.NONE;
+					return textRenderer;
+				}
+				captionLabel.width = this.width;
+				captionLabel.y = titleLabel.bounds.bottom;
 				this.addChild(this.captionLabel);
 			}
 		}

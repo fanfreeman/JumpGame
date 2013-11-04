@@ -71,6 +71,24 @@ package
 		[Embed(source="../media/fonts/bitmap/fontLithosBold44.fnt", mimeType="application/octet-stream")]
 		public static const XML_LithosBold44:Class;
 		
+		// Materhorn 24 regular font (matches list)
+		[Embed(source="../media/fonts/bitmap/materhorn24.png")]
+		public static const Font_Materhorn24:Class;
+		[Embed(source="../media/fonts/bitmap/materhorn24.fnt", mimeType="application/octet-stream")]
+		public static const XML_Materhorn24:Class;
+		
+		// Bell Gothic Std Black 13 font (matches list)
+		[Embed(source="../media/fonts/bitmap/bellgothicblack13.png")]
+		public static const Font_BellGothicBlack13:Class;
+		[Embed(source="../media/fonts/bitmap/bellgothicblack13.fnt", mimeType="application/octet-stream")]
+		public static const XML_BellGothicBlack13:Class;
+		
+		// Bell Gothic Std Black 13 font (matches list)
+		[Embed(source="../media/fonts/bitmap/badaboom25.png")]
+		public static const Font_Badaboom25:Class;
+		[Embed(source="../media/fonts/bitmap/badaboom25.fnt", mimeType="application/octet-stream")]
+		public static const XML_Badaboom25:Class;
+		
 		/**
 		 * Font objects.
 		 */
@@ -83,6 +101,9 @@ package
 		private static var Lithos42:BitmapFont;
 		private static var Verdana23:BitmapFont;
 		private static var LithosBold44:BitmapFont;
+		private static var Materhorn24:BitmapFont;
+		private static var BellGothicBlack13:BitmapFont;
+		private static var Badaboom25:BitmapFont;
 		
 		/**
 		 * Returns the BitmapFont (texture + xml) instance's fontName property (there is only one instance per app)

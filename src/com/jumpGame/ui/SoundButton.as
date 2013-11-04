@@ -10,14 +10,14 @@ package com.jumpGame.ui
 	import starling.textures.Texture;
 	
 	/**
-	 * This class is the sound/mute button.
+	 * This class is the sound/mute button
 	 */
 	public class SoundButton extends Button
 	{
-		/** Animation shown when sound is playing.  */
+		/** Animation shown when sound is playing */
 		private var mcUnmuteState:MovieClip;
 		
-		/** Image shown when the sound is muted. */
+		/** Image shown when the sound is muted */
 		private var imageMuteState:Image;
 		
 		public function SoundButton()
@@ -28,9 +28,7 @@ package com.jumpGame.ui
 		}
 		
 		/**
-		 * On added to stage. 
-		 * @param event
-		 * 
+		 * On added to stage
 		 */
 		private function onAddedToStage(event:Event):void
 		{
@@ -41,8 +39,7 @@ package com.jumpGame.ui
 		}
 		
 		/**
-		 * Set textures for button states. 
-		 * 
+		 * Set textures for button states
 		 */
 		private function setButtonTextures():void
 		{
@@ -57,8 +54,7 @@ package com.jumpGame.ui
 		}
 		
 		/**
-		 * Show Off State - Show the mute symbol (sound is muted). 
-		 * 
+		 * Show Off State - Show the mute symbol (sound is muted)
 		 */
 		public function showUnmuteState():void
 		{
@@ -67,8 +63,7 @@ package com.jumpGame.ui
 		}
 		
 		/**
-		 * Show On State - Show the unmute animation (sound is playing). 
-		 * 
+		 * Show On State - Show the unmute animation (sound is playing)
 		 */
 		public function showMuteState():void
 		{

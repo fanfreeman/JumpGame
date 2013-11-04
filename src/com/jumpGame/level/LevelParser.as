@@ -129,7 +129,7 @@ package com.jumpGame.level  {
 				case 25:
 //					this.disableContraptions();
 					Statics.contraptionsEnabled = false;
-					blockNumber = int(Math.floor(Math.random() * 2) + 16000);
+					blockNumber = int(Math.floor(Math.random() * 4) + 16000);
 					this.generator.generate(blockNumber);
 					break;
 				case 26:

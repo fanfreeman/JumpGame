@@ -57,7 +57,7 @@ package com.jumpGame.ui
 		
 		private var communicator:Communicator;
 		
-		private var matchDataPopup:MatchDataContainer;
+//		private var matchDataPopup2:MatchDataContainer;
 		private var roundScore:int;
 		private var matchDataPopupInitialized:Boolean;
 		
@@ -207,15 +207,15 @@ package com.jumpGame.ui
 			this.addChild(proceedBtn);
 			proceedBtn.addEventListener(Event.TRIGGERED, onProceedClick);
 			
-			drawMatchDataPopup();
+//			drawMatchDataPopup();
 		}
 		
-		private function drawMatchDataPopup():void
-		{
-			matchDataPopup = new MatchDataContainer(this);
-			matchDataPopup.visible = false;
-			this.addChild(matchDataPopup);
-		}
+//		private function drawMatchDataPopup():void
+//		{
+//			matchDataPopup2 = new MatchDataContainer();
+//			matchDataPopup2.visible = false;
+//			this.addChild(matchDataPopup2);
+//		}
 		
 		private function createAchievementPlates():void {
 			this.achievementPlate1 = new AchievementPlate();
@@ -261,11 +261,10 @@ package com.jumpGame.ui
 			// display match data popup
 			if (!matchDataPopupInitialized) { // do not initialize match data popup more than once
 				Statics.roundScores[Statics.currentRound] = roundScore;
-				matchDataPopup.initialize(true);
+//				matchDataPopup2.initialize(true);
 				matchDataPopupInitialized = true;
 			}
-			matchDataPopup.fixCloseButton();
-			matchDataPopup.visible = true;
+//			matchDataPopup2.visible = true;
 //			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "proceed"}, true));
 		}
 		

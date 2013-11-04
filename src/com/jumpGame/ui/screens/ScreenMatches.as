@@ -2,7 +2,6 @@ package com.jumpGame.ui.screens
 {
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.level.Statics;
-	import com.jumpGame.ui.popups.MatchDataContainer;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.MatchItemRenderer;
 	
@@ -18,8 +17,8 @@ package com.jumpGame.ui.screens
 	
 	import starling.core.Starling;
 	import starling.display.Image;
-	import starling.display.Quad;
 	import starling.events.Event;
+	import feathers.controls.Button;
 	
 	public class ScreenMatches extends Screen
 	{
@@ -33,60 +32,59 @@ package com.jumpGame.ui.screens
 		public var gamesMyTurn:Array; // stores match data
 		public var gamesTheirTurn:Array;
 		public var gamesFinished:Array;
-		public var matchDataPopup:MatchDataContainer;
 		
 		public function ScreenMatches()
 		{
-			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+//			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 		}
 		
-		private function addedToStageHandler(event:Event):void
-		{
-			drawMatchDataPopup(); // match data popup
-		}
-		
-		private function drawMatchDataPopup():void
-		{
-			matchDataPopup = new MatchDataContainer(this);
-			matchDataPopup.visible = false;
-			this.addChild(matchDataPopup);
-		}
+//		private function addedToStageHandler(event:Event):void
+//		{
+//			drawMatchDataPopup(); // match data popup
+//		}
 		
 		override protected function draw():void
 		{
-			//			this._header.width = this.actualWidth;
-			//			this._header.validate();
 		}
 		
 		override protected function initialize():void
 		{
-			// scroll dialog artwork
-			var scrollTop:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollLongTop0000"));
-			scrollTop.pivotX = Math.ceil(scrollTop.texture.width / 2);
-			scrollTop.x = stage.stageWidth / 2;
-			scrollTop.y = 60;
-			this.addChild(scrollTop);
+			// popup artwork
+			var popup:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupLarge0000"));
+			popup.pivotX = Math.ceil(popup.width / 2);
+			popup.pivotY = Math.ceil(popup.height / 2);
+			popup.x = Statics.stageWidth / 2;
+			popup.y = Statics.stageHeight / 2;
+			this.addChild(popup);
 			
-			var scrollBottom:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollLongBottom0000"));
-			scrollBottom.pivotX = Math.ceil(scrollBottom.texture.width / 2);
-			scrollBottom.pivotY = scrollBottom.texture.height;
-			scrollBottom.x = stage.stageWidth / 2;
-			scrollBottom.y = stage.stageHeight - 70;
-			this.addChild(scrollBottom);
+			// popup header
+			var popupHeader:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupHeaderMatches0000"));
+			popupHeader.pivotX = Math.ceil(popupHeader.width / 2);
+			popupHeader.x = Statics.stageWidth / 2;
+			popupHeader.y = popup.bounds.top + 24;
+			this.addChild(popupHeader);
 			
-			var scrollQuad:Quad = new Quad(scrollTop.texture.width - 54, scrollBottom.y - scrollTop.y - scrollTop.texture.height - scrollBottom.texture.height + 2, 0xf1b892);
-			scrollQuad.pivotX = Math.ceil(scrollQuad.width / 2);
-			scrollQuad.x = stage.stageWidth / 2;
-			scrollQuad.y = scrollTop.y + scrollTop.texture.height - 1;
-			addChild(scrollQuad);
-			// eof scroll dialog artwork
+			// popup close button
+			var buttonClose:Button = new Button();
+			buttonClose.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.hoverSkin.filter = Statics.btnBrightnessFilter;
+			buttonClose.downSkin.filter = Statics.btnInvertFilter;
+			buttonClose.useHandCursor = true;
+			buttonClose.addEventListener(Event.TRIGGERED, Menu(this.owner).buttonClosePopupHandler);
+			this.addChild(buttonClose);
+			buttonClose.validate();
+			buttonClose.pivotX = buttonClose.width;
+			buttonClose.x = popup.bounds.right - 25;
+			buttonClose.y = popup.bounds.top + 28;
 			
 			// create matches scroll container
 			matchesContainer = new ScrollContainer();
-			matchesContainer.width = scrollQuad.width - 10;
+			matchesContainer.width = 560;
 			matchesContainer.x = (stage.stageWidth - matchesContainer.width) / 2;
-			matchesContainer.y = scrollQuad.y + 10;
-			matchesContainer.height = scrollQuad.height - 20;
+			matchesContainer.y = popup.bounds.top + 95;
+			matchesContainer.height = 400;
 			matchesContainer.horizontalScrollPolicy = Scroller.SCROLL_POLICY_OFF;
 			matchesContainer.verticalScrollPolicy = Scroller.SCROLL_POLICY_ON;
 			//			var layout:VerticalLayout = new VerticalLayout();
@@ -123,7 +121,7 @@ package com.jumpGame.ui.screens
 			
 			// your turn match list
 			listYourTurn = new List();
-			listYourTurn.width = matchesContainer.width - 40;
+			listYourTurn.width = matchesContainer.width;
 			listYourTurn.pivotX = Math.ceil(listYourTurn.width / 2);
 			listYourTurn.x = matchesContainer.width / 2;
 			listYourTurn.y = headerYourTurn.y + headerYourTurn.height + 10;
@@ -143,7 +141,7 @@ package com.jumpGame.ui.screens
 			
 			// your turn match list
 			listTheirTurn = new List();
-			listTheirTurn.width = matchesContainer.width - 40;
+			listTheirTurn.width = matchesContainer.width;
 			listTheirTurn.pivotX = Math.ceil(listTheirTurn.width / 2);
 			listTheirTurn.x = matchesContainer.width / 2;
 			listTheirTurn.y = headerTheirTurn.y + headerTheirTurn.height + 10;
@@ -155,7 +153,7 @@ package com.jumpGame.ui.screens
 			listTheirTurn.addEventListener(Event.CHANGE, listTheirTurnChangeHandler);
 			
 			// finished matches header
-			headerFinished = new Image(Assets.getSprite("AtlasTexture4").getTexture("HeaderTheirTurn0000"));
+			headerFinished = new Image(Assets.getSprite("AtlasTexture4").getTexture("HeaderFinished0000"));
 			headerFinished.pivotX = Math.ceil(headerFinished.texture.width / 2);
 			headerFinished.x = matchesContainer.width / 2;
 			headerFinished.y = listTheirTurn.height + 20;
@@ -163,7 +161,7 @@ package com.jumpGame.ui.screens
 			
 			// finished matches list
 			listFinished = new List();
-			listFinished.width = matchesContainer.width - 40;
+			listFinished.width = matchesContainer.width;
 			listFinished.pivotX = Math.ceil(listFinished.width / 2);
 			listFinished.x = matchesContainer.width / 2;
 			listFinished.y = headerFinished.bounds.bottom + 10;
@@ -210,38 +208,40 @@ package com.jumpGame.ui.screens
 		
 		private function listYourTurnChangeHandler(event:Event):void {
 			if (listYourTurn.selectedIndex == -1) return;
-			Statics.opponentName = gamesMyTurn[listYourTurn.selectedIndex].opponent_first_name + " " + gamesMyTurn[listYourTurn.selectedIndex].opponent_last_name.toString().substr(0, 1) + ".";
+//			Statics.opponentName = gamesMyTurn[listYourTurn.selectedIndex].opponent_first_name + " " + gamesMyTurn[listYourTurn.selectedIndex].opponent_last_name.toString().substr(0, 1) + ".";
+			Statics.opponentName = gamesMyTurn[listYourTurn.selectedIndex].opponent_first_name + "\n" + gamesMyTurn[listYourTurn.selectedIndex].opponent_last_name;
 			Statics.roundScores = gamesMyTurn[listYourTurn.selectedIndex].roundScores;
 			Statics.isPlayer2 = Boolean(int(gamesMyTurn[listYourTurn.selectedIndex].is_player_2));
 			Statics.opponentFbid = gamesMyTurn[listYourTurn.selectedIndex].opponent_fbid;
 			Statics.gameId = int(gamesMyTurn[listYourTurn.selectedIndex].game_id);
 			Statics.resignedBy = '0';
-			matchDataPopup.initialize(false);
-			matchDataPopup.visible = true;
+			Menu(this.owner).showMatchDetailsPopup(false);
 			listYourTurn.selectedIndex = -1;
 		}
 		
 		private function listTheirTurnChangeHandler(event:Event):void {
 			if (listTheirTurn.selectedIndex == -1) return;
-			Statics.opponentName = gamesTheirTurn[listTheirTurn.selectedIndex].opponent_first_name + " " + gamesTheirTurn[listTheirTurn.selectedIndex].opponent_last_name.toString().substr(0, 1) + ".";
+//			Statics.opponentName = gamesTheirTurn[listTheirTurn.selectedIndex].opponent_first_name + " " + gamesTheirTurn[listTheirTurn.selectedIndex].opponent_last_name.toString().substr(0, 1) + ".";
+			Statics.opponentName = gamesTheirTurn[listTheirTurn.selectedIndex].opponent_first_name + "\n" + gamesTheirTurn[listTheirTurn.selectedIndex].opponent_last_name;
 			Statics.roundScores = gamesTheirTurn[listTheirTurn.selectedIndex].roundScores;
 			Statics.isPlayer2 = Boolean(int(gamesTheirTurn[listTheirTurn.selectedIndex].is_player_2));
+			Statics.opponentFbid = gamesTheirTurn[listTheirTurn.selectedIndex].opponent_fbid;
 			Statics.gameId = int(gamesTheirTurn[listTheirTurn.selectedIndex].game_id);
 			Statics.resignedBy = '0';
-			matchDataPopup.initialize(false);
-			matchDataPopup.visible = true;
+			Menu(this.owner).showMatchDetailsPopup(false);
 			listTheirTurn.selectedIndex = -1;
 		}
 		
 		private function listFinishedChangeHandler(event:Event):void {
 			if (listFinished.selectedIndex == -1) return;
-			Statics.opponentName = gamesFinished[listFinished.selectedIndex].opponent_first_name + " " + gamesFinished[listFinished.selectedIndex].opponent_last_name.toString().substr(0, 1) + ".";
+//			Statics.opponentName = gamesFinished[listFinished.selectedIndex].opponent_first_name + " " + gamesFinished[listFinished.selectedIndex].opponent_last_name.toString().substr(0, 1) + ".";
+			Statics.opponentName = gamesFinished[listFinished.selectedIndex].opponent_first_name + "\n" + gamesFinished[listFinished.selectedIndex].opponent_last_name;
 			Statics.roundScores = gamesFinished[listFinished.selectedIndex].roundScores;
 			Statics.isPlayer2 = Boolean(int(gamesFinished[listFinished.selectedIndex].is_player_2));
+			Statics.opponentFbid = gamesFinished[listFinished.selectedIndex].opponent_fbid;
 			Statics.gameId = int(gamesFinished[listFinished.selectedIndex].game_id);
 			Statics.resignedBy = String(gamesFinished[listFinished.selectedIndex].resigned_by);
-			matchDataPopup.initialize(false);
-			matchDataPopup.visible = true;
+			Menu(this.owner).showMatchDetailsPopup(false);
 			listFinished.selectedIndex = -1;
 		}
 		

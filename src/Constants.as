@@ -8,7 +8,7 @@ package
 	public class Constants
 	{
 		// level designer mode switch
-		public static const isDesignerMode:Boolean = true;
+		public static const isDesignerMode:Boolean = false;
 		public static const powerupsEnabled:Boolean = true;
 //		public static const contraptionsEnabled:Boolean = true;
 		

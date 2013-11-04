@@ -1,6 +1,9 @@
 package com.jumpGame.level
 {
+	import flash.display.Bitmap;
+	
 	import starling.extensions.PDParticleSystem;
+	import starling.filters.ColorMatrixFilter;
 
 	public class Statics
 	{
@@ -10,6 +13,9 @@ package com.jumpGame.level
 		
 		// whether game is paused
 		public static var gamePaused:Boolean;
+		
+		// whether the player has lost
+		public static var checkWinLose:Boolean;
 		
 		// contraption control
 		public static var contraptionsEnabled:Boolean;
@@ -87,7 +93,11 @@ package com.jumpGame.level
 		public static var gameId:uint;
 		public static var opponentFbid:String;
 		public static var userId:String;
+		public static var facebookId:String;
 		public static var resignedBy:String;
+		
+		// player picture
+		public static var playerPictureBitmap:Bitmap = null;
 		
 		// upgrade ranks
 		public static var rankTeleportation:uint;
@@ -120,6 +130,11 @@ package com.jumpGame.level
 		
 		public static var powerupAttractionEnabled:Boolean;
 		
+		// button states filters
+		public static var btnBrightnessFilter:ColorMatrixFilter;
+		public static var btnInvertFilter:ColorMatrixFilter;
+		public static var btnContrastFilter:ColorMatrixFilter;
+		
 		/**
 		 * Find the distance between two points
 		 */
@@ -132,10 +147,19 @@ package com.jumpGame.level
 		/**
 		 * Find the angle of the vector formed from point 1 to point 2
 		 */
-		public static function vectorAngle (x1:Number, y1:Number, x2:Number, y2:Number):Number {
+		public static function vectorAngle(x1:Number, y1:Number, x2:Number, y2:Number):Number {
 			var dx:Number = x2 - x1;
 			var dy:Number = y2 - y1;
 			return Math.atan2(dy,dx);
+		}
+		
+		public static function initialize():void {
+			btnBrightnessFilter = new ColorMatrixFilter();
+			btnBrightnessFilter.adjustBrightness(0.25);
+			btnInvertFilter = new ColorMatrixFilter();
+			btnInvertFilter.invert();
+			btnContrastFilter = new ColorMatrixFilter();
+			btnContrastFilter.adjustContrast(0.75);
 		}
 	}
 }

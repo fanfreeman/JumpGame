@@ -171,6 +171,8 @@ package com.jumpGame.ui.components
 				this.profilePicture = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000"));
 				this.addChild(this.profilePicture);
 			}
+			
+			loader = new Loader();
 		}
 		
 		override protected function draw():void
@@ -230,7 +232,6 @@ package com.jumpGame.ui.components
 					this.profilePicture.readjustSize();
 				} else {
 					Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
-					loader = new Loader();
 					loader.load(new URLRequest(profilePicUrl));
 					loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onPictureLoadComplete);
 				}

@@ -3,18 +3,17 @@ package
 //	import com.adobe.images.JPGEncoder;
 	
 	import com.jumpGame.events.NavigationEvent;
+	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.InGame;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.SoundButton;
-	import com.jumpGame.level.Statics;
-//	import com.jumpGame.customObjects.Base64;
 	
-//	import flash.display.BitmapData;
 	import flash.media.SoundMixer;
-//	import flash.external.ExternalInterface;
+	import flash.system.Security;
 	
 	import starling.display.Sprite;
 	import starling.events.Event;
+
 //	import flash.utils.ByteArray;
 	
 	
@@ -35,7 +34,7 @@ package
 		public function Game()
 		{
 			super();
-			
+			Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 //			this.jpgEncoder = new JPGEncoder();
 //			ExternalInterface.addCallback('exportScreenshot', exportScreenshot);
@@ -52,6 +51,7 @@ package
 			
 			Statics.stageWidth = stage.stageWidth;
 			Statics.stageHeight = stage.stageHeight;
+			Statics.initialize();
 			
 			// Initialize screens.
 			initScreens();
@@ -74,14 +74,10 @@ package
 			screenInGame.visible = false;
 			this.addChild(screenInGame);
 			
-			// Welcome screen.
-//			screenWelcome = new Welcome();
-//			this.addChild(screenWelcome);
-			
 			// Create and add Sound/Mute button.
 			soundButton = new SoundButton();
-			soundButton.x = int(soundButton.width * 0.5);
-			soundButton.y = int(soundButton.height * 0.5);
+			soundButton.x = Statics.stageWidth - 46;
+			soundButton.y = Statics.stageHeight - 90;
 			soundButton.addEventListener(Event.TRIGGERED, onSoundButtonClick);
 			this.addChild(soundButton)
 			
@@ -115,19 +111,20 @@ package
 		 */
 		private function onSoundButtonClick(event:Event = null):void
 		{
-			if (Sounds.bgmMuted)
+			if (Sounds.bgmMuted || Sounds.sfxMuted)
 			{
 				Sounds.bgmMuted = false;
+				Sounds.sfxMuted = false;
 				
 //				if (screenWelcome.visible) Sounds.sndBgMain.play(0, 999);
 //				else if (screenInGame.visible) Sounds.sndBgMain.play(0, 999);
-//				Sounds.sndBgMain.play(0, 999);
 				
 				soundButton.showUnmuteState();
 			}
 			else
 			{
 				Sounds.bgmMuted = true;
+				Sounds.sfxMuted = true;
 				SoundMixer.stopAll();
 				
 				soundButton.showMuteState();

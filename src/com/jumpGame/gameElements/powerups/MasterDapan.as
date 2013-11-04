@@ -100,7 +100,6 @@ package com.jumpGame.gameElements.powerups
 			if (this.hero.dy < 2) {
 				this.hero.dy = 2;
 			}
-//			Statics.particleJet.start(0.1);
 			
 			// move camera target up
 			Statics.cameraTargetModifierY = 250;
@@ -204,7 +203,6 @@ package com.jumpGame.gameElements.powerups
 			if (this.hero.dy < 2.5) {
 				this.hero.dy = 2.5;
 			}
-			Statics.particleJet.start(0.1);
 			
 			// set invincibility time
 			Statics.invincibilityExpirationTime = Statics.gameTime + 1000;
