@@ -26,7 +26,7 @@ package com.jumpGame.gameElements.contraptions
 				this.touched = true;
 				this.visible = false;
 				if (!Sounds.sfxMuted) Sounds.sndGotHourglass.play();
-				HUD.showMessage("Mystery Box!", 2000, 1);
+//				HUD.showMessage("Mystery Box!", 2000, 1);
 				hud.spinPowerupReel();
 				Statics.powerupsEnabled = false;
 			}

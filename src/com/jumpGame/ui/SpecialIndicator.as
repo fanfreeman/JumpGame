@@ -18,6 +18,7 @@ package com.jumpGame.ui
 		private var spriteClipRect:Rectangle;
 		
 		public function initialize():void {
+			this.visible = false;
 			indicatorGlow.visible = true;
 			indicatorDark.visible = false;
 			indicatorSprite.visible = false;

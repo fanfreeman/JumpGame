@@ -1,10 +1,13 @@
 package com.jumpGame.ui.popups
 {
 	import com.jumpGame.customObjects.Font;
+	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	
 	import feathers.controls.Button;
 	
+	import starling.animation.Transitions;
+	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
@@ -15,16 +18,18 @@ package com.jumpGame.ui.popups
 	
 	public class DialogBox extends Sprite
 	{
+		public var isInUse:Boolean = false;
+		
 		private var parent:Menu;
 		private var data:Object;
 		private var promptText:TextField;
 		
-		// one button dialog
-		private var btnClose:Button;
-		
-		// two button dialog
 		private var btnOk:Button;
 		private var btnCancel:Button;
+		
+		private var popupContainer:Sprite;
+		
+		private var callback:Function = null;
 		
 		public function DialogBox(parent:Menu)
 		{
@@ -39,100 +44,85 @@ package com.jumpGame.ui.popups
 			
 			// bg quad
 			var bg:Quad = new Quad(stage.stageWidth, stage.stageHeight, 0x000000);
-			bg.alpha = 0.01;
+			bg.alpha = 0.2;
 			this.addChild(bg);
 			
-			// scroll dialog artwork
-			var scrollTop:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollLongTop0000"));
-			scrollTop.pivotX = Math.ceil(scrollTop.texture.width / 2);
-			scrollTop.scaleX = 0.6;
-			scrollTop.scaleY = 0.6;
-			scrollTop.x = stage.stageWidth / 2;
-			scrollTop.y = 160;
-			this.addChild(scrollTop);
+			popupContainer = new Sprite();
 			
-			var scrollBottom:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollLongBottom0000"));
-			scrollBottom.pivotX = Math.ceil(scrollBottom.texture.width / 2);
-			scrollBottom.pivotY = scrollBottom.texture.height;
-			scrollBottom.scaleX = 0.6;
-			scrollBottom.scaleY = 0.6;
-			scrollBottom.x = stage.stageWidth / 2;
-			scrollBottom.y = stage.stageHeight - 250;
-			this.addChild(scrollBottom);
-			
-			var scrollQuad:Quad = new Quad(scrollTop.width - 32, scrollBottom.bounds.bottom - scrollTop.bounds.top, 0xf1b892);
-			scrollQuad.pivotX = Math.ceil(scrollQuad.width / 2);
-			scrollQuad.x = stage.stageWidth / 2;
-			scrollQuad.y = scrollTop.bounds.top;
-			addChild(scrollQuad);
-			setChildIndex(scrollQuad, this.getChildIndex(scrollTop));
-			// eof scroll dialog artwork
+			// popup artwork
+			var popup:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptBg0000"));
+			popupContainer.addChild(popup);
+			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
+			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
+			popupContainer.x = Statics.stageWidth / 2;
+			popupContainer.y = Statics.stageHeight / 2;
+			this.addChild(popupContainer);
 			
 			// prompt
-			var fontVerdana23:Font = Fonts.getFont("Verdana23");
-			promptText = new TextField(scrollQuad.width - 10, 60, "", fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
+			var font:Font = Fonts.getFont("BellGothicBlack25");
+			promptText = new TextField(popup.width - 160, 100, "", font.fontName, font.fontSize, 0x9B4B16);
 			promptText.hAlign = HAlign.CENTER;
 			promptText.vAlign = VAlign.TOP;
 			promptText.pivotX = Math.ceil(promptText.width / 2);
-			promptText.x = stage.stageWidth / 2;
-			promptText.y = scrollTop.bounds.bottom + 30;
-			addChild(promptText);
-			
-			// close button
-			btnClose = new Button();
-			btnClose.width = 200;
-			btnClose.height = 40;
-			btnClose.pivotX = Math.ceil(btnClose.width / 2);
-			btnClose.pivotY = btnClose.height;
-			btnClose.x = stage.stageWidth / 2;
-			btnClose.y = scrollBottom.bounds.top - 20;
-			btnClose.label = "Close";
-			btnClose.addEventListener(Event.TRIGGERED, Menu(this.parent).dialogCloseHandler);
-			addChild(btnClose);
+			promptText.x = Math.ceil(popupContainer.width / 2);
+			promptText.y = 50;
+			popupContainer.addChild(promptText);
 			
 			// cancel button
 			btnCancel = new Button();
-			btnCancel.width = 150;
-			btnCancel.height = 40;
-			btnCancel.pivotX = Math.ceil(btnCancel.width);
-			btnCancel.pivotY = btnCancel.height;
-			btnCancel.x = stage.stageWidth / 2 - 15;
-			btnCancel.y = scrollBottom.bounds.top - 20;
-			btnCancel.label = "Cancel";
-			btnCancel.addEventListener(Event.TRIGGERED, Menu(this.parent).dialogCancelHandler);
-			btnCancel.visible = false;
-			addChild(btnCancel);
+			btnCancel.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonCancel0000"));
+			btnCancel.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonCancel0000"));
+			btnCancel.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonCancel0000"));
+			btnCancel.hoverSkin.filter = Statics.btnBrightnessFilter;
+			btnCancel.downSkin.filter = Statics.btnInvertFilter;
+			btnCancel.useHandCursor = true;
+			btnCancel.x = 86;
+			btnCancel.y = 180;
+			btnCancel.addEventListener(Event.TRIGGERED, buttonCancelHandler);
+			popupContainer.addChild(btnCancel);
 			
 			// ok button
 			btnOk = new Button();
-			btnOk.width = 150;
-			btnOk.height = 40;
-			btnOk.pivotY = btnOk.height;
-			btnOk.x = stage.stageWidth / 2 + 15;
-			btnOk.y = scrollBottom.bounds.top - 20;
-			btnOk.label = "OK";
-			btnOk.visible = false;
-			addChild(btnOk);
+			btnOk.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
+			btnOk.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
+			btnOk.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
+			btnOk.hoverSkin.filter = Statics.btnBrightnessFilter;
+			btnOk.downSkin.filter = Statics.btnInvertFilter;
+			btnOk.useHandCursor = true;
+			btnOk.x = popupContainer.width - 207;
+			btnOk.y = 180;
+			btnOk.addEventListener(Event.TRIGGERED, buttonOkHandler);
+			popupContainer.addChild(btnOk);
 		}
 		
-		public function show(promptString:String, isTwoButton:Boolean, callbackFunction):void {
+		public function show(promptString:String, callbackFunction:Function):void {
+			if (this.isInUse) return;
+			this.isInUse = true;
 			this.visible = true;
 			this.promptText.text = promptString;
-			if (isTwoButton) {
-				btnCancel.visible = true;
-				btnOk.visible = true;
-				btnClose.visible = false;
-				btnOk.addEventListener(Event.TRIGGERED, callbackFunction);
-			} else {
-				btnClose.visible = true;
-				btnCancel.visible = false;
-				btnOk.visible = false;
-				
-			}
+			this.callback = callbackFunction;
+			
+			// popup pop out effect
+			popupContainer.scaleX = 0.5;
+			popupContainer.scaleY = 0.5;
+			Starling.juggler.tween(popupContainer, 0.5, {
+				transition: Transitions.EASE_OUT_ELASTIC,
+				scaleX: 1,
+				scaleY: 1
+			});
 		}
 		
-		public function removeOkButtonListeners():void {
-			btnOk.removeEventListeners(Event.TRIGGERED);
+		private function buttonOkHandler(event:Event):void {
+			if (this.callback != null) {
+				this.callback();
+			}
+			this.visible = false;
+			this.isInUse = false;
+		}
+		
+		private function buttonCancelHandler(event:Event):void {
+			this.visible = false;
+			this.isInUse = false;
 		}
 	}
 }

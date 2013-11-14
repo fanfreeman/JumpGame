@@ -28,6 +28,7 @@ package com.jumpGame.level
 		public static var particleComet:PDParticleSystem;
 		public static var particleBounce:PDParticleSystem;
 		public static var particleExplode:PDParticleSystem;
+		public static var particleConfetti:PDParticleSystem;
 		
 		// normal/bonus/preparation mode
 		public static var gameMode:uint;
@@ -85,7 +86,7 @@ package com.jumpGame.level
 		public static var playerName:String;
 		public static var firstName:String;
 		public static var lastName:String;
-		public static var playerHighScore:String;
+		public static var playerHighScore:int;
 		public static var opponentName:String;
 		public static var currentRound:uint;
 		public static var roundScores:Array;

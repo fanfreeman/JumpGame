@@ -26,7 +26,8 @@ package
 		public function set gx(value:Number):void
 		{
 			this._gx = value;
-			this.x = int(Constants.StageWidth / 2 + (value - Camera.gx));
+//			this.x = int(Constants.StageWidth / 2 + (value - Camera.gx));
+			this.x = int(Constants.StageWidth / 2 + value);
 		}
 		
 		public function get gy():Number

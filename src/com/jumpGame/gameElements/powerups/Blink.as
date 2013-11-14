@@ -17,12 +17,14 @@ package com.jumpGame.gameElements.powerups
 		private var magicCircleImage:Image;
 		
 		private var hero:Hero;
+		private var hud:HUD;
 		private var totalTeleports:uint;
 		private var isAnimationActivated:Boolean;
 		private var firstTeleportTime:int;
 		
-		public function Blink(hero:Hero):void {
+		public function Blink(hero:Hero, hud:HUD):void {
 			this.hero = hero;
+			this.hud = hud;
 			this.createPowerupArt();
 		}
 		
@@ -99,7 +101,7 @@ package com.jumpGame.gameElements.powerups
 						this.isActivated = false;
 						
 						// misc reset
-						HUD.clearPowerupReel();
+						hud.clearPowerupReel();
 						Statics.powerupsEnabled = true;
 					}
 				}

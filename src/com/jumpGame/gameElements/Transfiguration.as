@@ -6,10 +6,15 @@ package com.jumpGame.gameElements
 	import starling.animation.Tween;
 	import starling.core.Starling;
 	import starling.display.Image;
+	import starling.display.MovieClip;
 
 	public class Transfiguration extends GameObject
 	{
-		private var activationBg:Image;
+		private var activationBg:MovieClip;
+		private var activationIcon:Image; // the actual icon to tween
+		private var activationIconBroom:Image;
+		private var activationIconVermilion:Image;
+		private var activationIconMaster:Image;
 		private var activationCaption:Image; // the actual caption to tween
 		private var activationCaptionBroom:Image;
 		private var activationCaptionVermilion:Image;
@@ -23,26 +28,47 @@ package com.jumpGame.gameElements
 			
 			this.hero = hero;
 			
-			activationBg = new Image(Assets.getSprite("AtlasTexture2").getTexture("TransfigActivationBg0000"));
+			activationBg = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("TransfigActivationBg"), 30);
 			activationBg.y = Statics.stageHeight;
 			activationBg.visible = false;
-			addChild(activationBg);
+			this.addChild(activationBg);
 			
-			activationCaptionBroom = new Image(Assets.getSprite("AtlasTexture2").getTexture("TransfigActivationCaptionBroom0000"));
+			activationIconBroom = new Image(Assets.getSprite("AtlasTexture5").getTexture("TransfigActivationIconBroom0000"));
+			activationIconBroom.pivotY = Math.ceil(activationIconBroom.height / 2);
+			activationIconBroom.x = -activationIconBroom.width;
+			activationIconBroom.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationIconBroom.visible = false;
+			addChild(activationIconBroom);
+			
+			activationIconVermilion = new Image(Assets.getSprite("AtlasTexture5").getTexture("TransfigActivationIconVermilion0000"));
+			activationIconVermilion.pivotY = Math.ceil(activationIconVermilion.height / 2);
+			activationIconVermilion.x = -activationIconVermilion.width;
+			activationIconVermilion.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationIconVermilion.visible = false;
+			addChild(activationIconVermilion);
+			
+			activationIconMaster = new Image(Assets.getSprite("AtlasTexture5").getTexture("TransfigActivationIconDapan0000"));
+			activationIconMaster.pivotY = Math.ceil(activationIconMaster.height / 2);
+			activationIconMaster.x = -activationIconMaster.width;
+			activationIconMaster.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationIconMaster.visible = false;
+			addChild(activationIconMaster);
+			
+			activationCaptionBroom = new Image(Assets.getSprite("AtlasTexture5").getTexture("TransfigActivationCaptionBroom0000"));
 			activationCaptionBroom.pivotY = Math.ceil(activationCaptionBroom.height / 2);
 			activationCaptionBroom.x = Statics.stageWidth;
 			activationCaptionBroom.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
 			activationCaptionBroom.visible = false;
 			addChild(activationCaptionBroom);
 			
-			activationCaptionVermilion = new Image(Assets.getSprite("AtlasTexture2").getTexture("TransfigActivationCaptionVermilion0000"));
+			activationCaptionVermilion = new Image(Assets.getSprite("AtlasTexture5").getTexture("TransfigActivationCaptionVermilion0000"));
 			activationCaptionVermilion.pivotY = Math.ceil(activationCaptionVermilion.height / 2);
 			activationCaptionVermilion.x = Statics.stageWidth;
 			activationCaptionVermilion.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
 			activationCaptionVermilion.visible = false;
 			addChild(activationCaptionVermilion);
 			
-			activationCaptionMaster = new Image(Assets.getSprite("AtlasTexture2").getTexture("TransfigActivationCaptionDapan0000"));
+			activationCaptionMaster = new Image(Assets.getSprite("AtlasTexture5").getTexture("TransfigActivationCaptionDapan0000"));
 			activationCaptionMaster.pivotY = Math.ceil(activationCaptionMaster.height / 2);
 			activationCaptionMaster.x = Statics.stageWidth;
 			activationCaptionMaster.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
@@ -77,6 +103,7 @@ package com.jumpGame.gameElements
 			
 			// tween for activation bg flyin
 			activationBg.visible = true;
+			starling.core.Starling.juggler.add(activationBg);
 			Starling.juggler.tween(activationBg, 0.3, {
 				transition: Transitions.EASE_IN,
 				y: Statics.stageHeight * 3 / 5,
@@ -85,23 +112,47 @@ package com.jumpGame.gameElements
 			
 			switch (powerup) { // assign an appropriate caption
 				case Constants.PowerupExpansion:
+					this.activationIcon = this.activationIconBroom;
 					this.activationCaption = this.activationCaptionBroom;
 					break;
 				case Constants.PowerupVermilionBird:
+					this.activationIcon = this.activationIconVermilion;
 					this.activationCaption = this.activationCaptionVermilion;
 					break;
 				case Constants.PowerupMasterDapan:
+					this.activationIcon = this.activationIconMaster;
 					this.activationCaption = this.activationCaptionMaster;
 					break;
 			}
 			
+			// bof icon tween
+			// tween for activation icon flyout
+			var tweenActivationIconFlyout:Tween = new Tween(activationIcon, 0.3, Transitions.EASE_IN);
+			tweenActivationIconFlyout.animate("x", Statics.stageWidth);
+			
+			// tween for activation icon slow motion
+			var tweenActivationIconSlowmo:Tween = new Tween(activationIcon, 1.4, Transitions.EASE_OUT);
+			tweenActivationIconSlowmo.animate("x", Statics.stageWidth * 0.8 / 5);
+			tweenActivationIconSlowmo.nextTween = tweenActivationIconFlyout;
+			
+			// tween for activation icon flyin
+			activationIcon.visible = true;
+			Starling.juggler.tween(activationIcon, 0.3, {
+				delay: 0.25,
+				transition: Transitions.EASE_IN,
+				x: Statics.stageWidth * 0.4 / 5,
+				nextTween: tweenActivationIconSlowmo
+			});
+			// eof caption tween
+			
+			// bof caption tween
 			// tween for activation caption flyout
 			var tweenActivationCaptionFlyout:Tween = new Tween(activationCaption, 0.3, Transitions.EASE_IN);
 			tweenActivationCaptionFlyout.animate("x", -activationCaption.width);
 			
 			// tween for activation caption slow motion
 			var tweenActivationCaptionSlowmo:Tween = new Tween(activationCaption, 1.4, Transitions.EASE_OUT);
-			tweenActivationCaptionSlowmo.animate("x", Statics.stageWidth * 2.3 / 5);
+			tweenActivationCaptionSlowmo.animate("x", Statics.stageWidth * 2.1 / 5);
 			tweenActivationCaptionSlowmo.nextTween = tweenActivationCaptionFlyout;
 			
 			// tween for activation caption flyin
@@ -112,6 +163,7 @@ package com.jumpGame.gameElements
 				x: Statics.stageWidth * 2.7 / 5,
 				nextTween: tweenActivationCaptionSlowmo
 			});
+			// eof caption tween
 			
 			// energy wave tween
 			Starling.juggler.delayCall(releaseEnergyWave, 2.2);
@@ -140,8 +192,14 @@ package com.jumpGame.gameElements
 		
 		private function resetTransfigurationActivation():void {
 			// bg
+			starling.core.Starling.juggler.remove(activationBg);
 			activationBg.visible = false;
 			activationBg.y = Statics.stageHeight;
+			
+			// icon
+			activationIcon.visible = false;
+			activationIcon.x = -activationIcon.width;
+			activationIcon.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
 			
 			// caption
 			activationCaption.visible = false;

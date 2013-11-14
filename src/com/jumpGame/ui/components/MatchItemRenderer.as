@@ -137,7 +137,7 @@ package com.jumpGame.ui.components
 		
 		override protected function initialize():void
 		{
-			this.width = 560;
+			this.width = 570;
 			this.height = 78;
 			this.useHandCursor = true;
 			
@@ -148,8 +148,8 @@ package com.jumpGame.ui.components
 			itemBgButton.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
 			itemBgButton.hoverSkin.filter = Statics.btnBrightnessFilter;
 			itemBgButton.downSkin.filter = Statics.btnInvertFilter;
-			itemBgButton.x = (this.width - itemBgImage.width) / 2;
 			this.addChild(itemBgButton);
+//			itemBgButton.x = (this.width - itemBgImage.width) / 2;
 			
 //			var itemBg:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
 //			itemBg.x = (this.width - itemBg.width) / 2;
@@ -168,6 +168,7 @@ package com.jumpGame.ui.components
 					return textRenderer;
 				}
 				titleLabel.width = this.width;
+				titleLabel.height = 35;
 				titleLabel.y = 11;
 				this.addChild(this.titleLabel);
 			}
@@ -180,12 +181,14 @@ package com.jumpGame.ui.components
 					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
 					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("BellGothicBlack13"));
 					textFormat.align = TextFormatAlign.CENTER;
+					textFormat.color = 0x72370a;
 					textRenderer.textFormat = textFormat;
 					textRenderer.smoothing = TextureSmoothing.NONE;
 					return textRenderer;
 				}
 				captionLabel.width = this.width;
-				captionLabel.y = titleLabel.bounds.bottom;
+				captionLabel.height = 35;
+				captionLabel.y = 35;
 				this.addChild(this.captionLabel);
 			}
 		}
@@ -203,10 +206,10 @@ package com.jumpGame.ui.components
 			
 //			sizeInvalid = this.autoSizeIfNeeded() || sizeInvalid;
 			
-			if(dataInvalid || sizeInvalid)
-			{
-				this.layout();
-			}
+//			if(dataInvalid || sizeInvalid)
+//			{
+//				this.layout();
+//			}
 		}
 		
 //		protected function autoSizeIfNeeded():Boolean
@@ -247,15 +250,15 @@ package com.jumpGame.ui.components
 			}
 		}
 		
-		protected function layout():void
-		{
-			this.titleLabel.width = this.actualWidth;
-			this.titleLabel.height = 35;
-			
-			this.captionLabel.width = this.actualWidth;
-			this.captionLabel.height = 35;
-			this.captionLabel.y = 35;
-		}
+//		protected function layout():void
+//		{
+//			this.titleLabel.width = this.actualWidth;
+//			this.titleLabel.height = 35;
+//			
+//			this.captionLabel.width = this.actualWidth;
+//			this.captionLabel.height = 35;
+//			this.captionLabel.y = 35;
+//		}
 		
 		public function itemToTitle(item:Object):String
 		{

@@ -57,16 +57,18 @@ package com.jumpGame.ui.screens
 			
 			// list of upgrades
 			upgradesList = new List();
-			upgradesList.width = 560;
+			upgradesList.width = 588;
 			upgradesList.height = 400;
 			upgradesList.pivotX = Math.ceil(upgradesList.width / 2);
 			upgradesList.x = Statics.stageWidth / 2;
-			upgradesList.y = popup.bounds.top + 100;
+			upgradesList.y = popup.bounds.top + 95;
 			upgradesList.horizontalScrollPolicy = Scroller.SCROLL_POLICY_OFF;
 			addChild(upgradesList);
 			upgradesList.itemRendererType = UpgradeItemRenderer;
+			upgradesList.itemRendererProperties.iconField = "icon";
 			upgradesList.itemRendererProperties.titleField = "title";
 			upgradesList.itemRendererProperties.captionField = "caption";
+			upgradesList.itemRendererProperties.caption2Field = "caption2";
 			upgradesList.itemRendererProperties.priceField = "price";
 			upgradesList.itemRendererProperties.priceTypeField = "price_type";
 			upgradesList.itemRendererProperties.progressField = "progress";
@@ -107,8 +109,10 @@ package com.jumpGame.ui.screens
 			// teleportation
 			if (Statics.upgradePrices.teleportation != null) {
 				upgradesCollection.setItemAt({
-					title: "Upgrade Power: Teleportation", 
-					caption: "Extend Power: Teleportation by " + String(Statics.rankTeleportation * 2 + 2) + " extra teleports",
+					icon: "Teleportation",
+					title: "Power: Teleportation", 
+					caption: "Current Rank: " + String(12 + Statics.rankTeleportation * 2) + " teleports",
+					caption2: "Next Rank: " + String(12 + (Statics.rankTeleportation + 1) * 2) + " teleports",
 					price: Statics.upgradePrices.teleportation.price,
 					price_type: Statics.upgradePrices.teleportation.price_type,
 					progress: Statics.rankTeleportation,
@@ -116,8 +120,10 @@ package com.jumpGame.ui.screens
 				}, 0);
 			} else {
 				upgradesCollection.setItemAt({
-					title: "Power: Teleportation at max rank", 
-					caption: "",
+					icon: "Teleportation",
+					title: "Power: Teleportation", 
+					caption: "Current Rank: " + String(12 + Statics.rankTeleportation * 2) + " teleports",
+					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankTeleportation,
@@ -128,8 +134,10 @@ package com.jumpGame.ui.screens
 			// attraction
 			if (Statics.upgradePrices.attraction != null) {
 				upgradesCollection.setItemAt({
-					title: "Upgrade Power: Attraction", 
-					caption: "Increases Power: Attraction duration by " + String(Statics.rankAttraction * 20 + 20) + "%",
+					icon: "Attraction",
+					title: "Power: Attraction", 
+					caption: "Current Rank: " + String(5 + Statics.rankAttraction * 1) + " second duration",
+					caption2: "Next Rank: " + String(5 + (Statics.rankAttraction + 1) * 1) + " second duration",
 					price: Statics.upgradePrices.attraction.price,
 					price_type: Statics.upgradePrices.attraction.price_type,
 					progress: Statics.rankAttraction,
@@ -137,8 +145,10 @@ package com.jumpGame.ui.screens
 				}, 1);
 			} else {
 				upgradesCollection.setItemAt({
-					title: "Power: Attraction at max rank", 
-					caption: "",
+					icon: "Attraction",
+					title: "Power: Attraction", 
+					caption: "Current Rank: " + String(5 + Statics.rankAttraction * 1) + " second duration",
+					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankAttraction,
@@ -149,8 +159,10 @@ package com.jumpGame.ui.screens
 			// duplication
 			if (Statics.upgradePrices.duplication != null) {
 				upgradesCollection.setItemAt({
-					title: "Upgrade Power: Duplication", 
-					caption: "Increases Power: Duplication duration by " + String(Statics.rankDuplication * 20 + 20) + "%",
+					icon: "Duplication",
+					title: "Power: Duplication", 
+					caption: "Current Rank: " + String(5 + Statics.rankDuplication * 1) + " second duration",
+					caption2: "Next Rank: " + String(5 + (Statics.rankDuplication + 1) * 1) + " second duration",
 					price: Statics.upgradePrices.duplication.price,
 					price_type: Statics.upgradePrices.duplication.price_type,
 					progress: Statics.rankDuplication,
@@ -158,8 +170,10 @@ package com.jumpGame.ui.screens
 				}, 2);
 			} else {
 				upgradesCollection.setItemAt({
-					title: "Power: Duplication at max rank", 
-					caption: "",
+					icon: "Duplication",
+					title: "Power: Duplication", 
+					caption: "Current Rank: " + String(5 + Statics.rankDuplication * 1) + " second duration",
+					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankDuplication,
@@ -171,8 +185,10 @@ package com.jumpGame.ui.screens
 			// safety rocket
 			if (Statics.upgradePrices.safety != null) {
 				upgradesCollection.setItemAt({
-					title: "Upgrade Power: Safety Rocket", 
-					caption: "Increases Power: Safety Rocket duration by " + String(Statics.rankSafety * 20 + 20) + "%",
+					icon: "Safety",
+					title: "Power: Safety Rocket", 
+					caption: "Current Rank: " + String(5 + Statics.rankSafety * 1) + " second duration",
+					caption2: "Next Rank: " + String(5 + (Statics.rankSafety + 1) * 1) + " second duration",
 					price: Statics.upgradePrices.safety.price,
 					price_type: Statics.upgradePrices.safety.price_type,
 					progress: Statics.rankSafety,
@@ -180,8 +196,10 @@ package com.jumpGame.ui.screens
 				}, 3);
 			} else {
 				upgradesCollection.setItemAt({
-					title: "Power: Safety Rocket at max rank", 
-					caption: "",
+					icon: "Safety",
+					title: "Power: Safety Rocket", 
+					caption: "Current Rank: " + String(5 + Statics.rankSafety * 1) + " second duration",
+					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankSafety,
@@ -192,8 +210,10 @@ package com.jumpGame.ui.screens
 			// barrels o' fire
 			if (Statics.upgradePrices.barrels != null) {
 				upgradesCollection.setItemAt({
-					title: "Upgrade Power: Barrels O' Fire", 
-					caption: "Launch " + String(Statics.rankBarrels * 2 + 2) + " extra barrels",
+					icon: "Barrels",
+					title: "Power: Barrels O' Fire", 
+					caption: "Current Rank: launch " + String(20 + Statics.rankBarrels * 2) + " barrels",
+					caption2: "Next Rank: launch " + String(20 + (Statics.rankBarrels + 1) * 2) + " barrels",
 					price: Statics.upgradePrices.barrels.price,
 					price_type: Statics.upgradePrices.barrels.price_type,
 					progress: Statics.rankBarrels,
@@ -201,8 +221,10 @@ package com.jumpGame.ui.screens
 				}, 4);
 			} else {
 				upgradesCollection.setItemAt({
-					title: "Power: Barrels O' Fire at max rank", 
-					caption: "",
+					icon: "Barrels",
+					title: "Power: Barrels O' Fire", 
+					caption: "Current Rank: launch " + String(20 + Statics.rankBarrels * 2) + " barrels",
+					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankBarrels,
@@ -212,12 +234,11 @@ package com.jumpGame.ui.screens
 			
 			// super comet
 			if (Statics.upgradePrices.comet != null) {
-				var captionString:String;
-				if (Statics.rankComet > 1) captionString = "Increases Super Comet duration by " + String(Statics.rankComet * 0.5 + 0.5) + " seconds";
-				else captionString = "Increases Super Comet duration by " + String(Statics.rankComet * 0.5 + 0.5) + " second";
 				upgradesCollection.setItemAt({
-					title: "Upgrade Super Comet", 
-					caption: captionString,
+					icon: "Comet",
+					title: "Super Comet", 
+					caption: "Current Rank: " + String(3 + Statics.rankComet * 0.5) + " second duration",
+					caption2: "Next Rank: " + String(3 + (Statics.rankComet + 1) * 0.5) + " second duration",
 					price: Statics.upgradePrices.comet.price,
 					price_type: Statics.upgradePrices.comet.price_type,
 					progress: Statics.rankComet,
@@ -225,8 +246,10 @@ package com.jumpGame.ui.screens
 				}, 5);
 			} else {
 				upgradesCollection.setItemAt({
-					title: "Super Comet at max rank", 
-					caption: "",
+					icon: "Comet",
+					title: "Super Comet", 
+					caption: "Current Rank: " + String(3 + Statics.rankComet * 0.5) + " second duration",
+					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankComet,
@@ -236,11 +259,11 @@ package com.jumpGame.ui.screens
 			
 			// ability cooldown
 			if (Statics.upgradePrices.cooldown != null) {
-				if (Statics.rankAbilityCooldown > 1) captionString = "Decreases Special Ability cooldown by " + String(Statics.rankAbilityCooldown * 0.5 + 0.5) + " seconds";
-				else captionString = "Decreases Special Ability cooldown by " + String(Statics.rankAbilityCooldown * 0.5 + 0.5) + " second";
 				upgradesCollection.setItemAt({
-					title: "Upgrade Ability: Focused Regeneration", 
-					caption: captionString,
+					icon: "Focus",
+					title: "Focused Regeneration", 
+					caption: "Current Rank: " + String(10 - Statics.rankAbilityCooldown * 0.5) + " second ability cooldown",
+					caption2: "Next Rank: " + String(10 - (Statics.rankAbilityCooldown + 1) * 0.5) + " second ability cooldown",
 					price: Statics.upgradePrices.cooldown.price,
 					price_type: Statics.upgradePrices.cooldown.price_type,
 					progress: Statics.rankAbilityCooldown,
@@ -248,8 +271,10 @@ package com.jumpGame.ui.screens
 				}, 6);
 			} else {
 				upgradesCollection.setItemAt({
-					title: "Focused Ability Regeneration at max rank", 
-					caption: "",
+					icon: "Focus",
+					title: "Focused Regeneration", 
+					caption: "Current Rank: " + String(10 - Statics.rankAbilityCooldown * 0.5) + " second ability cooldown",
+					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankAbilityCooldown,
@@ -260,8 +285,10 @@ package com.jumpGame.ui.screens
 			// ability launch power
 			if (Statics.upgradePrices.ability_power != null) {
 				upgradesCollection.setItemAt({
-					title: "Upgrade Ability: Power Infusion", 
-					caption: "Increases speical ability launch power by " + String(Statics.rankAbilityPower * 20 + 20) + "%",
+					icon: "Power",
+					title: "Power Infusion", 
+					caption: "Current Rank: " + String(100 + Statics.rankAbilityPower * 20) + "% ability jump power",
+					caption2: "Next Rank: " + String(100 + (Statics.rankAbilityPower + 1) * 20) + "% ability jump power",
 					price: Statics.upgradePrices.ability_power.price,
 					price_type: Statics.upgradePrices.ability_power.price_type,
 					progress: Statics.rankAbilityPower,
@@ -269,8 +296,10 @@ package com.jumpGame.ui.screens
 				}, 7);
 			} else {
 				upgradesCollection.setItemAt({
-					title: "Ability Power at max rank", 
-					caption: "",
+					icon: "Power",
+					title: "Power Infusion", 
+					caption: "Current Rank: " + String(100 + Statics.rankAbilityPower * 20) + "% ability jump power",
+					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankAbilityPower,
@@ -281,8 +310,10 @@ package com.jumpGame.ui.screens
 			// extra ability
 			if (Statics.upgradePrices.extra_ability != null) {
 				upgradesCollection.setItemAt({
+					icon: "Extra",
 					title: "Extra Special Ability", 
-					caption: "You can use one extra Speical Ability in a round",
+					caption: "Current Rank: " + String(2 + Statics.rankExtraAbility * 1) + " ability uses per round",
+					caption2: "Next Rank: " + String(2 + (Statics.rankExtraAbility + 1) * 1) + " ability uses per round",
 					price: Statics.upgradePrices.extra_ability.price,
 					price_type: Statics.upgradePrices.extra_ability.price_type,
 					progress: Statics.rankExtraAbility,
@@ -290,8 +321,10 @@ package com.jumpGame.ui.screens
 				}, 8);
 			} else {
 				upgradesCollection.setItemAt({
-					title: "Maximum Number of Extra Abilities", 
-					caption: "",
+					icon: "Extra",
+					title: "Extra Special Ability", 
+					caption: "Current Rank: " + String(2 + Statics.rankExtraAbility * 1) + " ability uses per round",
+					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankExtraAbility,
@@ -302,8 +335,10 @@ package com.jumpGame.ui.screens
 			// coin doubler
 			if (Statics.upgradePrices.coin_doubler != null) {
 				upgradesCollection.setItemAt({
-					title: "Coin Doubler", 
-					caption: "Doubles the amount of coins you collect during gameplay",
+					icon: "Doubler",
+					title: "Magical Coin Doubler", 
+					caption: "Doubles the amount of coins you collect",
+					caption2: "during gameplay. Want to be rich?",
 					price: Statics.upgradePrices.coin_doubler.price,
 					price_type: Statics.upgradePrices.coin_doubler.price_type,
 					progress: Statics.rankCoinDoubler,
@@ -311,8 +346,10 @@ package com.jumpGame.ui.screens
 				}, 9);
 			} else {
 				upgradesCollection.setItemAt({
-					title: "Proud Owner of a Shiny Coin Doubler", 
-					caption: "",
+					icon: "Doubler",
+					title: "Magical Coin Doubler", 
+					caption: "Proud Owner of a Shiny Coin Doubler!",
+					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankCoinDoubler,
@@ -331,7 +368,7 @@ package com.jumpGame.ui.screens
 		public function upgradeTeleportationHandler(event:Event):void {
 			if (Statics.upgradePrices.teleportation.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
-				Menu(this.owner).showDialogBox("You do not have enough coins,\n would you like to get more?", true, showGetCoinsScreen);
+				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
@@ -346,7 +383,7 @@ package com.jumpGame.ui.screens
 		public function upgradeAttractionHandler(event:Event):void {
 			if (Statics.upgradePrices.attraction.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
-				Menu(this.owner).showDialogBox("You do not have enough coins,\n would you like to get more?", true, showGetCoinsScreen);
+				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
@@ -361,7 +398,7 @@ package com.jumpGame.ui.screens
 		public function upgradeDuplicationHandler(event:Event):void {
 			if (Statics.upgradePrices.duplication.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
-				Menu(this.owner).showDialogBox("You do not have enough coins,\n would you like to get more?", true, showGetCoinsScreen);
+				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 
@@ -376,7 +413,7 @@ package com.jumpGame.ui.screens
 		public function upgradeSafetyRocketHandler(event:Event):void {
 			if (Statics.upgradePrices.safety.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
-				Menu(this.owner).showDialogBox("You do not have enough coins,\n would you like to get more?", true, showGetCoinsScreen);
+				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
@@ -391,7 +428,7 @@ package com.jumpGame.ui.screens
 		public function upgradeBarrelsHandler(event:Event):void {
 			if (Statics.upgradePrices.barrels.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
-				Menu(this.owner).showDialogBox("You do not have enough coins,\n would you like to get more?", true, showGetCoinsScreen);
+				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
@@ -406,7 +443,7 @@ package com.jumpGame.ui.screens
 		public function upgradeCometHandler(event:Event):void {
 			if (Statics.upgradePrices.comet.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
-				Menu(this.owner).showDialogBox("You do not have enough coins,\n would you like to get more?", true, showGetCoinsScreen);
+				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
@@ -421,7 +458,7 @@ package com.jumpGame.ui.screens
 		public function upgradeCooldownHandler(event:Event):void {
 			if (Statics.upgradePrices.cooldown.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
-				Menu(this.owner).showDialogBox("You do not have enough coins,\n would you like to get more?", true, showGetCoinsScreen);
+				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
@@ -436,7 +473,7 @@ package com.jumpGame.ui.screens
 		public function upgradeAbilityPowerHandler(event:Event):void {
 			if (Statics.upgradePrices.ability_power.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
-				Menu(this.owner).showDialogBox("You do not have enough coins,\n would you like to get more?", true, showGetCoinsScreen);
+				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
@@ -452,14 +489,14 @@ package com.jumpGame.ui.screens
 			if (Statics.upgradePrices.extra_ability.price_type == "coins") {
 				if (Statics.upgradePrices.extra_ability.price > Statics.playerCoins) { // player can't afford this
 					// show get coins prompt
-					Menu(this.owner).showDialogBox("You do not have enough coins,\n would you like to get more?", true, showGetCoinsScreen);
+					Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 					return;
 				}
 			}
 			else if (Statics.upgradePrices.extra_ability.price_type == "gems") {
 				if (Statics.upgradePrices.extra_ability.price > Statics.playerGems) { // player can't afford this
 					// show get gems prompt
-					Menu(this.owner).showDialogBox("You do not have enough gems,\n would you like to get more?", true, showGetGemsScreen);
+					Menu(this.owner).showDialogBox("You do not have enough gems, would you like to get more?", showGetGemsScreen);
 					return;
 				}
 			}
@@ -476,7 +513,7 @@ package com.jumpGame.ui.screens
 		public function upgradeCoinDoublerHandler(event:Event):void {
 			if (Statics.upgradePrices.coin_doubler.price > Statics.playerGems) { // player can't afford this
 				// show get gems prompt
-				Menu(this.owner).showDialogBox("You do not have enough gems,\n would you like to get more?", true, showGetGemsScreen);
+				Menu(this.owner).showDialogBox("You do not have enough gems, would you like to get more?", showGetGemsScreen);
 				return;
 			}
 			
@@ -488,15 +525,11 @@ package com.jumpGame.ui.screens
 			Menu(this.owner).communicator.postPurchaseUpgrade(jsonStr);
 		}
 		
-		private function showGetCoinsScreen(event:Event):void {
-			event.target.removeEventListener(Event.TRIGGERED, showGetCoinsScreen);
-			Menu(this.owner).hideDialogBox();
+		private function showGetCoinsScreen():void {
 			Menu(this.owner).showGetCoinsScreen(null);
 		}
 		
-		private function showGetGemsScreen(event:Event):void {
-			event.target.removeEventListener(Event.TRIGGERED, showGetGemsScreen);
-			Menu(this.owner).hideDialogBox();
+		private function showGetGemsScreen():void {
 			Menu(this.owner).showGetGemsScreen(null);
 		}
 	}

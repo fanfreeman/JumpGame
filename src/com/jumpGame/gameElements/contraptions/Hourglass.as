@@ -1,8 +1,6 @@
 package com.jumpGame.gameElements.contraptions
 {
 	import com.jumpGame.gameElements.Contraption;
-	import com.jumpGame.level.Statics;
-	import com.jumpGame.ui.HUD;
 	
 	import starling.display.Image;
 
@@ -36,7 +34,7 @@ package com.jumpGame.gameElements.contraptions
 				this.visible = false;
 				if (!Sounds.sfxMuted) Sounds.sndGotHourglass.play();
 //				Statics.bonusTime += 5;
-				HUD.showMessage("Bonus Time!");
+//				HUD.showMessage("Bonus Time!");
 			}
 		}
 	}

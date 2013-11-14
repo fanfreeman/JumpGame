@@ -83,11 +83,41 @@ package
 		[Embed(source="../media/fonts/bitmap/bellgothicblack13.fnt", mimeType="application/octet-stream")]
 		public static const XML_BellGothicBlack13:Class;
 		
-		// Bell Gothic Std Black 13 font (matches list)
+		// Badaboom 25 font (matches list)
 		[Embed(source="../media/fonts/bitmap/badaboom25.png")]
 		public static const Font_Badaboom25:Class;
 		[Embed(source="../media/fonts/bitmap/badaboom25.fnt", mimeType="application/octet-stream")]
 		public static const XML_Badaboom25:Class;
+		
+		// Materhorn 25 dark font (matches details popup, town square)
+		[Embed(source="../media/fonts/bitmap/materhorn25.png")]
+		public static const Font_Materhorn25:Class;
+		[Embed(source="../media/fonts/bitmap/materhorn25.fnt", mimeType="application/octet-stream")]
+		public static const XML_Materhorn25:Class;
+		
+		// Badaboom 50 font (in game messages)
+		[Embed(source="../media/fonts/bitmap/badaboom50.png")]
+		public static const Font_Badaboom50:Class;
+		[Embed(source="../media/fonts/bitmap/badaboom50.fnt", mimeType="application/octet-stream")]
+		public static const XML_Badaboom50:Class;
+		
+		// Badaboom 72 font (pulsing distance text)
+		[Embed(source="../media/fonts/bitmap/pulsing72fire.png")]
+		public static const Font_Pulsing72:Class;
+		[Embed(source="../media/fonts/bitmap/pulsing72fire.fnt", mimeType="application/octet-stream")]
+		public static const XML_Pulsing72:Class;
+		
+		// Badaboom 72 font (pulsing distance text)
+		[Embed(source="../media/fonts/bitmap/pulsing72.png")]
+		public static const Font_Pulsing72Fire:Class;
+		[Embed(source="../media/fonts/bitmap/pulsing72.fnt", mimeType="application/octet-stream")]
+		public static const XML_Pulsing72Fire:Class;
+		
+		// Bell Gothic Black 25 font (dialog box)
+		[Embed(source="../media/fonts/bitmap/bellgothicblack25.png")]
+		public static const Font_BellGothicBlack25:Class;
+		[Embed(source="../media/fonts/bitmap/bellgothicblack25.fnt", mimeType="application/octet-stream")]
+		public static const XML_BellGothicBlack25:Class;
 		
 		/**
 		 * Font objects.
@@ -104,6 +134,11 @@ package
 		private static var Materhorn24:BitmapFont;
 		private static var BellGothicBlack13:BitmapFont;
 		private static var Badaboom25:BitmapFont;
+		private static var Materhorn25:BitmapFont;
+		private static var Badaboom50:BitmapFont;
+		private static var Pulsing72:BitmapFont;
+		private static var Pulsing72Fire:BitmapFont;
+		private static var BellGothicBlack25:BitmapFont;
 		
 		/**
 		 * Returns the BitmapFont (texture + xml) instance's fontName property (there is only one instance per app)

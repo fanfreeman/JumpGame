@@ -5,11 +5,17 @@ package com.jumpGame.gameElements.powerups
 
 	public class Pyromancy extends GameObject
 	{
+		private var hud:HUD;
 		public var isActivated:Boolean = false;
 		private var completionWarned:Boolean;
 		
 		private var nextLaunchTime:int;
 		private var numLaunches:uint;
+		
+		public function Pyromancy(hud:HUD)
+		{
+			this.hud = hud;
+		}
 		
 		public function activate():void {
 			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
@@ -32,7 +38,7 @@ package com.jumpGame.gameElements.powerups
 					this.isActivated = false;
 					
 					// misc reset
-					HUD.clearPowerupReel();
+					hud.clearPowerupReel();
 					Statics.powerupsEnabled = true;
 				}
 				

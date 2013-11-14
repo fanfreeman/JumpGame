@@ -65,11 +65,11 @@ package
 		[Embed(source="../media/particles/explode/texture.png")]
 		public static var ParticleExplodeTexture:Class;
 		
-		// sea of fire
-//		[Embed(source="../media/particles/fire/particle.pex", mimeType="application/octet-stream")]
-//		public static var ParticleFireXML:Class;
-//		
-//		[Embed(source="../media/particles/fire/texture.png")]
-//		public static var ParticleFireTexture:Class;
+		// explode
+		[Embed(source="../media/particles/confetti/particle.pex", mimeType="application/octet-stream")]
+		public static var ParticleConfettiXML:Class;
+		
+		[Embed(source="../media/particles/confetti/texture.png")]
+		public static var ParticleConfettiTexture:Class;
 	}
 }

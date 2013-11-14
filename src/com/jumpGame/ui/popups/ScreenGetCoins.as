@@ -146,7 +146,7 @@ package com.jumpGame.ui.popups
 		public function purchaseCoinBoosterPackHandler(event:Event):void {
 			if (Statics.playerGems < 5) { // player can't afford this
 				// show get gems prompt
-				parent.showDialogBox("You do not have enough gems,\n would you like to get more?", true, showGetGemsScreen);
+				parent.showDialogBox("You do not have enough gems,\n would you like to get more?", showGetGemsScreen);
 				return;
 			}
 			
@@ -161,7 +161,7 @@ package com.jumpGame.ui.popups
 		public function purchaseCoinSuperPackHandler(event:Event):void {
 			if (Statics.playerGems < 12) { // player can't afford this
 				// show get gems prompt
-				parent.showDialogBox("You do not have enough gems,\n would you like to get more?", true, showGetGemsScreen);
+				parent.showDialogBox("You do not have enough gems,\n would you like to get more?", showGetGemsScreen);
 				return;
 			}
 			
@@ -176,7 +176,7 @@ package com.jumpGame.ui.popups
 		public function purchaseCoinMegaPackHandler(event:Event):void {
 			if (Statics.playerGems < 50) { // player can't afford this
 				// show get gems prompt
-				parent.showDialogBox("You do not have enough gems,\n would you like to get more?", true, showGetGemsScreen);
+				parent.showDialogBox("You do not have enough gems,\n would you like to get more?", showGetGemsScreen);
 				return;
 			}
 			
@@ -191,7 +191,7 @@ package com.jumpGame.ui.popups
 		public function purchaseCoinUltraPackHandler(event:Event):void {
 			if (Statics.playerGems < 120) { // player can't afford this
 				// show get gems prompt
-				parent.showDialogBox("You do not have enough gems,\n would you like to get more?", true, showGetGemsScreen);
+				parent.showDialogBox("You do not have enough gems,\n would you like to get more?", showGetGemsScreen);
 				return;
 			}
 			
@@ -206,7 +206,7 @@ package com.jumpGame.ui.popups
 		public function purchaseCoinUltimatePackHandler(event:Event):void {
 			if (Statics.playerGems < 240) { // player can't afford this
 				// show get gems prompt
-				parent.showDialogBox("You do not have enough gems,\n would you like to get more?", true, showGetGemsScreen);
+				parent.showDialogBox("You do not have enough gems,\n would you like to get more?", showGetGemsScreen);
 				return;
 			}
 			
@@ -227,9 +227,7 @@ package com.jumpGame.ui.popups
 			this.visible = false;
 		}
 		
-		private function showGetGemsScreen(event:Event):void {
-			event.target.removeEventListener(Event.TRIGGERED, showGetGemsScreen);
-			parent.hideDialogBox();
+		private function showGetGemsScreen():void {
 			parent.showGetGemsScreen(null);
 		}
 	}

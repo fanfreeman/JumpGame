@@ -1,11 +1,13 @@
 package com.jumpGame.gameElements {
+	import com.jumpGame.level.Statics;
+	
+	import starling.core.Starling;
 	import starling.display.BlendMode;
 	import starling.display.Image;
+	import starling.display.MovieClip;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
-	
-	import com.jumpGame.level.Statics;
 	
 	public class Background extends Sprite {
 		// sea of fire properties
@@ -18,9 +20,12 @@ package com.jumpGame.gameElements {
 //		private var layer0Image1:GameObject;
 //		private var layer0Image2:GameObject;
 		private var layer0Ground:GameObject;
-		private var layer0Sky1:GameObject;
-		private var layer0Sky2:GameObject;
-		private var layer0Sky3:GameObject;
+		private var layer0Sky1_left:GameObject;
+		private var layer0Sky2_left:GameObject;
+		private var layer0Sky3_left:GameObject;
+		private var layer0Sky1_right:GameObject;
+		private var layer0Sky2_right:GameObject;
+		private var layer0Sky3_right:GameObject;
 		
 		// other decorative layers
 		private var bgLayerPlanets:BgLayer; // bg planet/pirateship/moon
@@ -30,6 +35,7 @@ package com.jumpGame.gameElements {
 		private var bgLayerIslandsLarge:BgLayer; // bg medium/large islands
 		private var bgLayerBridges:BgLayer; // bg bridges
 		private var bgLayerBranches:BgLayer; // fg branches
+		private var bgLayerFairy:BgLayer;
 		
 		// expiration times
 		private var bgLayerPlanetsExpiration:int;
@@ -39,6 +45,7 @@ package com.jumpGame.gameElements {
 		private var bgLayerIslandsLargeExpiration:int;
 		private var bgLayerBridgesExpiration:int;
 		private var bgLayerBranchesExpiration:int;
+		private var bgLayerFairyExpiration:int;
 		
 		// sea of fire layers (waves)
 		private var sofLayer1:SofLayer; // bg
@@ -47,6 +54,12 @@ package com.jumpGame.gameElements {
 		private var sofLayer4:SofLayer; // fg
 		private var sofLayer5:SofLayer; // fg
 		public var sofQuad:Quad; // fg
+		
+		private var catapult:MovieClip;
+		private var heroIdle:MovieClip; // idle hero standing on catapult
+		private var catapultLaunched:Boolean;
+		
+		private var skyImageWidth:Number;
 		
 		public function Background(type:uint) {
 			super();
@@ -65,20 +78,33 @@ package com.jumpGame.gameElements {
 				bgLayerIslandsSmallExpiration = Statics.gameTime + Constants.BgLayerIslandsSmallDuration;
 				bgLayerIslandsLargeExpiration = Statics.gameTime + Constants.BgLayerIslandsLargeDuration;
 				bgLayerBridgesExpiration = Statics.gameTime + Constants.BgLayerBridgesDuration;
+			
+				// sky
+				skyImageWidth = layer0Sky1_left.width;
+				layer0Sky1_left.gx = int(-Statics.stageWidth / 2);
+				layer0Sky1_left.gy = int(-Statics.stageHeight / 2);
 				
+				layer0Sky2_left.gx = int(-Statics.stageWidth / 2);
+				layer0Sky2_left.gy = int(-Statics.stageHeight / 2 + layer0Sky1_left.height);
+				
+				layer0Sky3_left.gx = int(-Statics.stageWidth / 2);
+				layer0Sky3_left.gy = int(-Statics.stageHeight / 2 + layer0Sky1_left.height + layer0Sky3_left.height);
+				
+				layer0Sky1_right.gx = int(-Statics.stageWidth / 2 + skyImageWidth);
+				layer0Sky1_right.gy = int(-Statics.stageHeight / 2);
+				
+				layer0Sky2_right.gx = int(-Statics.stageWidth / 2 + skyImageWidth);
+				layer0Sky2_right.gy = int(-Statics.stageHeight / 2 + layer0Sky1_right.height);
+				
+				layer0Sky3_right.gx = int(-Statics.stageWidth / 2 + skyImageWidth);
+				layer0Sky3_right.gy = int(-Statics.stageHeight / 2 + layer0Sky1_right.height + layer0Sky3_right.height);
+				// eof sky
+				
+				// ground
 				layer0Ground.gx = 0;
 				layer0Ground.gy = int(-Statics.stageHeight / 2);
 				this.addChild(layer0Ground);
-				this.setChildIndex(layer0Ground, 0); // send to back
-			
-				layer0Sky1.gx = 0;
-				layer0Sky1.gy = int(-Statics.stageHeight / 2 + layer0Ground.height);
-				
-				layer0Sky2.gx = 0;
-				layer0Sky2.gy = int(-Statics.stageHeight / 2 + layer0Ground.height + layer0Sky1.height);
-				
-				layer0Sky3.gx = 0;
-				layer0Sky3.gy = int(-Statics.stageHeight / 2 + layer0Ground.height + layer0Sky1.height + layer0Sky3.height);
+//				this.setChildIndex(layer0Ground, 0); // send to back
 				
 				this.sofLayer1.gx = 0;
 				this.sofLayer1.gy = this.sofHeight + Constants.SofLayer1HeightOffset;
@@ -111,7 +137,24 @@ package com.jumpGame.gameElements {
 				this.sofLayer2.gy = this.sofHeight + Constants.SofLayer2HeightOffset;
 			}
 			else if (this.type == Constants.Foreground) {
+				// initialize catapult
+				catapult.x = Statics.stageWidth / 2;
+				catapult.y = Statics.stageHeight;
+				catapultLaunched = false;
+				this.addChild(catapult);
+				catapult.stop();
+				starling.core.Starling.juggler.add(catapult);
+				
+				// initialize hero idle animation
+				heroIdle.x = Statics.stageWidth / 2;
+				heroIdle.y = catapult.bounds.bottom - 50;
+				this.addChild(heroIdle);
+				starling.core.Starling.juggler.add(heroIdle);
+				
+				// initialize other foreground elements
 				bgLayerBranchesExpiration = Statics.gameTime + Constants.BgLayerBranchesDuration;
+//				bgLayerFairyExpiration = Statics.gameTime; // testing
+				bgLayerFairyExpiration = getExpirationTime(Constants.BgLayerFairyDuration);
 				
 				this.sofLayer3.gx = 0;
 				this.sofLayer3.gy = this.sofHeight + Constants.SofLayer3HeightOffset;
@@ -122,6 +165,11 @@ package com.jumpGame.gameElements {
 				this.bgLayerBranches.gx = -Constants.StageWidth / 2; // place at top left of screen
 				this.bgLayerBranches.gy = Constants.StageHeight / 2;
 				this.bgLayerBranches.visible = false;
+				
+				this.bgLayerFairy.gx = -Constants.StageWidth / 2; // place at top left of screen
+				this.bgLayerFairy.gy = Constants.StageHeight / 2;
+				this.bgLayerFairy.visible = false;
+				this.bgLayerFairy.initLayerFairy();
 				
 				this.sofLayer5.gx = 0;
 				this.sofLayer5.gy = this.sofHeight + Constants.SofLayer5HeightOffset;
@@ -163,38 +211,57 @@ package com.jumpGame.gameElements {
 //				layer0Image2.pivotY = layer0Image2.height;
 //				this.addChild(layer0Image2);
 				
+				// add sky images
+				layer0Sky1_left = new GameObject();
+				var image1:Image = new Image(Assets.getTexture("BgLayer0Sky"));
+				layer0Sky1_left.addChild(image1);
+				layer0Sky1_left.blendMode = BlendMode.NONE;
+				layer0Sky1_left.pivotY = layer0Sky1_left.height;
+				this.addChild(layer0Sky1_left);
+				
+				layer0Sky2_left = new GameObject();
+				var image2:Image = new Image(Assets.getTexture("BgLayer0Sky"));
+				layer0Sky2_left.addChild(image2);
+				layer0Sky2_left.blendMode = BlendMode.NONE;
+				layer0Sky2_left.pivotY = layer0Sky2_left.height;
+				this.addChild(layer0Sky2_left);
+				
+				layer0Sky3_left = new GameObject();
+				var image3:Image = new Image(Assets.getTexture("BgLayer0Sky"));
+				layer0Sky3_left.addChild(image3);
+				layer0Sky3_left.blendMode = BlendMode.NONE;
+				layer0Sky3_left.pivotY = layer0Sky3_left.height;
+				this.addChild(layer0Sky3_left);
+				
+				layer0Sky1_right = new GameObject();
+				var image4:Image = new Image(Assets.getTexture("BgLayer0Sky"));
+				layer0Sky1_right.addChild(image4);
+				layer0Sky1_right.blendMode = BlendMode.NONE;
+				layer0Sky1_right.pivotY = layer0Sky1_right.height;
+				this.addChild(layer0Sky1_right);
+				
+				layer0Sky2_right = new GameObject();
+				var image5:Image = new Image(Assets.getTexture("BgLayer0Sky"));
+				layer0Sky2_right.addChild(image5);
+				layer0Sky2_right.blendMode = BlendMode.NONE;
+				layer0Sky2_right.pivotY = layer0Sky2_right.height;
+				this.addChild(layer0Sky2_right);
+				
+				layer0Sky3_right = new GameObject();
+				var image6:Image = new Image(Assets.getTexture("BgLayer0Sky"));
+				layer0Sky3_right.addChild(image6);
+				layer0Sky3_right.blendMode = BlendMode.NONE;
+				layer0Sky3_right.pivotY = layer0Sky3_right.height;
+				this.addChild(layer0Sky3_right);
+				// eof add sky images
+				
+				// add ground image
 				layer0Ground = new GameObject();
 				var image0:Image = new Image(Assets.getTexture("BgLayer0Ground"));
 				layer0Ground.addChild(image0);
-				layer0Ground.blendMode = BlendMode.NONE;
+//				layer0Ground.blendMode = BlendMode.NONE;
 				layer0Ground.pivotX = Math.ceil(layer0Ground.width / 2);
 				layer0Ground.pivotY = layer0Ground.height;
-//				this.addChild(layer0Ground);
-				
-				layer0Sky1 = new GameObject();
-				var image1:Image = new Image(Assets.getTexture("BgLayer0Sky"));
-				layer0Sky1.addChild(image1);
-				layer0Sky1.blendMode = BlendMode.NONE;
-				layer0Sky1.pivotX = Math.ceil(layer0Sky1.width / 2);
-				layer0Sky1.pivotY = layer0Sky1.height;
-				this.addChild(layer0Sky1);
-				
-				layer0Sky2 = new GameObject();
-				var image2:Image = new Image(Assets.getTexture("BgLayer0Sky"));
-				layer0Sky2.addChild(image2);
-				layer0Sky2.blendMode = BlendMode.NONE;
-				layer0Sky2.pivotX = Math.ceil(layer0Sky2.width / 2);
-				layer0Sky2.pivotY = layer0Sky2.height;
-				this.addChild(layer0Sky2);
-				
-				layer0Sky3 = new GameObject();
-				var image3:Image = new Image(Assets.getTexture("BgLayer0Sky"));
-				layer0Sky3.addChild(image3);
-				layer0Sky3.blendMode = BlendMode.NONE;
-				layer0Sky3.pivotX = Math.ceil(layer0Sky3.width / 2);
-				layer0Sky3.pivotY = layer0Sky3.height;
-				this.addChild(layer0Sky3);
-				// eof layer 0 images
 				
 				// add sea of fire layer 1
 				this.sofLayer1 = new SofLayer(2);
@@ -258,10 +325,29 @@ package com.jumpGame.gameElements {
 				this.addChild(this.sofLayer4);
 				
 				// there's no bg layer 3 because layer 3 is player's layer
-				// add layer 40: right in front of player
+				
+				// add layer 60: right in front of player; branches
 				this.bgLayerBranches = new BgLayer(60);
 				this.bgLayerBranches.parallaxDepth = Constants.bgLayerBranchesParallaxDepth;
 				this.addChild(this.bgLayerBranches);
+				
+				// add layer 70: fairy
+				this.bgLayerFairy = new BgLayer(70);
+				this.addChild(this.bgLayerFairy);
+				
+				// catapult
+//				var bgLayerCatapult:GameObject = new GameObject();
+				catapult = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("Catapult"), 40);
+				catapult.pivotX = Math.ceil(catapult.width  / 2); // center art on registration point
+				catapult.pivotY = catapult.height;
+				catapult.loop = false;
+				
+				// hero idle animation
+				heroIdle = new MovieClip(Assets.getSprite("AtlasTexture7").getTextures("CharBoyIdle"), 40);
+				heroIdle.pivotX = Math.ceil(heroIdle.width  / 2); // center art on registration point
+				heroIdle.pivotY = heroIdle.height;
+				heroIdle.scaleX = 0.5;
+				heroIdle.scaleY = 0.5;
 				
 				// add sea of fire layer 5: closes to player
 				this.sofLayer5 = new SofLayer(2);
@@ -298,183 +384,183 @@ package com.jumpGame.gameElements {
 		public function scroll(timeDiff:int):void {
 			if (this.type == Constants.Background) {
 				// scroll bg layer 0
-				this.layer0Sky1.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
-				this.layer0Sky2.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
-				this.layer0Sky3.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
+				this.layer0Sky1_left.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
+				this.layer0Sky2_left.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
+				this.layer0Sky3_left.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
+				this.layer0Sky1_right.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
+				this.layer0Sky2_right.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
+				this.layer0Sky3_right.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
+				
+				var skyHorizontalSpeed:Number = 0.01;
+				this.layer0Sky1_left.gx -= timeDiff * skyHorizontalSpeed;
+				this.layer0Sky2_left.gx -= timeDiff * skyHorizontalSpeed;
+				this.layer0Sky3_left.gx -= timeDiff * skyHorizontalSpeed;
+				this.layer0Sky1_right.gx -= timeDiff * skyHorizontalSpeed;
+				this.layer0Sky2_right.gx -= timeDiff * skyHorizontalSpeed;
+				this.layer0Sky3_right.gx -= timeDiff * skyHorizontalSpeed;
 				
 				// scroll / hide ground after it scrolls out
 				if (this.layer0Ground.visible) {
 					this.layer0Ground.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
 					// hide it
 					if (this.layer0Ground.gy < -Constants.StageHeight / 2 - this.layer0Ground.height) {
-						this.layer0Ground.visible = false;
 						this.removeChild(layer0Ground);
 					}
 				}
 				
-				// move sky image to top after it scrolls out
-				if (this.layer0Sky1.gy < Camera.gy - Constants.StageHeight / 2 - this.layer0Sky1.height) {
-					this.layer0Sky1.gy = this.layer0Sky3.gy + this.layer0Sky3.height;
+				// move sky image to top after it scrolls out vertically
+				if (this.layer0Sky1_left.gy < Camera.gy - Constants.StageHeight / 2 - this.layer0Sky1_left.height) {
+					this.layer0Sky1_left.gy = this.layer0Sky3_left.gy + this.layer0Sky3_left.height;
 				}
-				if (this.layer0Sky2.gy < Camera.gy - Constants.StageHeight / 2 - this.layer0Sky2.height) {
-					this.layer0Sky2.gy = this.layer0Sky1.gy + this.layer0Sky1.height;
+				if (this.layer0Sky2_left.gy < Camera.gy - Constants.StageHeight / 2 - this.layer0Sky2_left.height) {
+					this.layer0Sky2_left.gy = this.layer0Sky1_left.gy + this.layer0Sky1_left.height;
 				}
-				if (this.layer0Sky3.gy < Camera.gy - Constants.StageHeight / 2 - this.layer0Sky3.height) {
-					this.layer0Sky3.gy = this.layer0Sky2.gy + this.layer0Sky2.height;
+				if (this.layer0Sky3_left.gy < Camera.gy - Constants.StageHeight / 2 - this.layer0Sky3_left.height) {
+					this.layer0Sky3_left.gy = this.layer0Sky2_left.gy + this.layer0Sky2_left.height;
+				}
+				if (this.layer0Sky1_right.gy < Camera.gy - Constants.StageHeight / 2 - this.layer0Sky1_right.height) {
+					this.layer0Sky1_right.gy = this.layer0Sky3_right.gy + this.layer0Sky3_right.height;
+				}
+				if (this.layer0Sky2_right.gy < Camera.gy - Constants.StageHeight / 2 - this.layer0Sky2_right.height) {
+					this.layer0Sky2_right.gy = this.layer0Sky1_right.gy + this.layer0Sky1_right.height;
+				}
+				if (this.layer0Sky3_right.gy < Camera.gy - Constants.StageHeight / 2 - this.layer0Sky3_right.height) {
+					this.layer0Sky3_right.gy = this.layer0Sky2_right.gy + this.layer0Sky2_right.height;
 				}
 				
-				// scroll bg layers
-				this.bgLayerPlanets.gy += Camera.dy * (1.0 - this.bgLayerPlanets.parallaxDepth);
-				this.bgLayerCreatures.gy += Camera.dy * (1.0 - this.bgLayerCreatures.parallaxDepth);
-				this.bgLayerClouds.gy += Camera.dy * (1.0 - this.bgLayerClouds.parallaxDepth);
-				this.bgLayerIslandsSmall.gy += Camera.dy * (1.0 - this.bgLayerIslandsSmall.parallaxDepth);
-				this.bgLayerIslandsLarge.gy += Camera.dy * (1.0 - this.bgLayerIslandsLarge.parallaxDepth);
-				this.bgLayerBridges.gy += Camera.dy * (1.0 - this.bgLayerBridges.parallaxDepth);
+				// move sky to right after it scrolls out horizontally
+				if (layer0Sky1_left.gx < int(-Statics.stageWidth / 2 - skyImageWidth)) layer0Sky1_left.gx = int(layer0Sky1_right.gx + skyImageWidth);
+				if (layer0Sky2_left.gx < int(-Statics.stageWidth / 2 - skyImageWidth)) layer0Sky2_left.gx = int(layer0Sky2_right.gx + skyImageWidth);
+				if (layer0Sky3_left.gx < int(-Statics.stageWidth / 2 - skyImageWidth)) layer0Sky3_left.gx = int(layer0Sky3_right.gx + skyImageWidth);
+				if (layer0Sky1_right.gx < int(-Statics.stageWidth / 2 - skyImageWidth)) layer0Sky1_right.gx = int(layer0Sky1_left.gx + skyImageWidth);
+				if (layer0Sky2_right.gx < int(-Statics.stageWidth / 2 - skyImageWidth)) layer0Sky2_right.gx = int(layer0Sky2_left.gx + skyImageWidth);
+				if (layer0Sky3_right.gx < int(-Statics.stageWidth / 2 - skyImageWidth)) layer0Sky3_right.gx = int(layer0Sky3_left.gx + skyImageWidth);
 				
-				// update bg layers that move
-				this.bgLayerPlanets.updateLayerPlanets(timeDiff);
-				this.bgLayerCreatures.updateLayerCreatures(timeDiff);
-				this.bgLayerClouds.updateLayerClouds(timeDiff);
-				
-				// cycle bg layers
-//				if (this.bgLayerPlanets.gy < Camera.gy - Constants.StageHeight * 1.5) {
-//					this.bgLayerPlanets.cycle();
-//					this.bgLayerPlanets.gy = Camera.gy + Constants.StageHeight * 1.5;
-//				} else if (this.bgLayerPlanets.gy > Camera.gy + Constants.StageHeight * 1.5) {
-//					this.bgLayerPlanets.cycle();
-//					this.bgLayerPlanets.gy = Camera.gy - Constants.StageHeight * 1.5;
-//				}
-//				
-//				if (this.bgLayerCreatures.gy < Camera.gy - Constants.StageHeight * 1.5) {
-//					this.bgLayerCreatures.cycle();
-////					this.bgLayerCreatures.gy = Camera.gy + Constants.StageHeight * 0.5;
-//					this.bgLayerCreatures.gy = Camera.gy + Constants.StageHeight * 1.5;
-////				} else if (this.bgLayerCreatures.gy > Camera.gy + Constants.StageHeight * 0.5) {
-//				} else if (this.bgLayerCreatures.gy > Camera.gy + Constants.StageHeight * 1.5) {
-//					this.bgLayerCreatures.cycle();
-//					this.bgLayerCreatures.gy = Camera.gy - Constants.StageHeight * 1.5;
-//				}
-//				
-//				if (this.bgLayerClouds.gy < Camera.gy - Constants.StageHeight * 1.5) {
-//					this.bgLayerClouds.cycle();
-//					this.bgLayerClouds.gy = Camera.gy + Constants.StageHeight * 1.5;
-//				} else if (this.bgLayerClouds.gy > Camera.gy + Constants.StageHeight * 1.5) {
-//					this.bgLayerClouds.cycle();
-//					this.bgLayerClouds.gy = Camera.gy - Constants.StageHeight * 1.5;
-//				}
-//				
-//				if (this.bgLayerIslandsSmall.gy < Camera.gy - Constants.StageHeight * 1.5) {
-//					this.bgLayerIslandsSmall.cycle();
-//					this.bgLayerIslandsSmall.gy = Camera.gy + Constants.StageHeight * 1.5;
-//				} else if (this.bgLayerIslandsSmall.gy > Camera.gy + Constants.StageHeight * 1.5) {
-//					this.bgLayerIslandsSmall.cycle();
-//					this.bgLayerIslandsSmall.gy = Camera.gy - Constants.StageHeight * 1.5;
-//				}
-//				
-//				if (this.bgLayerIslandsLarge.gy < Camera.gy - Constants.StageHeight * 1.5) {
-//					this.bgLayerIslandsLarge.cycle();
-//					this.bgLayerIslandsLarge.gy = Camera.gy + Constants.StageHeight * 1.5;
-//				} else if (this.bgLayerIslandsLarge.gy > Camera.gy + Constants.StageHeight * 1.5) {
-//					this.bgLayerIslandsLarge.cycle();
-//					this.bgLayerIslandsLarge.gy = Camera.gy - Constants.StageHeight * 1.5;
-//				}
-				
-//				if (this.bgLayerBridges.gy < Camera.gy - Constants.StageHeight * 1.5) {
-//					this.bgLayerBridges.cycle();
-//					this.bgLayerBridges.gy = Camera.gy + Constants.StageHeight * 1.5;
-//				} else if (this.bgLayerBridges.gy > Camera.gy + Constants.StageHeight * 1.5) {
-//					this.bgLayerBridges.cycle();
-//					this.bgLayerBridges.gy = Camera.gy - Constants.StageHeight * 1.5;
-//				}
-				
-				// hide out of stage element
-				if (this.bgLayerPlanets.gy < Camera.gy - Constants.StageHeight - this.bgLayerPlanets.height) {
-					this.bgLayerPlanets.visible = false;
+				// scroll planets layer
+				if (this.bgLayerPlanets.visible) {
+					this.bgLayerPlanets.updateLayerPlanets(timeDiff);
+					this.bgLayerPlanets.gy += Camera.dy * (1.0 - this.bgLayerPlanets.parallaxDepth);
+					if (this.bgLayerPlanets.gy < Camera.gy - Constants.StageHeight - this.bgLayerPlanets.height) {
+						this.bgLayerPlanets.visible = false;
+					}
 				}
-				if (Statics.gameTime > this.bgLayerPlanetsExpiration && !this.bgLayerPlanets.visible) { // cycle element
+				else if (Statics.gameTime > this.bgLayerPlanetsExpiration) { // cycle element
 					this.bgLayerPlanets.cycle();
 					this.bgLayerPlanets.gy = Camera.gy + Constants.StageHeight * 0.5;
 					this.bgLayerPlanets.visible = true;
 					this.bgLayerPlanetsExpiration = getExpirationTime(Constants.BgLayerPlanetsDuration);
 				}
 				
-				// hide out of stage element
-				if (this.bgLayerCreatures.gy < Camera.gy - Constants.StageHeight - this.bgLayerCreatures.height) {
-					this.bgLayerCreatures.visible = false;
+				// scroll dragon/stingray layer
+				if (this.bgLayerCreatures.visible) {
+					this.bgLayerCreatures.updateLayerCreatures(timeDiff);
+					this.bgLayerCreatures.gy += Camera.dy * (1.0 - this.bgLayerCreatures.parallaxDepth);
+					if (this.bgLayerCreatures.gy < Camera.gy - Constants.StageHeight - this.bgLayerCreatures.height) {
+						this.bgLayerCreatures.visible = false;
+					}
 				}
-				if (Statics.gameTime > this.bgLayerCreaturesExpiration && !this.bgLayerCreatures.visible) { // cycle element
+				else if (Statics.gameTime > this.bgLayerCreaturesExpiration) { // cycle element
 					this.bgLayerCreatures.cycle();
 					this.bgLayerCreatures.gy = Camera.gy + Constants.StageHeight * 0.5;
 					this.bgLayerCreatures.visible = true;
 					this.bgLayerCreaturesExpiration = getExpirationTime(Constants.BgLayerCreaturesDuration);
 				}
 				
-				// hide out of stage element
-				if (this.bgLayerClouds.gy < Camera.gy - Constants.StageHeight - this.bgLayerClouds.height) {
-					this.bgLayerClouds.visible = false;
+				// scroll clouds layer
+				if (this.bgLayerClouds.visible) {
+					this.bgLayerClouds.updateLayerClouds(timeDiff);
+					this.bgLayerClouds.gy += Camera.dy * (1.0 - this.bgLayerClouds.parallaxDepth);
+					if (this.bgLayerClouds.gy < Camera.gy - Constants.StageHeight - this.bgLayerClouds.height) {
+						this.bgLayerClouds.visible = false;
+					}
 				}
-				if (Statics.gameTime > this.bgLayerCloudsExpiration && !this.bgLayerClouds.visible) { // cycle element
+				else if (Statics.gameTime > this.bgLayerCloudsExpiration) { // cycle element
 					this.bgLayerClouds.cycle();
 					this.bgLayerClouds.gy = Camera.gy + Constants.StageHeight * 0.5;
 					this.bgLayerClouds.visible = true;
 					this.bgLayerCloudsExpiration = getExpirationTime(Constants.BgLayerCloudsDuration);
 				}
 				
-				// hide out of stage element
-				if (this.bgLayerIslandsSmall.gy < Camera.gy - Constants.StageHeight - this.bgLayerIslandsSmall.height) {
-					this.bgLayerIslandsSmall.visible = false;
+				// scroll small islands layer
+				if (this.bgLayerIslandsSmall.visible) {
+					this.bgLayerIslandsSmall.gy += Camera.dy * (1.0 - this.bgLayerIslandsSmall.parallaxDepth);
+					if (this.bgLayerIslandsSmall.gy < Camera.gy - Constants.StageHeight - this.bgLayerIslandsSmall.height) {
+						this.bgLayerIslandsSmall.visible = false;
+					}
 				}
-				if (Statics.gameTime > this.bgLayerIslandsSmallExpiration && !this.bgLayerIslandsSmall.visible) { // cycle element
+				else if (Statics.gameTime > this.bgLayerIslandsSmallExpiration) { // cycle element
 					this.bgLayerIslandsSmall.cycle();
 					this.bgLayerIslandsSmall.gy = Camera.gy + Constants.StageHeight * 0.5;
 					this.bgLayerIslandsSmall.visible = true;
 					this.bgLayerIslandsSmallExpiration = getExpirationTime(Constants.BgLayerIslandsSmallDuration);
 				}
 				
-				// hide out of stage element
-				if (this.bgLayerIslandsLarge.gy < Camera.gy - Constants.StageHeight - this.bgLayerIslandsLarge.height) {
-					this.bgLayerIslandsLarge.visible = false;
+				// scroll medium and large islands layer
+				if (this.bgLayerIslandsLarge.visible) {
+					this.bgLayerIslandsLarge.gy += Camera.dy * (1.0 - this.bgLayerIslandsLarge.parallaxDepth);
+					if (this.bgLayerIslandsLarge.gy < Camera.gy - Constants.StageHeight - this.bgLayerIslandsLarge.height) {
+						this.bgLayerIslandsLarge.visible = false;
+					}
 				}
-				if (Statics.gameTime > this.bgLayerIslandsLargeExpiration && !this.bgLayerIslandsLarge.visible) { // cycle element
+				else if (Statics.gameTime > this.bgLayerIslandsLargeExpiration) { // cycle element
 					this.bgLayerIslandsLarge.cycle();
 					this.bgLayerIslandsLarge.gy = Camera.gy + Constants.StageHeight * 0.5;
 					this.bgLayerIslandsLarge.visible = true;
 					this.bgLayerIslandsLargeExpiration = getExpirationTime(Constants.BgLayerIslandsLargeDuration);
 				}
 				
-				// hide out of stage element
-				if (this.bgLayerBridges.gy < Camera.gy - Constants.StageHeight - this.bgLayerBridges.height) {
-					this.bgLayerBridges.visible = false;
+				// scroll bridges layer
+				if (this.bgLayerBridges.visible) {
+					this.bgLayerBridges.gy += Camera.dy * (1.0 - this.bgLayerBridges.parallaxDepth);
+					if (this.bgLayerBridges.gy < Camera.gy - Constants.StageHeight - this.bgLayerBridges.height) {
+						this.bgLayerBridges.visible = false;
+					}
 				}
-				if (Statics.gameTime > this.bgLayerBridgesExpiration && !this.bgLayerBridges.visible) { // cycle element
+				else if (Statics.gameTime > this.bgLayerBridgesExpiration) { // cycle element
 					this.bgLayerBridges.cycle();
 					this.bgLayerBridges.gy = Camera.gy + Constants.StageHeight * 0.5;
 					this.bgLayerBridges.visible = true;
 					this.bgLayerBridgesExpiration = getExpirationTime(Constants.BgLayerBridgesDuration);
 				}
-				// eof cycling
 			}
 			else if (this.type == Constants.Foreground) {
-				// scroll fg layers
-				this.bgLayerBranches.gy += Camera.dy * (1.0 - this.bgLayerBranches.parallaxDepth);
-				
-				// cycle fg layers
-//				if (this.bgLayerBranches.gy < Camera.gy - Constants.StageHeight * 1.5) {
-//					this.bgLayerBranches.cycle();
-//					this.bgLayerBranches.gy = Camera.gy + Constants.StageHeight * 1.5;
-//				} else if (this.bgLayerBranches.gy > Camera.gy + Constants.StageHeight * 1.5) {
-//					this.bgLayerBranches.cycle();
-//					this.bgLayerBranches.gy = Camera.gy - Constants.StageHeight * 1.5;
-//				}
-				// hide out of stage element
-				if (this.bgLayerBranches.gy < Camera.gy - Constants.StageHeight - this.bgLayerBranches.height) {
-					this.bgLayerBranches.visible = false;
+				// scroll catapult
+				if (catapultLaunched) {
+					this.heroIdle.y -= 2 * timeDiff;
 				}
-				if (Statics.gameTime > this.bgLayerBranchesExpiration && !this.bgLayerBranches.visible) { // cycle element
+				
+				if (this.catapult.y > Statics.stageHeight + this.catapult.height) { // hide catapult
+					// remove catapult
+					this.removeChild(catapult);
+					starling.core.Starling.juggler.remove(catapult);
+				} else {
+					this.catapult.y -= Camera.dy * (1.0 - this.bgLayerBranches.parallaxDepth); // scroll catapult out of stage
+				}
+				
+				// scroll branches layer
+				if (this.bgLayerBranches.visible) {
+					this.bgLayerBranches.gy += Camera.dy * (1.0 - this.bgLayerBranches.parallaxDepth);
+					if (this.bgLayerBranches.gy < Camera.gy - Constants.StageHeight - this.bgLayerBranches.height) {
+						this.bgLayerBranches.visible = false;
+					}
+				}
+				else if (Statics.gameTime > this.bgLayerBranchesExpiration) { // cycle element
 					this.bgLayerBranches.cycle();
 					this.bgLayerBranches.gy = Camera.gy + Constants.StageHeight * 0.5;
 					this.bgLayerBranches.visible = true;
 					this.bgLayerBranchesExpiration = getExpirationTime(Constants.BgLayerBranchesDuration);
+				}
+				
+				// scroll fairy layer
+				if (this.bgLayerFairy.visible) {
+					this.bgLayerFairy.updateLayerFairy(timeDiff);
+					this.bgLayerFairy.gy += Camera.dy; // scroll layer
+				}
+				else if (Statics.gameTime > this.bgLayerFairyExpiration) { // cycle element
+					this.bgLayerFairy.setupLayerFairyTargets(); // set up fairy flight targets
+					this.bgLayerFairy.gy = Camera.gy + Constants.StageHeight * 0.5;
+					this.bgLayerFairy.visible = true;
+					this.bgLayerFairyExpiration = getExpirationTime(Constants.BgLayerFairyDuration);
 				}
 			}
 		}
@@ -564,6 +650,19 @@ package com.jumpGame.gameElements {
 					sofLayer5.gx = 0;
 				}
 			}
+		}
+		
+		public function launchCatapult():void {
+			if (!catapultLaunched) {
+				this.catapult.play();
+				catapultLaunched = true;
+			}
+		}
+		
+		public function hideHeroIdle():void {
+			// remove hero idle animation
+			this.removeChild(heroIdle);
+			starling.core.Starling.juggler.remove(heroIdle);
 		}
 	}
 }

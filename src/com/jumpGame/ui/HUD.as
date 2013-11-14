@@ -13,6 +13,8 @@ package com.jumpGame.ui
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.text.TextField;
+	import starling.textures.Texture;
+	import starling.utils.Color;
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
 	
@@ -21,16 +23,13 @@ package com.jumpGame.ui
 	 */
 	public class HUD extends Sprite
 	{
-		// bonus time display
-//		private var _bonusTime:int;
-//		private var bonusTimeLabel:TextField;
-//		private var bonusTimeText:TextField;
+		private var pauseButton:PauseButton;
 		
 		// distance display
-		private static var _distance:int;
-		private var distanceLabel:TextField;
-		private var distanceText:TextField;
-		private var prevDistance:int;
+		private var _distance:int;
+//		private var distanceLabel:TextField;
+//		private var distanceText:TextField;
+//		private var prevDistance:int;
 		
 		// coins display
 		private var _coins:int;
@@ -43,7 +42,7 @@ package com.jumpGame.ui
 		
 		// powerup reel
 		private var powerupIconsImages:Vector.<Image>;
-		private static var powerupIcons:Sprite;
+		private var powerupIcons:Sprite;
 		private var powerupReelVelocity:Number;
 		private var isSpinningUp:Boolean;
 		private var totalDistanceScrolled:int;
@@ -52,36 +51,46 @@ package com.jumpGame.ui
 		private var isReelSpinning:Boolean;
 		private var sparkleAnimation:starling.display.MovieClip;
 		private var iconTween:Tween;
-		private static var powerupIconFrame:Image;
+		private var powerupIconFrame:Image;
 		
 		// on screen message
-		private static var messageText1:TextField;
-		private static var messageText2:TextField;
-		private static var messageText3:TextField;
-		private static var messageExpireTime1:int;
-		private static var messageExpireTime2:int;
-		private static var messageExpireTime3:int;
+		private var messageText1:TextField;
+		private var messageText2:TextField;
+		private var messageText3:TextField;
+		private var messageExpireTime1:int;
+		private var messageExpireTime2:int;
+		private var messageExpireTime3:int;
 		
 		// pulsing message
-		private static var pulsingText:TextField;
+		private var pulsingText:TextField;
+		private var pulsingTextFire:TextField;
+		private var pulsingTextActive:TextField;
 		
 		// special ability indicators
-		private static var specialIndicatorsList:Vector.<SpecialIndicator>;
+		private var specialIndicatorsList:Vector.<SpecialIndicator>;
 		
 		// objective achievement effect
-		private static var badgeAnimation:MovieClip;
-		private static var badgeExpireTime:int;
-		private static var badgeText:TextField;
+		private var badgeAnimation:MovieClip;
+		private var badgeExpireTime:int;
+		private var badgeText:TextField;
 		
-		private static var tweenPulsingText:Tween;
-		private static var distancePrevTimePeriod:int;
-		private static var prevDistanceCalculationTime:int;
-		private static var emaVelocity:Number;
+		private var tweenPulsingText:Tween;
+		private var distancePrevTimePeriod:int;
+		private var prevDistanceCalculationTime:int;
+		private var emaVelocity:Number;
+		
+		private var charmActivationBg:MovieClip;
+		private var charmActivationCaption:Image;
+		private var charmActivationTeleportation:Texture;
+		private var charmActivationAttraction:Texture;
+		private var charmActivationProtection:Texture;
+		private var charmActivationDuplication:Texture;
+		private var charmActivationBarrels:Texture;
 		
 		public function initialize():void {
 			_distance = 0;
 			_coins = 0;
-			prevDistance = 0;
+//			prevDistance = 0;
 			powerupReelVelocity = 0;
 			isSpinningUp = true;
 			totalDistanceScrolled = 0;
@@ -90,17 +99,23 @@ package com.jumpGame.ui
 			distancePrevTimePeriod = 0;
 			prevDistanceCalculationTime = 0;
 			emaVelocity = 0;
+			powerupIconFrame.visible = false;
 			powerupIcons.visible = false;
 			messageText1.visible = false;
 			messageText2.visible = false;
 			messageText3.visible = false;
-			pulsingText.scaleX = 0.5;
-			pulsingText.scaleY = 0.5;
+			pulsingText.scaleX = 0.2;
+			pulsingText.scaleY = 0.2;
 			pulsingText.visible = false;
+			pulsingTextFire.scaleX = 0.2;
+			pulsingTextFire.scaleY = 0.2;
+			pulsingTextFire.visible = false;
 			badgeAnimation.visible = false;
 			badgeText.visible = false;
-			distanceText.text = "0";
+//			distanceText.text = "0";
 			coinsText.text = "0";
+			charmActivationBg.visible = false;
+			charmActivationCaption.visible = false;
 			
 			// speical ability indicators
 			Statics.numSpecials = 2 + Statics.rankExtraAbility * 1;
@@ -126,33 +141,40 @@ package com.jumpGame.ui
 		
 		private function onAddedToStage(event:Event):void
 		{
+			// pause button
+			pauseButton = new PauseButton();
+			pauseButton.x = pauseButton.width * 0.5;
+			pauseButton.y = pauseButton.height * 0.5;
+			pauseButton.addEventListener(Event.TRIGGERED, onPauseButtonClick);
+			this.addChild(pauseButton);
+			
 			// get fonts for score labels and values
 			fontScoreLabel = Fonts.getFont("ScoreLabel");
 			fontScoreValue = Fonts.getFont("ScoreValue");
 			
-			// distance label
-			distanceLabel = new TextField(150, 20, "D I S T A N C E", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
-			distanceLabel.hAlign = HAlign.RIGHT;
-			distanceLabel.vAlign = VAlign.TOP;
-			distanceLabel.x = int(stage.stageWidth - distanceLabel.width - 10);
-			distanceLabel.y = 5;
-			this.addChild(distanceLabel);
-			
-			// distance
-			distanceText = new TextField(150, 75, "0", fontScoreValue.fontName, fontScoreValue.fontSize, 0xffffff);
-			distanceText.hAlign = HAlign.RIGHT;
-			distanceText.vAlign = VAlign.TOP;
-			distanceText.width = distanceLabel.width;
-			distanceText.x = int(distanceLabel.x + distanceLabel.width - distanceText.width);
-			distanceText.y = distanceLabel.y + distanceLabel.height;
-			this.addChild(distanceText);
+//			// distance label
+//			distanceLabel = new TextField(150, 20, "D I S T A N C E", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
+//			distanceLabel.hAlign = HAlign.RIGHT;
+//			distanceLabel.vAlign = VAlign.TOP;
+//			distanceLabel.x = int(stage.stageWidth - distanceLabel.width - 10);
+//			distanceLabel.y = 5;
+//			this.addChild(distanceLabel);
+//			
+//			// distance
+//			distanceText = new TextField(150, 75, "0", fontScoreValue.fontName, fontScoreValue.fontSize, 0xffffff);
+//			distanceText.hAlign = HAlign.RIGHT;
+//			distanceText.vAlign = VAlign.TOP;
+//			distanceText.width = distanceLabel.width;
+//			distanceText.x = int(distanceLabel.x + distanceLabel.width - distanceText.width);
+//			distanceText.y = distanceLabel.y + distanceLabel.height;
+//			this.addChild(distanceText);
 			
 			// coins label
 			coinsLabel = new TextField(150, 20, "C O I N S", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
 			coinsLabel.hAlign = HAlign.RIGHT;
 			coinsLabel.vAlign = VAlign.TOP;
-			coinsLabel.x = int(distanceLabel.x - coinsLabel.width - 50);
-			coinsLabel.y = 5;
+			coinsLabel.x = int(Statics.stageWidth - coinsLabel.width - 20);
+			coinsLabel.y = 15;
 			this.addChild(coinsLabel);
 			
 			// coins
@@ -163,6 +185,40 @@ package com.jumpGame.ui
 			coinsText.x = int(coinsLabel.x + coinsLabel.width - coinsText.width);
 			coinsText.y = coinsLabel.y + coinsLabel.height;
 			this.addChild(coinsText);
+			
+			// bof charm activation transition
+			// charm activation animation
+			charmActivationBg = new MovieClip(Assets.getSprite("AtlasTexture7").getTextures("CharmActivationBg"), 20);
+			charmActivationBg.pivotX = Math.ceil(charmActivationBg.width  / 2); // center art on registration point
+			charmActivationBg.pivotY = Math.ceil(charmActivationBg.height / 2);
+			charmActivationBg.scaleX = 2;
+			charmActivationBg.scaleY = 2;
+			charmActivationBg.x = Statics.stageWidth / 2;
+			charmActivationBg.y = Statics.stageHeight * 2 / 5;
+			charmActivationBg.loop = false;
+			this.addChild(charmActivationBg);
+			
+			// charm activation captions
+			charmActivationTeleportation = Assets.getSprite("AtlasTexture7").getTexture("CharmActivationTeleportation0000");
+			charmActivationAttraction = Assets.getSprite("AtlasTexture7").getTexture("CharmActivationAttraction0000");
+			charmActivationProtection = Assets.getSprite("AtlasTexture7").getTexture("CharmActivationProtection0000");
+			charmActivationDuplication = Assets.getSprite("AtlasTexture7").getTexture("CharmActivationDuplication0000");
+			charmActivationBarrels = Assets.getSprite("AtlasTexture7").getTexture("CharmActivationBarrels0000");
+			
+			charmActivationCaption = new Image(charmActivationTeleportation);
+			charmActivationCaption.x = charmActivationBg.x;
+			charmActivationCaption.y = charmActivationBg.y;
+			charmActivationCaption.visible = false;
+			this.addChild(charmActivationCaption);
+			// eof charm activation transition
+			
+			// icon frame
+			powerupIconFrame = new Image(Assets.getSprite("AtlasTexture4").getTexture("SlotsFrame0000"));
+			powerupIconFrame.pivotX = Math.ceil(powerupIconFrame.width / 2);
+			powerupIconFrame.pivotY = Math.ceil(powerupIconFrame.height / 2);
+			powerupIconFrame.x = 150;
+			powerupIconFrame.y = 45;
+			this.addChild(powerupIconFrame);
 			
 			// powerup reel
 			powerupIcons = new Sprite();
@@ -225,8 +281,10 @@ package com.jumpGame.ui
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// container sprite
-			powerupIcons.x = 200;
-			powerupIcons.y = 75;
+//			powerupIcons.x = 200;
+//			powerupIcons.y = 75;
+			powerupIcons.x = powerupIconFrame.x - 14;
+			powerupIcons.y = powerupIconFrame.y + 37;
 			powerupIcons.clipRect = new Rectangle(-60, 0, 120, -60);
 			this.addChild(powerupIcons);
 			// sparkle animation
@@ -240,49 +298,55 @@ package com.jumpGame.ui
 			starling.core.Starling.juggler.add(sparkleAnimation);
 			sparkleAnimation.loop = false;
 			this.addChild(sparkleAnimation);
-			// icon frame
-			powerupIconFrame = new Image(Assets.getSprite("AtlasTexture4").getTexture("IconFrame0000"));
-			powerupIconFrame.pivotX = Math.ceil(powerupIconFrame.width / 2);
-			powerupIconFrame.pivotY = Math.ceil(powerupIconFrame.height / 2);
-			powerupIconFrame.x = 200;
-			powerupIconFrame.y = 45;
-			powerupIconFrame.visible = false;
-			this.addChild(powerupIconFrame);
 			
 			// on screen message line 1
-			var fontMessage:Font = Fonts.getFont("Badabb");
+			var fontMessage:Font = Fonts.getFont("Badaboom50");
 			messageText1 = new TextField(stage.stageWidth, 50, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
 			messageText1.hAlign = HAlign.CENTER;
 			messageText1.vAlign = VAlign.TOP;
-			messageText1.y = (stage.stageHeight * 20)/100;
+			messageText1.y = (stage.stageHeight * 30)/100;
 			this.addChild(messageText1);
 			
 			// on screen message line 2
 			messageText2 = new TextField(stage.stageWidth, 50, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
 			messageText2.hAlign = HAlign.CENTER;
 			messageText2.vAlign = VAlign.TOP;
-			messageText2.y = (stage.stageHeight * 20)/100 + 50;
+			messageText2.y = (stage.stageHeight * 30)/100 + 50;
 			this.addChild(messageText2);
 			
 			// on screen message line 3
 			messageText3 = new TextField(stage.stageWidth, 50, "", fontMessage.fontName, fontMessage.fontSize, 0xffffff);
 			messageText3.hAlign = HAlign.CENTER;
 			messageText3.vAlign = VAlign.TOP;
-			messageText3.y = (stage.stageHeight * 20)/100 + 100;
+			messageText3.y = (stage.stageHeight * 30)/100 + 100;
 			this.addChild(messageText3);
 			
-			// on screen message line 1
-			pulsingText = new TextField(200, 50, "", fontScoreValue.fontName, fontScoreValue.fontSize, 0xf68e56);
+			// pulsing distance text
+			// normal text
+			var fontPulsing72:Font = Fonts.getFont("Pulsing72");
+			pulsingText = new TextField(300, 80, "", fontPulsing72.fontName, fontPulsing72.fontSize, Color.WHITE);
 			pulsingText.pivotX = Math.ceil(pulsingText.width / 2);
 			pulsingText.pivotY = Math.ceil(pulsingText.height / 2);
 			pulsingText.hAlign = HAlign.CENTER;
 			pulsingText.vAlign = VAlign.CENTER;
 			pulsingText.x = Statics.stageWidth / 2;
-			pulsingText.y = (Statics.stageHeight * 30)/100;
+			pulsingText.y = (Statics.stageHeight * 24)/100;
 			this.addChild(pulsingText);
-			// tween
-			tweenPulsingText = new Tween(pulsingText, 0.2, Transitions.LINEAR);
+			// on fire text
+			var fontPulsing72Fire:Font = Fonts.getFont("Pulsing72Fire");
+			pulsingTextFire = new TextField(300, 80, "", fontPulsing72Fire.fontName, fontPulsing72Fire.fontSize, Color.WHITE);
+			pulsingTextFire.pivotX = Math.ceil(pulsingTextFire.width / 2);
+			pulsingTextFire.pivotY = Math.ceil(pulsingTextFire.height / 2);
+			pulsingTextFire.hAlign = HAlign.CENTER;
+			pulsingTextFire.vAlign = VAlign.CENTER;
+			pulsingTextFire.x = pulsingText.x;
+			pulsingTextFire.y = pulsingText.y;
+			this.addChild(pulsingTextFire);
+			// pulsing text tween
+			pulsingTextActive = pulsingText;
+			tweenPulsingText = new Tween(pulsingTextActive, 0.2, Transitions.LINEAR);
 			
+			// special ability indicators
 			Statics.numSpecials = 2;
 			specialIndicatorsList = new Vector.<SpecialIndicator>();
 			for (var i:uint = 0; i < Statics.numSpecials; i++) {
@@ -311,7 +375,7 @@ package com.jumpGame.ui
 			this.addChild(badgeText);
 		}
 		
-		private static function arrangeSpecialIndicators():void {
+		private function arrangeSpecialIndicators():void {
 			for (var i:uint = 0; i < Statics.numSpecials; i++) {
 				specialIndicatorsList[i].x = (Constants.StageWidth - 50 * Statics.numSpecials) / 2 + (50 * Statics.numSpecials / (Statics.numSpecials + 1)) * (i + 1);
 				specialIndicatorsList[i].y = Constants.StageHeight - 50;
@@ -321,7 +385,7 @@ package com.jumpGame.ui
 		/**
 		 * Turn off speical ability indicators after one is used
 		 */
-		public static function turnOffSpecials():void {
+		public function turnOffSpecials():void {
 			Statics.numSpecials--;
 			// do not remove indicator to suppress garbage collection
 			specialIndicatorsList[Statics.numSpecials].blast();
@@ -335,7 +399,7 @@ package com.jumpGame.ui
 		/**
 		 * Turn on special ability indicators after cooldown
 		 */
-		public static function turnOnSpecials():void {
+		public function turnOnSpecials():void {
 			for (var i:uint = 0; i < Statics.numSpecials; i++) {
 				specialIndicatorsList[i].turnOn();
 			}
@@ -353,19 +417,29 @@ package com.jumpGame.ui
 		{
 			if (value > _distance) {
 				_distance = value;
-				distanceText.text = _distance.toString();
+//				distanceText.text = _distance.toString();
 				
 				// update pulsing text
 				// scale values
-				var scaleVal:Number = 0.3 + emaVelocity * 150;
+				var scaleVal:Number = 0.1 + emaVelocity * 75;
+//				trace("scaleVal: " + scaleVal);
+				if (scaleVal > 1.04) { // switch to pulsing text on fire
+					pulsingTextActive = pulsingTextFire;
+					pulsingText.visible = false;
+					pulsingTextFire.visible = true;
+					
+				} else if (scaleVal < 1) { // switch to pulsing text normal
+					pulsingTextActive = pulsingText;
+					pulsingTextFire.visible = false;
+					pulsingText.visible = true;
+				}
+				if (pulsingText.visible) pulsingText.text = _distance.toString().concat("m");
+				else pulsingTextFire.text = _distance.toString().concat("m");
 				
-				pulsingText.visible = true;
-				pulsingText.text = _distance.toString();
-				
-				// reset pulsing text
-				pulsingText.scaleX = 0.2;
-				pulsingText.scaleY = 0.2;
-				tweenPulsingText.reset(pulsingText, 0.2, Transitions.EASE_OUT_BACK);
+				// rerun pulsing text tween
+				pulsingTextActive.scaleX = 0.2;
+				pulsingTextActive.scaleY = 0.2;
+				tweenPulsingText.reset(pulsingTextActive, 0.2, Transitions.EASE_OUT_BACK);
 				tweenPulsingText.animate("scaleX", scaleVal);
 				tweenPulsingText.animate("scaleY", scaleVal);
 				Starling.juggler.add(tweenPulsingText);
@@ -395,7 +469,7 @@ package com.jumpGame.ui
 		/**
 		 * Display an achievement badge
 		 */
-		public static function showAchievement(message:String):void {
+		public function showAchievement(message:String):void {
 			Statics.displayingBadge = true;
 			starling.core.Starling.juggler.add(badgeAnimation);
 			badgeAnimation.alpha = 1;
@@ -413,7 +487,7 @@ package com.jumpGame.ui
 		 * 
 		 * @param forceLine forces display on a particular line
 		 */
-		public static function showMessage(message:String, duration:Number = 2000, forceLine:uint = 0):void {
+		public function showMessage(message:String, duration:Number = 2000, forceLine:uint = 0):void {
 			if (forceLine == 0) {
 				// display on line 1
 				if (!messageText1.visible) {
@@ -471,7 +545,7 @@ package com.jumpGame.ui
 			}
 		}
 		
-		public static function update():void {
+		public function update():void {
 			if (Statics.calculateEmaVelocity && Statics.gameTime > prevDistanceCalculationTime + 200) calculateEMA();
 			
 			// if a message line expires, hide that line
@@ -503,7 +577,7 @@ package com.jumpGame.ui
 			}
 		}
 		
-//		public static function updatePulsingText(distance:int):void {
+//		public function updatePulsingText(distance:int):void {
 //			pulsingText.visible = true;
 //			Starling.juggler.tween(pulsingText, 0.4, {
 //				transition: Transitions.LINEAR,
@@ -520,7 +594,8 @@ package com.jumpGame.ui
 			this.isReelSpinning = true;
 		}
 		
-		public static function clearPowerupReel():void {
+		public function clearPowerupReel():void {
+			powerupIconFrame.visible = false;
 			powerupIcons.visible = false;
 		}
 		
@@ -604,7 +679,7 @@ package com.jumpGame.ui
 			this.isReelSpinning = false;
 		}
 		
-		public static function completionWarning():void {
+		public function completionWarning():void {
 			if (!Sounds.sfxMuted) Sounds.sndClockTick.play();
 			powerupIconFrame.alpha = 0;
 			powerupIcons.alpha = 0;
@@ -625,7 +700,7 @@ package com.jumpGame.ui
 		/**
 		 * Calculate the Exponential Moving Average of hero's velocity
 		 */
-		private static function calculateEMA():void {
+		private function calculateEMA():void {
 			var timePeriods:int = 15;
 			
 			var distanceThisTimePeriod:int = _distance - distancePrevTimePeriod;
@@ -636,6 +711,87 @@ package com.jumpGame.ui
 			
 			distancePrevTimePeriod = _distance;
 			prevDistanceCalculationTime = Statics.gameTime;
+		}
+		
+		public function hidePauseButton():void {
+			this.pauseButton.visible = false;
+		}
+		
+		public function showPauseButton():void {
+			this.pauseButton.visible = true;
+		}
+		
+		/**
+		 * On click of pause button
+		 */
+		private function onPauseButtonClick(event:Event):void {
+			event.stopImmediatePropagation();
+			
+			// pause or unpause the game
+			if (Statics.gamePaused) Statics.gamePaused = false;
+			else Statics.gamePaused = true;
+		}
+		
+		public function showCharmActivation(powerup:uint):void {
+			switch (powerup) {
+				case Constants.PowerupBlink:
+					charmActivationCaption.texture = charmActivationTeleportation;
+					break;
+				case Constants.PowerupAttractor:
+					charmActivationCaption.texture = charmActivationAttraction;
+					break;
+				case Constants.PowerupLevitation:
+					charmActivationCaption.texture = charmActivationProtection;
+					break;
+				case Constants.PowerupExtender:
+					charmActivationCaption.texture = charmActivationDuplication;
+					break;
+				case Constants.PowerupPyromancy:
+					charmActivationCaption.texture = charmActivationBarrels;
+					break;
+			}
+			charmActivationCaption.readjustSize();
+			charmActivationCaption.pivotX = Math.ceil(charmActivationCaption.width / 2);
+			charmActivationCaption.pivotY = Math.ceil(charmActivationCaption.height / 2);
+			charmActivationCaption.alpha = 1;
+			charmActivationCaption.visible = true;
+			charmActivationCaption.scaleX = 0.5;
+			charmActivationCaption.scaleY = 0.5;
+			Starling.juggler.tween(charmActivationCaption, 0.3, {
+				transition: Transitions.EASE_OUT,
+				scaleX: 1,
+				scaleY: 1
+			});
+			
+			charmActivationBg.visible = true;
+			starling.core.Starling.juggler.add(charmActivationBg);
+			charmActivationBg.play();
+			
+			Starling.juggler.delayCall(fadeOutCharmActivation, 1.5); // reset in a moment
+			Starling.juggler.delayCall(resetCharmActivation, 1.7); // reset in a moment
+		}
+		
+		private function fadeOutCharmActivation():void {
+			Starling.juggler.tween(charmActivationCaption, 0.2, {
+				transition: Transitions.LINEAR,
+				alpha: 0
+			});
+		}
+		
+		private function resetCharmActivation():void {
+			charmActivationBg.stop();
+			starling.core.Starling.juggler.remove(charmActivationBg);
+			charmActivationBg.visible = false;
+			charmActivationCaption.visible = false;
+		}
+		
+		/**
+		 * Show special ability indicators on hero launch
+		 */
+		public function showAbilityIndicators():void {
+			for (var i:uint = 0; i < Statics.numSpecials; i++) {
+				specialIndicatorsList[i].visible = true;
+			}
 		}
 	}
 }

@@ -12,6 +12,7 @@ package com.jumpGame.gameElements.powerups
 	public class MasterDapan extends GameObject
 	{
 		private var hero:Hero;
+		private var hud:HUD;
 		private var transfiguration:Transfiguration;
 		private var runAnimation:MovieClip;
 		private var jumpAnimation:MovieClip;
@@ -27,9 +28,10 @@ package com.jumpGame.gameElements.powerups
 		private var completionTime:int;
 		private var completionWarned:Boolean;
 		
-		public function MasterDapan(hero:Hero, transfiguration:Transfiguration)
+		public function MasterDapan(hero:Hero, hud:HUD, transfiguration:Transfiguration)
 		{
 			this.hero = hero;
+			this.hud = hud;
 			this.transfiguration = transfiguration;
 			this.createPowerupArt();
 		}
@@ -79,6 +81,7 @@ package com.jumpGame.gameElements.powerups
 			
 			hero.visible = false;
 			starling.core.Starling.juggler.add(runAnimation);
+			runAnimation.play();
 			starling.core.Starling.juggler.add(jumpAnimation);
 //			jumpAnimation.visible = true;
 //			jumpAnimation.play();
@@ -150,7 +153,7 @@ package com.jumpGame.gameElements.powerups
 			
 			// almost time up, begin powerup reel warning
 			if (!this.completionWarned && Statics.gameTime > this.nearCompletionTime) {
-				HUD.completionWarning();
+				hud.completionWarning();
 				this.completionWarned = true;
 			}
 			
@@ -196,7 +199,7 @@ package com.jumpGame.gameElements.powerups
 			else this.hero.dx = -0.9;
 			
 			// misc reset
-			HUD.clearPowerupReel();
+			hud.clearPowerupReel();
 			Statics.powerupsEnabled = true;
 			
 			// brief push upward

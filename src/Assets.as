@@ -13,7 +13,7 @@ package
 	 */
 	public class Assets
 	{
-		// platforms atlas
+		// atlas 1: platforms
 		[Embed(source="../media/graphics/platforms.png")]
 		public static const AtlasTexturePlatforms:Class;
 		[Embed(source="../media/graphics/platforms.xml", mimeType="application/octet-stream")]
@@ -49,8 +49,14 @@ package
 		[Embed(source="../media/graphics/atlas6_drgn.xml", mimeType="application/octet-stream")]
 		public static const AtlasXml6:Class;
 		
+		// atlas 7: character idle/hurt animations
+		[Embed(source="../media/graphics/atlas7_char.png")]
+		public static const AtlasTexture7:Class;
+		[Embed(source="../media/graphics/atlas7_char.xml", mimeType="application/octet-stream")]
+		public static const AtlasXml7:Class;
+		
 		/**
-		 * Background Assets 
+		 * Background Assets
 		 */
 		// layer 0
 		[Embed(source="../media/graphics/layer0_ground.png")]
@@ -124,6 +130,9 @@ package
 						break;
 					case "AtlasTexture6":
 						xml = XML(new AtlasXml6());
+						break;
+					case "AtlasTexture7":
+						xml = XML(new AtlasXml7());
 						break;
 				}
 				 

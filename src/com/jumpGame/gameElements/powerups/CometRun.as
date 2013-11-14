@@ -23,7 +23,7 @@ package com.jumpGame.gameElements.powerups
 			
 //			Statics.powerupsEnabled = false;
 			this.isActivated = true;
-			this.completionTime = Statics.gameTime + 2000 + Statics.rankComet * 500; // duration
+			this.completionTime = Statics.gameTime + 3000 + Statics.rankComet * 500; // duration
 		}
 		
 		public function update(timeDiff:Number):void {

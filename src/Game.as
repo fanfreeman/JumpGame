@@ -70,7 +70,7 @@ package
 			this.addChild(screenMenu);
 			
 			// game screen
-			screenInGame = new InGame();
+			screenInGame = new InGame(screenMenu);
 			screenInGame.visible = false;
 			this.addChild(screenInGame);
 			

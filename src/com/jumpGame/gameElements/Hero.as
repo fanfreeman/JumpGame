@@ -38,10 +38,12 @@ package com.jumpGame.gameElements
 		
 		public var controlRestoreTime:int;
 		
-		public function Hero()
+		private var hud:HUD;
+		
+		public function Hero(hud:HUD)
 		{
 			super();
-			
+			this.hud = hud;
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
@@ -76,8 +78,11 @@ package com.jumpGame.gameElements
 			animationJump.visible = true;
 			animationBrace.visible = false;
 			animationHurt.visible = false;
+			animationHurt.stop();
+			starling.core.Starling.juggler.remove(animationHurt);
 			animationSuper.visible = false;
 			animationPoof.visible = false;
+			this.turnRight();
 		}
 		
 		private function createHeroArt():void {
@@ -95,10 +100,10 @@ package com.jumpGame.gameElements
 			starling.core.Starling.juggler.add(animationBrace);
 			this.addChild(animationBrace);
 			
-			animationHurt = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharBoyHurt"), 24);
+			animationHurt = new MovieClip(Assets.getSprite("AtlasTexture7").getTextures("CharBoyHurt"), 24);
 			animationHurt.pivotX = Math.ceil(animationHurt.width  / 2);
 			animationHurt.pivotY = Math.ceil(animationHurt.height / 2);
-			animationHurt.loop = false;
+//			animationHurt.loop = false;
 			this.addChild(animationHurt);
 			
 			animationSuper = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharBoySuper"), 24);
@@ -141,10 +146,10 @@ package com.jumpGame.gameElements
 		// return true if ability triggered
 		public function triggerSpecialAbility():Boolean {
 			if (Statics.numSpecials <= 0) {
-				HUD.showMessage("No More Specials");
+				hud.showMessage("No More Specials");
 			}
 			else if (Statics.specialReady) {
-				HUD.turnOffSpecials();
+				hud.turnOffSpecials();
 				
 				// activate ability
 				this.dy = 1.7 + Statics.rankAbilityPower * 0.1;
@@ -159,7 +164,7 @@ package com.jumpGame.gameElements
 				return true;
 			}
 			else {
-				HUD.showMessage("Special still in Cooldown");
+				hud.showMessage("Special still in Cooldown");
 			}
 			
 			return false;
@@ -167,8 +172,8 @@ package com.jumpGame.gameElements
 		
 		private function setAbilityReady():void {
 			Statics.specialReady = true;
-			HUD.turnOnSpecials()
-			HUD.showMessage("Ability Ready!");
+			hud.turnOnSpecials()
+			hud.showMessage("Ability Ready!");
 		}
 		
 		public function bounce(bouncePower:Number):void {
@@ -339,7 +344,7 @@ package com.jumpGame.gameElements
 			animationBrace.visible = false;
 			animationHurt.visible = true;
 			starling.core.Starling.juggler.add(animationHurt);
-			animationHurt.stop();
+//			animationHurt.stop();
 			animationHurt.play();
 		}
 		

@@ -275,7 +275,11 @@ package com.jumpGame.level {
 				
 				case 999999: // designed pattern
 //					elementDistribution = new Array(0.1, 0.4, 0.7, 0.77, 0.84, 0.91, 0.98, 1.0);
-					this.generateBouncers();
+//					this.generateBouncers();
+					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
+					sizeDistribution = new Array(0.0, 0.6, 1.0, 1.0, 1.0)
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false, 0, 0.5);
+
 //					this.generateStarCrossLarge(4);
 					break;
 //					// 1 per row, 2 per row, 3 per row, 4 per row, 5 per row
@@ -402,7 +406,7 @@ package com.jumpGame.level {
 				return Constants.PlatformMobileBoost;
 			}
 			else if (seed >= elementDistribution[5] && seed < elementDistribution[6]) {
-				return Constants.PlatformPower;
+				return Constants.Bouncer;
 			}
 			else if (seed >= elementDistribution[6] && seed < elementDistribution[7]) {
 				return Constants.PlatformSuper;

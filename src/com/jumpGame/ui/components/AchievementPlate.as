@@ -14,7 +14,7 @@ package com.jumpGame.ui.components
 	{
 		private var title:TextField;
 		private var description:TextField;
-		private var checkmarkAnimation:MovieClip;
+		private var checkmark:Image;
 		public var coin:MovieClip;
 		private var coinAmountText:TextField;
 		
@@ -24,53 +24,53 @@ package com.jumpGame.ui.components
 		}
 		
 		private function createElements():void {
-			var fontLithos42:Font = Fonts.getFont("Lithos42");
-			var fontVerdana23:Font = Fonts.getFont("Verdana23");
+			var fontMaterhorn24:Font = Fonts.getFont("Materhorn24");
+			var fontMaterhorn25:Font = Fonts.getFont("Materhorn25");
+			var fontBellGothicBlack13:Font = Fonts.getFont("BellGothicBlack13");
+			var plateHeight:Number = 50;
 			
 			// checkbox
-			var checkbox:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("Checkbox0000"));
+			var checkbox:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverCheckbox0000"));
+			checkbox.y = (plateHeight - checkbox.height) / 2 + 2;
 			addChild(checkbox);
 			
 			// objective title
-			title = new TextField(300, 45, "Bouncy", fontLithos42.fontName, fontLithos42.fontSize, 0xffdd1e);
-			title.vAlign = VAlign.TOP;
+			title = new TextField(240, 28, "Bouncy", fontMaterhorn24.fontName, fontMaterhorn24.fontSize, 0xffffff);
+			title.vAlign = VAlign.CENTER;
 			title.hAlign = HAlign.LEFT;
-			title.x = checkbox.bounds.right;
-			title.y = 15;
+			title.x = checkbox.bounds.right + 25;
 			addChild(title);
 			
 			// objective description
-			description = new TextField(400, 40, "Jump 1000 meters in one game", fontVerdana23.fontName, fontVerdana23.fontSize, 0xffffff);
-			description.vAlign = VAlign.TOP;
+			description = new TextField(240, plateHeight * 1 / 3, "Jump 1000 meters in one game", fontBellGothicBlack13.fontName, fontBellGothicBlack13.fontSize, 0xc89a07);
+			description.vAlign = VAlign.CENTER;
 			description.hAlign = HAlign.LEFT;
-			description.x = checkbox.bounds.right + 5;
-			description.y = title.bounds.bottom - 5;
+			description.x = title.x;
+			description.y = title.bounds.bottom;
 			addChild(description);
 			
 			// checkmark
-			checkmarkAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("Checkmark"), 40);
-			checkmarkAnimation.x = 15;
-			checkmarkAnimation.y = -10;
-			checkmarkAnimation.loop = false;
-			checkmarkAnimation.visible = false;
-			checkmarkAnimation.stop();
-			starling.core.Starling.juggler.add(checkmarkAnimation);
-			addChild(checkmarkAnimation);
+			checkmark = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverCheckmark0000"));
+			checkmark.x = 3;
+			checkmark.y = (plateHeight - checkmark.height) / 2;
+			checkmark.visible = false;
+			addChild(checkmark);
 			
 			// coin reward
 			// coin animation
 			coin = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
+			coin.pivotX = Math.ceil(coin.width / 2);
 			coin.pivotY = Math.ceil(coin.height / 2);
-			coin.x = title.bounds.right + 30;
-			coin.y = (checkbox.bounds.top + checkbox.bounds.bottom) / 2;
+			coin.rotation = -Math.PI / 8;
+			coin.x = title.bounds.right + coin.width / 2 + 30;
+			coin.y = plateHeight / 2;
 			starling.core.Starling.juggler.add(coin);
 			addChild(coin);
 			// amount text
-			coinAmountText = new TextField(100, coin.height, "0", fontLithos42.fontName, fontLithos42.fontSize, 0xffffff);
+			coinAmountText = new TextField(100, plateHeight, "0", fontMaterhorn25.fontName, fontMaterhorn25.fontSize, 0xffffff);
 			coinAmountText.vAlign = VAlign.CENTER;
-			coinAmountText.hAlign = HAlign.LEFT;
-			coinAmountText.x = coin.bounds.right - 10;
-			coinAmountText.y = coin.bounds.top;
+			coinAmountText.hAlign = HAlign.RIGHT;
+			coinAmountText.x = coin.x;
 			addChild(coinAmountText);
 		}
 		
@@ -81,13 +81,11 @@ package com.jumpGame.ui.components
 		}
 		
 		public function check():void {
-			checkmarkAnimation.visible = true;
-			checkmarkAnimation.stop();
-			checkmarkAnimation.play();
+			checkmark.visible = true;
 		}
 		
 		public function uncheck():void {
-			checkmarkAnimation.visible = false;
+			checkmark.visible = false;
 		}
 	}
 }

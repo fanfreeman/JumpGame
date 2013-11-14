@@ -1,22 +1,29 @@
 package com.jumpGame.ui.components
 {
 	import com.jumpGame.customObjects.Font;
+	import com.jumpGame.level.Statics;
 	
 	import flash.geom.Point;
+	import flash.text.TextFormatAlign;
 	
 	import feathers.controls.Button;
+	import feathers.controls.Label;
 	import feathers.controls.List;
 	import feathers.controls.renderers.IListItemRenderer;
+	import feathers.controls.text.BitmapFontTextRenderer;
 	import feathers.core.FeathersControl;
+	import feathers.core.ITextRenderer;
+	import feathers.text.BitmapFontTextFormat;
 	
 	import starling.core.Starling;
+	import starling.display.Image;
 	import starling.display.MovieClip;
-	import starling.display.Quad;
 	import starling.events.Event;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
+	import starling.textures.TextureSmoothing;
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
 	
@@ -29,89 +36,32 @@ package com.jumpGame.ui.components
 		}
 		
 //		private var progress:ProgressBar;
+		private var icon:Image;
 		private var btnAction:Button;
 		private var priceLabel:TextField;
-		private var title:TextField;
-		private var subtitle:TextField;
 		private var coinAnimation:MovieClip;
 		private var gemAnimation:MovieClip;
 		private var eventId:String;
 		
-		private function createElements():void {
-			// bg quad
-			var scrollQuad:Quad = new Quad(640, 80, 0xffffff);
-//			scrollQuad.pivotX = Math.ceil(scrollQuad.width / 2);
-			addChild(scrollQuad);
-			
-			// icon
-			var iconQuad:Quad = new Quad(80, 80, 0xff0000);
-			addChild(iconQuad);
-			
-			// label line 1
-			var fontVerdana23:Font = Fonts.getFont("Verdana23");
-			title = new TextField(370, 25, "", fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
-			title.hAlign = HAlign.LEFT;
-			title.vAlign = VAlign.TOP;
-			title.x = iconQuad.bounds.right + 10;
-			title.y = 10;
-			addChild(title);
-			
-			// label line 2
-			var fontVerdana14:Font = Fonts.getFont("Verdana14");
-			subtitle = new TextField(370, 20, "", fontVerdana14.fontName, fontVerdana14.fontSize, 0x873623);
-			subtitle.hAlign = HAlign.LEFT;
-			subtitle.vAlign = VAlign.TOP;
-			subtitle.x = iconQuad.bounds.right + 10;
-			subtitle.y = title.bounds.bottom + 2;
-			addChild(subtitle);
-			
-//			// progress bar
-//			progress = new ProgressBar();
-//			progress.minimum = 0;
-//			progress.maximum = 10;
-//			progress.width = 380;
-//			progress.height = 10;
-//			progress.x = subtitle.x;
-//			progress.y = subtitle.bounds.bottom + 2;
-//			this.addChild(progress);
-			
-			// price
-			priceLabel = new TextField(130, 25, "0", fontVerdana23.fontName, fontVerdana23.fontSize, 0x873623);
-			priceLabel.hAlign = HAlign.RIGHT;
-			priceLabel.vAlign = VAlign.TOP;
-			priceLabel.pivotX = Math.ceil(priceLabel.width);
-			priceLabel.x = scrollQuad.width - 10;
-			priceLabel.y = 10;
-			addChild(priceLabel);
-			
-			// action button
-			btnAction = new Button();
-			btnAction.width = 130;
-			btnAction.height = 34;
-			btnAction.pivotX = Math.ceil(btnAction.width);
-			btnAction.x = scrollQuad.width - 10;
-			btnAction.y = priceLabel.bounds.bottom;
-			btnAction.label = "Upgrade";
-			this.btnAction.addEventListener(Event.TRIGGERED, upgradeHandler);
-			addChild(btnAction);
-			
-			// price coin graphic
-			coinAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
-			coinAnimation.scaleX = 0.5;
-			coinAnimation.scaleY = 0.5;
-			coinAnimation.x = btnAction.bounds.left;
-			coinAnimation.y = priceLabel.bounds.top - 5;
-			Starling.juggler.add(coinAnimation);
-			this.addChild(coinAnimation);
-			
-			// price gem graphic
-			gemAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("ArrowBounce"), 20);
-			gemAnimation.scaleX = 0.5;
-			gemAnimation.scaleY = 0.5;
-			gemAnimation.x = btnAction.bounds.left;
-			gemAnimation.y = priceLabel.bounds.top - 5;
-			Starling.juggler.add(gemAnimation);
-			this.addChild(gemAnimation);
+		protected var titleLabel:Label;
+		protected var captionLabel:Label;
+		protected var dataLabel:Label;
+		
+		protected var _iconField:String;
+		
+		public function get iconField():String
+		{
+			return this._iconField;
+		}
+		
+		public function set iconField(value:String):void
+		{
+			if(this._iconField == value)
+			{
+				return;
+			}
+			this._iconField = value;
+			this.invalidate(INVALIDATION_FLAG_DATA);
 		}
 		
 		protected var _titleField:String;
@@ -145,6 +95,23 @@ package com.jumpGame.ui.components
 				return;
 			}
 			this._captionField = value;
+			this.invalidate(INVALIDATION_FLAG_DATA);
+		}
+		
+		protected var _caption2Field:String;
+		
+		public function get caption2Field():String
+		{
+			return this._caption2Field;
+		}
+		
+		public function set caption2Field(value:String):void
+		{
+			if(this._caption2Field == value)
+			{
+				return;
+			}
+			this._caption2Field = value;
 			this.invalidate(INVALIDATION_FLAG_DATA);
 		}
 		
@@ -287,9 +254,133 @@ package com.jumpGame.ui.components
 		
 		override protected function initialize():void
 		{
-			this.width = 300;
-			this.height = 80;
-			this.createElements();
+			this.width = 588;
+			this.height = 109;
+			
+			var itemBgButton:Button = new Button();
+			itemBgButton.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("UpgradeItemBg0000"));
+			this.addChild(itemBgButton);
+			
+			icon = new Image(Assets.getSprite("AtlasTexture4").getTexture("UpgradeIconTeleportation0000"));
+			icon.x = 21;
+			icon.y = 17;
+			this.addChild(icon);
+			
+			// labels
+			var labelsX:Number = 120;
+			var labelsWidth:Number = 326;
+			
+			if (!this.titleLabel) {
+				this.titleLabel = new Label();
+				titleLabel.touchable = false;
+				titleLabel.textRendererFactory = function():ITextRenderer
+				{
+					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
+					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("Materhorn24"));
+					textFormat.align = TextFormatAlign.LEFT;
+					textRenderer.textFormat = textFormat;
+					textRenderer.smoothing = TextureSmoothing.NONE;
+					return textRenderer;
+				}
+				titleLabel.width = labelsWidth;
+				titleLabel.height = 20;
+				titleLabel.x = labelsX;
+				titleLabel.y = 23;
+				this.addChild(this.titleLabel);
+			}
+			
+			if (!this.captionLabel) {
+				this.captionLabel = new Label();
+				captionLabel.touchable = false;
+				captionLabel.textRendererFactory = function():ITextRenderer
+				{
+					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
+					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("BellGothicBlack13"));
+					textFormat.align = TextFormatAlign.LEFT;
+					textFormat.color = 0x72370a;
+					textRenderer.textFormat = textFormat;
+					textRenderer.smoothing = TextureSmoothing.NONE;
+					return textRenderer;
+				}
+				captionLabel.width = labelsWidth;
+				captionLabel.height = 20;
+				captionLabel.x = labelsX;
+				captionLabel.y = 48;
+				this.addChild(this.captionLabel);
+			}
+			
+			if (!this.dataLabel) {
+				this.dataLabel = new Label();
+				dataLabel.touchable = false;
+				dataLabel.textRendererFactory = function():ITextRenderer
+				{
+					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
+					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("BellGothicBlack13"));
+					textFormat.align = TextFormatAlign.LEFT;
+					textFormat.color = 0x72370a;
+					textRenderer.textFormat = textFormat;
+					textRenderer.smoothing = TextureSmoothing.NONE;
+					return textRenderer;
+				}
+				dataLabel.width = labelsWidth;
+				dataLabel.height = 20;
+				dataLabel.x = labelsX;
+				dataLabel.y = 66;
+				this.addChild(this.dataLabel);
+			}
+			
+			//			// progress bar
+			//			progress = new ProgressBar();
+			//			progress.minimum = 0;
+			//			progress.maximum = 10;
+			//			progress.width = 380;
+			//			progress.height = 10;
+			//			progress.x = subtitle.x;
+			//			progress.y = subtitle.bounds.bottom + 2;
+			//			this.addChild(progress);
+			
+			// price coin graphic
+			coinAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
+			coinAnimation.scaleX = 0.5;
+			coinAnimation.scaleY = 0.5;
+			coinAnimation.x = this.width - 125;
+			coinAnimation.y = 8;
+			Starling.juggler.add(coinAnimation);
+			this.addChild(coinAnimation);
+			
+			// price
+			var fontVerdana23:Font = Fonts.getFont("ScoreLabel");
+			priceLabel = new TextField(130, 25, "0", fontVerdana23.fontName, fontVerdana23.fontSize, 0xffffff);
+			priceLabel.hAlign = HAlign.LEFT;
+			priceLabel.vAlign = VAlign.TOP;
+//			priceLabel.pivotX = Math.ceil(priceLabel.width);
+			priceLabel.x = this.width - 100;
+			priceLabel.y = 16;
+			addChild(priceLabel);
+			
+			// action button
+			btnAction = new Button();
+			btnAction.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("UpgradeItemButton0000"));
+			btnAction.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("UpgradeItemButton0000"));
+			btnAction.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("UpgradeItemButton0000"));
+			btnAction.hoverSkin.filter = Statics.btnBrightnessFilter;
+			btnAction.downSkin.filter = Statics.btnInvertFilter;
+			btnAction.useHandCursor = true;
+			btnAction.addEventListener(Event.TRIGGERED, upgradeHandler);
+			this.addChild(btnAction);
+			btnAction.validate();
+			btnAction.pivotX = btnAction.width;
+			btnAction.x = this.width - 15;
+			btnAction.y = 51;
+			
+			// price gem graphic
+			gemAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("Gem"), 20);
+			gemAnimation.scaleX = 0.55;
+			gemAnimation.scaleY = 0.55;
+			gemAnimation.x = this.width - 125;
+			gemAnimation.y = 12;
+			Starling.juggler.add(gemAnimation);
+			this.addChild(gemAnimation);
 		}
 		
 		override protected function draw():void
@@ -305,10 +396,10 @@ package com.jumpGame.ui.components
 			
 			//			sizeInvalid = this.autoSizeIfNeeded() || sizeInvalid;
 			
-			if(dataInvalid || sizeInvalid)
-			{
-				this.layout();
-			}
+//			if(dataInvalid || sizeInvalid)
+//			{
+//				this.layout();
+//			}
 		}
 		
 		//		protected function autoSizeIfNeeded():Boolean
@@ -337,8 +428,12 @@ package com.jumpGame.ui.components
 		
 		protected function commitData():void
 		{
+			// upgrade icon
+			this.icon.texture = Assets.getSprite("AtlasTexture4").getTexture("UpgradeIcon" + this.itemToIcon(this._data) + "0000");
+			this.icon.readjustSize();
+			
 			// upgrade title
-			this.title.text = this.itemToTitle(this._data);
+			this.titleLabel.text = this.itemToTitle(this._data);
 
 			// upgrade price
 			this.priceLabel.text = this.itemToPrice(this._data);
@@ -354,17 +449,20 @@ package com.jumpGame.ui.components
 				this.gemAnimation.visible = true;
 			}
 			
-			// upgrade subtitle
-			this.subtitle.text = this.itemToCaption(this._data);
+			// upgrade caption
+			this.captionLabel.text = this.itemToCaption(this._data);
+			
+			// caption line 2
+			this.dataLabel.text = this.itemToCaption2(this._data);
 			
 			// update progress bar
 //			var progressValue:Number = this.itemToProgress(this._data);
 //			this.progress.value = progressValue;
 			
-			if (this.subtitle.text == "") { // hide button if fully upgraded
+			if (this.dataLabel.text == "") { // hide button if fully upgraded
 				this.btnAction.visible = false;
 				this.priceLabel.text = "";
-				this.subtitle.text = "Max rank reached. Woohoo!";
+				this.dataLabel.text = "Max rank reached. Woohoo!";
 				this.coinAnimation.visible = false;
 				this.gemAnimation.visible = false;
 			} else { // show these again for reused item renderers
@@ -375,14 +473,23 @@ package com.jumpGame.ui.components
 			this.eventId = this.itemToEventId(this._data);
 		}
 		
-		protected function layout():void
-		{
+//		protected function layout():void
+//		{
 //			this.titleLabel.width = this.actualWidth;
 //			this.titleLabel.height = 35;
 //			
 //			this.captionLabel.width = this.actualWidth;
 //			this.captionLabel.height = 35;
 //			this.captionLabel.y = 35;
+//		}
+		
+		public function itemToIcon(item:Object):String
+		{
+			if(this._iconField != null && item && item.hasOwnProperty(this._iconField))
+			{
+				return item[this._iconField].toString();
+			}
+			return "";
 		}
 		
 		public function itemToTitle(item:Object):String
@@ -399,6 +506,15 @@ package com.jumpGame.ui.components
 			if(this._captionField != null && item && item.hasOwnProperty(this._captionField))
 			{
 				return item[this._captionField].toString();
+			}
+			return "";
+		}
+		
+		public function itemToCaption2(item:Object):String
+		{
+			if(this._caption2Field != null && item && item.hasOwnProperty(this._caption2Field))
+			{
+				return item[this._caption2Field].toString();
 			}
 			return "";
 		}

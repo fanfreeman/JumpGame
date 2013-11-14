@@ -57,7 +57,7 @@ package
 		public static const PlatformNormalBoost:String = "PlatformNormalBoost";
 		public static const PlatformDropBoost:String = "PlatformDropBoost";
 		public static const PlatformMobileBoost:String = "PlatformMobileBoost";
-		public static const PlatformPower:String = "PlatformPower";
+		public static const Bouncer:String = "Bouncer";
 		public static const PlatformSuper:String = "PlatformSuper";
 		public static const Coin:String = "Coin";
 		public static const AntigravDot:String = "AntigravDot";
@@ -181,6 +181,7 @@ package
 		public static const BgLayerIslandsLargeDuration:int = 80000;
 		public static const BgLayerBridgesDuration:int = 45000;
 		public static const BgLayerBranchesDuration:int = 5000;
+		public static const BgLayerFairyDuration:int = 120000;
 		
 		// server URIs
 		public static const UriGetUserInfo:String = "user/info";

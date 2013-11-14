@@ -15,14 +15,16 @@ package com.jumpGame.gameElements.powerups
 		private var ring1Image:Image;
 		private var ring2Image:Image;
 		private var hero:Hero;
+		private var hud:HUD;
 		private var nearCompletionTime:int; // star flashing powerup reel icon at this time
 		private var completionTime:int;
 		private var completionWarned:Boolean;
 		private var nextRing1AppearanceTime:int;
 		private var nextRing2AppearanceTime:int;
 		
-		public function Attraction(hero:Hero) {
+		public function Attraction(hero:Hero, hud:HUD) {
 			this.hero = hero;
+			this.hud = hud;
 			this.createPowerupArt();
 			this.isActivated = false;
 		}
@@ -100,7 +102,7 @@ package com.jumpGame.gameElements.powerups
 			
 			// almost time up, begin powerup reel warning
 			if (!this.completionWarned && Statics.gameTime > this.nearCompletionTime) {
-				HUD.completionWarning();
+				hud.completionWarning();
 				this.completionWarned = true;
 			}
 			
@@ -112,7 +114,7 @@ package com.jumpGame.gameElements.powerups
 				Statics.powerupAttractionEnabled = false;
 				
 				// misc reset
-				HUD.clearPowerupReel();
+				hud.clearPowerupReel();
 				Statics.powerupsEnabled = true;
 			}
 		}

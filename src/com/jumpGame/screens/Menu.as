@@ -65,7 +65,8 @@ package com.jumpGame.screens
 		private var screenGetGems:ScreenGetGems;
 		
 		// dialog box
-		private var dialogBox:DialogBox;
+		private var dialogBox1:DialogBox;
+		private var dialogBox2:DialogBox;
 		
 		// objective achievement effect
 		private var badgeAnimation:MovieClip;
@@ -116,7 +117,7 @@ package com.jumpGame.screens
 						Statics.firstName = dataObj.first_name;
 						Statics.lastName = dataObj.last_name;
 						Statics.playerName = dataObj.first_name + " " + dataObj.last_name.substr(0, 1) + ".";
-						Statics.playerHighScore = dataObj.high_score;
+						Statics.playerHighScore = int(dataObj.high_score);
 						Statics.playerCoins = int(dataObj.coins);
 						Statics.playerGems = int(dataObj.gems);
 						coinLabel.text = dataObj.coins;
@@ -162,8 +163,6 @@ package com.jumpGame.screens
 							Statics.achievementsList[int(dataObj.achievements[i].achievement_id)] = true;
 							trace ("achievement " + int(dataObj.achievements[i].achievement_id) + " earned");
 						}
-						// update achievements screen
-						this.screenAchievements.updateAchievementPlates();
 						
 						// parse player matches
 						var matchesYourTurnCollection:ListCollection = new ListCollection();
@@ -248,8 +247,8 @@ package com.jumpGame.screens
 								else this.lifeRequests = this.lifeRequests + "," + dataObj.life_requests[i].id;
 //								trace("request id: " + dataObj.life_requests[i].id + " name: " + dataObj.life_requests[i].name);
 							}
-							if (numLifeRequests > 1) this.showDialogBox(nameString + "have asked you for a life, help them out?", true, sendLife); // plural
-							else this.showDialogBox(nameString + "has asked you for a life, help them out?", true, sendLife); // singular
+							if (numLifeRequests > 1) this.showDialogBox(nameString + "have asked you for a life, help them out?", sendLife); // plural
+							else this.showDialogBox(nameString + "has asked you for a life, help them out?", sendLife); // singular
 						}
 						
 						// process life receipts
@@ -262,7 +261,7 @@ package com.jumpGame.screens
 								if (this.lifeReceipts == "") this.lifeReceipts += dataObj.life_receipts[i].id;
 								else this.lifeReceipts = this.lifeReceipts + "," + dataObj.life_receipts[i].id;
 							}
-							this.showDialogBox(nameString + "sent you a life. Accept and return the favor?", true, returnLife);
+							this.showDialogBox(nameString + "sent you a life. Accept and return the favor?", returnLife);
 						}
 					}
 					else if (dataObj.status == "new_match") { // new game created
@@ -411,7 +410,7 @@ package com.jumpGame.screens
 			gemLabel = new TextField(120, 25, "", fontVerdana23.fontName, fontVerdana23.fontSize, 0xffffff);
 			gemLabel.hAlign = HAlign.LEFT;
 			gemLabel.vAlign = VAlign.TOP;
-			gemLabel.x = 286;
+			gemLabel.x = 289;
 			gemLabel.y = topBarLabelsY;
 			this.addChild(gemLabel);
 			
@@ -547,7 +546,7 @@ package com.jumpGame.screens
 			
 			// custom screens
 			// match details popup
-			matchDataPopup = new MatchDataContainer();
+			matchDataPopup = new MatchDataContainer(this);
 			matchDataPopup.visible = false;
 			this.addChild(matchDataPopup);
 			
@@ -576,10 +575,14 @@ package com.jumpGame.screens
 			screenGetGems.visible = false;
 			this.addChild(screenGetGems);
 			
-			// dialog box
-			dialogBox = new DialogBox(this);
-			dialogBox.visible = false;
-			this.addChild(dialogBox);
+			// dialog boxes
+			dialogBox1 = new DialogBox(this);
+			dialogBox1.visible = false;
+			this.addChild(dialogBox1);
+			
+			dialogBox2 = new DialogBox(this);
+			dialogBox2.visible = false;
+			this.addChild(dialogBox2);
 			
 			// objective achievement effect
 			badgeAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("BadgeFlash"), 30);
@@ -690,7 +693,8 @@ package com.jumpGame.screens
 		
 		public function displayLoadingNotice(message:String):void {
 			loadingNoticeText.text = message;
-			this.setChildIndex(loadingNotice, this.numChildren-1);
+			this.setChildIndex(loadingNotice, numChildren - 1);
+			this.setChildIndex(matchDataPopup, numChildren - 1);
 			loadingNotice.visible = true;
 		}
 		
@@ -788,9 +792,9 @@ package com.jumpGame.screens
 		}
 		
 		public function showAchievementsScreen(event:starling.events.Event):void {
-			screenAchievements.refresh();
 			screenAchievements.visible = true;
 			setChildIndex(screenAchievements, numChildren - 1);
+			screenAchievements.initialize();
 		}
 		
 		public function showRankingsScreen(event:starling.events.Event):void {
@@ -805,7 +809,7 @@ package com.jumpGame.screens
 			var playerData:Object = new Object();
 			playerData.firstname = Statics.firstName;
 			playerData.lastname = Statics.lastName;
-			playerData.high_score = Statics.playerHighScore;
+			playerData.high_score = Statics.playerHighScore.toString();
 			screenProfile.refresh(playerData);
 		}
 		
@@ -827,29 +831,37 @@ package com.jumpGame.screens
 			setChildIndex(screenGetGems, numChildren - 1);
 		}
 		
-		public function showDialogBox(prompt:String, isTwoButton:Boolean, callbackFunction = null):void {
-			trace("showing dialog box...");
-			dialogBox.show(prompt, isTwoButton, callbackFunction);
-			setChildIndex(dialogBox, numChildren - 1);
+		public function showDialogBox(prompt:String, callbackFunction = null):void {
+			if (!dialogBox1.isInUse) {
+				dialogBox1.show(prompt, callbackFunction);
+				setChildIndex(dialogBox1, numChildren - 1);
+			}
+			else if (!dialogBox2.isInUse) {
+				dialogBox2.show(prompt, callbackFunction);
+				setChildIndex(dialogBox2, numChildren - 1);
+			}
+			else {
+				trace("No dialog boxes available");
+			}
 		}
 		
-		public function dialogCloseHandler(event:starling.events.Event):void {
-			dialogBox.visible = false;
-		}
+//		public function dialogCloseHandler(event:starling.events.Event):void {
+//			dialogBox.visible = false;
+//		}
 		
-		public function dialogCancelHandler(event:starling.events.Event):void {
-			dialogBox.removeOkButtonListeners(); // remove extra event listeners on the OK button
-			dialogBox.visible = false;
-		}
+//		public function dialogCancelHandler(event:starling.events.Event):void {
+//			dialogBox.removeOkButtonListeners(); // remove extra event listeners on the OK button
+//			dialogBox.visible = false;
+//		}
 		
-		public function hideDialogBox():void {
-			dialogBox.visible = false;
-		}
+//		public function hideDialogBox():void {
+//			dialogBox.visible = false;
+//		}
 		
 		public function roundBegin():Boolean {
 			if (this.lives < 1) {
 				//this.showDialogBox("You do not have enough lives, would you like to ask friends for more?", true, showAskFriendsForLives);
-				this.showDialogBox("You do not have enough lives, would you like to purchase a full set for " + Constants.SetOfLivesCost + " gems?", true, purchaseLivesWithGems);
+				this.showDialogBox("You do not have enough lives, would you like to purchase a full set for " + Constants.SetOfLivesCost + " gems?", purchaseLivesWithGems);
 				return false;
 			}
 			
@@ -874,16 +886,16 @@ package com.jumpGame.screens
 				trace("External interface unavailabe");
 			}
 			
-			this.hideDialogBox();
+//			this.hideDialogBox();
 		}
 		
 		// show the facebook dialog to purchase a full set of lives with gems
 		private function purchaseLivesWithGems():void {
-			this.hideDialogBox();
+//			this.hideDialogBox();
 			
 			if (Statics.playerGems < Constants.SetOfLivesCost) { // player can't afford this
 				// show get gems prompt
-				this.showDialogBox("You do not have enough gems,\n would you like to get more?", true, showGetGemsScreen);
+				this.showDialogBox("You do not have enough gems,\n would you like to get more?", showGetGemsScreen);
 				return;
 			}
 			
@@ -904,7 +916,7 @@ package com.jumpGame.screens
 				trace("External interface unavailabe");
 			}
 			
-			this.hideDialogBox();
+//			this.hideDialogBox();
 		}
 		
 		// call js to return the favor of sending a life
@@ -921,7 +933,7 @@ package com.jumpGame.screens
 				trace("External interface unavailabe");
 			}
 			
-			this.hideDialogBox();
+//			this.hideDialogBox();
 		}
 		
 		public function updateCountdown():void {
@@ -955,10 +967,10 @@ package com.jumpGame.screens
 		}
 		
 		private function showGetLivesPopup(event:starling.events.Event):void {
-			this.showDialogBox("Would you like to purchase a full set of lives for " + Constants.SetOfLivesCost + " gems?", true, purchaseLivesWithGems);
+			this.showDialogBox("Would you like to purchase a full set of lives for " + Constants.SetOfLivesCost + " gems?", purchaseLivesWithGems);
 		}
 		
-		private function inviteFriends(event:starling.events.Event):void {
+		private function inviteFriends():void {
 			if(ExternalInterface.available){
 				trace("Calling JS...");
 				ExternalInterface.call("inviteFriends");
@@ -966,7 +978,7 @@ package com.jumpGame.screens
 				trace("External interface unavailabe");
 			}
 			
-			this.hideDialogBox();
+//			this.hideDialogBox();
 		}
 		
 		private function formatTime(totalSeconds:int):String {

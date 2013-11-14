@@ -12,6 +12,7 @@ package com.jumpGame.gameElements.powerups
 	public class VermilionBird extends GameObject
 	{
 		private var hero:Hero;
+		private var hud:HUD;
 		private var transfiguration:Transfiguration;
 		private var flightAnimation:MovieClip;
 //		private var glideAnimation:MovieClip;
@@ -23,9 +24,10 @@ package com.jumpGame.gameElements.powerups
 		private var completionTime:int;
 		private var completionWarned:Boolean;
 		
-		public function VermilionBird(hero:Hero, transfiguration:Transfiguration)
+		public function VermilionBird(hero:Hero, hud:HUD, transfiguration:Transfiguration)
 		{
 			this.hero = hero;
+			this.hud = hud;
 			this.transfiguration = transfiguration;
 			this.createPowerupArt();
 		}
@@ -112,7 +114,7 @@ package com.jumpGame.gameElements.powerups
 			
 			// almost time up, begin powerup reel warning
 			if (!this.completionWarned && Statics.gameTime > this.nearCompletionTime) {
-				HUD.completionWarning();
+				hud.completionWarning();
 				this.completionWarned = true;
 			}
 			
@@ -145,7 +147,7 @@ package com.jumpGame.gameElements.powerups
 			Statics.cameraTargetModifierY = 0;
 			
 			// misc reset
-			HUD.clearPowerupReel();
+			hud.clearPowerupReel();
 			Statics.powerupsEnabled = true;
 			
 			// brief push upward

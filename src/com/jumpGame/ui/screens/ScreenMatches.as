@@ -4,9 +4,11 @@ package com.jumpGame.ui.screens
 	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.MatchItemRenderer;
+	import com.jumpGame.ui.components.StartGameItemRenderer;
 	
 	import flash.external.ExternalInterface;
 	
+	import feathers.controls.Button;
 	import feathers.controls.List;
 	import feathers.controls.PickerList;
 	import feathers.controls.Screen;
@@ -18,12 +20,12 @@ package com.jumpGame.ui.screens
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.events.Event;
-	import feathers.controls.Button;
 	
 	public class ScreenMatches extends Screen
 	{
 		private var matchesContainer:ScrollContainer;
 		public var startGamePicker:PickerList // the start a game button
+		private var headerYourTurn:Image;
 		public var listYourTurn:List;
 		private var headerTheirTurn:Image;
 		public var listTheirTurn:List;
@@ -81,7 +83,7 @@ package com.jumpGame.ui.screens
 			
 			// create matches scroll container
 			matchesContainer = new ScrollContainer();
-			matchesContainer.width = 560;
+			matchesContainer.width = 570;
 			matchesContainer.x = (stage.stageWidth - matchesContainer.width) / 2;
 			matchesContainer.y = popup.bounds.top + 95;
 			matchesContainer.height = 400;
@@ -93,8 +95,33 @@ package com.jumpGame.ui.screens
 			this.addChild(matchesContainer);
 			
 			startGamePicker = new PickerList();
-			startGamePicker.width = matchesContainer.width - 40;
-			startGamePicker.height = 48;
+			startGamePicker.useHandCursor = true;
+			startGamePicker.buttonFactory = function():Button
+			{
+				var button:Button = new Button();
+				button.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonStartGame0000"));
+				button.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonStartGame0000"));
+				button.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonStartGame0000"));
+				button.hoverSkin.filter = Statics.btnBrightnessFilter;
+				button.downSkin.filter = Statics.btnInvertFilter;
+				return button;
+			};
+			startGamePicker.listFactory = function():List
+			{
+				var list:List = new List();
+				list.backgroundSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("StartGameCalloutBg0000"));
+				list.pivotY = 15;
+				list.width = 277;
+				list.height = 177;
+				list.paddingTop = 41;
+				list.paddingLeft = 32;
+				list.itemRendererType = StartGameItemRenderer;
+				list.verticalScrollPolicy = List.SCROLL_POLICY_OFF;
+				list.horizontalScrollPolicy = List.SCROLL_POLICY_OFF;
+				return list;
+			};
+			startGamePicker.width = matchesContainer.width;
+			startGamePicker.height = 69;
 			startGamePicker.pivotX = Math.ceil(startGamePicker.width / 2);
 			startGamePicker.x = matchesContainer.width / 2;
 			startGamePicker.visible = false;
@@ -105,18 +132,16 @@ package com.jumpGame.ui.screens
 					{ text: "Smart Match" },
 				]);
 			startGamePicker.dataProvider = startGameOptions;
-			startGamePicker.listProperties.@itemRendererProperties.labelField = "text";
-			startGamePicker.labelField = "text";
-			startGamePicker.prompt = "Start a Game";
 			startGamePicker.selectedIndex = -1;
 			startGamePicker.popUpContentManager = new CalloutPopUpContentManager();
 			startGamePicker.addEventListener(Event.CHANGE, buttonGameStartHandler);
 			
 			// your turn header
-			var headerYourTurn:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("HeaderYourTurn0000"));
+			headerYourTurn = new Image(Assets.getSprite("AtlasTexture4").getTexture("HeaderYourTurn0000"));
 			headerYourTurn.pivotX = Math.ceil(headerYourTurn.texture.width / 2);
 			headerYourTurn.x = matchesContainer.width / 2;
 			headerYourTurn.y = startGamePicker.height + 20;
+			headerYourTurn.visible = false;
 			matchesContainer.addChild(headerYourTurn);
 			
 			// your turn match list
@@ -137,6 +162,7 @@ package com.jumpGame.ui.screens
 			headerTheirTurn.pivotX = Math.ceil(headerTheirTurn.texture.width / 2);
 			headerTheirTurn.x = matchesContainer.width / 2;
 			headerTheirTurn.y = listYourTurn.height + 20;
+			headerTheirTurn.visible = false;
 			matchesContainer.addChild(headerTheirTurn);
 			
 			// your turn match list
@@ -157,6 +183,7 @@ package com.jumpGame.ui.screens
 			headerFinished.pivotX = Math.ceil(headerFinished.texture.width / 2);
 			headerFinished.x = matchesContainer.width / 2;
 			headerFinished.y = listTheirTurn.height + 20;
+			headerFinished.visible = false;
 			matchesContainer.addChild(headerFinished);
 			
 			// finished matches list
@@ -198,6 +225,7 @@ package com.jumpGame.ui.screens
 				Menu(this.owner).communicator.findSmartMatch();
 			}
 			startGamePicker.selectedIndex = -1;
+			startGamePicker.popUpContentManager.close();
 		}
 		
 		private function opponentReturnedFromJs(opponentId:String):void {
@@ -263,12 +291,16 @@ package com.jumpGame.ui.screens
 			// move finished matches header and list
 			headerFinished.y = listTheirTurn.bounds.bottom + 20;
 			listFinished.y = headerFinished.bounds.bottom + 10;
-		}
-		
-		public function resignMatch():void {
-			Menu(this.owner).displayLoadingNotice("Updating matches...");
-			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
-			Menu(this.owner).communicator.resignMatch(Statics.gameId);
+			
+			// display headers if needed
+			if (this.gamesMyTurn.length > 0 || this.gamesTheirTurn.length > 0) {
+				headerYourTurn.visible = true;
+				headerTheirTurn.visible = true;
+			}
+			
+			if (this.gamesFinished.length > 0) {
+				headerFinished.visible = true;
+			}
 		}
 	}
 }

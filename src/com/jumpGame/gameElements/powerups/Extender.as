@@ -5,10 +5,16 @@ package com.jumpGame.gameElements.powerups
 
 	public class Extender extends GameObject
 	{
+		private var hud:HUD;
 		public var isActivated:Boolean = false;
 		private var nearCompletionTime:int; // star flashing powerup reel icon at this time
 		private var completionTime:int;
 		private var completionWarned:Boolean;
+		
+		public function Extender(hud:HUD)
+		{
+			this.hud = hud;
+		}
 		
 		public function activate():void {
 			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
@@ -25,7 +31,7 @@ package com.jumpGame.gameElements.powerups
 			
 			// almost time up, begin powerup reel warning
 			if (!this.completionWarned && Statics.gameTime > this.nearCompletionTime) {
-				HUD.completionWarning();
+				hud.completionWarning();
 				this.completionWarned = true;
 			}
 			
@@ -34,7 +40,7 @@ package com.jumpGame.gameElements.powerups
 				this.isActivated = false;
 				
 				// misc reset
-				HUD.clearPowerupReel();
+				hud.clearPowerupReel();
 				Statics.powerupsEnabled = true;
 			}
 		}

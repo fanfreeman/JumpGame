@@ -3,7 +3,7 @@ package com.jumpGame.ui.popups
 	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.level.Statics;
-	import com.jumpGame.ui.screens.ScreenMatches;
+	import com.jumpGame.screens.Menu;
 	
 	import flash.display.Bitmap;
 	import flash.display.Loader;
@@ -27,6 +27,7 @@ package com.jumpGame.ui.popups
 	
 	public class MatchDataContainer extends Sprite
 	{
+		private var parent:Menu;
 		private var popupContainer:Sprite;
 		private var contentContainer:Sprite;
 		private var player1Name:TextField;
@@ -36,21 +37,18 @@ package com.jumpGame.ui.popups
 		private var player2TotalText:TextField;
 		private var btnPlay:Button;
 		private var btnResign:Button;
-		private var winnerText:TextField;
+//		private var winnerText:TextField;
 		private var player1Picture:Image;
 		private var player2Picture:Image;
 		private var playerPictureLoader:Loader;
 		private var opponentPictureLoader:Loader;
-		private var playerPictureWidth:uint;
-		private var opponentPictureWidth:uint;
+		private var playerPictureWidth:uint = 0;
+		private var opponentPictureWidth:uint = 0;
 		
-		public function MatchDataContainer()
+		public function MatchDataContainer(parent:Menu)
 		{
 			super();
-			
-			playerPictureWidth = 0;
-			opponentPictureWidth = 0;
-			
+			this.parent = parent;
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
@@ -73,7 +71,6 @@ package com.jumpGame.ui.popups
 			// popup artwork
 			var popup:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupMatchDetails0000"));
 			popupContainer.addChild(popup);
-			
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
 			popupContainer.x = Statics.stageWidth / 2;
@@ -225,10 +222,7 @@ package com.jumpGame.ui.popups
 			btnPlay.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMatchDetailsCta0000"));
 			btnPlay.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnPlay.downSkin.filter = Statics.btnInvertFilter;
-			var ctaTextFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("Materhorn24"));
-//			var ctaTextFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("ScoreValue"));
-			ctaTextFormat.size = 25;
-			ctaTextFormat.color = 0xB75913;
+			var ctaTextFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("Materhorn25"));
 			btnPlay.defaultLabelProperties.textFormat = ctaTextFormat;
 			btnPlay.useHandCursor = true;
 			btnPlay.addEventListener(starling.events.Event.TRIGGERED, buttonPlayHandler);
@@ -278,8 +272,8 @@ package com.jumpGame.ui.popups
 		
 		private function buttonPlayHandler(event:starling.events.Event):void {
 			if (btnPlay.label == "Done") {
-				ExternalInterface.call("sendTurnRequest", Statics.opponentFbid, Statics.gameId);
-				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "menu"}, true));
+//				ExternalInterface.call("sendTurnRequest", Statics.opponentFbid, Statics.gameId);
+//				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "menu"}, true));
 			} else if (btnPlay.label == "Play") {
 				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "play"}, true));
 			}
@@ -287,8 +281,14 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonResignHandler(event:starling.events.Event):void {
-			ScreenMatches(this.parent).resignMatch();
+			resignMatch();
 			this.visible = false;
+		}
+		
+		private function resignMatch():void {
+			parent.displayLoadingNotice("Updating matches...");
+			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
+			parent.communicator.resignMatch(Statics.gameId);
 		}
 		
 		private function buttonCloseHandler(event:starling.events.Event):void {
@@ -296,7 +296,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function initialize(isDone:Boolean):void {
-//			trace("game id: " + Statics.gameId);
+			trace("game id: " + Statics.gameId);
 			
 			contentContainer.alpha = 0;
 			popupContainer.scaleX = 0.5;
@@ -365,33 +365,32 @@ package com.jumpGame.ui.popups
 			
 			// check if a player has resigned
 //			trace("resigned by: " + Statics.resignedBy);
+			btnPlay.x = Statics.stageWidth / 2;
+			btnResign.isEnabled = false;
 			if (Statics.resignedBy != "0") {
 				if (Statics.resignedBy == Statics.userId) { // current player resigned this game
 					if (Statics.isPlayer2) {
-						winnerText.text = player1Name.text + " Wins!";
+//						winnerText.text = player1Name.text + " Wins!";
 					} else {
-						winnerText.text = player2Name.text + " Wins!";
+//						winnerText.text = player2Name.text + " Wins!";
 					}
 				}
 				else { // the opponent resigned this game
 					if (Statics.isPlayer2) {
-						winnerText.text = player2Name.text + " Wins!";
+//						winnerText.text = player2Name.text + " Wins!";
 					} else {
-						winnerText.text = player1Name.text + " Wins!";
+//						winnerText.text = player1Name.text + " Wins!";
 					}
 				}
-				winnerText.visible = true;
+//				winnerText.visible = true;
 				btnPlay.label = "Return";
-				return;
-			}
-			
-			
-			// resign button
-			btnResign.isEnabled = false;
-			if (Statics.isPlayer2 && Statics.currentRound == 1) {
-				btnPlay.x = Statics.stageWidth / 2 + Math.ceil(btnPlay.width / 2);
-				btnResign.visible = true;
-				btnResign.isEnabled = true;
+			} else { // no one resigned
+				// resign button
+				if (Statics.isPlayer2 && Statics.currentRound == 1) {
+					btnPlay.x = Statics.stageWidth / 2 + Math.ceil(btnPlay.width / 2);
+					btnResign.visible = true;
+					btnResign.isEnabled = true;
+				}
 			}
 			
 			// check if game has ended
