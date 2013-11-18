@@ -142,19 +142,13 @@ package com.jumpGame.ui.components
 			this.useHandCursor = true;
 			
 			var itemBgButton:Button = new Button();
-			var itemBgImage:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
-			itemBgButton.defaultSkin = itemBgImage;
+			itemBgButton.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
 			itemBgButton.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
 			itemBgButton.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
 			itemBgButton.hoverSkin.filter = Statics.btnBrightnessFilter;
 			itemBgButton.downSkin.filter = Statics.btnInvertFilter;
 			this.addChild(itemBgButton);
-//			itemBgButton.x = (this.width - itemBgImage.width) / 2;
 			
-//			var itemBg:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
-//			itemBg.x = (this.width - itemBg.width) / 2;
-//			this.addChild(itemBg);
-//			
 			if (!this.titleLabel) {
 				this.titleLabel = new Label();
 				titleLabel.touchable = false;

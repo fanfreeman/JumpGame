@@ -1,9 +1,16 @@
 package com.jumpGame.level
 {
 	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.events.Event;
+	import flash.net.URLRequest;
+	import flash.utils.Dictionary;
 	
+	import starling.events.EventDispatcher;
 	import starling.extensions.PDParticleSystem;
 	import starling.filters.ColorMatrixFilter;
+	import starling.textures.Texture;
+	import starling.utils.AssetManager;
 
 	public class Statics
 	{
@@ -154,13 +161,45 @@ package com.jumpGame.level
 			return Math.atan2(dy,dx);
 		}
 		
-		public static function initialize():void {
+		// bof picture url loader
+		public static var profilePicturesData:Dictionary;
+		
+		public static function pictureUrlReturnedFromJs(facebookId:String, pictureUrlData:Object):void {
+			if (pictureUrlData.url != null && pictureUrlData.width != null) {
+				var pictureObject:Object = new Object();
+				pictureObject.url = String(pictureUrlData.url);
+				pictureObject.width = uint(pictureUrlData.width);
+				profilePicturesData[facebookId] = pictureObject;
+			}
+		}
+		
+		public static function getProfilePictureUrl(facebookId:String):String {
+			var pictureObject:Object = profilePicturesData[facebookId];
+			if (pictureObject != null && pictureObject.url != null) {
+				return pictureObject.url;
+			}
+			return "none";
+		}
+		
+		public static function getProfilePictureWidth(facebookId:String):uint {
+			var pictureObject:Object = profilePicturesData[facebookId];
+			if (pictureObject != null && pictureObject.width != null) {
+				return uint(pictureObject.width);
+			}
+			return 0;
+		}
+		// eof picture url loader
+		
+		public static function initialize():void { // initialized in Game.as
 			btnBrightnessFilter = new ColorMatrixFilter();
 			btnBrightnessFilter.adjustBrightness(0.25);
 			btnInvertFilter = new ColorMatrixFilter();
 			btnInvertFilter.invert();
 			btnContrastFilter = new ColorMatrixFilter();
 			btnContrastFilter.adjustContrast(0.75);
+			
+			// picture url loader
+			profilePicturesData = new Dictionary();
 		}
 	}
 }

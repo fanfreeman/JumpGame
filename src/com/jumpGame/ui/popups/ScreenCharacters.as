@@ -1,6 +1,5 @@
 package com.jumpGame.ui.popups
 {
-	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	
@@ -12,19 +11,13 @@ package com.jumpGame.ui.popups
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
-	import starling.text.TextField;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
 	
-	public class ScreenProfile extends Sprite
+	public class ScreenCharacters extends Sprite
 	{
 		private var parent:Menu;
 		private var popupContainer:Sprite;
 		
-		private var nameField:TextField;
-		private var highScoreField:TextField;
-		
-		public function ScreenProfile(parent:Menu)
+		public function ScreenCharacters(parent:Menu)
 		{
 			super();
 			this.parent = parent;
@@ -72,31 +65,14 @@ package com.jumpGame.ui.popups
 			buttonClose.pivotX = buttonClose.width;
 			buttonClose.x = popup.bounds.right - 25;
 			buttonClose.y = popup.bounds.top + 28;
-			
-			var fontLithos42:Font = Fonts.getFont("Lithos42");
-			var fontVerdana23:Font = Fonts.getFont("Verdana23");
-			
-			// player name field
-			nameField = new TextField(300, 45, "", fontLithos42.fontName, fontLithos42.fontSize, 0xffdd1e);
-			nameField.vAlign = VAlign.TOP;
-			nameField.hAlign = HAlign.LEFT;
-			nameField.x = 100;
-			nameField.y = 100;
-			popupContainer.addChild(nameField);
-			
-			// high score field
-			highScoreField = new TextField(400, 40, "", fontVerdana23.fontName, fontVerdana23.fontSize, 0xffffff);
-			highScoreField.vAlign = VAlign.TOP;
-			highScoreField.hAlign = HAlign.LEFT;
-			highScoreField.x = nameField.bounds.left;
-			highScoreField.y = nameField.bounds.bottom + 10;
-			popupContainer.addChild(highScoreField);
 		}
 		
-		public function initialize(playerData:Object):void {
+		private function buttonCloseHandler(event:Event):void {
+			this.visible = false;
+		}
+		
+		public function initialize():void {
 			this.visible = true;
-			nameField.text = playerData.firstname + " " + playerData.lastname;
-			highScoreField.text = "High Score: " + playerData.high_score;
 			
 			// popup pop out effect
 			popupContainer.scaleX = 0.5;
@@ -106,10 +82,6 @@ package com.jumpGame.ui.popups
 				scaleX: 1,
 				scaleY: 1
 			});
-		}
-		
-		private function buttonCloseHandler(event:Event):void {
-			this.visible = false;
 		}
 	}
 }

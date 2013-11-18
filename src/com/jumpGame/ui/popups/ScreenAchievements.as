@@ -182,6 +182,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function initialize():void {
+			this.visible = true;
+			
 			// popup pop out effect
 			popupContainer.scaleX = 0.5;
 			popupContainer.scaleY = 0.5;

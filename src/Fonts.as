@@ -119,6 +119,18 @@ package
 		[Embed(source="../media/fonts/bitmap/bellgothicblack25.fnt", mimeType="application/octet-stream")]
 		public static const XML_BellGothicBlack25:Class;
 		
+		// Materhorn 24 White font (get gems / get coins)
+		[Embed(source="../media/fonts/bitmap/materhorn24white.png")]
+		public static const Font_Materhorn24White:Class;
+		[Embed(source="../media/fonts/bitmap/materhorn24white.fnt", mimeType="application/octet-stream")]
+		public static const XML_Materhorn24White:Class;
+		
+		// Materhorn 15 White font (get gems / get coins)
+		[Embed(source="../media/fonts/bitmap/materhorn15white.png")]
+		public static const Font_Materhorn15White:Class;
+		[Embed(source="../media/fonts/bitmap/materhorn15white.fnt", mimeType="application/octet-stream")]
+		public static const XML_Materhorn15White:Class;
+		
 		/**
 		 * Font objects.
 		 */
@@ -139,6 +151,8 @@ package
 		private static var Pulsing72:BitmapFont;
 		private static var Pulsing72Fire:BitmapFont;
 		private static var BellGothicBlack25:BitmapFont;
+		private static var Materhorn24White:BitmapFont;
+		private static var Materhorn15White:BitmapFont;
 		
 		/**
 		 * Returns the BitmapFont (texture + xml) instance's fontName property (there is only one instance per app)

@@ -1,11 +1,14 @@
 package com.jumpGame.screens
 {
 	import com.jumpGame.customObjects.Font;
+	import com.jumpGame.customObjects.PictureLoader;
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.popups.DialogBox;
+	import com.jumpGame.ui.popups.GetLives;
 	import com.jumpGame.ui.popups.MatchDataContainer;
 	import com.jumpGame.ui.popups.ScreenAchievements;
+	import com.jumpGame.ui.popups.ScreenCharacters;
 	import com.jumpGame.ui.popups.ScreenGetCoins;
 	import com.jumpGame.ui.popups.ScreenGetGems;
 	import com.jumpGame.ui.popups.ScreenProfile;
@@ -61,8 +64,10 @@ package com.jumpGame.screens
 		private var screenAchievements:ScreenAchievements;
 		private var screenRankings:ScreenRankings;
 		private var screenProfile:ScreenProfile;
+		private var screenCharacters:ScreenCharacters;
 		private var screenGetCoins:ScreenGetCoins;
 		private var screenGetGems:ScreenGetGems;
+		private var popupGetLives:GetLives;
 		
 		// dialog box
 		private var dialogBox1:DialogBox;
@@ -84,8 +89,14 @@ package com.jumpGame.screens
 		
 		private var countdownActive:Boolean;
 		
+		// profile picture loader
+		public var pictureLoader:PictureLoader;
+		
 		// match details popup
 		public var matchDataPopup:MatchDataContainer;
+		
+		// rankings data
+		private var rankingsCollection:ListCollection;
 		
 		public function Menu()
 		{
@@ -276,19 +287,30 @@ package com.jumpGame.screens
 						this.showMatchDetailsPopup(false);
 					}
 					else if (dataObj.status == "rankings") {
-						var rankingsGlobalCollection:ListCollection = new ListCollection();
-						this.screenRankings.rankingsGlobal = new Array();
+						rankingsCollection = new ListCollection();
+						this.screenRankings.rankingsArray.length = 0;
 						var numRankings:int = dataObj.rankings.length;
 						for (i = 0; i < numRankings; i++) { // loop through rankings retrieved
-							rankingsGlobalCollection.addItem({ title: dataObj.rankings[i].firstname + " " + dataObj.rankings[i].lastname, 
-								caption: dataObj.rankings[i].high_score,
-								picture_url: dataObj.rankings[i].picture_url
-							});
-							this.screenRankings.rankingsGlobal.push(dataObj.rankings[i]);
+							if (dataObj.rankings[i].picture != null) { // picture available
+								rankingsCollection.addItem({
+									title: dataObj.rankings[i].firstname + " " + dataObj.rankings[i].lastname, 
+									caption: dataObj.rankings[i].high_score,
+									facebook_id: dataObj.rankings[i].facebookId,
+									picture_url: dataObj.rankings[i].picture.url,
+									picture_width: uint(dataObj.rankings[i].picture.width)
+								});
+							} else { // no picture
+								rankingsCollection.addItem({
+									title: dataObj.rankings[i].firstname + " " + dataObj.rankings[i].lastname, 
+									caption: dataObj.rankings[i].high_score,
+									facebook_id: dataObj.rankings[i].facebookId,
+									picture_url: "none",
+									picture_width: 0
+								});
+							}
+							this.screenRankings.rankingsArray.push(dataObj.rankings[i]);
 						}
-						this.screenRankings.listGlobal.dataProvider = rankingsGlobalCollection;
-						
-						this.screenRankings.refresh();
+						this.screenRankings.listRankings.dataProvider = rankingsCollection;
 					}
 					else if (dataObj.status == "purchased_upgrade") { // successfully purchased upgrade
 						Statics.playerCoins = int(dataObj.coins);
@@ -445,7 +467,7 @@ package com.jumpGame.screens
 			buttonAddLives.downSkin.filter = Statics.btnInvertFilter;
 			buttonAddLives.x = 545;
 			buttonAddLives.y = topBarButtonsY;
-			buttonAddLives.addEventListener(starling.events.Event.TRIGGERED, showGetLivesPopup);
+			buttonAddLives.addEventListener(starling.events.Event.TRIGGERED, btnAddLivesHandler);
 			this.addChild(buttonAddLives);
 			
 			// time till next life label
@@ -565,6 +587,11 @@ package com.jumpGame.screens
 			screenProfile.visible = false;
 			this.addChild(screenProfile);
 			
+			// characters screen
+			screenCharacters = new ScreenCharacters(this);
+			screenCharacters.visible = false;
+			this.addChild(screenCharacters);
+			
 			// get coins screen
 			screenGetCoins = new ScreenGetCoins(this);
 			screenGetCoins.visible = false;
@@ -574,6 +601,11 @@ package com.jumpGame.screens
 			screenGetGems = new ScreenGetGems(this);
 			screenGetGems.visible = false;
 			this.addChild(screenGetGems);
+			
+			// get lives popup
+			popupGetLives = new GetLives(this);
+			popupGetLives.visible = false;
+			this.addChild(popupGetLives);
 			
 			// dialog boxes
 			dialogBox1 = new DialogBox(this);
@@ -603,6 +635,25 @@ package com.jumpGame.screens
 			badgeText.y = stage.stageHeight - 130 - 53;
 			badgeText.visible = false;
 			this.addChild(badgeText);
+			
+			// create picture loader object
+			pictureLoader = new PictureLoader();
+			pictureLoader.addEventListener("newPictureLoaded", onPictureLoaded);
+		}
+		
+		private function onPictureLoaded(event:Event, data:String):void
+		{
+			trace("picture loaded event received: " + data);
+			if (rankingsCollection) {
+				var numRankings:int = rankingsCollection.length;
+				for (var i:uint = 0; i < numRankings; i++) { // loop through rankings retrieved
+					var rankingsObject:Object = rankingsCollection.getItemAt(i);
+					if (rankingsObject.facebook_id == data) {
+						trace("yes!!");
+					}
+				}
+//				this.screenRankings.listRankings.dataProvider = rankingsCollection;
+			}
 		}
 		
 		private function traceObject(o:Object):void{
@@ -632,8 +683,10 @@ package com.jumpGame.screens
 			screenAchievements.visible = false;
 			screenRankings.visible = false;
 			screenProfile.visible = false;
+			screenCharacters.visible = false;
 			screenGetCoins.visible = false;
 			screenGetGems.visible = false;
+			popupGetLives.visible = false;
 		}
 		
 		private function tabsChangeHandler(event:starling.events.Event):void
@@ -792,44 +845,61 @@ package com.jumpGame.screens
 		}
 		
 		public function showAchievementsScreen(event:starling.events.Event):void {
-			screenAchievements.visible = true;
 			setChildIndex(screenAchievements, numChildren - 1);
 			screenAchievements.initialize();
 		}
 		
 		public function showRankingsScreen(event:starling.events.Event):void {
 			this.refreshRankingsGlobal();
-			screenRankings.visible = true;
 			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
+			screenRankings.initialize();
 		}
 		
 		public function showProfileScreen(event:starling.events.Event):void {
-			screenProfile.visible = true;
 			setChildIndex(screenProfile, numChildren - 1);
 			var playerData:Object = new Object();
 			playerData.firstname = Statics.firstName;
 			playerData.lastname = Statics.lastName;
 			playerData.high_score = Statics.playerHighScore.toString();
-			screenProfile.refresh(playerData);
+			screenProfile.initialize(playerData);
 		}
 		
 		public function showProfileScreenGivenData(playerData:Object):void {
-			screenProfile.visible = true;
 			setChildIndex(screenProfile, numChildren - 1);
-			screenProfile.refresh(playerData);
+			screenProfile.initialize(playerData);
+		}
+		
+		public function showCharactersScreen(event:starling.events.Event):void {
+			setChildIndex(screenCharacters, numChildren - 1);
+			screenCharacters.initialize();
 		}
 		
 		public function showGetCoinsScreen(event:starling.events.Event):void {
-			screenGetCoins.refresh();
-			screenGetCoins.visible = true;
 			setChildIndex(screenGetCoins, numChildren - 1);
+			screenGetCoins.initialize();
 		}
 		
-		public function showGetGemsScreen(event:starling.events.Event):void {
-			screenGetGems.refresh();
-			screenGetGems.visible = true;
+		public function showGetGemsScreen(event:starling.events.Event = null):void {
 			setChildIndex(screenGetGems, numChildren - 1);
+			screenGetGems.initialize();
 		}
+		
+		private function btnAddLivesHandler(event:starling.events.Event):void {
+			this.showGetLivesPopup();
+		}
+		
+		private function showGetLivesPopup(isOut:Boolean = false):void {
+			setChildIndex(popupGetLives, numChildren - 1);
+			popupGetLives.show(isOut);
+		}
+		
+		public function showBuyLivesDialog():void {
+			this.showDialogBox("Would you like to purchase a full set of lives for " + Constants.SetOfLivesCost + " gems?", purchaseLivesWithGems);
+		}
+		
+//		public function showAskForLivesDialog():void {
+//			this.showDialogBox("Would you like to ask friends for more?", showAskFriendsForLives);
+//		}
 		
 		public function showDialogBox(prompt:String, callbackFunction = null):void {
 			if (!dialogBox1.isInUse) {
@@ -860,8 +930,7 @@ package com.jumpGame.screens
 		
 		public function roundBegin():Boolean {
 			if (this.lives < 1) {
-				//this.showDialogBox("You do not have enough lives, would you like to ask friends for more?", true, showAskFriendsForLives);
-				this.showDialogBox("You do not have enough lives, would you like to purchase a full set for " + Constants.SetOfLivesCost + " gems?", purchaseLivesWithGems);
+				this.showGetLivesPopup(true); // show get lives popup with out of lives header
 				return false;
 			}
 			
@@ -877,7 +946,7 @@ package com.jumpGame.screens
 		}
 		
 		// show the apprequests dialog to pick friends to ask for lives
-		private function showAskFriendsForLives():void {
+		public function showAskFriendsForLives():void {
 			if(ExternalInterface.available){
 				trace("Calling JS...");
 				ExternalInterface.call("selectFriendsForLife");
@@ -885,24 +954,20 @@ package com.jumpGame.screens
 			} else {
 				trace("External interface unavailabe");
 			}
-			
-//			this.hideDialogBox();
 		}
 		
 		// show the facebook dialog to purchase a full set of lives with gems
 		private function purchaseLivesWithGems():void {
-//			this.hideDialogBox();
-			
 			if (Statics.playerGems < Constants.SetOfLivesCost) { // player can't afford this
 				// show get gems prompt
-				this.showDialogBox("You do not have enough gems,\n would you like to get more?", showGetGemsScreen);
+				this.showDialogBox("You do not have enough gems, would you like to get more?", showGetGemsScreen);
 				return;
 			}
 			
 			var jsonStr:String = JSON.stringify({
 				item: 'lives'
 			});
-			this.displayLoadingNotice("Conjuring some lives...");
+			this.displayLoadingNotice("Cooking up some lives...");
 			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
 			this.communicator.postPurchaseLives(jsonStr);
 		}
@@ -964,10 +1029,6 @@ package com.jumpGame.screens
 			this.tabs.selectedIndex = -1;
 			this.screenMatches.visible = false;
 			this.screenUpgrades.visible = false;
-		}
-		
-		private function showGetLivesPopup(event:starling.events.Event):void {
-			this.showDialogBox("Would you like to purchase a full set of lives for " + Constants.SetOfLivesCost + " gems?", purchaseLivesWithGems);
 		}
 		
 		private function inviteFriends():void {

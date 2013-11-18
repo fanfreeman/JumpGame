@@ -55,6 +55,12 @@ package
 		[Embed(source="../media/graphics/atlas7_char.xml", mimeType="application/octet-stream")]
 		public static const AtlasXml7:Class;
 		
+		// atlas 8: miscellaneous
+		[Embed(source="../media/graphics/atlas8.png")]
+		public static const AtlasTexture8:Class;
+		[Embed(source="../media/graphics/atlas8.xml", mimeType="application/octet-stream")]
+		public static const AtlasXml8:Class;
+		
 		/**
 		 * Background Assets
 		 */
@@ -133,6 +139,9 @@ package
 						break;
 					case "AtlasTexture7":
 						xml = XML(new AtlasXml7());
+						break;
+					case "AtlasTexture8":
+						xml = XML(new AtlasXml8());
 						break;
 				}
 				 

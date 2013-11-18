@@ -148,7 +148,7 @@ package com.jumpGame.ui.screens
 			btnCharacters.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnCharacters.downSkin.filter = Statics.btnInvertFilter;
 			btnCharacters.useHandCursor = true;
-//			btnCharacters.addEventListener(Event.TRIGGERED, Menu(this.owner).showCharactersScreen);
+			btnCharacters.addEventListener(Event.TRIGGERED, Menu(this.owner).showCharactersScreen);
 			this.addChild(btnCharacters);
 			btnCharacters.x = itemBg4.x + 37;
 			btnCharacters.y = itemBg4.y + 200;

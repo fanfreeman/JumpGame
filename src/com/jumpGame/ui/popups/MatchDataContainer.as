@@ -261,7 +261,7 @@ package com.jumpGame.ui.popups
 //			this.addChild(winnerText);
 			
 			// external interface
-			ExternalInterface.addCallback("returnProfilePictureUrlToAs", pictureUrlReturnedFromJs);
+//			ExternalInterface.addCallback("returnProfilePictureUrlToAs", pictureUrlReturnedFromJs);
 			
 			// loader
 			playerPictureLoader = new Loader();

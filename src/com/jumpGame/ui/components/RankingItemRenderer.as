@@ -1,16 +1,23 @@
 package com.jumpGame.ui.components
 {
+	import com.jumpGame.level.Statics;
+	
 	import flash.display.Bitmap;
 	import flash.display.Loader;
 	import flash.events.Event;
+	import flash.external.ExternalInterface;
 	import flash.geom.Point;
 	import flash.net.URLRequest;
-	import flash.system.Security;
+	import flash.text.TextFormatAlign;
 	
+	import feathers.controls.Button;
 	import feathers.controls.Label;
 	import feathers.controls.List;
 	import feathers.controls.renderers.IListItemRenderer;
+	import feathers.controls.text.BitmapFontTextRenderer;
 	import feathers.core.FeathersControl;
+	import feathers.core.ITextRenderer;
+	import feathers.text.BitmapFontTextFormat;
 	
 	import starling.display.Image;
 	import starling.events.Event;
@@ -18,6 +25,7 @@ package com.jumpGame.ui.components
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
 
 	public class RankingItemRenderer extends FeathersControl implements IListItemRenderer
 	{
@@ -61,20 +69,54 @@ package com.jumpGame.ui.components
 			this.invalidate(INVALIDATION_FLAG_DATA);
 		}
 		
-		protected var _pictureField:String;
+		protected var _facebookIdField:String;
 		
-		public function get pictureField():String
+		public function get facebookIdField():String
 		{
-			return this._pictureField;
+			return this._facebookIdField;
 		}
 		
-		public function set pictureField(value:String):void
+		public function set facebookIdField(value:String):void
 		{
-			if(this._pictureField == value)
+			if(this._facebookIdField == value)
 			{
 				return;
 			}
-			this._pictureField = value;
+			this._facebookIdField = value;
+			this.invalidate(INVALIDATION_FLAG_DATA);
+		}
+		
+		protected var _pictureUrlField:String;
+		
+		public function get pictureUrlField():String
+		{
+			return this._pictureUrlField;
+		}
+		
+		public function set pictureUrlField(value:String):void
+		{
+			if(this._pictureUrlField == value)
+			{
+				return;
+			}
+			this._pictureUrlField = value;
+			this.invalidate(INVALIDATION_FLAG_DATA);
+		}
+		
+		protected var _pictureWidthField:uint = 0;
+		
+		public function get pictureWidthField():uint
+		{
+			return this._pictureWidthField;
+		}
+		
+		public function set pictureWidthField(value:uint):void
+		{
+			if(this._pictureWidthField == value)
+			{
+				return;
+			}
+			this._pictureWidthField = value;
 			this.invalidate(INVALIDATION_FLAG_DATA);
 		}
 		
@@ -154,25 +196,77 @@ package com.jumpGame.ui.components
 		
 		override protected function initialize():void
 		{
-			this.width = 600;
-			this.height = 55;
+			this.width = 437;
+			this.height = 90;
+			this.useHandCursor = true;
+			
+			var itemBgButton:Button = new Button();
+			itemBgButton.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsItemBg0000"));
+			itemBgButton.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsItemBg0000"));
+			itemBgButton.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsItemBg0000"));
+			itemBgButton.hoverSkin.filter = Statics.btnBrightnessFilter;
+			itemBgButton.downSkin.filter = Statics.btnInvertFilter;
+			this.addChild(itemBgButton);
 			
 			if (!this.titleLabel) {
 				this.titleLabel = new Label();
+				titleLabel.touchable = false;
+				titleLabel.textRendererFactory = function():ITextRenderer
+				{
+					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
+					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("Materhorn24"));
+					textFormat.align = TextFormatAlign.LEFT;
+					textRenderer.textFormat = textFormat;
+					textRenderer.smoothing = TextureSmoothing.NONE;
+					return textRenderer;
+				}
+				titleLabel.width = this.width;
+				titleLabel.height = 35;
+				titleLabel.x = 110;
+				titleLabel.y = 30;
 				this.addChild(this.titleLabel);
 			}
 			
 			if (!this.captionLabel) {
 				this.captionLabel = new Label();
+				captionLabel.touchable = false;
+				captionLabel.textRendererFactory = function():ITextRenderer
+				{
+					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
+					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("BellGothicBlack13"));
+					textFormat.align = TextFormatAlign.LEFT;
+					textFormat.color = 0x72370a;
+					textRenderer.textFormat = textFormat;
+					textRenderer.smoothing = TextureSmoothing.NONE;
+					return textRenderer;
+				}
+				captionLabel.width = this.width;
+				captionLabel.height = 35;
+				captionLabel.x = 111;
+				captionLabel.y = 55;
 				this.addChild(this.captionLabel);
 			}
 			
 			if (!this.profilePicture) {
 				this.profilePicture = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000"));
+				profilePicture.touchable = false;
+				profilePicture.x = 15;
+				profilePicture.y = 15;
 				this.addChild(this.profilePicture);
 			}
 			
+			ExternalInterface.addCallback("returnProfilePictureUrlToAs", Statics.pictureUrlReturnedFromJs);
 			loader = new Loader();
+			loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onPictureLoadComplete);
+		}
+		
+		private function pictureUrlReturnedFromJs(facebookId:String, pictureUrlData:Object):void {
+			if (pictureUrlData.url != null && pictureUrlData.width != null) {
+				if (facebookId == Statics.facebookId) {
+//					this. = uint(pictureUrlData.width);
+					loader.load(new URLRequest(pictureUrlData.url));
+				}
+			}
 		}
 		
 		override protected function draw():void
@@ -188,10 +282,10 @@ package com.jumpGame.ui.components
 			
 			//			sizeInvalid = this.autoSizeIfNeeded() || sizeInvalid;
 			
-			if(dataInvalid || sizeInvalid)
-			{
-				this.layout();
-			}
+//			if(dataInvalid || sizeInvalid)
+//			{
+//				this.layout();
+//			}
 		}
 		
 		//		protected function autoSizeIfNeeded():Boolean
@@ -223,17 +317,20 @@ package com.jumpGame.ui.components
 			if(this._data && this._owner)
 			{
 				this.titleLabel.text = this.itemToTitle(this._data);
-				this.captionLabel.text = this.itemToCaption(this._data);
+				this.captionLabel.text = "High Score: " + this.itemToCaption(this._data);
 				
 				// load profile picture
 				var profilePicUrl:String = this.itemToPictureUrl(this._data);
 				if (profilePicUrl == "none") {
-					this.profilePicture.texture = Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000");
-					this.profilePicture.readjustSize();
+//					this.profilePicture.texture = Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000");
+//					this.profilePicture.readjustSize();
+					if(ExternalInterface.available){
+						ExternalInterface.call("getProfilePictureUrl", this.itemToFacebookId(this._data));
+						trace("facebook id: " + this.itemToFacebookId(this._data));
+					}
 				} else {
-					Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
+//					Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml"); // already loaded in Game.as
 					loader.load(new URLRequest(profilePicUrl));
-					loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onPictureLoadComplete);
 				}
 			}
 			else
@@ -243,22 +340,37 @@ package com.jumpGame.ui.components
 			}
 		}
 		
+		private function getProfilePictureUrlFromJs(facebookId:String):void {
+			if(ExternalInterface.available){
+				ExternalInterface.call("getProfilePictureUrl", facebookId);
+			} else {
+				trace("External interface unavailabe");
+			}
+		}
+		
 		protected function onPictureLoadComplete(event:flash.events.Event):void
 		{
 			var loadedBitmap:Bitmap = event.currentTarget.loader.content as Bitmap;
 			this.profilePicture.texture = Texture.fromBitmap(loadedBitmap);
 			this.profilePicture.readjustSize();
+			// scale profile picture to fit box
+			var profilePicWidth:uint = this.itemToPictureWidth(this._data);
+			if (profilePicWidth != 0) {
+				var pictureScaleFactor:Number = 70 / profilePicWidth;
+				this.profilePicture.scaleX = pictureScaleFactor;
+				this.profilePicture.scaleY = pictureScaleFactor;
+			}
 		}
 		
 		protected function layout():void
 		{
-			this.titleLabel.width = 250;
-			this.titleLabel.height = 50;
-			this.titleLabel.x = 60;
-			
-			this.captionLabel.width = 250;
-			this.captionLabel.height = 50;
-			this.captionLabel.x = 330;
+//			this.titleLabel.width = 250;
+//			this.titleLabel.height = 50;
+//			this.titleLabel.x = 60;
+//			
+//			this.captionLabel.width = 250;
+//			this.captionLabel.height = 50;
+//			this.captionLabel.x = 330;
 		}
 		
 		public function itemToTitle(item:Object):String
@@ -279,13 +391,31 @@ package com.jumpGame.ui.components
 			return "";
 		}
 		
-		public function itemToPictureUrl(item:Object):String
+		public function itemToFacebookId(item:Object):String
 		{
-			if(this._pictureField != null && item && item.hasOwnProperty(this._pictureField))
+			if(this._facebookIdField != null && item && item.hasOwnProperty(this._facebookIdField))
 			{
-				return item[this._pictureField].toString();
+				return item[this._facebookIdField].toString();
 			}
 			return "";
+		}
+		
+		public function itemToPictureUrl(item:Object):String
+		{
+			if(this._pictureUrlField != null && item && item.hasOwnProperty(this._pictureUrlField))
+			{
+				return item[this._pictureUrlField].toString();
+			}
+			return "";
+		}
+		
+		public function itemToPictureWidth(item:Object):uint
+		{
+			if(this._pictureWidthField != 0 && item && item.hasOwnProperty(this._pictureWidthField))
+			{
+				return item[this._pictureWidthField];
+			}
+			return 0;
 		}
 		
 		protected var touchPointID:int = -1;

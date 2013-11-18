@@ -49,7 +49,6 @@ package com.jumpGame.ui
 		private var stopDistanceSet:Boolean;
 		private var stopDistance:int;
 		private var isReelSpinning:Boolean;
-		private var sparkleAnimation:starling.display.MovieClip;
 		private var iconTween:Tween;
 		private var powerupIconFrame:Image;
 		
@@ -287,17 +286,6 @@ package com.jumpGame.ui
 			powerupIcons.y = powerupIconFrame.y + 37;
 			powerupIcons.clipRect = new Rectangle(-60, 0, 120, -60);
 			this.addChild(powerupIcons);
-			// sparkle animation
-			sparkleAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Sparkle"), 30);
-			sparkleAnimation.pivotX = Math.ceil(sparkleAnimation.width  / 2); // center art on registration point
-			sparkleAnimation.pivotY = Math.ceil(sparkleAnimation.height / 2);
-			sparkleAnimation.scaleX = 2;
-			sparkleAnimation.scaleY = 2;
-			sparkleAnimation.x = 200;
-			sparkleAnimation.y = 35;
-			starling.core.Starling.juggler.add(sparkleAnimation);
-			sparkleAnimation.loop = false;
-			this.addChild(sparkleAnimation);
 			
 			// on screen message line 1
 			var fontMessage:Font = Fonts.getFont("Badaboom50");
@@ -640,24 +628,22 @@ package com.jumpGame.ui
 							}
 						}
 						// activate powerup
-						trace("activating powerup number: " + smallestI);
-						this.sparkleAnimation.stop();
-						this.sparkleAnimation.play();
+//						trace("activating powerup number: " + smallestI);
 						
 						// icon tween
 						Starling.juggler.tween(this.powerupIconsImages[smallestI], 0.2, {
 							transition: Transitions.EASE_IN_BACK,
 							repeatCount: 2,
 							reverse: true,
-							scaleX: 2.0
+							scaleX: 3.0
 						});
 						
-						// icon frame
+						// icon frame tween
 						Starling.juggler.tween(powerupIconFrame, 0.2, {
 							transition: Transitions.EASE_IN_BACK,
 							repeatCount: 2,
 							reverse: true,
-							scaleX: 2.0
+							scaleX: 3.0
 						});
 						
 						// reset
