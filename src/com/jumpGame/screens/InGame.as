@@ -504,7 +504,9 @@ package com.jumpGame.screens
 			this.levelParser.initialize();
 			
 			// play background music
-			if (!Sounds.bgmMuted) Sounds.playBgm();
+//			if (!Sounds.bgmMuted) Sounds.playBgmIngame();
+//			Sounds.stopBgm();
+			Sounds.playBgmIngame(); // play bgm regardless of whether bgm is muted
 			
 			// hide the pause button since the game isn't started yet.
 			hud.hidePauseButton();
@@ -610,8 +612,8 @@ package com.jumpGame.screens
 			this.hud.showAbilityIndicators();
 			
 			//test
-//			this.powerupsList[Constants.PowerupExpansion].activate();
-			hud.spinPowerupReel();
+//			this.powerupsList[Constants.PowerupBlink].activate();
+//			hud.spinPowerupReel();
 		}
 		
 		/**
@@ -658,29 +660,33 @@ package com.jumpGame.screens
 				Statics.preparationStep = Constants.PrepareStep1;
 			}
 			else if (Statics.preparationStep == Constants.PrepareStep1) {
-				if (timeCurrent> 850) {
+				if (timeCurrent> 1000) {
+					if (!Sounds.sfxMuted) Sounds.sndDrum3.play();
 					hud.showMessage("3", 1000, 1);
 					Statics.preparationStep = Constants.PrepareStep2;
 				}
 			}
 			else if (Statics.preparationStep == Constants.PrepareStep2) {
-				if (timeCurrent> 1700) {
+				if (timeCurrent> 2000) {
+					if (!Sounds.sfxMuted) Sounds.sndDrum1.play();
 					hud.showMessage("2", 1000, 1);
 					Statics.preparationStep = Constants.PrepareStep3;
 				}
 			}
 			else if (Statics.preparationStep == Constants.PrepareStep3) {
-				if (timeCurrent> 2550) {
+				if (timeCurrent> 3000) {
+					if (!Sounds.sfxMuted) Sounds.sndDrum2.play();
 					hud.showMessage("1", 1000, 1);
 					Statics.preparationStep = Constants.PrepareStep4;
 				}
 			}
 			else if (Statics.preparationStep == Constants.PrepareStep4) {
-				if (timeCurrent> 3200) {
+				if (timeCurrent> 3800) {
 					// play catapult launch animation
 					this.fg.launchCatapult();
 				}
-				if (timeCurrent> 3400) {
+				if (timeCurrent> 4000) {
+					if (!Sounds.sfxMuted) Sounds.sndDrum3.play();
 					hud.showMessage("JUMP!", 1000, 1);
 					Statics.preparationStep = Constants.PrepareStepDone;
 					this.launchHero();
@@ -1305,12 +1311,15 @@ package com.jumpGame.screens
 			// stop sounds
 			//SoundMixer.stopAll();
 			Sounds.stopBgm();
-			if (!Sounds.sfxMuted) Sounds.sndScratch.play();
+//			if (!Sounds.sfxMuted) Sounds.sndScratch.play();
+			if (!Sounds.sfxMuted) Sounds.sndCatchFire.play();
 			
 			Starling.juggler.delayCall(playerFailPartTwo, 1);
 		}
 		
 		private function playerFailPartTwo():void {
+			if (!Sounds.sfxMuted) Sounds.sndFail.play();
+			
 			Statics.gamePaused = false;
 			
 			this.hero.failBounce();
@@ -1675,7 +1684,7 @@ package com.jumpGame.screens
 			// update next platform position
 			if (smallestPlatformIndex != -1) {
 				Statics.nextPlatformX = this.platformsList[smallestPlatformIndex].gx;
-				Statics.nextPlatformY = this.platformsList[smallestPlatformIndex].gy;
+				Statics.nextPlatformY = this.platformsList[smallestPlatformIndex].gy + this.platformsList[smallestPlatformIndex].height;
 			}
 			/** eof platform behaviors */
 			

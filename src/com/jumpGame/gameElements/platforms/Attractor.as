@@ -45,13 +45,11 @@ package com.jumpGame.gameElements.platforms
 		}
 		
 		override public function touch():Boolean {
-//			if (!this.isTouched) {
-//				this.isTouched = true;
-//				
-//				return true;
-//			}
-//			
-//			return false;
+			if (!this.isTouched) {
+				if (!Sounds.sfxMuted) Sounds.sndElectricity.play();
+				this.isTouched = true;
+			}
+
 			return true;
 		}
 	}

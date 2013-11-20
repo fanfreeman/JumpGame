@@ -64,7 +64,8 @@ package com.jumpGame.gameElements.powerups
 			
 			if (this.hero.dy < -1.0) {
 				if (!this.jetFired) {
-					// turn on jet
+					// fire jet
+					if (!Sounds.sfxMuted) Sounds.sndSwoosh.play();
 					Statics.particleJet.start(1);
 					this.heroD2y = 0;
 					this.jetFired = true;

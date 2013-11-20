@@ -18,7 +18,7 @@ package com.jumpGame.ui.popups
 	public class ScreenRankings extends Sprite
 	{
 		public var listRankings:List;
-		public var rankingsArray:Array;
+//		public var rankingsArray:Array;
 		
 		private var parent:Menu;
 		private var popupContainer:Sprite;
@@ -140,12 +140,13 @@ package com.jumpGame.ui.popups
 			listRankings.itemRendererProperties.pictureWidthField = "picture_width";
 			listRankings.addEventListener(Event.CHANGE, listRankingsChangeHandler);
 			
-			rankingsArray = new Array();
+//			rankingsArray = new Array();
 		}
 		
 		private function listRankingsChangeHandler(event:Event):void {
 			if (listRankings.selectedIndex == -1) return;
-			Menu(this.parent).showProfileScreenGivenData(rankingsArray[listRankings.selectedIndex]);
+			parent.showProfileScreenGivenData(listRankings.selectedIndex);
+			//parent.rankingsArray[listRankings.selectedIndex]
 			listRankings.selectedIndex = -1;
 		}
 		

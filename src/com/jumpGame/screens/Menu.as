@@ -96,7 +96,10 @@ package com.jumpGame.screens
 		public var matchDataPopup:MatchDataContainer;
 		
 		// rankings data
-		private var rankingsCollection:ListCollection;
+		public var rankingsCollection:ListCollection;
+		
+		// animated characters
+		private var heroIdle:MovieClip;
 		
 		public function Menu()
 		{
@@ -288,10 +291,28 @@ package com.jumpGame.screens
 					}
 					else if (dataObj.status == "rankings") {
 						rankingsCollection = new ListCollection();
-						this.screenRankings.rankingsArray.length = 0;
+//						this.screenRankings.rankingsArray.length = 0;
 						var numRankings:int = dataObj.rankings.length;
+						var playerItemAdded:Boolean = false;
 						for (i = 0; i < numRankings; i++) { // loop through rankings retrieved
-							if (dataObj.rankings[i].picture != null) { // picture available
+							// read score
+							var otherPlayerScore:uint = uint(dataObj.rankings[i].high_score);
+							if (!playerItemAdded && Statics.playerHighScore >= otherPlayerScore) { // should insert player item at this location
+								var pictureUrl:String = "none";
+								loadedUrl = this.pictureLoader.getProfilePictureUrl(Statics.facebookId);
+								if (loadedUrl != null) pictureUrl = loadedUrl;
+								rankingsCollection.addItem({
+									title: Statics.firstName + " " + Statics.lastName, 
+									caption: Statics.playerHighScore,
+									facebook_id: Statics.facebookId,
+									picture_url: pictureUrl,
+									picture_width: this.pictureLoader.getProfilePictureWidth(Statics.facebookId)
+								});
+								playerItemAdded = true;
+							}
+							
+							// add other player to rankings list
+							if (dataObj.rankings[i].picture != null) { // picture data available
 								rankingsCollection.addItem({
 									title: dataObj.rankings[i].firstname + " " + dataObj.rankings[i].lastname, 
 									caption: dataObj.rankings[i].high_score,
@@ -299,17 +320,43 @@ package com.jumpGame.screens
 									picture_url: dataObj.rankings[i].picture.url,
 									picture_width: uint(dataObj.rankings[i].picture.width)
 								});
-							} else { // no picture
+							} else { // picture data not available yet
+								pictureUrl = "none";
+								var pictureWidth:uint = 0;
+								// check pictureLoader to see if picture data for this user has already been loaded
+								var loadedUrl:String = this.pictureLoader.getProfilePictureUrl(dataObj.rankings[i].facebookId);
+								if (loadedUrl != null) {
+									pictureUrl = loadedUrl;
+									pictureWidth = this.pictureLoader.getProfilePictureWidth(dataObj.rankings[i].facebookId);
+								}
 								rankingsCollection.addItem({
 									title: dataObj.rankings[i].firstname + " " + dataObj.rankings[i].lastname, 
 									caption: dataObj.rankings[i].high_score,
 									facebook_id: dataObj.rankings[i].facebookId,
-									picture_url: "none",
-									picture_width: 0
+									picture_url: pictureUrl,
+									picture_width: pictureWidth
 								});
 							}
-							this.screenRankings.rankingsArray.push(dataObj.rankings[i]);
+//							this.screenRankings.rankingsArray.push(dataObj.rankings[i]);
 						}
+						
+						// if player score is not higher than anyone else's, or if there are no friends, add player item here
+						if (!playerItemAdded) {
+							pictureUrl = "none";
+							loadedUrl = this.pictureLoader.getProfilePictureUrl(Statics.facebookId);
+							if (loadedUrl != null) {
+								pictureUrl = loadedUrl;
+							}
+							rankingsCollection.addItem({
+								title: Statics.firstName + " " + Statics.lastName, 
+								caption: Statics.playerHighScore,
+								facebook_id: Statics.facebookId,
+								picture_url: pictureUrl,
+								picture_width: this.pictureLoader.getProfilePictureWidth(Statics.facebookId)
+							});
+							playerItemAdded = true;
+						}
+						
 						this.screenRankings.listRankings.dataProvider = rankingsCollection;
 					}
 					else if (dataObj.status == "purchased_upgrade") { // successfully purchased upgrade
@@ -636,23 +683,53 @@ package com.jumpGame.screens
 			badgeText.visible = false;
 			this.addChild(badgeText);
 			
+			// animated characters
+			heroIdle = new MovieClip(Assets.getSprite("AtlasTexture7").getTextures("CharBoyIdle"), 40);
+			heroIdle.pivotX = Math.ceil(heroIdle.width  / 2); // center art on registration point
+			heroIdle.pivotY = heroIdle.height;
+			heroIdle.scaleX = 0.6;
+			heroIdle.scaleY = 0.6;
+			heroIdle.x = 260;
+			heroIdle.y = 380;
+			this.addChild(heroIdle);
+			
 			// create picture loader object
 			pictureLoader = new PictureLoader();
-			pictureLoader.addEventListener("newPictureLoaded", onPictureLoaded);
+			pictureLoader.addEventListener("pictureDataLoaded", onPictureLoaded);
 		}
 		
-		private function onPictureLoaded(event:Event, data:String):void
+		/**
+		 * Picture loader dispatched event notifying us that a new profile picture has been loaded.
+		 * Check if this picture should be placed in rankings list
+		 */
+		private function onPictureLoaded(event:Event, facebookId:String):void
 		{
-			trace("picture loaded event received: " + data);
+			trace("picture loaded event received: " + facebookId);
+			
+			// if is player's picture, pass picture data to match details popup
+			if (facebookId == Statics.facebookId) {
+				this.matchDataPopup.setPlayerPictureData(pictureLoader.getProfilePictureUrl(facebookId), pictureLoader.getProfilePictureWidth(facebookId));
+			}
+			else if (facebookId == Statics.opponentFbid) { // or if it's opponent's picture, pass it along as well
+				this.matchDataPopup.setOpponentPictureData(pictureLoader.getProfilePictureUrl(facebookId), pictureLoader.getProfilePictureWidth(facebookId));
+			}
+			
+			// pass profile picture data to ranking screen -> rankings list component
 			if (rankingsCollection) {
+				var rankingsCollectionUpdated:Boolean = false;
 				var numRankings:int = rankingsCollection.length;
 				for (var i:uint = 0; i < numRankings; i++) { // loop through rankings retrieved
 					var rankingsObject:Object = rankingsCollection.getItemAt(i);
-					if (rankingsObject.facebook_id == data) {
-						trace("yes!!");
+					if (rankingsObject.facebook_id == facebookId) {
+						// set new data
+						rankingsObject.picture_url = pictureLoader.getProfilePictureUrl(facebookId);
+						rankingsObject.picture_width = pictureLoader.getProfilePictureWidth(facebookId);
+						rankingsCollection.setItemAt(rankingsObject, i); // TODO needed?
+						rankingsCollection.updateItemAt(i);
+						rankingsCollectionUpdated = true;
 					}
 				}
-//				this.screenRankings.listRankings.dataProvider = rankingsCollection;
+				if (rankingsCollectionUpdated) this.screenRankings.listRankings.dataProvider = rankingsCollection; // update list component
 			}
 		}
 		
@@ -697,6 +774,8 @@ package com.jumpGame.screens
 			if (this.tabs.selectedIndex == -1) {
 				return;
 			}
+			
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			// display the selected screen
 			this.showScreen(this.tabs.selectedItem.action);
@@ -770,6 +849,13 @@ package com.jumpGame.screens
 			
 			this.countdownActive = true;
 			this.updateCountdown();
+			
+			// animated characters
+			starling.core.Starling.juggler.add(heroIdle);
+			
+			// play menu bgm
+			Sounds.stopBgm();
+			Sounds.playBgmMenu(); // play bgm regardless of whether bgm is muted
 		}
 		
 		private function refreshMatches():void {
@@ -790,8 +876,14 @@ package com.jumpGame.screens
 			this.communicator.retrieveRankingsFriends();
 		}
 		
+		/**
+		 * Hide and remove unneeded stuff
+		 */
 		public function disposeTemporarily():void
 		{
+			// stop animated characters
+			starling.core.Starling.juggler.remove(heroIdle);
+			
 			this.visible = false;
 		}
 		
@@ -864,8 +956,9 @@ package com.jumpGame.screens
 			screenProfile.initialize(playerData);
 		}
 		
-		public function showProfileScreenGivenData(playerData:Object):void {
+		public function showProfileScreenGivenData(dataIndexInCollection:int):void {
 			setChildIndex(screenProfile, numChildren - 1);
+			var playerData:Object = this.rankingsCollection.getItemAt(dataIndexInCollection);
 			screenProfile.initialize(playerData);
 		}
 		

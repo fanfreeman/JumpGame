@@ -276,10 +276,10 @@ package com.jumpGame.level {
 				case 999999: // designed pattern
 //					elementDistribution = new Array(0.1, 0.4, 0.7, 0.77, 0.84, 0.91, 0.98, 1.0);
 //					this.generateBouncers();
-					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
-					sizeDistribution = new Array(0.0, 0.6, 1.0, 1.0, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, false, 0, 0.5);
-
+//					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
+//					sizeDistribution = new Array(0.0, 0.6, 1.0, 1.0, 1.0)
+//					this.generateRandom(height, false, elementDistribution, sizeDistribution, false, 0, 0.5);
+					this.generateDesigned999999();
 //					this.generateStarCrossLarge(4);
 					break;
 //					// 1 per row, 2 per row, 3 per row, 4 per row, 5 per row
@@ -1539,10 +1539,10 @@ package com.jumpGame.level {
 				gy = this.builder.currentY * Constants.UnitHeight;
 				this.builder.levelElementsArray.push([gy, gx, "PlatformNormal", 4]);
 				
-				if (Math.random() < 0.3) {
+				if (Math.random() < 0) {
 					gx = Math.random() * 600 - 300;
 					gy = this.builder.currentY * Constants.UnitHeight;
-					this.builder.levelElementsArray.push([gy, gx, "Bouncer", 4]);
+					this.builder.levelElementsArray.push([gy, gx, "Attractor", 4]);
 				}
 				
 				this.builder.currentY += 3;

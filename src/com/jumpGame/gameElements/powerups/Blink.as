@@ -70,6 +70,8 @@ package com.jumpGame.gameElements.powerups
 			
 			if (Statics.gameTime >= this.firstTeleportTime) {
 				if (!this.isAnimationActivated) {
+					if (!Sounds.sfxMuted) Sounds.sndBlink.play();
+					
 					Starling.juggler.add(blastAnimation);
 					blastAnimation.fps = 20;
 					blastAnimation.stop();
@@ -80,6 +82,11 @@ package com.jumpGame.gameElements.powerups
 				
 				if (blastAnimation.isComplete) {
 					if (this.totalTeleports < 12 + Statics.rankTeleportation * 2) { // teleport this many times
+						if (!Sounds.sfxMuted) {
+							if (this.totalTeleports < 8) Sounds.sndBlink.play();
+							else Sounds.sndBlinkFast.play(); // play shorter blink sound
+						}
+						
 						// teleport
 						blastAnimation.fps += 10;
 						blastAnimation.stop();
@@ -87,7 +94,7 @@ package com.jumpGame.gameElements.powerups
 						//this.hero.isDynamic = false;
 						this.hero.dy = 0;
 						this.hero.gx = Statics.nextPlatformX;
-						this.hero.gy = Statics.nextPlatformY + 50;
+						this.hero.gy = Statics.nextPlatformY;
 						
 						this.totalTeleports++;
 					} else { // end of all teleports

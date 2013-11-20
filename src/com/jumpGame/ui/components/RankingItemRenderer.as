@@ -255,7 +255,7 @@ package com.jumpGame.ui.components
 				this.addChild(this.profilePicture);
 			}
 			
-			ExternalInterface.addCallback("returnProfilePictureUrlToAs", Statics.pictureUrlReturnedFromJs);
+//			ExternalInterface.addCallback("returnProfilePictureUrlToAs", Statics.pictureUrlReturnedFromJs);
 			loader = new Loader();
 			loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onPictureLoadComplete);
 		}
@@ -321,15 +321,15 @@ package com.jumpGame.ui.components
 				
 				// load profile picture
 				var profilePicUrl:String = this.itemToPictureUrl(this._data);
-				if (profilePicUrl == "none") {
-//					this.profilePicture.texture = Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000");
-//					this.profilePicture.readjustSize();
+				if (profilePicUrl == null) { // tried getting picture data but unsuccessful
+					// do nothing
+				}
+				else if (profilePicUrl == "none") { // no attempt made at getting picture data yet, so do so
 					if(ExternalInterface.available){
 						ExternalInterface.call("getProfilePictureUrl", this.itemToFacebookId(this._data));
-						trace("facebook id: " + this.itemToFacebookId(this._data));
+//						trace("getting picture data for facebook id: " + this.itemToFacebookId(this._data));
 					}
-				} else {
-//					Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml"); // already loaded in Game.as
+				} else { // picture data available, load picture
 					loader.load(new URLRequest(profilePicUrl));
 				}
 			}

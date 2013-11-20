@@ -63,6 +63,9 @@ package
 		 */
 		private function initScreens():void
 		{
+			// start loading bgm
+			Sounds.loadBgm();
+			
 			this.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
 			
 			// menu screen
@@ -83,9 +86,6 @@ package
 			
 			// Initialize the Welcome screen by default. 
 			screenMenu.initialize();
-			
-			// start loading bgm
-			Sounds.loadBgm();
 		}
 		
 //		/**
@@ -116,8 +116,7 @@ package
 				Sounds.bgmMuted = false;
 				Sounds.sfxMuted = false;
 				
-//				if (screenWelcome.visible) Sounds.sndBgMain.play(0, 999);
-//				else if (screenInGame.visible) Sounds.sndBgMain.play(0, 999);
+				Sounds.unmuteBgm();
 				
 				soundButton.showUnmuteState();
 			}
@@ -125,7 +124,8 @@ package
 			{
 				Sounds.bgmMuted = true;
 				Sounds.sfxMuted = true;
-				SoundMixer.stopAll();
+//				SoundMixer.stopAll();
+				Sounds.muteBgm();
 				
 				soundButton.showMuteState();
 			}

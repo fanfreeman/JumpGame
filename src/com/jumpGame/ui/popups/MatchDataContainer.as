@@ -416,7 +416,11 @@ package com.jumpGame.ui.popups
 			
 			// load and draw opponent profile picture
 			if (Statics.opponentFbid) {
-				this.getProfilePictureUrlFromJs(Statics.opponentFbid);
+				// check if picture data for opponent is already available
+				var loadedUrl:String = parent.pictureLoader.getProfilePictureUrl(Statics.opponentFbid);
+				if (loadedUrl != null) {
+					this.setOpponentPictureData(loadedUrl, parent.pictureLoader.getProfilePictureWidth(Statics.opponentFbid));
+				} else this.getProfilePictureUrlFromJs(Statics.opponentFbid);
 			}
 			
 			this.visible = true;
@@ -430,18 +434,28 @@ package com.jumpGame.ui.popups
 			}
 		}
 		
-		public function pictureUrlReturnedFromJs(facebookId:String, pictureUrlData:Object):void {
-//			trace("returned fbid: " + facebookId);
-			if (pictureUrlData.url != null && pictureUrlData.width != null) {
-				if (facebookId == Statics.facebookId) {
-					playerPictureWidth = uint(pictureUrlData.width);
-					playerPictureLoader.load(new URLRequest(pictureUrlData.url));
-				}
-				else if (facebookId == Statics.opponentFbid) {
-					opponentPictureWidth = uint(pictureUrlData.width);
-					opponentPictureLoader.load(new URLRequest(pictureUrlData.url));
-				}
-			}
+//		public function pictureUrlReturnedFromJs(facebookId:String, pictureUrlData:Object):void {
+////			trace("returned fbid: " + facebookId);
+//			if (pictureUrlData.url != null && pictureUrlData.width != null) {
+//				if (facebookId == Statics.facebookId) {
+//					playerPictureWidth = uint(pictureUrlData.width);
+//					playerPictureLoader.load(new URLRequest(pictureUrlData.url));
+//				}
+//				else if (facebookId == Statics.opponentFbid) {
+//					opponentPictureWidth = uint(pictureUrlData.width);
+//					opponentPictureLoader.load(new URLRequest(pictureUrlData.url));
+//				}
+//			}
+//		}
+		
+		public function setPlayerPictureData(url:String, width:uint):void {
+			playerPictureWidth = width;
+			playerPictureLoader.load(new URLRequest(url));
+		}
+		
+		public function setOpponentPictureData(url:String, width:uint):void {
+			opponentPictureWidth = width;
+			opponentPictureLoader.load(new URLRequest(url));
 		}
 		
 		private function onPlayerPictureLoadComplete(event:flash.events.Event):void {

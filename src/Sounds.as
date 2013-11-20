@@ -4,8 +4,10 @@ package
 	
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
+	import flash.media.SoundTransform;
 	import flash.net.URLRequest;
-	import flash.events.Event;
+	
+	import starling.core.Starling;
 	
 	/**
 	 * This class holds all the sound embeds and objects that are used in the game.
@@ -77,6 +79,54 @@ package
 		
 		[Embed(source="../media/sounds/ingame/douse.mp3")]
 		public static const SND_DOUSE_FIRE:Class;
+		
+		[Embed(source="../media/sounds/candidates/slots.mp3")]
+		public static const SND_SLOTS:Class;
+		
+		[Embed(source="../media/sounds/candidates/catch_fire.mp3")]
+		public static const SND_CATCH_FIRE:Class;
+		
+		[Embed(source="../media/sounds/candidates/comet.mp3")]
+		public static const SND_COMET:Class;
+		
+		[Embed(source="../media/sounds/candidates/crumble.mp3")]
+		public static const SND_CRUMBLE:Class;
+		
+		[Embed(source="../media/sounds/candidates/wing_flap.mp3")]
+		public static const SND_WING_FLAP:Class;
+		
+		[Embed(source="../media/sounds/candidates/electricity.mp3")]
+		public static const SND_ELECTRICITY:Class;
+		
+		[Embed(source="../media/sounds/candidates/swoosh.mp3")]
+		public static const SND_SWOOSH:Class;
+		
+		[Embed(source="../media/sounds/candidates/drum1.mp3")]
+		public static const SND_DRUM1:Class;
+		
+		[Embed(source="../media/sounds/candidates/drum2.mp3")]
+		public static const SND_DRUM2:Class;
+		
+		[Embed(source="../media/sounds/candidates/drum3.mp3")]
+		public static const SND_DRUM3:Class;
+		
+		[Embed(source="../media/sounds/candidates/master_shout_1.mp3")]
+		public static const SND_MASTER_SHOUT1:Class;
+		
+		[Embed(source="../media/sounds/candidates/master_shout_2.mp3")]
+		public static const SND_MASTER_SHOUT2:Class;
+		
+		[Embed(source="../media/sounds/candidates/fail.mp3")]
+		public static const SND_FAIL:Class;
+		
+		[Embed(source="../media/sounds/candidates/blink.mp3")]
+		public static const SND_BLINK:Class;
+		
+		[Embed(source="../media/sounds/candidates/blink_fast.mp3")]
+		public static const SND_BLINK_FAST:Class;
+		
+		[Embed(source="../media/sounds/candidates/click.mp3")]
+		public static const SND_CLICK:Class;
 		
 		////////////////////////////////////////////////////////////////////////////////
 		// voice clips
@@ -218,6 +268,22 @@ package
 		public static var sndClockTick:Sound = new Sounds.SND_CLOCK_TICK() as Sound;
 		public static var sndDistantExplosion:Sound = new Sounds.SND_DISTANT_EXPLOSION() as Sound;
 		public static var sndDouseFire:Sound = new Sounds.SND_DOUSE_FIRE() as Sound;
+		public static var sndSlots:Sound = new Sounds.SND_SLOTS() as Sound;
+		public static var sndCatchFire:Sound = new Sounds.SND_CATCH_FIRE() as Sound;
+		public static var sndComet:Sound = new Sounds.SND_COMET() as Sound;
+		public static var sndCrumble:Sound = new Sounds.SND_CRUMBLE() as Sound;
+		public static var sndWingFlap:Sound = new Sounds.SND_WING_FLAP() as Sound;
+		public static var sndElectricity:Sound = new Sounds.SND_ELECTRICITY() as Sound;
+		public static var sndSwoosh:Sound = new Sounds.SND_SWOOSH() as Sound;
+		public static var sndDrum1:Sound = new Sounds.SND_DRUM1() as Sound;
+		public static var sndDrum2:Sound = new Sounds.SND_DRUM2() as Sound;
+		public static var sndDrum3:Sound = new Sounds.SND_DRUM3() as Sound;
+		public static var sndMasterShout1:Sound = new Sounds.SND_MASTER_SHOUT1() as Sound;
+		public static var sndMasterShout2:Sound = new Sounds.SND_MASTER_SHOUT2() as Sound;
+		public static var sndFail:Sound = new Sounds.SND_FAIL() as Sound;
+		public static var sndBlink:Sound = new Sounds.SND_BLINK() as Sound;
+		public static var sndBlinkFast:Sound = new Sounds.SND_BLINK_FAST() as Sound;
+		public static var sndClick:Sound = new Sounds.SND_CLICK() as Sound;
 //		public static var sndVoiceAh:Sound = new Sounds.SND_VOICE_AH() as Sound;
 		
 		
@@ -259,13 +325,6 @@ package
 												new Sounds.SND_NOTE_35() as Sound,
 												new Sounds.SND_NOTE_36() as Sound];
 		
-		private static var bgmSoundInitial:Sound;
-		private static var bgmSoundFadeout:Sound;
-		private static var bgmSoundUnderscoreLoop:Sound;
-		
-		// sound channels
-		public static var channelBgm:SoundChannel;
-		
 		// play random musical note
 		public static function playRandomNote():void {
 			var num:int = Math.floor(Math.random() * 18);
@@ -278,6 +337,22 @@ package
 			if (Statics.nextStarNote == 24) Statics.nextStarNote = 0;
 		}
 		
+		private static var bgmMenu:Object;
+		private static var bgmInGame:Object;
+//		private static var bgmSoundInitial:Sound;
+//		private static var bgmSoundFadeout:Sound;
+//		private static var bgmSoundUnderscoreLoop:Sound;
+		
+		// sound channels
+//		public static var channelBgmMenu:SoundChannel;
+//		public static var channelBgmIngame:SoundChannel;
+		
+		// bgm volumes
+//		private static var volumeBgmMenu:Number = 1;
+//		private static var volumeBgmIngame:Number = 1;
+		
+		private static var soundTransform:SoundTransform = new SoundTransform();
+		
 		public static function loadBgm():void {
 			//bgmSound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/bgFunky.mp3"));
 //			bgmSoundInitial = new Sound();
@@ -289,33 +364,79 @@ package
 //			bgmSoundUnderscoreLoop = new Sound();
 //			bgmSoundUnderscoreLoop.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/ghostCircusUnderscoreLoop.mp3"));
 			
-			bgmSoundInitial = new Sound();
-			bgmSoundInitial.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/chaoz_airflow.mp3"));
+			var bgmMenuSound:Sound = new Sound();
+			bgmMenuSound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/magical_waltz2.mp3"));
+			bgmMenu = new Object();
+			bgmMenu.sound = bgmMenuSound;
+			bgmMenu.volume = 1;
+			
+			var bgmInGameSound:Sound = new Sound();
+			bgmInGameSound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/chaoz_airflow.mp3"));
+			bgmInGame = new Object();
+			bgmInGame.sound = bgmInGameSound;
+			bgmInGame.volume = 1;
 		}
 		
-		public static function playBgm():void {
+		public static function playBgmMenu():void {
+			var channelBgmMenu:SoundChannel = bgmMenu.sound.play(0, 999);
+			bgmMenu.channel = channelBgmMenu;
+		}
+		
+		public static function playBgmIngame():void {
 //			channelBgm = bgmSoundInitial.play(); 
 //			channelBgm.addEventListener(Event.SOUND_COMPLETE, playBgmFadeout);
 			
-			channelBgm = bgmSoundInitial.play(0, 999); 
+			var channelBgmIngame:SoundChannel = bgmInGame.sound.play(0, 999);
+			bgmInGame.channel = channelBgmIngame;
+			if (bgmMuted) {
+				// mute in game bgm
+				soundTransform.volume = 0;
+				bgmInGame.channel.soundTransform = soundTransform;
+			} else {
+				// fade out menu bgm
+				if (bgmMenu.volume != 0) {
+					Starling.juggler.tween(bgmMenu, 2, {
+						volume: 0,
+						onUpdate: function():void {
+							soundTransform.volume = bgmMenu.volume;
+							bgmMenu.channel.soundTransform = soundTransform;
+						}
+					});
+				}
+			}
 		}
 		
-		public static function playBgmFadeout(event:Event):void {
-			bgmSoundFadeout.play();
-			channelBgm = bgmSoundUnderscoreLoop.play(0, 999);
-			event.target.removeEventListener(event.type, playBgmFadeout);
-		}
+//		public static function playBgmFadeout(event:Event):void {
+//			bgmSoundFadeout.play();
+//			channelBgm = bgmSoundUnderscoreLoop.play(0, 999);
+//			event.target.removeEventListener(event.type, playBgmFadeout);
+//		}
 		
 		public static function stopBgm():void {
-			if (channelBgm != null) channelBgm.stop();
+			if (bgmMenu.channel != null) bgmMenu.channel.stop();
+			if (bgmInGame.channel != null) bgmInGame.channel.stop();
 		}
 		
-		public static function playBgmFireAura():void {
-			var sound:Sound=new Sound();
-			sound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/bgFireAura.mp3"));  
-			sound.play(0, 999); 
-			//sound.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void{ trace(e); }); 
+		public static function muteBgm():void {
+			soundTransform.volume = 0;
+			if (bgmMenu.channel != null) bgmMenu.channel.soundTransform = soundTransform;
+			if (bgmInGame.channel != null) bgmInGame.channel.soundTransform = soundTransform;
 		}
+		
+		public static function unmuteBgm():void {
+			soundTransform.volume = bgmMenu.volume;
+			if (bgmMenu.channel != null) bgmMenu.channel.soundTransform = soundTransform;
+			
+			soundTransform.volume = bgmInGame.volume;
+			if (bgmInGame.channel != null) bgmInGame.channel.soundTransform = soundTransform;
+		}
+		
+//		public static function playBgmFireAura():void {
+//			var sound:Sound=new Sound();
+//			sound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/bgFireAura.mp3"));  
+//			sound.play(0, 999); 
+//			//sound.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void{ trace(e); }); 
+//		}
 		
 		// sound mute status
 		public static var bgmMuted:Boolean = false;

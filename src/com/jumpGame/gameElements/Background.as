@@ -654,6 +654,7 @@ package com.jumpGame.gameElements {
 		
 		public function launchCatapult():void {
 			if (!catapultLaunched) {
+				if (!Sounds.sfxMuted) Sounds.sndAirjump.play();
 				this.catapult.play();
 				catapultLaunched = true;
 			}

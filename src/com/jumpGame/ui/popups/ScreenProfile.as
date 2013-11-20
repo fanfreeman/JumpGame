@@ -95,8 +95,8 @@ package com.jumpGame.ui.popups
 		
 		public function initialize(playerData:Object):void {
 			this.visible = true;
-			nameField.text = playerData.firstname + " " + playerData.lastname;
-			highScoreField.text = "High Score: " + playerData.high_score;
+			nameField.text = playerData.title;
+			highScoreField.text = "High Score: " + playerData.caption;
 			
 			// popup pop out effect
 			popupContainer.scaleX = 0.5;

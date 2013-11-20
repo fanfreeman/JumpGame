@@ -245,6 +245,11 @@ package com.jumpGame.gameElements.powerups
 		
 		public function snapToLeft():void {
 			if (!isControlDisabled && this.isActivated) {
+				if (!Sounds.sfxMuted) {
+					if (Math.random() < 0.5) Sounds.sndMasterShout1.play();
+					else Sounds.sndMasterShout2.play();
+				}
+				
 				isControlDisabled = true;
 				Statics.particleCharge.start(0.5);
 				runAnimation.visible = false;
@@ -262,6 +267,11 @@ package com.jumpGame.gameElements.powerups
 		
 		public function snapToRight():void {
 			if (!isControlDisabled && this.isActivated) {
+				if (!Sounds.sfxMuted) {
+					if (Math.random() < 0.5) Sounds.sndMasterShout1.play();
+					else Sounds.sndMasterShout2.play();
+				}
+				
 				isControlDisabled = true;
 				Statics.particleCharge.start(0.5);
 				runAnimation.visible = false;

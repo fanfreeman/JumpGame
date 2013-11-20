@@ -146,7 +146,6 @@ package com.jumpGame.level  {
 					break;
 				case 29:
 //					this.reenableContraptions();
-					Statics.contraptionsEnabled = true;
 					blockNumber = int(Math.floor(Math.random() * 2) + 20000);
 					this.generator.generate(blockNumber);
 					break;
@@ -187,12 +186,13 @@ package com.jumpGame.level  {
 					else {
 						this.raiseDifficulty();
 						if (this.difficulty > 27) {
+							Statics.contraptionsEnabled = true; // reenable contraptions
 							this.difficulty = 12;
-							if (this.repetitions == 0) {
+							if (this.repetitions == 0) { // second go through, schedule cannons
 								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 15]);
 								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingCannon, 20]);
 							}
-							else {
+							else { // third go through and beyond
 								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 10]);
 								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingCannon, 15]);
 							}

@@ -165,6 +165,8 @@ package com.jumpGame.gameElements.powerups
 		public function beatWings():void {
 //			glideAnimation.visible = false;
 //			flightAnimation.visible = true;
+			if (!Sounds.sfxMuted) Sounds.sndWingFlap.play();
+			
 			flightAnimation.stop();
 			flightAnimation.play();
 			Statics.particleCharge.start(0.2);

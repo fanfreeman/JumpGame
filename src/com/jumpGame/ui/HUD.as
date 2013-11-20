@@ -580,6 +580,8 @@ package com.jumpGame.ui
 			powerupIcons.visible = true;
 			powerupIcons.alpha = 1;
 			this.isReelSpinning = true;
+			
+			if (!Sounds.sfxMuted) Sounds.sndSlots.play();
 		}
 		
 		public function clearPowerupReel():void {
