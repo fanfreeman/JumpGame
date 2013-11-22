@@ -178,6 +178,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonCloseHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.visible = false;
 		}
 		

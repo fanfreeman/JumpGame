@@ -344,8 +344,6 @@ package com.jumpGame.ui
 				removeChild(roundCoins[i]);
 			}
 			
-			if (!Sounds.sfxMuted) Sounds.sndMushroom.play();
-			
 			// update and display round details popup
 			Statics.roundScores[Statics.currentRound] = roundScore;
 			this.menu.showMatchDetailsPopup(true);
@@ -360,6 +358,8 @@ package com.jumpGame.ui
 		// show scores and post to backend
 		public function initialize(coinsObtained:int, distanceTraveled:int):void
 		{
+			if (!Sounds.sfxMuted) Sounds.sndFanfare.play();
+			
 			// ready confetti particles
 			Starling.juggler.add(Statics.particleConfetti);
 			this.addChild(Statics.particleConfetti);
@@ -380,8 +380,6 @@ package com.jumpGame.ui
 			
 			// reset achievement plates
 			resetAchievementPlates();
-			
-			
 			
 			// calculate total score
 			if (Statics.rankCoinDoubler == 1) { // check if coin doubler in possession
@@ -473,21 +471,27 @@ package com.jumpGame.ui
 //			}
 		}
 		
-		private function fireConfettiCenter():void {
-			Statics.particleConfetti.emitterX = starCenterOn.x;
-			Statics.particleConfetti.emitterY = starCenterOn.y;
-			Statics.particleConfetti.emitAngle = deg2rad(270);
-			Statics.particleConfetti.start(0.2);
-		}
-		
 		private function fireConfettiLeft():void {
+			if (!Sounds.sfxMuted) Sounds.sndFirework.play();
+			
 			Statics.particleConfetti.emitterX = starLeftOn.x;
 			Statics.particleConfetti.emitterY = starLeftOn.y;
 			Statics.particleConfetti.emitAngle = deg2rad(240);
 			Statics.particleConfetti.start(0.2);
 		}
 		
+		private function fireConfettiCenter():void {
+			if (!Sounds.sfxMuted) Sounds.sndFirework.play();
+			
+			Statics.particleConfetti.emitterX = starCenterOn.x;
+			Statics.particleConfetti.emitterY = starCenterOn.y;
+			Statics.particleConfetti.emitAngle = deg2rad(270);
+			Statics.particleConfetti.start(0.2);
+		}
+		
 		private function fireConfettiRight():void {
+			if (!Sounds.sfxMuted) Sounds.sndFirework.play();
+			
 			Statics.particleConfetti.emitterX = starRightOn.x;
 			Statics.particleConfetti.emitterY = starRightOn.y;
 			Statics.particleConfetti.emitAngle = deg2rad(300);
@@ -496,6 +500,8 @@ package com.jumpGame.ui
 		
 		// make one coin fly out of the screen and schedule the next coin
 		private function nextCoinFlyout(coinPool:Vector.<MovieClip>, coinIndex:uint, startLocationX, startLocationY):void {
+			if (!Sounds.sfxMuted && coinIndex == 0) Sounds.sndPayout.play();
+			
 			if (coinIndex >= coinPool.length) return;
 			coinPool[coinIndex].x = startLocationX;
 			coinPool[coinIndex].y = startLocationY;
@@ -529,6 +535,7 @@ package com.jumpGame.ui
 					x: Statics.stageWidth / 2,
 					delay: 0.2
 				});
+				if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.2); // play slide sfx
 				Starling.juggler.delayCall(achievementPlateCheck, 0.5, 1);
 				// coins flyout effect
 				var locationX:Number = Statics.stageWidth / 2 - achievementPlate1.pivotX + achievementPlate1.coin.x - achievementPlate1.coin.pivotX;
@@ -544,6 +551,7 @@ package com.jumpGame.ui
 						x: Statics.stageWidth / 2,
 						delay: 0.4
 					});
+					if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.4); // play slide sfx
 					Starling.juggler.delayCall(achievementPlateCheck, 1, 2);
 					// coins flyout effect
 					var location2X:Number = Statics.stageWidth / 2 - achievementPlate2.pivotX + achievementPlate2.coin.x - achievementPlate2.coin.pivotX;
@@ -559,6 +567,7 @@ package com.jumpGame.ui
 							x: Statics.stageWidth / 2,
 							delay: 0.6
 						});
+						if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.6); // play slide sfx
 						Starling.juggler.delayCall(achievementPlateCheck, 1.5, 3);
 						// coins flyout effect
 						var location3X:Number = Statics.stageWidth / 2 - achievementPlate3.pivotX + achievementPlate3.coin.x - achievementPlate3.coin.pivotX;
@@ -575,12 +584,14 @@ package com.jumpGame.ui
 		 */
 		private function achievementPlatesFlyout():void {
 			if (achievementPlate1.visible) {
+				if (!Sounds.sfxMuted) Sounds.sndFastSwoosh.play(); // play slide sfx
 				Starling.juggler.tween(achievementPlate1, 0.2, {
 					transition: Transitions.EASE_IN,
 					x: -Math.ceil(achievementPlate1.width / 2) - 10
 				});
 				
 				if (achievementPlate2.visible) {
+					if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.2); // play slide sfx
 					Starling.juggler.tween(achievementPlate2, 0.2, {
 						transition: Transitions.EASE_IN,
 						x: -Math.ceil(achievementPlate2.width / 2) - 10,
@@ -588,6 +599,7 @@ package com.jumpGame.ui
 					});
 					
 					if (achievementPlate3.visible) {
+						if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.4); // play slide sfx
 						Starling.juggler.tween(achievementPlate3, 0.2, {
 							transition: Transitions.EASE_IN,
 							x: -Math.ceil(achievementPlate3.width / 2) - 10,
@@ -640,6 +652,7 @@ package com.jumpGame.ui
 			var data:Array = Constants.AchievementsData[nextUnearnedIndex];
 			this.achievementPlate1.initialize(data[1], data[2], data[3], data[4]);
 			achievementPlate1.visible = true;
+			if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.2); // play slide sfx
 			Starling.juggler.tween(achievementPlate1, 0.2, {
 				transition: Transitions.EASE_OUT,
 				x: Statics.stageWidth / 2,
@@ -650,6 +663,7 @@ package com.jumpGame.ui
 			data = Constants.AchievementsData[nextUnearnedIndex];
 			this.achievementPlate2.initialize(data[1], data[2], data[3], data[4]);
 			achievementPlate2.visible = true;
+			if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.4); // play slide sfx
 			Starling.juggler.tween(achievementPlate2, 0.2, {
 				transition: Transitions.EASE_OUT,
 				x: Statics.stageWidth / 2,
@@ -660,6 +674,7 @@ package com.jumpGame.ui
 			data = Constants.AchievementsData[nextUnearnedIndex];
 			this.achievementPlate3.initialize(data[1], data[2], data[3], data[4]);
 			achievementPlate3.visible = true;
+			if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.6); // play slide sfx
 			Starling.juggler.tween(achievementPlate3, 0.2, {
 				transition: Transitions.EASE_OUT,
 				x: Statics.stageWidth / 2,

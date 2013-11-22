@@ -113,6 +113,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonOkHandler(event:Event):void {
+//			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (this.callback != null) {
 				this.callback();
 			}
@@ -121,6 +123,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonCancelHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.visible = false;
 			this.isInUse = false;
 		}

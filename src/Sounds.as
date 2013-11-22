@@ -5,7 +5,6 @@ package
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.media.SoundTransform;
-	import flash.net.URLRequest;
 	
 	import starling.core.Starling;
 	
@@ -17,8 +16,8 @@ package
 		/**
 		 * demo sounds 
 		 */
-		[Embed(source="../media/sounds/mushroom.mp3")]
-		public static const SND_MUSHROOM:Class;
+//		[Embed(source="../media/sounds/mushroom.mp3")]
+//		public static const SND_MUSHROOM:Class;
 		// sound effects
 		[Embed(source="../media/sounds/scratch.mp3")]
 		public static const SND_SCRATCH:Class;
@@ -89,7 +88,7 @@ package
 		[Embed(source="../media/sounds/candidates/comet.mp3")]
 		public static const SND_COMET:Class;
 		
-		[Embed(source="../media/sounds/candidates/crumble.mp3")]
+		[Embed(source="../media/sounds/candidates/crumble2.mp3")]
 		public static const SND_CRUMBLE:Class;
 		
 		[Embed(source="../media/sounds/candidates/wing_flap.mp3")]
@@ -125,8 +124,29 @@ package
 		[Embed(source="../media/sounds/candidates/blink_fast.mp3")]
 		public static const SND_BLINK_FAST:Class;
 		
-		[Embed(source="../media/sounds/candidates/click.mp3")]
+		[Embed(source="../media/sounds/candidates/bubble_pop.mp3")]
 		public static const SND_CLICK:Class;
+		
+		[Embed(source="../media/sounds/candidates/slide_woosh.mp3")]
+		public static const SND_SLIDE:Class;
+		
+		[Embed(source="../media/sounds/candidates/vanish.mp3")]
+		public static const SND_VANISH:Class;
+		
+		[Embed(source="../media/sounds/candidates/firework.mp3")]
+		public static const SND_FIREWORK:Class;
+		
+		[Embed(source="../media/sounds/candidates/fanfare.mp3")]
+		public static const SND_FANFARE:Class;
+		
+		[Embed(source="../media/sounds/candidates/payout2.mp3")]
+		public static const SND_PAYOUT:Class;
+		
+		[Embed(source="../media/sounds/candidates/fast_swoosh.mp3")]
+		public static const SND_FAST_SWOOSH:Class;
+		
+		[Embed(source="../media/sounds/candidates/start2.mp3")]
+		public static const SND_START:Class;
 		
 		////////////////////////////////////////////////////////////////////////////////
 		// voice clips
@@ -244,10 +264,17 @@ package
 		public static const SND_NOTE_36:Class;
 		/** eof notes */
 		
+		// embed bgms
+		[Embed(source="../media/sounds/bgm/magical_waltz2.mp3")]
+		public static const SND_BGM_MENU:Class;
+		
+		[Embed(source="../media/sounds/bgm/chaoz_airflow.mp3")]
+		public static const SND_BGM_INGAME:Class;
+		
 		/**
 		 * Initialized Sound objects. 
 		 */
-		public static var sndMushroom:Sound = new Sounds.SND_MUSHROOM() as Sound;
+//		public static var sndMushroom:Sound = new Sounds.SND_MUSHROOM() as Sound;
 		public static var sndScratch:Sound = new Sounds.SND_SCRATCH() as Sound;
 //		public static var sndBounce1:Sound = new Sounds.SND_BOUNCE_1() as Sound;
 		public static var sndBounce2:Sound = new Sounds.SND_BOUNCE_2() as Sound;
@@ -280,10 +307,17 @@ package
 		public static var sndDrum3:Sound = new Sounds.SND_DRUM3() as Sound;
 		public static var sndMasterShout1:Sound = new Sounds.SND_MASTER_SHOUT1() as Sound;
 		public static var sndMasterShout2:Sound = new Sounds.SND_MASTER_SHOUT2() as Sound;
-		public static var sndFail:Sound = new Sounds.SND_FAIL() as Sound;
+		public static var sndFail:Sound = new Sounds.SND_FAIL() as Sound; // TODO Unused
 		public static var sndBlink:Sound = new Sounds.SND_BLINK() as Sound;
 		public static var sndBlinkFast:Sound = new Sounds.SND_BLINK_FAST() as Sound;
 		public static var sndClick:Sound = new Sounds.SND_CLICK() as Sound;
+		public static var sndSlide:Sound = new Sounds.SND_SLIDE() as Sound;
+		public static var sndVanish:Sound = new Sounds.SND_VANISH() as Sound; // TODO Unused
+		public static var sndFirework:Sound = new Sounds.SND_FIREWORK() as Sound;
+		public static var sndFanfare:Sound = new Sounds.SND_FANFARE() as Sound;
+		public static var sndPayout:Sound = new Sounds.SND_PAYOUT() as Sound;
+		public static var sndFastSwoosh:Sound = new Sounds.SND_FAST_SWOOSH() as Sound;
+		public static var sndStart:Sound = new Sounds.SND_START() as Sound;
 //		public static var sndVoiceAh:Sound = new Sounds.SND_VOICE_AH() as Sound;
 		
 		
@@ -337,6 +371,8 @@ package
 			if (Statics.nextStarNote == 24) Statics.nextStarNote = 0;
 		}
 		
+//		private static var sndBgmMenu:Sound = new Sounds.SND_BGM_MENU() as Sound;
+//		private static var sndBgmInGame:Sound = new Sounds.SND_BGM_INGAME() as Sound;
 		private static var bgmMenu:Object;
 		private static var bgmInGame:Object;
 //		private static var bgmSoundInitial:Sound;
@@ -364,22 +400,28 @@ package
 //			bgmSoundUnderscoreLoop = new Sound();
 //			bgmSoundUnderscoreLoop.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/ghostCircusUnderscoreLoop.mp3"));
 			
-			var bgmMenuSound:Sound = new Sound();
-			bgmMenuSound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/magical_waltz2.mp3"));
+//			var bgmMenuSound:Sound = new Sound();
+//			bgmMenuSound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/magical_waltz2.mp3"));
 			bgmMenu = new Object();
-			bgmMenu.sound = bgmMenuSound;
+			bgmMenu.sound = new Sounds.SND_BGM_MENU() as Sound;
 			bgmMenu.volume = 1;
 			
-			var bgmInGameSound:Sound = new Sound();
-			bgmInGameSound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/chaoz_airflow.mp3"));
+//			var bgmInGameSound:Sound = new Sound();
+//			bgmInGameSound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/chaoz_airflow.mp3"));
 			bgmInGame = new Object();
-			bgmInGame.sound = bgmInGameSound;
+			bgmInGame.sound = new Sounds.SND_BGM_INGAME() as Sound;
 			bgmInGame.volume = 1;
 		}
 		
 		public static function playBgmMenu():void {
 			var channelBgmMenu:SoundChannel = bgmMenu.sound.play(0, 999);
 			bgmMenu.channel = channelBgmMenu;
+			bgmMenu.volume = 1;
+			if (bgmMuted) {
+				// mute menu bgm
+				soundTransform.volume = 0;
+				bgmMenu.channel.soundTransform = soundTransform;
+			}
 		}
 		
 		public static function playBgmIngame():void {
@@ -388,6 +430,7 @@ package
 			
 			var channelBgmIngame:SoundChannel = bgmInGame.sound.play(0, 999);
 			bgmInGame.channel = channelBgmIngame;
+			bgmInGame.volume = 1;
 			if (bgmMuted) {
 				// mute in game bgm
 				soundTransform.volume = 0;

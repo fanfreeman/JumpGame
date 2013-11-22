@@ -16,7 +16,7 @@ package com.jumpGame.screens
 	import com.jumpGame.gameElements.contraptions.PowerupBoxFire;
 	import com.jumpGame.gameElements.contraptions.PowerupBoxGreen;
 	import com.jumpGame.gameElements.contraptions.PowerupBoxPink;
-	import com.jumpGame.gameElements.contraptions.PowerupBoxPurple;
+//	import com.jumpGame.gameElements.contraptions.PowerupBoxPurple;
 	import com.jumpGame.gameElements.contraptions.Train;
 	import com.jumpGame.gameElements.contraptions.TrainFromLeft;
 	import com.jumpGame.gameElements.contraptions.Witch;
@@ -424,7 +424,7 @@ package com.jumpGame.screens
 			ObjectPool.instance.registerPool(PowerupBoxGreen, 2, false);
 			ObjectPool.instance.registerPool(PowerupBoxFire, 2, false);
 			ObjectPool.instance.registerPool(PowerupBoxBlue, 2, false);
-			ObjectPool.instance.registerPool(PowerupBoxPurple, 2, false);
+//			ObjectPool.instance.registerPool(PowerupBoxPurple, 2, false);
 			ObjectPool.instance.registerPool(Witch, 2, false);
 		}
 		
@@ -817,7 +817,7 @@ package com.jumpGame.screens
 				if (this.powerupsList[Constants.PowerupVermilionBird].isActivated) {
 					if (this.powerupsList[Constants.PowerupVermilionBird].update(this.timeDiffControlled)) {
 						var newSpikyBombIndex:uint = addElementFromPool(
-							Camera.gy + Constants.StageHeight / 2 + 21, 
+							Camera.gy + Constants.StageHeight / 2 + 100, 
 							Math.random() * Constants.StageWidth * 2 - Constants.StageWidth, "SpikyBomb");
 					}
 				}
@@ -1318,7 +1318,7 @@ package com.jumpGame.screens
 		}
 		
 		private function playerFailPartTwo():void {
-			if (!Sounds.sfxMuted) Sounds.sndFail.play();
+//			if (!Sounds.sfxMuted) Sounds.sndFail.play();
 			
 			Statics.gamePaused = false;
 			
@@ -2025,13 +2025,12 @@ package com.jumpGame.screens
 		}
 		
 		private function summonPowerupBoxes():void {
-//			if (Statics.gameMode == Constants.ModeNormal && Statics.powerupsEnabled) { // only summon powerup boxes in normal mode
 			if (Statics.powerupsEnabled) { // only summon powerup boxes in normal mode
 				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, -300, "PowerupBoxPink");
-				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, -150, "PowerupBoxGreen");
-				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, 0, "PowerupBoxFire");
-				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, 150, "PowerupBoxBlue");
-				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, 300, "PowerupBoxPurple");
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, -100, "PowerupBoxGreen");
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, 100, "PowerupBoxFire");
+				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, 300, "PowerupBoxBlue");
+//				this.addContraptionFromPool(this.hero.gy + Constants.StageHeight / 2, 300, "PowerupBoxPurple");
 				this.contraptionControl.scheduleNext(Constants.ContraptionPowerupBoxes);
 			}
 		}

@@ -271,16 +271,21 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonPlayHandler(event:starling.events.Event):void {
-			if (btnPlay.label == "Done") {
-//				ExternalInterface.call("sendTurnRequest", Statics.opponentFbid, Statics.gameId);
-//				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "menu"}, true));
-			} else if (btnPlay.label == "Play") {
-				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "play"}, true));
+			if (btnPlay.label == "Play") {
+//				if (!Sounds.sfxMuted) Sounds.sndStart.play();
+//				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "play"}, true));
+				parent.showInstructionsPopup();
+				if (!Sounds.sfxMuted) Sounds.sndClick.play();
+				
+			} else {
+				if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			}
 			this.visible = false;
 		}
 		
 		private function buttonResignHandler(event:starling.events.Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			resignMatch();
 			this.visible = false;
 		}
@@ -292,6 +297,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonCloseHandler(event:starling.events.Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.visible = false;
 		}
 		

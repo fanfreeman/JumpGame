@@ -182,11 +182,11 @@ package com.jumpGame.ui.screens
 			}
 			
 			
-			// safety rocket
+			// protection
 			if (Statics.upgradePrices.safety != null) {
 				upgradesCollection.setItemAt({
 					icon: "Safety",
-					title: "Power: Safety Rocket", 
+					title: "Power: Protection", 
 					caption: "Current Rank: " + String(5 + Statics.rankSafety * 1) + " second duration",
 					caption2: "Next Rank: " + String(5 + (Statics.rankSafety + 1) * 1) + " second duration",
 					price: Statics.upgradePrices.safety.price,
@@ -366,6 +366,8 @@ package com.jumpGame.ui.screens
 		}
 		
 		public function upgradeTeleportationHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.upgradePrices.teleportation.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
@@ -381,6 +383,8 @@ package com.jumpGame.ui.screens
 		}
 		
 		public function upgradeAttractionHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.upgradePrices.attraction.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
@@ -396,6 +400,8 @@ package com.jumpGame.ui.screens
 		}
 		
 		public function upgradeDuplicationHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.upgradePrices.duplication.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
@@ -411,6 +417,8 @@ package com.jumpGame.ui.screens
 		}
 		
 		public function upgradeSafetyRocketHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.upgradePrices.safety.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
@@ -426,6 +434,8 @@ package com.jumpGame.ui.screens
 		}
 		
 		public function upgradeBarrelsHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.upgradePrices.barrels.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
@@ -441,6 +451,8 @@ package com.jumpGame.ui.screens
 		}
 		
 		public function upgradeCometHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.upgradePrices.comet.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
@@ -456,6 +468,8 @@ package com.jumpGame.ui.screens
 		}
 		
 		public function upgradeCooldownHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.upgradePrices.cooldown.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
@@ -471,6 +485,8 @@ package com.jumpGame.ui.screens
 		}
 		
 		public function upgradeAbilityPowerHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.upgradePrices.ability_power.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
@@ -486,6 +502,8 @@ package com.jumpGame.ui.screens
 		}
 		
 		public function upgradeExtraAbilityHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.upgradePrices.extra_ability.price_type == "coins") {
 				if (Statics.upgradePrices.extra_ability.price > Statics.playerCoins) { // player can't afford this
 					// show get coins prompt
@@ -511,6 +529,8 @@ package com.jumpGame.ui.screens
 		}
 		
 		public function upgradeCoinDoublerHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.upgradePrices.coin_doubler.price > Statics.playerGems) { // player can't afford this
 				// show get gems prompt
 				Menu(this.owner).showDialogBox("You do not have enough gems, would you like to get more?", showGetGemsScreen);

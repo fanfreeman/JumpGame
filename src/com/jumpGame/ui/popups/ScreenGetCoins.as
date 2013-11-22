@@ -277,6 +277,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseCoinBoosterPackHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.playerGems < 5) { // player can't afford this
 				// show get gems prompt
 				parent.showDialogBox("You do not have enough gems, would you like to get more?", parent.showGetGemsScreen);
@@ -292,6 +294,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseCoinSuperPackHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.playerGems < 12) { // player can't afford this
 				// show get gems prompt
 				parent.showDialogBox("You do not have enough gems, would you like to get more?", parent.showGetGemsScreen);
@@ -307,6 +311,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseCoinMegaPackHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.playerGems < 50) { // player can't afford this
 				// show get gems prompt
 				parent.showDialogBox("You do not have enough gems, would you like to get more?", parent.showGetGemsScreen);
@@ -322,6 +328,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseCoinUltraPackHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.playerGems < 120) { // player can't afford this
 				// show get gems prompt
 				parent.showDialogBox("You do not have enough gems, would you like to get more?", parent.showGetGemsScreen);
@@ -337,6 +345,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseCoinUltimatePackHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if (Statics.playerGems < 240) { // player can't afford this
 				// show get gems prompt
 				parent.showDialogBox("You do not have enough gems, would you like to get more?", parent.showGetGemsScreen);
@@ -352,6 +362,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonCloseHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.visible = false;
 		}
 		

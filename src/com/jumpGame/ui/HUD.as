@@ -575,13 +575,15 @@ package com.jumpGame.ui
 //		}
 		
 		public function spinPowerupReel():void {
-			powerupIconFrame.visible = true;
-			powerupIconFrame.alpha = 1;
-			powerupIcons.visible = true;
-			powerupIcons.alpha = 1;
-			this.isReelSpinning = true;
-			
-			if (!Sounds.sfxMuted) Sounds.sndSlots.play();
+			if (!isReelSpinning) {
+				powerupIconFrame.visible = true;
+				powerupIconFrame.alpha = 1;
+				powerupIcons.visible = true;
+				powerupIcons.alpha = 1;
+				isReelSpinning = true;
+				
+				if (!Sounds.sfxMuted) Sounds.sndSlots.play();
+			}
 		}
 		
 		public function clearPowerupReel():void {

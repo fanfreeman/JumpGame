@@ -126,16 +126,22 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonShopHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.visible = false;
 			Menu(parent).showBuyLivesDialog();
 		}
 		
 		private function buttonAskHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.visible = false;
 			Menu(parent).showAskFriendsForLives();
 		}
 		
 		private function buttonCloseHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.visible = false;
 		}
 	}

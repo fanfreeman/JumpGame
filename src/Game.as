@@ -8,7 +8,6 @@ package
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.SoundButton;
 	
-	import flash.media.SoundMixer;
 	import flash.system.Security;
 	
 	import starling.display.Sprite;

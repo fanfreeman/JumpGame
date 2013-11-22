@@ -210,6 +210,8 @@ package com.jumpGame.ui.screens
 				return;
 			}
 			else if (startGamePicker.selectedIndex == 0) { // select from Facebook friends
+				if (!Sounds.sfxMuted) Sounds.sndClick.play();
+				
 				// call JS
 				if(ExternalInterface.available){
 					trace("Calling JS...");
@@ -220,6 +222,8 @@ package com.jumpGame.ui.screens
 				}
 			}
 			else if (startGamePicker.selectedIndex == 1) { // smart match
+				if (!Sounds.sfxMuted) Sounds.sndClick.play();
+				
 				Menu(this.owner).displayLoadingNotice("Finding an opponent...");
 				Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 				Menu(this.owner).communicator.findSmartMatch();

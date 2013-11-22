@@ -164,10 +164,14 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonCloseHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.visible = false;
 		}
 		
 		private function buttonGlobalHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.btnGlobal.visible = false;
 			this.imgFriendsOn.visible = false;
 			this.imgGlobalOn.visible = true;
@@ -176,6 +180,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonFriendsHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.imgGlobalOn.visible = false;
 			this.btnFriends.visible = false;
 			this.btnGlobal.visible = true;

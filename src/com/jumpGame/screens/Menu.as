@@ -6,6 +6,7 @@ package com.jumpGame.screens
 	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.popups.DialogBox;
 	import com.jumpGame.ui.popups.GetLives;
+	import com.jumpGame.ui.popups.Instructions;
 	import com.jumpGame.ui.popups.MatchDataContainer;
 	import com.jumpGame.ui.popups.ScreenAchievements;
 	import com.jumpGame.ui.popups.ScreenCharacters;
@@ -68,6 +69,7 @@ package com.jumpGame.screens
 		private var screenGetCoins:ScreenGetCoins;
 		private var screenGetGems:ScreenGetGems;
 		private var popupGetLives:GetLives;
+		private var popupInstructions:Instructions;
 		
 		// dialog box
 		private var dialogBox1:DialogBox;
@@ -100,6 +102,8 @@ package com.jumpGame.screens
 		
 		// animated characters
 		private var heroIdle:MovieClip;
+		
+		private var firstClickSoundHidden:Boolean = false; // hide very first click sound because of tab change on game start
 		
 		public function Menu()
 		{
@@ -535,7 +539,7 @@ package com.jumpGame.screens
 			buttonInviteFriends.downSkin.filter = Statics.btnInvertFilter;
 			buttonInviteFriends.x = 597;
 			buttonInviteFriends.y = topBarButtonsY;
-			buttonInviteFriends.addEventListener(starling.events.Event.TRIGGERED, inviteFriends);
+			buttonInviteFriends.addEventListener(starling.events.Event.TRIGGERED, btnInviteFriendsHandler);
 			this.addChild(buttonInviteFriends);
 			
 			// loading screen
@@ -654,6 +658,11 @@ package com.jumpGame.screens
 			popupGetLives.visible = false;
 			this.addChild(popupGetLives);
 			
+			// instructions popup
+			popupInstructions = new Instructions(this);
+			popupInstructions.visible = false;
+			this.addChild(popupInstructions);
+			
 			// dialog boxes
 			dialogBox1 = new DialogBox(this);
 			dialogBox1.visible = false;
@@ -764,6 +773,7 @@ package com.jumpGame.screens
 			screenGetCoins.visible = false;
 			screenGetGems.visible = false;
 			popupGetLives.visible = false;
+			popupInstructions.visible = false;
 		}
 		
 		private function tabsChangeHandler(event:starling.events.Event):void
@@ -775,7 +785,11 @@ package com.jumpGame.screens
 				return;
 			}
 			
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!firstClickSoundHidden) {
+				firstClickSoundHidden = true;
+			} else {
+				if (!Sounds.sfxMuted) Sounds.sndSlide.play();
+			}
 			
 			// display the selected screen
 			this.showScreen(this.tabs.selectedItem.action);
@@ -932,22 +946,30 @@ package com.jumpGame.screens
 		}
 		
 		public function showMatchDetailsPopup(isDone:Boolean):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			matchDataPopup.initialize(isDone);
 			setChildIndex(matchDataPopup, numChildren - 1);
 		}
 		
 		public function showAchievementsScreen(event:starling.events.Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			setChildIndex(screenAchievements, numChildren - 1);
 			screenAchievements.initialize();
 		}
 		
 		public function showRankingsScreen(event:starling.events.Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.refreshRankingsGlobal();
 			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
 			screenRankings.initialize();
 		}
 		
 		public function showProfileScreen(event:starling.events.Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			setChildIndex(screenProfile, numChildren - 1);
 			var playerData:Object = new Object();
 			playerData.firstname = Statics.firstName;
@@ -957,33 +979,48 @@ package com.jumpGame.screens
 		}
 		
 		public function showProfileScreenGivenData(dataIndexInCollection:int):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			setChildIndex(screenProfile, numChildren - 1);
 			var playerData:Object = this.rankingsCollection.getItemAt(dataIndexInCollection);
 			screenProfile.initialize(playerData);
 		}
 		
 		public function showCharactersScreen(event:starling.events.Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			setChildIndex(screenCharacters, numChildren - 1);
 			screenCharacters.initialize();
 		}
 		
 		public function showGetCoinsScreen(event:starling.events.Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			setChildIndex(screenGetCoins, numChildren - 1);
 			screenGetCoins.initialize();
 		}
 		
 		public function showGetGemsScreen(event:starling.events.Event = null):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			setChildIndex(screenGetGems, numChildren - 1);
 			screenGetGems.initialize();
 		}
 		
 		private function btnAddLivesHandler(event:starling.events.Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.showGetLivesPopup();
 		}
 		
 		private function showGetLivesPopup(isOut:Boolean = false):void {
 			setChildIndex(popupGetLives, numChildren - 1);
 			popupGetLives.show(isOut);
+		}
+		
+		public function showInstructionsPopup(isOut:Boolean = false):void {
+			setChildIndex(popupInstructions, numChildren - 1);
+			popupInstructions.show();
 		}
 		
 		public function showBuyLivesDialog():void {
@@ -1119,20 +1156,22 @@ package com.jumpGame.screens
 		}
 		
 		public function buttonClosePopupHandler(event:starling.events.Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.tabs.selectedIndex = -1;
 			this.screenMatches.visible = false;
 			this.screenUpgrades.visible = false;
 		}
 		
-		private function inviteFriends():void {
+		private function btnInviteFriendsHandler():void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if(ExternalInterface.available){
 				trace("Calling JS...");
 				ExternalInterface.call("inviteFriends");
 			} else {
 				trace("External interface unavailabe");
 			}
-			
-//			this.hideDialogBox();
 		}
 		
 		private function formatTime(totalSeconds:int):String {

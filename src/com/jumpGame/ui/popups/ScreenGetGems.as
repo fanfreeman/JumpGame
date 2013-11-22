@@ -317,6 +317,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseGemHandfulHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if(ExternalInterface.available){
 				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_handful");
@@ -327,6 +329,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseGemPouchHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if(ExternalInterface.available){
 				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_pouch");
@@ -337,6 +341,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseGemSackHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if(ExternalInterface.available){
 				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_sack");
@@ -347,6 +353,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseGemBoxHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if(ExternalInterface.available){
 				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_box");
@@ -357,6 +365,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseGemChestHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if(ExternalInterface.available){
 				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_chest");
@@ -367,6 +377,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseGemTruckloadHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			if(ExternalInterface.available){
 				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_truckload");
@@ -388,6 +400,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonCloseHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
 			this.visible = false;
 		}
 	}
