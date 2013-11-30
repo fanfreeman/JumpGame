@@ -69,7 +69,7 @@ package com.jumpGame.gameElements.contraptions
 				if (this.dy > 1.0) { // turn off thrusters
 					this.turnOffThrusters();
 				} else { // update acceleration
-					this.d2y += 0.001 * timeDiff;
+					this.d2y += 0.01 * timeDiff;
 					this.dy = this.d2y;
 				}
 			}

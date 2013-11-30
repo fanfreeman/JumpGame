@@ -2,13 +2,13 @@ package
 {
 	import com.greensock.TweenLite;
 	import com.greensock.easing.Linear;
-	import com.greensock.easing.Quad;
 	
 	import flash.display.Bitmap;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
+	import flash.system.Security;
 	import flash.ui.ContextMenu;
 	import flash.utils.getDefinitionByName;
 	
@@ -35,10 +35,10 @@ package
 		private var brandBitmap:Bitmap;
 		
 		// progress bars
-		private var barSpriteTop:Sprite;
-		private var barSpriteRight:Sprite;
+//		private var barSpriteTop:Sprite;
+//		private var barSpriteRight:Sprite;
 		private var barSpriteBottom:Sprite;
-		private var barSpriteLeft:Sprite;
+//		private var barSpriteLeft:Sprite;
 		
 		// game title screen
 		private var titleBgBitmap:Bitmap;
@@ -47,7 +47,7 @@ package
 		private var titleGirlBitmap:Bitmap;
 		
 //		private var myStarling:Starling;
-		private static const PROGRESS_BAR_HEIGHT:Number = 3;
+		private static const PROGRESS_BAR_HEIGHT:Number = 20;
 		
 		/**.k   
 		 * This is typed as Object so that the compiler doesn't include the
@@ -61,6 +61,13 @@ package
 //			super();
 //			
 //			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			
+			// load security policy files
+//			Security.loadPolicyFile("https://www.raiderbear.com/crossdomain.xml");
+			Security.allowDomain("raiderbear.com");
+			Security.allowDomain("www.raiderbear.com");
+			Security.loadPolicyFile("http://profile.ak.fbcdn.net/crossdomain.xml");
+			Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
 			
 			var menu:ContextMenu = new ContextMenu();
 			menu.hideBuiltInItems();
@@ -90,17 +97,17 @@ package
 			this.addChild(titleGirlBitmap);
 			
 			// progress bars
-			barSpriteTop = new Sprite();
-			this.addChild(barSpriteTop);
+//			barSpriteTop = new Sprite();
+//			this.addChild(barSpriteTop);
 			
-			barSpriteRight = new Sprite();
-			this.addChild(barSpriteRight);
+//			barSpriteRight = new Sprite();
+//			this.addChild(barSpriteRight);
 			
 			barSpriteBottom = new Sprite();
 			this.addChild(barSpriteBottom);
 			
-			barSpriteLeft = new Sprite();
-			this.addChild(barSpriteLeft);
+//			barSpriteLeft = new Sprite();
+//			this.addChild(barSpriteLeft);
 			
 			this.stop();
 			
@@ -114,17 +121,17 @@ package
 			function boyYoyo():void {
 				myTween = new TweenLite(titleBoyBitmap, 0.5, {ease: Linear.easeNone, y :138, onComplete:reverseTween, onReverseComplete:restartTween});
 				TweenLite.to(titleGirlBitmap, 0.5, {ease: Linear.easeNone, y: 348});
-				TweenLite.to(titleLogoBitmap, 0.5, {ease: Quad.easeInOut, x: 315});
+//				TweenLite.to(titleLogoBitmap, 0.5, {ease: Quad.easeInOut, x: 315});
 			}
 			function reverseTween():void {
 				myTween.reverse();
 				TweenLite.to(titleGirlBitmap, 0.5, {ease: Linear.easeNone, y: 358});
-				TweenLite.to(titleLogoBitmap, 0.5, {ease: Quad.easeInOut, x: 335});
+//				TweenLite.to(titleLogoBitmap, 0.5, {ease: Quad.easeInOut, x: 335});
 			}
 			function restartTween():void {
 				myTween.restart();
 				TweenLite.to(titleGirlBitmap, 0.5, {ease: Linear.easeNone, y: 348});
-				TweenLite.to(titleLogoBitmap, 0.5, {ease: Quad.easeInOut, x: 315});
+//				TweenLite.to(titleLogoBitmap, 0.5, {ease: Quad.easeInOut, x: 315});
 			}
 			
 			//the two most important events for preloading
@@ -140,25 +147,26 @@ package
 		private function loaderInfo_progressHandler(event:ProgressEvent):void
 		{
 			// update progress bars
-			barSpriteTop.graphics.clear();
-			barSpriteTop.graphics.beginFill(0xff6d00);
-			barSpriteTop.graphics.drawRect(0, 0, this.stage.stageWidth * event.bytesLoaded / event.bytesTotal, PROGRESS_BAR_HEIGHT);
-			barSpriteTop.graphics.endFill();
+//			barSpriteTop.graphics.clear();
+//			barSpriteTop.graphics.beginFill(0xff6d00);
+//			barSpriteTop.graphics.drawRect(0, 0, this.stage.stageWidth * event.bytesLoaded / event.bytesTotal, PROGRESS_BAR_HEIGHT);
+//			barSpriteTop.graphics.endFill();
 			
-			barSpriteRight.graphics.clear();
-			barSpriteRight.graphics.beginFill(0xff6d00);
-			barSpriteRight.graphics.drawRect(this.stage.stageWidth - PROGRESS_BAR_HEIGHT, 0, PROGRESS_BAR_HEIGHT, this.stage.stageHeight * event.bytesLoaded / event.bytesTotal);
-			barSpriteRight.graphics.endFill();
+//			barSpriteRight.graphics.clear();
+//			barSpriteRight.graphics.beginFill(0xff6d00);
+//			barSpriteRight.graphics.drawRect(this.stage.stageWidth - PROGRESS_BAR_HEIGHT, 0, PROGRESS_BAR_HEIGHT, this.stage.stageHeight * event.bytesLoaded / event.bytesTotal);
+//			barSpriteRight.graphics.endFill();
 			
 			barSpriteBottom.graphics.clear();
-			barSpriteBottom.graphics.beginFill(0xff6d00);
-			barSpriteBottom.graphics.drawRect(this.stage.stageWidth, this.stage.stageHeight - PROGRESS_BAR_HEIGHT, -this.stage.stageWidth * event.bytesLoaded / event.bytesTotal, PROGRESS_BAR_HEIGHT);
+			barSpriteBottom.graphics.beginFill(0xcccccc);
+//			barSpriteBottom.graphics.drawRect(this.stage.stageWidth, this.stage.stageHeight - PROGRESS_BAR_HEIGHT, -this.stage.stageWidth * event.bytesLoaded / event.bytesTotal, PROGRESS_BAR_HEIGHT);
+			barSpriteBottom.graphics.drawRect(0, this.stage.stageHeight - PROGRESS_BAR_HEIGHT, this.stage.stageWidth * event.bytesLoaded / event.bytesTotal, PROGRESS_BAR_HEIGHT);
 			barSpriteBottom.graphics.endFill();
 			
-			barSpriteLeft.graphics.clear();
-			barSpriteLeft.graphics.beginFill(0xff6d00);
-			barSpriteLeft.graphics.drawRect(0, this.stage.stageHeight, PROGRESS_BAR_HEIGHT, -this.stage.stageHeight * event.bytesLoaded / event.bytesTotal);
-			barSpriteLeft.graphics.endFill();
+//			barSpriteLeft.graphics.clear();
+//			barSpriteLeft.graphics.beginFill(0xff6d00);
+//			barSpriteLeft.graphics.drawRect(0, this.stage.stageHeight, PROGRESS_BAR_HEIGHT, -this.stage.stageHeight * event.bytesLoaded / event.bytesTotal);
+//			barSpriteLeft.graphics.endFill();
 		}
 		
 		/**
@@ -166,6 +174,8 @@ package
 		 */
 		private function loaderInfo_completeHandler(event:Event):void
 		{
+//			return; // for testing loading screen
+			
 			// kill tweens
 			TweenLite.killTweensOf(brandBitmap);
 			TweenLite.killTweensOf(titleBgBitmap);
@@ -174,29 +184,29 @@ package
 			TweenLite.killTweensOf(titleLogoBitmap);
 			
 			// get rid of the progress bar
-			barSpriteTop.graphics.clear();
-			barSpriteRight.graphics.clear();
+//			barSpriteTop.graphics.clear();
+//			barSpriteRight.graphics.clear();
 			barSpriteBottom.graphics.clear();
-			barSpriteLeft.graphics.clear();
+//			barSpriteLeft.graphics.clear();
 			
 			this.removeChild(brandBitmap);
 			this.removeChild(titleBgBitmap);
 			this.removeChild(titleBoyBitmap);
 			this.removeChild(titleGirlBitmap);
 			this.removeChild(titleLogoBitmap);
-			this.removeChild(barSpriteTop);
-			this.removeChild(barSpriteRight);
+//			this.removeChild(barSpriteTop);
+//			this.removeChild(barSpriteRight);
 			this.removeChild(barSpriteBottom);
-			this.removeChild(barSpriteLeft);
+//			this.removeChild(barSpriteLeft);
 			brandBitmap = null;
 			titleBgBitmap = null;
 			titleBoyBitmap = null;
 			titleGirlBitmap = null;
 			titleLogoBitmap = null;
-			barSpriteTop = null;
-			barSpriteRight = null;
+//			barSpriteTop = null;
+//			barSpriteRight = null;
 			barSpriteBottom = null;
-			barSpriteLeft = null;
+//			barSpriteLeft = null;
 			
 			//go to frame two because that's where the classes we need are located
 			this.gotoAndStop(2);

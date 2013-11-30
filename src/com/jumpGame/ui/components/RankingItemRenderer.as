@@ -250,9 +250,15 @@ package com.jumpGame.ui.components
 			if (!this.profilePicture) {
 				this.profilePicture = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000"));
 				profilePicture.touchable = false;
-				profilePicture.x = 15;
+				profilePicture.x = 16;
 				profilePicture.y = 15;
 				this.addChild(this.profilePicture);
+				
+				// player profile picture frame
+				var pictureFrame:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("RankingsPictureFrame0000"));
+				pictureFrame.x = 7;
+				pictureFrame.y = 4;
+				this.addChild(pictureFrame);
 			}
 			
 //			ExternalInterface.addCallback("returnProfilePictureUrlToAs", Statics.pictureUrlReturnedFromJs);

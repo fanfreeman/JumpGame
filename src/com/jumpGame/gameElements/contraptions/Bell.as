@@ -3,6 +3,7 @@ package com.jumpGame.gameElements.contraptions
 	import com.jumpGame.gameElements.Contraption;
 	import com.jumpGame.level.Statics;
 	
+	import starling.core.Starling;
 	import starling.display.Image;
 
 	public class Bell extends Contraption implements IPoolable
@@ -38,7 +39,8 @@ package com.jumpGame.gameElements.contraptions
 				this.dy = Constants.MaxHeroFallVelocity;
 			}
 			
-			if (this.dy < 0) this.isTouched = false;
+//			if (this.dy < 0) this.isTouched = false;
+//			this.isTouched = false;
 			
 			this.gx += this.dx;
 			this.gy += timeDiff * this.dy;
@@ -58,10 +60,15 @@ package com.jumpGame.gameElements.contraptions
 				this.dx = -(distanceFromCenter / 100);
 				this.dy = Math.max(heroDy * 2, Constants.PowerBouncePower);
 				this.rotationSpeed = -(distanceFromCenter / 200) * (Math.PI / 180);
+				Starling.juggler.delayCall(resetTouchState, 0.2); // prevent continous contact with bell
 				return true;
 			}
 			
 			return false;
+		}
+		
+		private function resetTouchState():void {
+			this.isTouched = false;
 		}
 		
 		override protected function hide():void

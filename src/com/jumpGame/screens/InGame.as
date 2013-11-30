@@ -206,9 +206,6 @@ package com.jumpGame.screens
 		{
 			super();
 			this.menu = menu;
-			Statics.isHardwareRendering = Starling.context.driverInfo.toLowerCase().indexOf("software") == -1;
-			trace("Hardware rendering: " + Statics.isHardwareRendering);
-			//this.referenceElementClasses();
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -231,7 +228,7 @@ package com.jumpGame.screens
 			// set up background
 			this.bg = new Background(Constants.Background);
 			this.addChild(this.bg);
-			this.setChildIndex(this.bg, 0); // push to back
+			this.setChildIndex(this.bg, 0); // push background to back
 			
 			// set up comet bright light
 			brightLightImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("BrightLight0000"));
@@ -392,6 +389,8 @@ package com.jumpGame.screens
 			this.setChildIndex(masterDapan, this.getChildIndex(hero) + 1); // place just above hero
 			this.powerupsList[this.powerupsListLength++] = masterDapan;
 			
+			this.setChildIndex(this.hud, this.numChildren - 1); // bring hud to front
+			
 			// create platform pools
 			ObjectPool.instance.registerPool(PlatformNormal, 30, false);
 			ObjectPool.instance.registerPool(PlatformMobile, 30, false);
@@ -450,6 +449,10 @@ package com.jumpGame.screens
 		 */
 		public function initializeNormalMode():void
 		{
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('started a round');
+			}
+			
 			// reset static vars
 //			Statics.gameMode = Constants.ModeNormal;
 			Statics.gamePaused = false;
@@ -465,7 +468,6 @@ package com.jumpGame.screens
 			Statics.isLeftCannonActive = false;
 			Statics.cameraShake = 0;
 			Statics.maxDist = 0;
-			Statics.displayingBadge = false;
 			Statics.calculateEmaVelocity = false;
 			Statics.invincibilityExpirationTime = 0;
 			Statics.cameraTargetModifierY = 0;
@@ -716,6 +718,10 @@ package com.jumpGame.screens
 			// update game time
 			timeCurrent = getTimer() - this.gameStartTime;
 			this.timeDiffReal = timeCurrent - Statics.gameTime;
+			if (this.timeDiffReal > 40) { // recover from computer freeze
+//				trace("time elapsed: " + this.timeDiffReal);
+				this.timeDiffReal = 40;
+			}
 			Statics.gameTime = timeCurrent;
 			this.timeDiffControlled = Number(this.timeDiffReal) * Statics.speedFactor;
 			
@@ -1001,22 +1007,24 @@ package com.jumpGame.screens
 								this.powerupsList[Constants.PowerupMasterDapan].snapToRight();
 							}
 						} else { // normal instead of transfigured gameplay
-							if (leftArrow) { // left arrow pressed
-								this.hero.turnLeft();
-								//if (this.hero.dx > 0) {this.hero.dx = 0;}
-								if (this.hero.dx > -0.2) this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled * 2;
-								else this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled * 1;
-								if (this.hero.dx < -Constants.HeroMaxSpeedX) {
-									this.hero.dx = -Constants.HeroMaxSpeedX;
+							if (leftArrow || rightArrow) {
+								if (leftArrow) { // left arrow pressed
+									this.hero.turnLeft();
+									//if (this.hero.dx > 0) {this.hero.dx = 0;}
+									if (this.hero.dx > -0.2) this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled * 2;
+									else this.hero.dx -= Constants.HeroSpeedX * this.timeDiffControlled * 1;
+									if (this.hero.dx < -Constants.HeroMaxSpeedX) {
+										this.hero.dx = -Constants.HeroMaxSpeedX;
+									}
 								}
-							}
-							else if (rightArrow) { // right arrow pressed
-								this.hero.turnRight();
-								//if (this.hero.dx < 0) {this.hero.dx = 0;}
-								if (this.hero.dx < 0.2) this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled * 2;
-								else this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled * 1;
-								if (this.hero.dx > Constants.HeroMaxSpeedX) {
-									this.hero.dx = Constants.HeroMaxSpeedX;
+								if (rightArrow) { // right arrow pressed
+									this.hero.turnRight();
+									//if (this.hero.dx < 0) {this.hero.dx = 0;}
+									if (this.hero.dx < 0.2) this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled * 2;
+									else this.hero.dx += Constants.HeroSpeedX * this.timeDiffControlled * 1;
+									if (this.hero.dx > Constants.HeroMaxSpeedX) {
+										this.hero.dx = Constants.HeroMaxSpeedX;
+									}
 								}
 							}
 							else { // no arrow pressed, reset velocity
@@ -1930,7 +1938,8 @@ package com.jumpGame.screens
 			} /** eof contraption behaviors */
 			
 			// scroll background and foreground layers
-			this.bg.scroll(this.timeDiffReal);
+//			this.bg.scroll(this.timeDiffReal, leftArrow, rightArrow); // also scroll floating stars according to key presses
+			this.bg.scroll(this.timeDiffReal, this.hero.dx); // also scroll floating stars according to hero velocity
 			this.fg.scroll(this.timeDiffReal);
 			
 			/** Stage Element Population */

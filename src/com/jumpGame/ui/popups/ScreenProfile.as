@@ -4,6 +4,12 @@ package com.jumpGame.ui.popups
 	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	
+	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.events.Event;
+	import flash.external.ExternalInterface;
+	import flash.net.URLRequest;
+	
 	import feathers.controls.Button;
 	
 	import starling.animation.Transitions;
@@ -13,6 +19,7 @@ package com.jumpGame.ui.popups
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.text.TextField;
+	import starling.textures.Texture;
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
 	
@@ -24,16 +31,20 @@ package com.jumpGame.ui.popups
 		private var nameField:TextField;
 		private var highScoreField:TextField;
 		
+		private var playerPicture:Image;
+		private var playerPictureLoader:Loader;
+		private var playerPictureWidth:uint;
+		
 		public function ScreenProfile(parent:Menu)
 		{
 			super();
 			this.parent = parent;
-			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
-		private function onAddedToStage(event:Event):void
+		private function onAddedToStage(event:starling.events.Event):void
 		{
-			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			this.removeEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);
 			
 			// bg quad
 			var bg:Quad = new Quad(stage.stageWidth, stage.stageHeight, 0x000000);
@@ -66,37 +77,66 @@ package com.jumpGame.ui.popups
 			buttonClose.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonClose.downSkin.filter = Statics.btnInvertFilter;
 			buttonClose.useHandCursor = true;
-			buttonClose.addEventListener(Event.TRIGGERED, buttonCloseHandler);
+			buttonClose.addEventListener(starling.events.Event.TRIGGERED, buttonCloseHandler);
 			popupContainer.addChild(buttonClose);
 			buttonClose.validate();
 			buttonClose.pivotX = buttonClose.width;
 			buttonClose.x = popup.bounds.right - 25;
 			buttonClose.y = popup.bounds.top + 28;
 			
-			var fontLithos42:Font = Fonts.getFont("Lithos42");
-			var fontVerdana23:Font = Fonts.getFont("Verdana23");
+			// player profile picture
+			playerPicture = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000"));
+			playerPicture.x = 107;
+			playerPicture.y = 111;
+			popupContainer.addChild(playerPicture);
+			// player profile picture frame
+			var pictureFrame:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("RankingsPictureFrame0000"));
+			pictureFrame.x = 100;
+			pictureFrame.y = 100;
+			popupContainer.addChild(pictureFrame);
+			// picture loader
+			playerPictureLoader = new Loader();
+			playerPictureLoader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onPlayerPictureLoadComplete);
+			
+			var fontHeader:Font = Fonts.getFont("Materhorn24");
+			var fontData:Font = Fonts.getFont("BellGothicBlack13");
 			
 			// player name field
-			nameField = new TextField(300, 45, "", fontLithos42.fontName, fontLithos42.fontSize, 0xffdd1e);
+			nameField = new TextField(300, 25, "", fontHeader.fontName, fontHeader.fontSize, 0xffdd1e);
 			nameField.vAlign = VAlign.TOP;
 			nameField.hAlign = HAlign.LEFT;
-			nameField.x = 100;
-			nameField.y = 100;
+			nameField.x = playerPicture.bounds.right + 40;
+			nameField.y = 110;
 			popupContainer.addChild(nameField);
 			
 			// high score field
-			highScoreField = new TextField(400, 40, "", fontVerdana23.fontName, fontVerdana23.fontSize, 0xffffff);
+			highScoreField = new TextField(400, 40, "", fontData.fontName, fontData.fontSize, 0x000000);
 			highScoreField.vAlign = VAlign.TOP;
 			highScoreField.hAlign = HAlign.LEFT;
 			highScoreField.x = nameField.bounds.left;
-			highScoreField.y = nameField.bounds.bottom + 10;
+			highScoreField.y = nameField.bounds.bottom;
 			popupContainer.addChild(highScoreField);
+			
+			var comingSoonText:TextField = new TextField(popup.width, 100, "More data will be added!", fontHeader.fontName, fontHeader.fontSize, 0xffa352);
+			comingSoonText.y = highScoreField.bounds.bottom + 10;
+			comingSoonText.hAlign = HAlign.CENTER;
+			comingSoonText.vAlign = VAlign.TOP;
+			popupContainer.addChild(comingSoonText);
 		}
 		
 		public function initialize(playerData:Object):void {
 			this.visible = true;
 			nameField.text = playerData.title;
 			highScoreField.text = "High Score: " + playerData.caption;
+			
+			// load player picture
+			if (playerData.picture_url == null || playerData.picture_url == "none") { // tried getting picture data but unsuccessful
+				// do nothing
+			}
+			else { // picture data available, load picture
+				playerPictureWidth = playerData.picture_width;
+				playerPictureLoader.load(new URLRequest(playerData.picture_url));
+			}
 			
 			// popup pop out effect
 			popupContainer.scaleX = 0.5;
@@ -108,7 +148,15 @@ package com.jumpGame.ui.popups
 			});
 		}
 		
-		private function buttonCloseHandler(event:Event):void {
+		private function onPlayerPictureLoadComplete(event:flash.events.Event):void {
+			this.playerPicture.texture = Texture.fromBitmap(event.currentTarget.loader.content as Bitmap);
+			this.playerPicture.readjustSize();
+			var pictureScaleFactor:Number = 78 / playerPictureWidth;
+			this.playerPicture.scaleX = pictureScaleFactor;
+			this.playerPicture.scaleY = pictureScaleFactor;
+		}
+		
+		private function buttonCloseHandler(event:starling.events.Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			this.visible = false;

@@ -67,32 +67,32 @@ package
 		private static var particleRain:PDParticleSystem;
 		
 		public function Weather():void {
-			// setup snow
-			wind.max = 400;
-			wind.min = 0;
-			wind.dir = "right";
-				
-			if (wind.dir == "right") {
-				wind.force = windBegin;
-			} else if(wind.dir == "left") {
-				wind.force = -windBegin;
-			} else {
-				wind.force = windBegin;
-			}
-			
-			this.snowList = new Vector.<Image>();
-			this.snowDepthList = new Vector.<Number>;
-			
-			this.windRandom();
-			this.snowContainer = new Sprite();
-			this.snowContainer.visible = false;
-			
-			// create snow
-			for (var i:int = 0; i < snowAmount; i++) {
-				createSnow(i);
-			}
-			
-			this.addChild(this.snowContainer);
+//			// setup snow
+//			wind.max = 400;
+//			wind.min = 0;
+//			wind.dir = "right";
+//				
+//			if (wind.dir == "right") {
+//				wind.force = windBegin;
+//			} else if(wind.dir == "left") {
+//				wind.force = -windBegin;
+//			} else {
+//				wind.force = windBegin;
+//			}
+//			
+//			this.snowList = new Vector.<Image>();
+//			this.snowDepthList = new Vector.<Number>;
+//			
+//			this.windRandom();
+//			this.snowContainer = new Sprite();
+//			this.snowContainer.visible = false;
+//			
+//			// create snow
+//			for (var i:int = 0; i < snowAmount; i++) {
+//				createSnow(i);
+//			}
+//			
+//			this.addChild(this.snowContainer);
 			
 			// setup rain
 			if (Statics.isHardwareRendering) {
@@ -189,8 +189,9 @@ package
 					var duration:int = int(Math.random() * 10 + 10); // activate for 10 to 20 seconds
 					
 					// activate weather effect
-					if (Math.random() < 0.5) this.snowContainer.visible = true;
-					else particleRain.start(duration);
+//					if (Math.random() < 0.5) this.snowContainer.visible = true;
+//					else particleRain.start(duration);
+					particleRain.start(duration);
 					
 					// schedule deactivation time
 					this.switchTime = Statics.gameTime + duration * 1000;
@@ -199,7 +200,7 @@ package
 			} else { // activated
 				if (Statics.gameTime > this.switchTime) {
 					// turn off weather effect
-					this.snowContainer.visible = false;
+//					this.snowContainer.visible = false;
 					
 					// schedule next activation time
 					this.switchTime = Statics.gameTime + int((Math.random() * 10 + 10) * 1000); // rest 10 to 20 seconds

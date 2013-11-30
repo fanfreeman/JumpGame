@@ -46,6 +46,7 @@ package com.jumpGame.gameElements {
 		private var bgLayerBridgesExpiration:int;
 		private var bgLayerBranchesExpiration:int;
 		private var bgLayerFairyExpiration:int;
+		private var bgFloatingStarsExpiration:int;
 		
 		// sea of fire layers (waves)
 		private var sofLayer1:SofLayer; // bg
@@ -60,6 +61,9 @@ package com.jumpGame.gameElements {
 		private var catapultLaunched:Boolean;
 		
 		private var skyImageWidth:Number;
+		
+		private var starList:Vector.<BgStar>;
+		private var starDx:Number;
 		
 		public function Background(type:uint) {
 			super();
@@ -100,10 +104,18 @@ package com.jumpGame.gameElements {
 				layer0Sky3_right.gy = int(-Statics.stageHeight / 2 + layer0Sky1_right.height + layer0Sky3_right.height);
 				// eof sky
 				
+				// floating stars
+				for (var i:uint = 0; i < Constants.NumBgFloatingStars; i++) {
+					this.starList[i].initialize();
+				}
+				bgFloatingStarsExpiration = getExpirationTime(Constants.BgFloatingStarsDuration);
+				starDx = (Math.random() - 0.5) * Constants.FloatingStarsBaseVelocity;
+				
 				// ground
 				layer0Ground.gx = 0;
 				layer0Ground.gy = int(-Statics.stageHeight / 2);
 				this.addChild(layer0Ground);
+//				layer0Ground.visible = false; // testing
 //				this.setChildIndex(layer0Ground, 0); // send to back
 				
 				this.sofLayer1.gx = 0;
@@ -255,6 +267,14 @@ package com.jumpGame.gameElements {
 				this.addChild(layer0Sky3_right);
 				// eof add sky images
 				
+				// add background floating stars
+				this.starList = new Vector.<BgStar>();
+				for (var i:uint = 0; i < Constants.NumBgFloatingStars; i++) { // add this many floating stars
+					var star:BgStar = new BgStar();
+					this.starList.push(star);
+					this.addChild(star);
+				}
+				
 				// add ground image
 				layer0Ground = new GameObject();
 				var image0:Image = new Image(Assets.getTexture("BgLayer0Ground"));
@@ -381,9 +401,10 @@ package com.jumpGame.gameElements {
 		
 		// scroll bg and fg decorative elements as hero moves
 		// @param distance = distance hero moved up
-		public function scroll(timeDiff:int):void {
+//		public function scroll(timeDiff:int, leftKeyDown:Boolean = false, rightKeyDown:Boolean = false):void {
+		public function scroll(timeDiff:int, heroDx:Number = 0):void {
 			if (this.type == Constants.Background) {
-				// scroll bg layer 0
+				// scroll bg layer 0 sky
 				this.layer0Sky1_left.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
 				this.layer0Sky2_left.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
 				this.layer0Sky3_left.gy += Camera.dy * (1.0 - Constants.BgLayer0ParallaxDepth);
@@ -398,6 +419,18 @@ package com.jumpGame.gameElements {
 				this.layer0Sky1_right.gx -= timeDiff * skyHorizontalSpeed;
 				this.layer0Sky2_right.gx -= timeDiff * skyHorizontalSpeed;
 				this.layer0Sky3_right.gx -= timeDiff * skyHorizontalSpeed;
+				
+				// scroll floating stars
+				if (Statics.gameTime > this.bgFloatingStarsExpiration) {
+//					starDx = (Math.random() - 0.5) * Constants.FloatingStarsBaseVelocity;
+					if (Math.random() < 0.5) starDx += 0.02;
+					else starDx -= 0.02;
+					this.bgFloatingStarsExpiration = getExpirationTime(Constants.BgFloatingStarsDuration);
+				}
+				for (var i:uint = 0; i < Constants.NumBgFloatingStars; i++) {
+//					this.starList[i].update(timeDiff, leftKeyDown, rightKeyDown);
+					this.starList[i].update(timeDiff, this.starDx + heroDx);
+				}
 				
 				// scroll / hide ground after it scrolls out
 				if (this.layer0Ground.visible) {

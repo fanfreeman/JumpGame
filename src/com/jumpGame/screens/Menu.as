@@ -4,6 +4,7 @@ package com.jumpGame.screens
 	import com.jumpGame.customObjects.PictureLoader;
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.level.Statics;
+	import com.jumpGame.ui.components.Badge;
 	import com.jumpGame.ui.popups.DialogBox;
 	import com.jumpGame.ui.popups.GetLives;
 	import com.jumpGame.ui.popups.Instructions;
@@ -30,7 +31,6 @@ package com.jumpGame.screens
 	import feathers.system.DeviceCapabilities;
 	import feathers.themes.MetalWorksMobileTheme;
 	
-	import starling.animation.Transitions;
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.MovieClip;
@@ -76,8 +76,7 @@ package com.jumpGame.screens
 		private var dialogBox2:DialogBox;
 		
 		// objective achievement effect
-		private var badgeAnimation:MovieClip;
-		private var badgeText:TextField;
+		private var badge:Badge;
 		
 		// countdown
 		private var timeTillLifeCountdown:int = -1;
@@ -144,6 +143,18 @@ package com.jumpGame.screens
 						lifeLabel.text = dataObj.lives;
 						this.timeTillLifeCountdown = int(dataObj.time_till_next_life);
 						this.timeUpdated = getTimer();
+						
+//						trace("environment: " + dataObj.environment);
+						if (dataObj.environment == "prod") {
+							Statics.isAnalyticsEnabled = true;
+							Statics.mixpanel.identify(dataObj.facebook_id);
+							Statics.mixpanel.people_set({
+								"user id": String(dataObj.user_id),
+								"first name": dataObj.first_name,
+								"last name": dataObj.last_name
+							});
+							Statics.mixpanel.track('game initialized', { "isHardwareRendering": Statics.isHardwareRendering.toString() });
+						}
 						
 						// get player profile picture
 //						if (Statics.playerPictureBitmap == null && dataObj.picture != "none") {
@@ -381,26 +392,34 @@ package com.jumpGame.screens
 						Statics.rankCoinDoubler = int(dataObj.rank_coin_doubler);
 						Statics.upgradePrices = dataObj.prices;
 						this.screenUpgrades.refresh();
-						this.showAchievement("Self Improvement");
+						
+						setChildIndex(this.badge, numChildren - 1);
+						this.badge.showAchievement("Self Improvement");
 					}
 					else if (dataObj.status == "purchased_coins") { // successfully purchased coins
 						Statics.playerCoins = int(dataObj.coins);
 						coinLabel.text = dataObj.coins;
 						Statics.playerGems = int(dataObj.gems);
 						gemLabel.text = dataObj.gems;
-						this.showAchievement("Bling Bling");
+						
+						setChildIndex(this.badge, numChildren - 1);
+						this.badge.showAchievement("Bling Bling");
 					}
 					else if (dataObj.status == "purchased_gems") { // successfully purchased gems
 						Statics.playerGems = int(dataObj.gems);
 						gemLabel.text = dataObj.gems;
-						this.showAchievement("Shiny!");
+						
+						setChildIndex(this.badge, numChildren - 1);
+						this.badge.showAchievement("Shiny!");
 					}
 					else if (dataObj.status == "purchased_lives") { // successfully purchased lives
 						Statics.playerGems = int(dataObj.gems);
 						gemLabel.text = dataObj.gems;
 						this.lives = 5;
 						lifeLabel.text = "5";
-						this.showAchievement("My Life Will Go On");
+						
+						setChildIndex(this.badge, numChildren - 1);
+						this.badge.showAchievement("My Life Will Go On");
 					}
 					else if (dataObj.status == "error") { // error message received
 						trace("Error: " + dataObj.reason);
@@ -673,24 +692,8 @@ package com.jumpGame.screens
 			this.addChild(dialogBox2);
 			
 			// objective achievement effect
-			badgeAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("BadgeFlash"), 30);
-			badgeAnimation.pivotX = Math.ceil(badgeAnimation.width  / 2); // center art on registration point
-			badgeAnimation.pivotY = Math.ceil(badgeAnimation.height / 2);
-			badgeAnimation.x = Constants.StageWidth / 2;
-			badgeAnimation.y = Constants.StageHeight - 130;
-			badgeAnimation.loop = false;
-			badgeAnimation.visible = false;
-			this.addChild(badgeAnimation);
-			
-			// objective achievement message
-			var fontVerdana14:Font = Fonts.getFont("Verdana14");
-			badgeText = new TextField(200, 100, "", fontVerdana14.fontName, fontVerdana14.fontSize, 0xffffff);
-			badgeText.hAlign = HAlign.CENTER;
-			badgeText.vAlign = VAlign.CENTER;
-			badgeText.x = stage.stageWidth / 2 - 100;
-			badgeText.y = stage.stageHeight - 130 - 53;
-			badgeText.visible = false;
-			this.addChild(badgeText);
+			this.badge = new Badge();
+			this.addChild(this.badge);
 			
 			// animated characters
 			heroIdle = new MovieClip(Assets.getSprite("AtlasTexture7").getTextures("CharBoyIdle"), 40);
@@ -798,11 +801,25 @@ package com.jumpGame.screens
 			if (this.tabs.selectedItem.action == Constants.ScreenMatches) {
 				this.screenMatches.visible = true;
 				this.refreshMatches();
+				
+				if (Statics.isAnalyticsEnabled) {
+					Statics.mixpanel.track('switched to Matches screen');
+				}
 			}
 			// when displaying the upgrades screen, refresh upgrades
 			else if (this.tabs.selectedItem.action == Constants.ScreenUpgrades) {
 				this.screenUpgrades.visible = true;
 				this.screenUpgrades.refresh();
+				
+				if (Statics.isAnalyticsEnabled) {
+					Statics.mixpanel.track('switched to Upgrades screen');
+				}
+			}
+			// when displaying the town square screen, track this event
+			else if (this.tabs.selectedItem.action == Constants.ScreenTownSquare) {
+				if (Statics.isAnalyticsEnabled) {
+					Statics.mixpanel.track('switched to Town Square screen');
+				}
 			}
 		}
 		
@@ -901,50 +918,6 @@ package com.jumpGame.screens
 			this.visible = false;
 		}
 		
-		/**
-		 * Display achievement badge
-		 */
-		public function showAchievement(message:String):void {
-			// bring achievement badge to front
-			setChildIndex(badgeAnimation, numChildren - 1);
-			setChildIndex(badgeText, numChildren - 1);
-			
-			starling.core.Starling.juggler.add(badgeAnimation);
-			badgeAnimation.alpha = 1;
-			badgeAnimation.visible = true;
-			badgeAnimation.play();
-			if (!Sounds.sfxMuted) Sounds.sndGong.play();
-			badgeText.text = message;
-			badgeText.alpha = 1;
-			badgeText.visible = true;
-			Starling.juggler.delayCall(fadeOutAchievement, 3);
-		}
-		
-		/**
-		 * Fade out the achievement badge
-		 */
-		private function fadeOutAchievement():void {
-			badgeAnimation.stop();
-			starling.core.Starling.juggler.remove(badgeAnimation);
-			Starling.juggler.tween(badgeAnimation, 1, {
-				transition: Transitions.LINEAR,
-				alpha: 0
-			});
-			Starling.juggler.tween(badgeText, 1, {
-				transition: Transitions.LINEAR,
-				alpha: 0
-			});
-			Starling.juggler.delayCall(hideAchievement, 1);
-		}
-		
-		/**
-		 * Hide the achievement badge
-		 */
-		private function hideAchievement():void {
-			badgeAnimation.visible = false;
-			badgeText.visible = false;
-		}
-		
 		public function showMatchDetailsPopup(isDone:Boolean):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
@@ -957,6 +930,10 @@ package com.jumpGame.screens
 			
 			setChildIndex(screenAchievements, numChildren - 1);
 			screenAchievements.initialize();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('displayed Achievements screen');
+			}
 		}
 		
 		public function showRankingsScreen(event:starling.events.Event):void {
@@ -965,25 +942,44 @@ package com.jumpGame.screens
 			this.refreshRankingsGlobal();
 			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
 			screenRankings.initialize();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('displayed Rankings screen');
+			}
 		}
 		
+		/**
+		 * Show player's own profile
+		 */
 		public function showProfileScreen(event:starling.events.Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			setChildIndex(screenProfile, numChildren - 1);
 			var playerData:Object = new Object();
-			playerData.firstname = Statics.firstName;
-			playerData.lastname = Statics.lastName;
-			playerData.high_score = Statics.playerHighScore.toString();
+			playerData.title = Statics.firstName + " " + Statics.lastName;
+			playerData.caption = Statics.playerHighScore.toString();
+			playerData.picture_width = this.pictureLoader.getProfilePictureWidth(Statics.facebookId);
+			playerData.picture_url = this.pictureLoader.getProfilePictureUrl(Statics.facebookId);;
 			screenProfile.initialize(playerData);
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('displayed Own Profile screen');
+			}
 		}
 		
+		/**
+		 * Show other player profile
+		 */
 		public function showProfileScreenGivenData(dataIndexInCollection:int):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			setChildIndex(screenProfile, numChildren - 1);
 			var playerData:Object = this.rankingsCollection.getItemAt(dataIndexInCollection);
 			screenProfile.initialize(playerData);
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('displayed Social Profile screen');
+			}
 		}
 		
 		public function showCharactersScreen(event:starling.events.Event):void {
@@ -991,6 +987,10 @@ package com.jumpGame.screens
 			
 			setChildIndex(screenCharacters, numChildren - 1);
 			screenCharacters.initialize();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('displayed Characters screen');
+			}
 		}
 		
 		public function showGetCoinsScreen(event:starling.events.Event):void {
@@ -998,6 +998,10 @@ package com.jumpGame.screens
 			
 			setChildIndex(screenGetCoins, numChildren - 1);
 			screenGetCoins.initialize();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('displayed Get Coins screen');
+			}
 		}
 		
 		public function showGetGemsScreen(event:starling.events.Event = null):void {
@@ -1005,6 +1009,10 @@ package com.jumpGame.screens
 			
 			setChildIndex(screenGetGems, numChildren - 1);
 			screenGetGems.initialize();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('displayed Get Gems screen');
+			}
 		}
 		
 		private function btnAddLivesHandler(event:starling.events.Event):void {
@@ -1072,6 +1080,11 @@ package com.jumpGame.screens
 //			rankLabel.text = "Lives: " + String(this.lives);
 			
 			this.communicator.sendRoundBegin();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.people_increment("games played");
+			}
+			
 			return true;
 		}
 		

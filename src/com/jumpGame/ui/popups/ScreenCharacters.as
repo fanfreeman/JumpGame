@@ -1,5 +1,6 @@
 package com.jumpGame.ui.popups
 {
+	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	
@@ -11,6 +12,9 @@ package com.jumpGame.ui.popups
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.text.TextField;
+	import starling.utils.HAlign;
+	import starling.utils.VAlign;
 	
 	public class ScreenCharacters extends Sprite
 	{
@@ -65,6 +69,14 @@ package com.jumpGame.ui.popups
 			buttonClose.pivotX = buttonClose.width;
 			buttonClose.x = popup.bounds.right - 25;
 			buttonClose.y = popup.bounds.top + 28;
+			
+			var fontMessage:Font = Fonts.getFont("Badaboom50");
+			var comingSoonText:TextField = new TextField(popup.width, 100, "Coming Soon! We Promise!", fontMessage.fontName, fontMessage.fontSize, 0xffa352);
+			comingSoonText.pivotY = comingSoonText.height / 2;
+			comingSoonText.y = Math.ceil(popup.height / 2);
+			comingSoonText.hAlign = HAlign.CENTER;
+			comingSoonText.vAlign = VAlign.CENTER;
+			popupContainer.addChild(comingSoonText);
 		}
 		
 		private function buttonCloseHandler(event:Event):void {

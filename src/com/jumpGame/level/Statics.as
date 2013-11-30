@@ -1,7 +1,10 @@
 package com.jumpGame.level
 {
+	import com.mixpanel.Mixpanel;
+	
 	import flash.display.Bitmap;
 	
+	import starling.core.Starling;
 	import starling.extensions.PDParticleSystem;
 	import starling.filters.ColorMatrixFilter;
 
@@ -79,7 +82,7 @@ package com.jumpGame.level
 		public static var isLeftCannonActive:Boolean;
 		
 		// achievements
-		public static var displayingBadge:Boolean;
+//		public static var displayingBadge:Boolean;
 		public static var achievementsList:Vector.<Boolean>;
 		
 		// communication
@@ -136,6 +139,10 @@ package com.jumpGame.level
 		public static var btnInvertFilter:ColorMatrixFilter;
 		public static var btnContrastFilter:ColorMatrixFilter;
 		
+		// mixpanel
+		public static var mixpanel:Mixpanel;
+		public static var isAnalyticsEnabled:Boolean;
+		
 		/**
 		 * Find the distance between two points
 		 */
@@ -184,6 +191,7 @@ package com.jumpGame.level
 //		// eof picture url loader
 		
 		public static function initialize():void { // initialized in Game.as
+			// create button state filters
 			btnBrightnessFilter = new ColorMatrixFilter();
 			btnBrightnessFilter.adjustBrightness(0.25);
 			btnInvertFilter = new ColorMatrixFilter();
@@ -191,8 +199,12 @@ package com.jumpGame.level
 			btnContrastFilter = new ColorMatrixFilter();
 			btnContrastFilter.adjustContrast(0.75);
 			
-//			// picture url loader
-//			profilePicturesData = new Dictionary();
+			isHardwareRendering = Starling.context.driverInfo.toLowerCase().indexOf("software") == -1;
+//			trace("Hardware rendering: " + Statics.isHardwareRendering);
+			
+			// create mixpanel object
+			isAnalyticsEnabled = false;
+			mixpanel = new Mixpanel("f6cea95ffc1fa6a0db7c5db16597f5a4");
 		}
 	}
 }

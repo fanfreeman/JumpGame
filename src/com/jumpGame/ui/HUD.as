@@ -2,6 +2,7 @@ package com.jumpGame.ui
 {
 	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.level.Statics;
+	import com.jumpGame.ui.components.Badge;
 	
 	import flash.geom.Rectangle;
 	
@@ -69,9 +70,7 @@ package com.jumpGame.ui
 		private var specialIndicatorsList:Vector.<SpecialIndicator>;
 		
 		// objective achievement effect
-		private var badgeAnimation:MovieClip;
-		private var badgeExpireTime:int;
-		private var badgeText:TextField;
+		private var badge:Badge;
 		
 		private var tweenPulsingText:Tween;
 		private var distancePrevTimePeriod:int;
@@ -109,8 +108,6 @@ package com.jumpGame.ui
 			pulsingTextFire.scaleX = 0.2;
 			pulsingTextFire.scaleY = 0.2;
 			pulsingTextFire.visible = false;
-			badgeAnimation.visible = false;
-			badgeText.visible = false;
 //			distanceText.text = "0";
 			coinsText.text = "0";
 			charmActivationBg.visible = false;
@@ -345,22 +342,8 @@ package com.jumpGame.ui
 			arrangeSpecialIndicators();
 			
 			// objective achievement effect
-			badgeAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("BadgeFlash"), 30);
-			badgeAnimation.pivotX = Math.ceil(badgeAnimation.width  / 2); // center art on registration point
-			badgeAnimation.pivotY = Math.ceil(badgeAnimation.height / 2);
-			badgeAnimation.x = Constants.StageWidth / 2;
-			badgeAnimation.y = Constants.StageHeight - 130;
-			badgeAnimation.loop = false;
-			this.addChild(badgeAnimation);
-			
-			// objective achievement message
-			var fontVerdana14:Font = Fonts.getFont("Verdana14");
-			badgeText = new TextField(200, 100, "", fontVerdana14.fontName, fontVerdana14.fontSize, 0xffffff);
-			badgeText.hAlign = HAlign.CENTER;
-			badgeText.vAlign = VAlign.CENTER;
-			badgeText.x = stage.stageWidth / 2 - 100;
-			badgeText.y = stage.stageHeight - 130 - 53;
-			this.addChild(badgeText);
+			this.badge = new Badge();
+			this.addChild(this.badge);
 		}
 		
 		private function arrangeSpecialIndicators():void {
@@ -458,16 +441,7 @@ package com.jumpGame.ui
 		 * Display an achievement badge
 		 */
 		public function showAchievement(message:String):void {
-			Statics.displayingBadge = true;
-			starling.core.Starling.juggler.add(badgeAnimation);
-			badgeAnimation.alpha = 1;
-			badgeAnimation.visible = true;
-			badgeAnimation.play();
-			if (!Sounds.sfxMuted) Sounds.sndGong.play();
-			badgeText.text = message;
-			badgeText.alpha = 1;
-			badgeText.visible = true;
-			badgeExpireTime = Statics.gameTime + 4000; // show for three seconds
+			this.badge.showAchievement(message);
 		}
 		
 		/** 
@@ -540,21 +514,6 @@ package com.jumpGame.ui
 			if (Statics.gameTime > messageExpireTime1) messageText1.visible = false;
 			if (Statics.gameTime > messageExpireTime2) messageText2.visible = false;
 			if (Statics.gameTime > messageExpireTime3) messageText3.visible = false;
-			
-			// update achievement badge
-			if (Statics.displayingBadge && Statics.gameTime > badgeExpireTime) {
-				badgeAnimation.stop();
-				starling.core.Starling.juggler.remove(badgeAnimation);
-				Starling.juggler.tween(badgeAnimation, 1, {
-					transition: Transitions.LINEAR,
-					alpha: 0
-				});
-				Starling.juggler.tween(badgeText, 1, {
-					transition: Transitions.LINEAR,
-					alpha: 0
-				});
-				Statics.displayingBadge = false;
-			}
 			
 			// update ability indicator clipping
 			if (!Statics.specialReady) {

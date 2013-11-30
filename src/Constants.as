@@ -8,6 +8,7 @@ package
 	public class Constants
 	{
 		// level designer mode switch
+//		public static const isAnalyticsEnabled:Boolean = false;
 		public static const isDesignerMode:Boolean = false;
 		public static const powerupsEnabled:Boolean = true;
 //		public static const contraptionsEnabled:Boolean = true;
@@ -182,6 +183,7 @@ package
 		public static const BgLayerBridgesDuration:int = 45000;
 		public static const BgLayerBranchesDuration:int = 5000;
 		public static const BgLayerFairyDuration:int = 120000;
+		public static const BgFloatingStarsDuration:int = 10000;
 		
 		// server URIs
 		public static const UriGetUserInfo:String = "user/info";
@@ -269,6 +271,9 @@ package
 		
 		// attractor area of effect radius
 		public static const AttractorRadius:uint = StageHeight / 2;
+		
+		public static const NumBgFloatingStars:uint = 10; // change this to turn stars into snow (50)
+		public static const FloatingStarsBaseVelocity:Number = 0.4;
 		
 		public static const AchievementsData:Array = new Array(
 			// id, title, description, reward coins, reward gems

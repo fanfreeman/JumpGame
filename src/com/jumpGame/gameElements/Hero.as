@@ -32,7 +32,7 @@ package com.jumpGame.gameElements
 		
 		private var nextBouncePower:Number;
 		
-		public var d2x:Number;
+//		public var d2x:Number;
 		
 		public var isTransfigured:Boolean;
 		
@@ -72,7 +72,7 @@ package com.jumpGame.gameElements
 			isDynamic = true;
 			gravity = Constants.Gravity;
 			rotationSpeed = 0.0;
-			d2x = 0;
+//			d2x = 0;
 			isTransfigured = false;
 			controlRestoreTime = 0;
 			animationJump.visible = true;
@@ -146,7 +146,7 @@ package com.jumpGame.gameElements
 		// return true if ability triggered
 		public function triggerSpecialAbility():Boolean {
 			if (Statics.numSpecials <= 0) {
-				hud.showMessage("No More Specials");
+				hud.showMessage("No More Abilities Left");
 			}
 			else if (Statics.specialReady) {
 				hud.turnOffSpecials();
@@ -164,7 +164,7 @@ package com.jumpGame.gameElements
 				return true;
 			}
 			else {
-				hud.showMessage("Special still in Cooldown");
+				hud.showMessage("Ability Still Cooling Down");
 			}
 			
 			return false;

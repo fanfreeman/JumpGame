@@ -8,8 +8,6 @@ package
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.SoundButton;
 	
-	import flash.system.Security;
-	
 	import starling.display.Sprite;
 	import starling.events.Event;
 
@@ -33,7 +31,7 @@ package
 		public function Game()
 		{
 			super();
-			Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
+			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 //			this.jpgEncoder = new JPGEncoder();
 //			ExternalInterface.addCallback('exportScreenshot', exportScreenshot);

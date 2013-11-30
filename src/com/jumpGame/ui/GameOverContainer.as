@@ -245,7 +245,7 @@ package com.jumpGame.ui
 			totalScoreContainer.addChild(scoreLabel);
 			
 			// score value
-			scoreText = new TextField(70, scoreIcon.height, "", fontMaterhorn25.fontName, fontMaterhorn25.fontSize, 0xffffff);
+			scoreText = new TextField(100, scoreIcon.height, "", fontMaterhorn25.fontName, fontMaterhorn25.fontSize, 0xffffff);
 			scoreText.vAlign = VAlign.CENTER;
 			scoreText.hAlign = HAlign.LEFT;
 			scoreText.x = scoreLabel.bounds.right + 20;

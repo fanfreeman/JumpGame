@@ -47,7 +47,7 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetCoinsBg0000"));
+			var popup:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("GetCoinsBg0000"));
 			popupContainer.addChild(popup);
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
