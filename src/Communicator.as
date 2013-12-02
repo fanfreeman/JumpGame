@@ -101,7 +101,7 @@ package
 			try {
 				loader.load(request);
 			} catch (error:Error) {
-				trace("Unable to send post request");
+//				trace("Unable to send post request");
 			}
 		}
 		
@@ -133,7 +133,7 @@ package
 		 */
 		private function sendGetRequest(url:String):void {
 //			var randomParam:String = "?p=" + Math.floor(Math.random() * (10000000)); // random parameter to avoid getting cached result
-			trace("Communicating: " + url);
+//			trace("Communicating: " + url);
 			var loader:URLLoader = new URLLoader();
 			configureListeners(loader);
 			
@@ -143,7 +143,7 @@ package
 			try {
 				loader.load(request);
 			} catch (error:Error) {
-				trace("Unable to load requested document.");
+//				trace("Unable to load requested document.");
 			}
 		}
 		
@@ -162,29 +162,29 @@ package
 		private function completeHandler(event:Event):void {
 			var loader:URLLoader = URLLoader(event.target);
 			var data:String = loader.data;
-			trace("completeHandler: " + data);
+//			trace("completeHandler: " + data);
 			
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.RESPONSE_RECEIVED, {data: data}, true));
 		}
 		
 		private function openHandler(event:Event):void {
-			trace("openHandler: " + event);
+//			trace("openHandler: " + event);
 		}
 		
 		private function progressHandler(event:ProgressEvent):void {
-			trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);
+//			trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);
 		}
 		
 		private function securityErrorHandler(event:SecurityErrorEvent):void {
-			trace("securityErrorHandler: " + event);
+//			trace("securityErrorHandler: " + event);
 		}
 		
 		private function httpStatusHandler(event:HTTPStatusEvent):void {
-			trace("httpStatusHandler: " + event);
+//			trace("httpStatusHandler: " + event);
 		}
 		
 		private function ioErrorHandler(event:IOErrorEvent):void {
-			trace("ioErrorHandler: " + event);
+//			trace("ioErrorHandler: " + event);
 		}
 	}
 }

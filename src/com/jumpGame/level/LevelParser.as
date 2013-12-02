@@ -42,7 +42,7 @@ package com.jumpGame.level  {
 		 * @return block number
 		 */
 		public function requestBlock():void {
-			trace("requesting difficulty " + this.difficulty);
+//			trace("requesting difficulty " + this.difficulty);
 			var blockNumber:int;
 			switch (this.difficulty) {
 				case 7:
@@ -56,7 +56,7 @@ package com.jumpGame.level  {
 					break;
 				case 9:
 					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 30]);
-					blockNumber = int(Math.floor(Math.random() * 4) + 900);
+					blockNumber = int(Math.floor(Math.random() * 5) + 900);
 					this.generator.generate(blockNumber);
 					break;
 				case 10:
@@ -66,7 +66,7 @@ package com.jumpGame.level  {
 					break;
 				case 11:
 					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingTrainLeft, 15]);
-					blockNumber = int(Math.floor(Math.random() * 7) + 2000);
+					blockNumber = int(Math.floor(Math.random() * 8) + 2000);
 					this.generator.generate(blockNumber);
 					break;
 				case 12:
@@ -74,7 +74,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 13:
-					blockNumber = int(Math.floor(Math.random() * 5) + 4000);
+					blockNumber = int(Math.floor(Math.random() * 7) + 4000);
 					this.generator.generate(blockNumber);
 					break;
 				case 14:
@@ -83,7 +83,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 15:
-					blockNumber = int(Math.floor(Math.random() * 5) + 6000);
+					blockNumber = int(Math.floor(Math.random() * 6) + 6000);
 					this.generator.generate(blockNumber);
 					break;
 				case 16:
@@ -94,7 +94,7 @@ package com.jumpGame.level  {
 					break;
 				case 17:
 					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 20]);
-					blockNumber = int(Math.floor(Math.random() * 5) + 8000);
+					blockNumber = int(Math.floor(Math.random() * 6) + 8000);
 					this.generator.generate(blockNumber);
 					break;
 				case 18:
@@ -103,7 +103,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 19:
-					blockNumber = int(Math.floor(Math.random() * 6) + 10000);
+					blockNumber = int(Math.floor(Math.random() * 7) + 10000);
 					this.generator.generate(blockNumber);
 					break;
 				case 20:
@@ -111,7 +111,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 21:
-					blockNumber = int(Math.floor(Math.random() * 5) + 12000);
+					blockNumber = int(Math.floor(Math.random() * 6) + 12000);
 					this.generator.generate(blockNumber);
 					break;
 				case 22:
@@ -119,7 +119,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 23:
-					blockNumber = int(Math.floor(Math.random() * 4) + 14000);
+					blockNumber = int(Math.floor(Math.random() * 5) + 14000);
 					this.generator.generate(blockNumber);
 					break;
 				case 24:
@@ -129,7 +129,7 @@ package com.jumpGame.level  {
 				case 25:
 //					this.disableContraptions();
 					Statics.contraptionsEnabled = false;
-					blockNumber = int(Math.floor(Math.random() * 5) + 16000);
+					blockNumber = int(Math.floor(Math.random() * 6) + 16000);
 					this.generator.generate(blockNumber);
 					break;
 				case 26:
@@ -137,7 +137,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 27:
-					blockNumber = int(Math.floor(Math.random() * 2) + 18000);
+					blockNumber = int(Math.floor(Math.random() * 3) + 18000);
 					this.generator.generate(blockNumber);
 					break;
 				case 28:

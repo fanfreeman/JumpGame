@@ -11,6 +11,7 @@ package
 	import flash.system.Security;
 	import flash.ui.ContextMenu;
 	import flash.utils.getDefinitionByName;
+	import flash.utils.getTimer;
 	
 	[SWF(width = "756", height = "650", frameRate = "60", backgroundColor = "#4a4137")]
 	
@@ -32,7 +33,7 @@ package
 		private static var titleGirlImage:Class;
 		
 		// logo screen
-		private var brandBitmap:Bitmap;
+//		private var brandBitmap:Bitmap;
 		
 		// progress bars
 //		private var barSpriteTop:Sprite;
@@ -56,6 +57,8 @@ package
 		 */
 		private var _starling:Object;
 		
+		private var gameStartTime:int;
+		
 		public function JumpGame()
 		{
 //			super();
@@ -69,13 +72,15 @@ package
 			Security.loadPolicyFile("http://profile.ak.fbcdn.net/crossdomain.xml");
 			Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
 			
+			this.gameStartTime = getTimer();
+			
 			var menu:ContextMenu = new ContextMenu();
 			menu.hideBuiltInItems();
 			this.contextMenu = menu;
 			
-			brandBitmap = new brandImage() as Bitmap;
-			brandBitmap.alpha = 0;
-			this.addChild(brandBitmap);
+//			brandBitmap = new brandImage() as Bitmap;
+//			brandBitmap.alpha = 0;
+//			this.addChild(brandBitmap);
 			
 			titleBgBitmap = new titleBgImage() as Bitmap;
 			titleBgBitmap.alpha = 0;
@@ -111,11 +116,15 @@ package
 			
 			this.stop();
 			
-			TweenLite.to(brandBitmap, 1, {alpha: 1});
-			TweenLite.to(titleBgBitmap, 1, {alpha: 1, delay: 3});
-			TweenLite.to(titleBoyBitmap, 0.9, {y: 118, delay: 3.4, onComplete: boyYoyo});
-			TweenLite.to(titleGirlBitmap, 0.5, {y: 358, delay: 3.8});
-			TweenLite.to(titleLogoBitmap, 0.7, {y: PROGRESS_BAR_HEIGHT, delay: 3.6});
+//			TweenLite.to(brandBitmap, 1, {alpha: 1});
+//			TweenLite.to(titleBgBitmap, 1, {alpha: 1, delay: 3});
+//			TweenLite.to(titleBoyBitmap, 0.9, {y: 118, delay: 3.4, onComplete: boyYoyo});
+//			TweenLite.to(titleGirlBitmap, 0.5, {y: 358, delay: 3.8});
+//			TweenLite.to(titleLogoBitmap, 0.7, {y: PROGRESS_BAR_HEIGHT, delay: 3.6});
+			TweenLite.to(titleBgBitmap, 1, {alpha: 1});
+			TweenLite.to(titleBoyBitmap, 0.9, {y: 118, delay: 0.4, onComplete: boyYoyo});
+			TweenLite.to(titleGirlBitmap, 0.5, {y: 358, delay: 0.8});
+			TweenLite.to(titleLogoBitmap, 0.7, {y: PROGRESS_BAR_HEIGHT, delay: 0.6});
 			
 			var myTween:TweenLite;
 			function boyYoyo():void {
@@ -174,39 +183,49 @@ package
 		 */
 		private function loaderInfo_completeHandler(event:Event):void
 		{
-//			return; // for testing loading screen
+			this.checkShouldStart();
+		}
+		
+		private function checkShouldStart():void {
+			var timeElapsed:int = getTimer() - this.gameStartTime;
+			if (timeElapsed < 3000) {
+				TweenLite.delayedCall(1, checkShouldStart);
+				return;
+			}
+			
+			//			return; // for testing loading screen
 			
 			// kill tweens
-			TweenLite.killTweensOf(brandBitmap);
+			//			TweenLite.killTweensOf(brandBitmap);
 			TweenLite.killTweensOf(titleBgBitmap);
 			TweenLite.killTweensOf(titleBoyBitmap);
 			TweenLite.killTweensOf(titleGirlBitmap);
 			TweenLite.killTweensOf(titleLogoBitmap);
 			
 			// get rid of the progress bar
-//			barSpriteTop.graphics.clear();
-//			barSpriteRight.graphics.clear();
+			//			barSpriteTop.graphics.clear();
+			//			barSpriteRight.graphics.clear();
 			barSpriteBottom.graphics.clear();
-//			barSpriteLeft.graphics.clear();
+			//			barSpriteLeft.graphics.clear();
 			
-			this.removeChild(brandBitmap);
+			//			this.removeChild(brandBitmap);
 			this.removeChild(titleBgBitmap);
 			this.removeChild(titleBoyBitmap);
 			this.removeChild(titleGirlBitmap);
 			this.removeChild(titleLogoBitmap);
-//			this.removeChild(barSpriteTop);
-//			this.removeChild(barSpriteRight);
+			//			this.removeChild(barSpriteTop);
+			//			this.removeChild(barSpriteRight);
 			this.removeChild(barSpriteBottom);
-//			this.removeChild(barSpriteLeft);
-			brandBitmap = null;
+			//			this.removeChild(barSpriteLeft);
+			//			brandBitmap = null;
 			titleBgBitmap = null;
 			titleBoyBitmap = null;
 			titleGirlBitmap = null;
 			titleLogoBitmap = null;
-//			barSpriteTop = null;
-//			barSpriteRight = null;
+			//			barSpriteTop = null;
+			//			barSpriteRight = null;
 			barSpriteBottom = null;
-//			barSpriteLeft = null;
+			//			barSpriteLeft = null;
 			
 			//go to frame two because that's where the classes we need are located
 			this.gotoAndStop(2);
@@ -215,7 +234,7 @@ package
 			const StarlingType:Class = getDefinitionByName("starling.core.Starling") as Class;
 			const GameType:Class = getDefinitionByName("Game") as Class;
 			this._starling = new StarlingType(GameType, this.stage); // baseline_constrained
-//			this._starling = new StarlingType(GameType, this.stage, null, null, Context3DRenderMode.AUTO, Context3DProfile.BASELINE_EXTENDED);
+			//			this._starling = new StarlingType(GameType, this.stage, null, null, Context3DRenderMode.AUTO, Context3DProfile.BASELINE_EXTENDED);
 			this._starling.antiAliasing = 1;
 			this._starling.showStats = true;
 			this._starling.showStatsAt("left", "bottom");

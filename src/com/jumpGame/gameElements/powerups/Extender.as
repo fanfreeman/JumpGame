@@ -22,7 +22,7 @@ package com.jumpGame.gameElements.powerups
 			this.isActivated = true;
 			this.completionWarned = false;
 			this.completionTime = Statics.gameTime + 5000 + Statics.rankDuplication * 1000; // duration
-			trace("duplication duration: " + (5000 + Statics.rankDuplication * 1000));
+//			trace("duplication duration: " + (5000 + Statics.rankDuplication * 1000));
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 		}
 		

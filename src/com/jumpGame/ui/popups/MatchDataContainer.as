@@ -111,9 +111,12 @@ package com.jumpGame.ui.popups
 			contentContainer.addChild(player2Name);
 			
 			// player profile pictures
-			player1Picture = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000"));
+			player1Picture = new Image(Assets.getSprite("AtlasTexture8").getTexture("PictureSilhouette0000"));
 			player1Picture.x = 231;
 			player1Picture.y = 139;
+			var pictureScaleFactor:Number = 70 / player1Picture.width;
+			this.player1Picture.scaleX = pictureScaleFactor;
+			this.player1Picture.scaleY = pictureScaleFactor;
 			contentContainer.addChild(player1Picture);
 			
 			var pictureFrame1:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PictureFrame0000"));
@@ -121,9 +124,11 @@ package com.jumpGame.ui.popups
 			pictureFrame1.y = 129;
 			contentContainer.addChild(pictureFrame1);
 			
-			player2Picture = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000"));
+			player2Picture = new Image(Assets.getSprite("AtlasTexture8").getTexture("PictureSilhouette0000"));
 			player2Picture.x = 444;
 			player2Picture.y = 139;
+			this.player2Picture.scaleX = pictureScaleFactor;
+			this.player2Picture.scaleY = pictureScaleFactor;
 			contentContainer.addChild(player2Picture);
 			
 			var pictureFrame2:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PictureFrame0000"));
@@ -303,7 +308,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function initialize(isDone:Boolean):void {
-			trace("game id: " + Statics.gameId);
+//			trace("game id: " + Statics.gameId);
 			
 			contentContainer.alpha = 0;
 			popupContainer.scaleX = 0.5;
@@ -437,7 +442,7 @@ package com.jumpGame.ui.popups
 			if(ExternalInterface.available){
 				ExternalInterface.call("getProfilePictureUrl", facebookId);
 			} else {
-				trace("External interface unavailabe");
+//				trace("External interface unavailabe");
 			}
 		}
 		

@@ -614,7 +614,7 @@ package com.jumpGame.screens
 			this.hud.showAbilityIndicators();
 			
 			//test
-//			this.powerupsList[Constants.PowerupBlink].activate();
+//			this.powerupsList[Constants.PowerupExpansion].activate();
 //			hud.spinPowerupReel();
 		}
 		

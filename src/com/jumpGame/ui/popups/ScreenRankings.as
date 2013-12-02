@@ -25,8 +25,10 @@ package com.jumpGame.ui.popups
 		
 		private var btnGlobal:Button;
 		private var btnFriends:Button;
+		private var btnInvite:Button;
 		private var imgGlobalOn:Image;
 		private var imgFriendsOn:Image;
+		private var previouslyViewedFriends:Boolean = true;
 		
 		public function ScreenRankings(parent:Menu)
 		{
@@ -140,7 +142,18 @@ package com.jumpGame.ui.popups
 			listRankings.itemRendererProperties.pictureWidthField = "picture_width";
 			listRankings.addEventListener(Event.CHANGE, listRankingsChangeHandler);
 			
-//			rankingsArray = new Array();
+			// invite friends button
+			btnInvite = new Button();
+			btnInvite.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnInvite0000"));
+			btnInvite.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnInvite0000"));
+			btnInvite.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnInvite0000"));
+			btnInvite.hoverSkin.filter = Statics.btnBrightnessFilter;
+			btnInvite.downSkin.filter = Statics.btnInvertFilter;
+			btnInvite.useHandCursor = true;
+			btnInvite.x = Math.ceil(popup.width / 2) - 88;
+			btnInvite.y = popup.bounds.bottom - 57;
+			popupContainer.addChild(btnInvite);
+			btnInvite.addEventListener(Event.TRIGGERED, parent.btnInviteFriendsHandler);
 		}
 		
 		private function listRankingsChangeHandler(event:Event):void {
@@ -167,26 +180,59 @@ package com.jumpGame.ui.popups
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			this.visible = false;
+			
+			// hide tutorial pointer if needed
+			if (Statics.tutorialStep == 3) {
+				parent.hideTutorialPointer();
+				Statics.tutorialStep = 4;
+			}
 		}
 		
 		private function buttonGlobalHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
-			this.btnGlobal.visible = false;
-			this.imgFriendsOn.visible = false;
-			this.imgGlobalOn.visible = true;
-			this.btnFriends.visible = true;
-			Menu(this.parent).refreshRankingsGlobal();
+			this.showRankingsGlobal();
 		}
 		
 		private function buttonFriendsHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			this.showRankingsFriends();
+		}
+		
+		/**
+		 * Can be called from other classes to show global rankings
+		 */
+		public function showRankingsGlobal():void {
+			this.btnGlobal.visible = false;
+			this.imgFriendsOn.visible = false;
+			this.imgGlobalOn.visible = true;
+			this.btnFriends.visible = true;
+			Menu(this.parent).refreshRankingsGlobal();
+			previouslyViewedFriends = false;
+		}
+		
+		/**
+		 * Can be called from other classes to show friends rankings
+		 */
+		public function showRankingsFriends():void {
 			this.imgGlobalOn.visible = false;
 			this.btnFriends.visible = false;
 			this.btnGlobal.visible = true;
 			this.imgFriendsOn.visible = true;
 			Menu(this.parent).refreshRankingsFriends();
+			previouslyViewedFriends = true;
+		}
+		
+		/**
+		 * Show the previously opened rankings, be it global or friends
+		 */
+		public function showRankingsPrevious():void {
+			if (previouslyViewedFriends) {
+				this.showRankingsFriends();
+			} else {
+				this.showRankingsGlobal();
+			}
 		}
 	}
 }

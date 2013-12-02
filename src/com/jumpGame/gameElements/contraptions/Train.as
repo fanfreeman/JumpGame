@@ -22,7 +22,7 @@ package com.jumpGame.gameElements.contraptions
 			}
 			this.lookOutAnimation.visible = true;
 			this.show();
-			this.launchTime = Statics.gameTime + 2200 + int(Math.ceil(Math.random() * 500));
+			this.launchTime = Statics.gameTime + 2700 + int(Math.ceil(Math.random() * 500));
 			this.isLaunched = false;
 		}
 		

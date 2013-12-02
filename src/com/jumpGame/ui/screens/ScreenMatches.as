@@ -104,6 +104,7 @@ package com.jumpGame.ui.screens
 				button.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonStartGame0000"));
 				button.hoverSkin.filter = Statics.btnBrightnessFilter;
 				button.downSkin.filter = Statics.btnInvertFilter;
+				button.addEventListener(Event.TRIGGERED, buttonGameStartClickHandler);
 				return button;
 			};
 			startGamePicker.listFactory = function():List
@@ -133,7 +134,9 @@ package com.jumpGame.ui.screens
 				]);
 			startGamePicker.dataProvider = startGameOptions;
 			startGamePicker.selectedIndex = -1;
-			startGamePicker.popUpContentManager = new CalloutPopUpContentManager();
+			var popUpManager:CalloutPopUpContentManager = new CalloutPopUpContentManager();
+			popUpManager.addEventListener(Event.CLOSE, buttonGameStartCloseHandler);
+			startGamePicker.popUpContentManager = popUpManager;
 			startGamePicker.addEventListener(Event.CHANGE, buttonGameStartHandler);
 			
 			// your turn header
@@ -205,6 +208,23 @@ package com.jumpGame.ui.screens
 			listFinished.selectedIndex = -1;
 		}
 		
+		private function buttonGameStartClickHandler(event:Event):void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
+			// show tutorial pointer again
+			if (Statics.tutorialStep == 2) { // tutorial second step: create new match
+				Menu(this.owner).showTutorialSmartMatch();
+			}
+		}
+		
+		private function buttonGameStartCloseHandler(event:Event):void {
+			// show previous tutorial pointer again
+			if (Statics.tutorialStep == 2) { // tutorial second step: create new match
+//				Starling.juggler.delayCall(Menu(this.owner).checkTutorialPickerlistClose, 0.1);
+				Menu(this.owner).showTutorialStartGame();
+			}
+		}
+		
 		private function buttonGameStartHandler(event:Event):void {
 			if (startGamePicker.selectedIndex == -1) {
 				return;
@@ -214,11 +234,15 @@ package com.jumpGame.ui.screens
 				
 				// call JS
 				if(ExternalInterface.available){
-					trace("Calling JS...");
+//					trace("Calling JS...");
 					ExternalInterface.call("selectOpponent");
 					ExternalInterface.addCallback("returnOpponentToAs", opponentReturnedFromJs);
 				} else {
-					trace("External interface unavailabe");
+//					trace("External interface unavailabe");
+				}
+				
+				if (Statics.tutorialStep == 2) { // hide tutorial temporarily until new match is created
+//					Starling.juggler.delayCall(Menu(this.owner).makeTutorialInvisibleTemporarily, 0.1); // do not do this because player could just close the facebook ui dialog
 				}
 			}
 			else if (startGamePicker.selectedIndex == 1) { // smart match
@@ -227,6 +251,10 @@ package com.jumpGame.ui.screens
 				Menu(this.owner).displayLoadingNotice("Finding an opponent...");
 				Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 				Menu(this.owner).communicator.findSmartMatch();
+				
+				if (Statics.tutorialStep == 2) { // hide tutorial temporarily until new match is created
+					Starling.juggler.delayCall(Menu(this.owner).makeTutorialInvisibleTemporarily, 0.1); // delay a bit to really make it invisible
+				}
 			}
 			startGamePicker.selectedIndex = -1;
 			startGamePicker.popUpContentManager.close();

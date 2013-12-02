@@ -5,6 +5,7 @@ package com.jumpGame.screens
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.components.Badge;
+	import com.jumpGame.ui.components.TutorialPointer;
 	import com.jumpGame.ui.popups.DialogBox;
 	import com.jumpGame.ui.popups.GetLives;
 	import com.jumpGame.ui.popups.Instructions;
@@ -104,6 +105,8 @@ package com.jumpGame.screens
 		
 		private var firstClickSoundHidden:Boolean = false; // hide very first click sound because of tab change on game start
 		
+		private var tutorialPointer:TutorialPointer;
+		
 		public function Menu()
 		{
 			super();
@@ -137,6 +140,8 @@ package com.jumpGame.screens
 						Statics.playerHighScore = int(dataObj.high_score);
 						Statics.playerCoins = int(dataObj.coins);
 						Statics.playerGems = int(dataObj.gems);
+						Statics.roundsPlayed = int(dataObj.rounds_played);
+						if (Statics.tutorialStep != 4) Statics.tutorialStep = int(dataObj.tutorial_step); // 4 means tutorials completed, so don't show tutorials again
 						coinLabel.text = dataObj.coins;
 						gemLabel.text = dataObj.gems;
 						this.lives = int(dataObj.lives);
@@ -292,6 +297,31 @@ package com.jumpGame.screens
 							}
 							this.showDialogBox(nameString + "sent you a life. Accept and return the favor?", returnLife);
 						}
+						
+						// tutorial
+						if (Statics.tutorialStep == 1 && Statics.roundsPlayed == 0 && this.screenMatches.gamesMyTurn.length > 0) {
+							// if new player, show match details popup for tutorial match
+							this.screenMatches.listYourTurn.selectedIndex = 0;
+							if (this.tutorialPointer == null) {
+								this.tutorialPointer = new TutorialPointer();
+								this.addChild(this.tutorialPointer);
+							}
+							this.showTutorialPlay();
+						}
+						else if (Statics.tutorialStep == 2) { // tutorial second step: create new match
+							if (this.tutorialPointer == null) {
+								this.tutorialPointer = new TutorialPointer();
+								this.addChild(this.tutorialPointer);
+							}
+							this.showTutorialStartGame();
+						}
+						else if (Statics.tutorialStep == 3) { // tutorial second three: friends rankings
+							if (this.tutorialPointer == null) {
+								this.tutorialPointer = new TutorialPointer();
+								this.addChild(this.tutorialPointer);
+							}
+							this.showRankingsTutorial();
+						}
 					}
 					else if (dataObj.status == "new_match") { // new game created
 						// display match data popup
@@ -303,6 +333,10 @@ package com.jumpGame.screens
 						Statics.opponentFbid = dataObj.opponent_fbid;
 						Statics.resignedBy = '0';
 						this.showMatchDetailsPopup(false);
+						
+						if (Statics.tutorialStep == 2) { // tutorial second step: create new match
+							this.showTutorialPlay();
+						}
 					}
 					else if (dataObj.status == "rankings") {
 						rankingsCollection = new ListCollection();
@@ -373,6 +407,14 @@ package com.jumpGame.screens
 						}
 						
 						this.screenRankings.listRankings.dataProvider = rankingsCollection;
+						
+						if (Statics.tutorialStep == 3) { // tutorial second three: invite friends button
+							if (this.tutorialPointer == null) {
+								this.tutorialPointer = new TutorialPointer();
+								this.addChild(this.tutorialPointer);
+							}
+							this.showTutorialRankingsInvite();
+						}
 					}
 					else if (dataObj.status == "purchased_upgrade") { // successfully purchased upgrade
 						Statics.playerCoins = int(dataObj.coins);
@@ -422,7 +464,7 @@ package com.jumpGame.screens
 						this.badge.showAchievement("My Life Will Go On");
 					}
 					else if (dataObj.status == "error") { // error message received
-						trace("Error: " + dataObj.reason);
+//						trace("Error: " + dataObj.reason);
 					}
 				} else {
 					this.displayLoadingNotice("Communication Error #2222");
@@ -716,7 +758,7 @@ package com.jumpGame.screens
 		 */
 		private function onPictureLoaded(event:Event, facebookId:String):void
 		{
-			trace("picture loaded event received: " + facebookId);
+//			trace("picture loaded event received: " + facebookId);
 			
 			// if is player's picture, pass picture data to match details popup
 			if (facebookId == Statics.facebookId) {
@@ -781,7 +823,7 @@ package com.jumpGame.screens
 		
 		private function tabsChangeHandler(event:starling.events.Event):void
 		{
-			trace("tabs change");
+//			trace("tabs change");
 			// trigger match data refresh
 			
 			if (this.tabs.selectedIndex == -1) {
@@ -939,12 +981,25 @@ package com.jumpGame.screens
 		public function showRankingsScreen(event:starling.events.Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
-			this.refreshRankingsGlobal();
+			this.screenRankings.showRankingsPrevious();
 			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
 			screenRankings.initialize();
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('displayed Rankings screen');
+			}
+		}
+		
+		/**
+		 * Simply open the rankings screen to friends rankings
+		 */
+		public function showRankingsTutorial():void {
+			this.screenRankings.showRankingsFriends();
+			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
+			screenRankings.initialize();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('displayed tutorial friends Rankings screen');
 			}
 		}
 		
@@ -1029,6 +1084,14 @@ package com.jumpGame.screens
 		public function showInstructionsPopup(isOut:Boolean = false):void {
 			setChildIndex(popupInstructions, numChildren - 1);
 			popupInstructions.show();
+			
+			// tutorial pointers
+			if (Statics.tutorialStep == 1 && Statics.roundsPlayed == 0 && this.screenMatches.gamesMyTurn.length > 0) {
+				this.showTutorialInstructions();
+			}
+			else if (Statics.tutorialStep == 2) {
+				this.showTutorialInstructions();
+			}
 		}
 		
 		public function showBuyLivesDialog():void {
@@ -1049,7 +1112,7 @@ package com.jumpGame.screens
 				setChildIndex(dialogBox2, numChildren - 1);
 			}
 			else {
-				trace("No dialog boxes available");
+//				trace("No dialog boxes available");
 			}
 		}
 		
@@ -1091,11 +1154,11 @@ package com.jumpGame.screens
 		// show the apprequests dialog to pick friends to ask for lives
 		public function showAskFriendsForLives():void {
 			if(ExternalInterface.available){
-				trace("Calling JS...");
+//				trace("Calling JS...");
 				ExternalInterface.call("selectFriendsForLife");
 //				ExternalInterface.addCallback("returnFriendsForLifeToAs", friendsForLifeReturnedFromAs);
 			} else {
-				trace("External interface unavailabe");
+//				trace("External interface unavailabe");
 			}
 		}
 		
@@ -1118,10 +1181,10 @@ package com.jumpGame.screens
 		// call js to send life
 		private function sendLife():void {
 			if(ExternalInterface.available){
-				trace("Calling JS...");
+//				trace("Calling JS...");
 				ExternalInterface.call("sendLife", this.lifeRequests);
 			} else {
-				trace("External interface unavailabe");
+//				trace("External interface unavailabe");
 			}
 			
 //			this.hideDialogBox();
@@ -1135,10 +1198,10 @@ package com.jumpGame.screens
 //			rankLabel.text = "Lives: " + String(this.lives);
 			
 			if(ExternalInterface.available){
-				trace("Calling JS... " + this.lifeReceipts);
+//				trace("Calling JS... " + this.lifeReceipts);
 				ExternalInterface.call("sendLife", this.lifeReceipts);
 			} else {
-				trace("External interface unavailabe");
+//				trace("External interface unavailabe");
 			}
 			
 //			this.hideDialogBox();
@@ -1176,14 +1239,20 @@ package com.jumpGame.screens
 			this.screenUpgrades.visible = false;
 		}
 		
-		private function btnInviteFriendsHandler():void {
+		public function btnInviteFriendsHandler():void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			if(ExternalInterface.available){
-				trace("Calling JS...");
+//				trace("Calling JS...");
 				ExternalInterface.call("inviteFriends");
 			} else {
-				trace("External interface unavailabe");
+//				trace("External interface unavailabe");
+			}
+			
+			// hide tutorial pointer if needed
+			if (Statics.tutorialStep == 3) {
+				this.hideTutorialPointer();
+				Statics.tutorialStep = 4;
 			}
 		}
 		
@@ -1192,6 +1261,58 @@ package com.jumpGame.screens
 			var minutes:uint = (totalSeconds - seconds) / 60;
 			if (seconds < 10) return String(minutes) + ":0" + String(seconds);
 			else return String(minutes) + ":" + String(seconds);
+		}
+		
+		public function hideTutorialPointer():void {
+			if (this.tutorialPointer != null) {
+				this.tutorialPointer.hide();
+			}
+		}
+		
+		public function makeTutorialInvisibleTemporarily():void {
+			if (this.tutorialPointer != null) {
+				this.tutorialPointer.visible = false;
+			}
+		}
+		
+		public function showTutorialPlay():void {
+			if (this.tutorialPointer != null) {
+				this.tutorialPointer.visible = true;
+				this.tutorialPointer.hide();
+				setChildIndex(tutorialPointer, numChildren - 1);
+				this.tutorialPointer.pointAtPlayBtn();
+			}
+		}
+		
+		public function showTutorialInstructions():void {
+			if (this.tutorialPointer != null) {
+				this.tutorialPointer.hide();
+				setChildIndex(tutorialPointer, numChildren - 1);
+				this.tutorialPointer.pointAtInstructionsNextBtn();
+			}
+		}
+		
+		public function showTutorialStartGame():void {
+			if (this.tutorialPointer != null) {
+				this.tutorialPointer.hide();
+				this.tutorialPointer.pointAtStartGameBtn();
+			}
+		}
+		
+		public function showTutorialSmartMatch():void {
+			if (this.tutorialPointer != null) {
+				this.tutorialPointer.hide();
+				setChildIndex(tutorialPointer, numChildren - 1);
+				this.tutorialPointer.pointAtSmartMatchBtn();
+			}
+		}
+		
+		public function showTutorialRankingsInvite():void {
+			if (this.tutorialPointer != null) {
+				this.tutorialPointer.hide();
+				setChildIndex(tutorialPointer, numChildren - 1);
+				this.tutorialPointer.pointAtRankingsInvite();
+			}
 		}
 	}
 }

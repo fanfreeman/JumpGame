@@ -48,7 +48,7 @@ package com.jumpGame.gameElements.contraptions
 		}
 		
 		public function debug(heroGy:Number):void {
-			trace("bell gx: " + this.gx + " bell y from hero: " + (this.gy - heroGy));
+//			trace("bell gx: " + this.gx + " bell y from hero: " + (this.gy - heroGy));
 		}
 		
 		public function contact(distanceFromCenter:Number, heroDy:Number):Boolean {

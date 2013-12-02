@@ -90,6 +90,7 @@ package com.jumpGame.ui.popups
 		
 		private function buttonNextHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndStart.play();
+			this.parent.hideTutorialPointer();
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "play"}, true));
 			this.visible = false;
 		}

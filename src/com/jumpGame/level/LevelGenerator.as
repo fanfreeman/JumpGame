@@ -10,6 +10,8 @@ package com.jumpGame.level {
 		}
 		
 		public function generate(type:uint):void {
+			trace("generating block number: " + type);
+			
 			// distribution arrays
 			var elementDistribution:Array;
 			var elementsPerRowDistribution:Array;
@@ -51,12 +53,15 @@ package com.jumpGame.level {
 				case 903:
 					this.generateStraightLine();
 					break;
+				case 904:
+					this.generateStairWithName("PlatformNormal", 4);
+					break;
 				
 				case 1000: // 1 size 5 normal platform per row
 					// normal, drop, mobile, normalboost, etc.
 					elementDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
 					// size 1, 2, 3, 4, 5
-					sizeDistribution = new Array(0.0, 0.0, 0.2, 0.6, 1.0)
+					sizeDistribution = new Array(0.0, 0.0, 0.05, 0.6, 1.0)
 					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				case 1001: // [1] size [4-5] [normal, drop] platforms per row
@@ -86,15 +91,18 @@ package com.jumpGame.level {
 				case 2006: // designed pattern
 					this.generateBeginnerSpinningCircles();
 					break;
+				case 2007:
+					this.generateStairWithName("PlatformDrop", 4);
+					break;
 				
 				case 3000: // [1] size [3-5] [normal, drop, mobile, normalboost, mobileboost]
 					elementDistribution = new Array(0.3, 0.6, 0.9, 0.97, 0.97, 1.0, 1.0, 1.0);
-					sizeDistribution = new Array(0.0, 0.0, 0.3, 1.0, 1.0)
+					sizeDistribution = new Array(0, 0, 0, 0.6, 1.0)
 					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
-				case 3001: // [1] size [3-4] [normal, drop, mobile, normalboost, dropboost, mobileboost]
+				case 3001: // [1] size [3-5] [normal, drop, mobile, normalboost, dropboost, mobileboost]
 					elementDistribution = new Array(0.2, 0.5, 0.8, 0.9, 0.98, 1.0, 1.0, 1.0);
-					sizeDistribution = new Array(0.0, 0.0, 0.5, 1.0, 1.0)
+					sizeDistribution = new Array(0, 0, 0, 0.7, 1.0)
 					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				
@@ -113,10 +121,16 @@ package com.jumpGame.level {
 				case 4004:
 					this.generateStarsCircularMotion();
 					break;
+				case 4005:
+					this.generateBeginnerSpinningCircles(2);
+					break;
+				case 4006:
+					this.generateStairWithName("PlatformNormalBoost", 4, 2);
+					break;
 				
-				case 5000: // [2] size [2-4] [normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
+				case 5000: // [2] size [3-4] [normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
 					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
-					sizeDistribution = new Array(0.0, 0.4, 0.8, 1.0, 1.0)
+					sizeDistribution = new Array(0, 0, 0.3, 1.0, 1.0)
 					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
 					break;
 				
@@ -135,9 +149,12 @@ package com.jumpGame.level {
 				case 6004:
 					this.generateStarCrossLarge();
 					break;
+				case 6005:
+					this.generateStairWithName("PlatformDropBoost", 4, 2);
+					break;
 				
 				case 7000:
-					this.generateDesignedMobileReuplsor();
+					this.generateDesignedPlatformAndReuplsor(1);
 					break;
 				case 7001:
 					this.generateDesigned2000(3);
@@ -158,10 +175,13 @@ package com.jumpGame.level {
 				case 8004:
 					this.generateMickeyMouseLarge();
 					break;
+				case 8005:
+					this.generateStairWithName("PlatformMobile", 4);
+					break;
 				
 				case 9000: // [2] size [1-3] [normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
 					elementDistribution = new Array(0.03, 0.35, 0.8, 0.83, 0.86, 0.9, 0.95, 1.0);
-					sizeDistribution = new Array(0, 0.6, 1.0, 1.0, 1.0)
+					sizeDistribution = new Array(0, 0, 0.7, 1.0, 1.0)
 					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
 					break;
 				
@@ -183,10 +203,13 @@ package com.jumpGame.level {
 				case 10005:
 					this.generateDesigned2000(10);
 					break;
+				case 10006:
+					this.generateDesignedPlatformAndReuplsor(2);
+					break;
 				
-				case 11000: // [1] size [2-3] [normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
+				case 11000: // [1] size [2-4] [normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
 					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
-					sizeDistribution = new Array(0.0, 0.6, 1.0, 1.0, 1.0)
+					sizeDistribution = new Array(0.0, 0, 0.5, 1.0, 1.0)
 					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				
@@ -205,10 +228,13 @@ package com.jumpGame.level {
 				case 12004:
 					this.generateStarCrossLarge(2);
 					break;
+				case 12005:
+					this.generateStairWithName("PlatformMobileBoost", 4, 2);
+					break;
 				
 				case 13000:
 					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
-					sizeDistribution = new Array(0.0, 0.6, 1.0, 1.0, 1.0)
+					sizeDistribution = new Array(0, 0, 0.5, 1.0, 1.0)
 					this.generateRandom(height, false, elementDistribution, sizeDistribution, false, 0.33, 0);
 					break;
 				
@@ -224,10 +250,13 @@ package com.jumpGame.level {
 				case 14003:
 					this.generateStarCrossLarge(3);
 					break;
+				case 14004:
+					this.generateStairWithName("Bouncer", 4, 2);
+					break;
 				
 				case 15000:
 					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
-					sizeDistribution = new Array(0.0, 0.6, 1.0, 1.0, 1.0)
+					sizeDistribution = new Array(0, 0, 0.5, 1.0, 1.0)
 					this.generateRandom(height, false, elementDistribution, sizeDistribution, false, 0, 0.5);
 					break;
 				
@@ -245,6 +274,9 @@ package com.jumpGame.level {
 					break;
 				case 16004:
 					this.generateStarCrossLarge(5);
+					break;
+				case 16005:
+					this.generateBouncersPairs();
 					break;
 				
 				case 17000:
@@ -268,6 +300,9 @@ package com.jumpGame.level {
 					break;
 				case 18001:
 					this.generateDesigned2000(11);
+					break;
+				case 18002:
+					this.generateStairWithName("PlatformSuper", 4);
 					break;
 				
 //				case 20000:
@@ -294,7 +329,18 @@ package com.jumpGame.level {
 //					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
 //					sizeDistribution = new Array(0.0, 0.6, 1.0, 1.0, 1.0)
 //					this.generateRandom(height, false, elementDistribution, sizeDistribution, false, 0, 0.5);
-					this.generateStarsCircularMotion();
+					
+					this.generateDesignedPlatformAndReuplsor(2);
+//					this.generateStairWithName("PlatformNormal", 4);
+//					this.generateStairWithName("PlatformDrop", 4);
+//					this.generateStairWithName("PlatformNormalBoost", 4, 2);
+//					this.generateStairWithName("PlatformDropBoost", 4, 2);
+//					this.generateStairWithName("PlatformMobile", 4);
+//					this.generateStairWithName("PlatformMobileBoost", 4, 2);
+//					this.generateStairWithName("Bouncer", 4, 2);
+//					this.generateStairWithName("PlatformSuper", 4);
+//					this.generateBouncersPairs();
+					
 //					this.generateStarCrossLarge(4);
 					break;
 //					// 1 per row, 2 per row, 3 per row, 4 per row, 5 per row
@@ -837,8 +883,17 @@ package com.jumpGame.level {
 				gy = this.builder.currentY * Constants.UnitHeight;
 				this.builder.levelElementsArray.push([gy, gx, "Star"]);
 				this.builder.currentY += 2;
+				
+				var randomNum:Number = Math.random();
+				if (randomNum < 0.2) {
+					gx = Math.random() * 600 - 300;
+					if (Math.abs(gx - prevGx1) > 70 && Math.abs(gx - prevGx2) > 70) this.builder.levelElementsArray.push([gy, gx, "PlatformDrop", 4]);
+				}
+				else if (randomNum > 0.95) {
+					this.addCoins();
+				}
 			}
-			this.builder.currentY += 4;
+			this.builder.currentY += 2;
 		}
 		
 		// easy big radiating star with four layers
@@ -1048,16 +1103,18 @@ package com.jumpGame.level {
 //		}
 		
 		// hard: two mobiles and one repulsor per row; 8 rows
-		private function generateDesignedMobileReuplsor():void {
+		private function generateDesignedPlatformAndReuplsor(difficulty:uint = 1):void {
 			var gx:Number = 0;
 			var gy:Number = 0;
 			for (var ri:uint = 0; ri < 12; ri++) { // loop through rows
 				
-				gx = -250;
+				if (difficulty == 1) gx = -250;
+				else if (difficulty == 2) gx = Math.random() * 200 - 350;
 				gy = this.builder.currentY * Constants.UnitHeight;
 				this.builder.levelElementsArray.push([gy, gx, "PlatformMobileBoost", 4]);
 				
-				gx = 250;
+				if (difficulty == 1) gx = 250;
+				else if (difficulty == 2) gx = Math.random() * 200 + 150;
 				gy = this.builder.currentY * Constants.UnitHeight;
 				this.builder.levelElementsArray.push([gy, gx, "PlatformMobileBoost", 4]);
 				
@@ -1091,7 +1148,7 @@ package com.jumpGame.level {
 			var gx:Number = 0;
 			var gy:Number;
 			var j:uint;
-			for (var i:uint = 0; i < 10; i++) { // loop through rows of spinners
+			for (var i:uint = 0; i < 6; i++) { // loop through rows of spinners
 				gx = Math.random() * 400 - 200;
 				gy = this.builder.currentY * Constants.UnitHeight;
 				
@@ -1148,7 +1205,7 @@ package com.jumpGame.level {
 				gx -= 50;
 				
 				gy = (this.builder.currentY - 0.5) * Constants.UnitHeight;
-				this.builder.levelElementsArray.push([gy, gx, "PlatformDropBoost", 3]);
+				this.builder.levelElementsArray.push([gy, gx, "PlatformDrop", 3]);
 				
 				// ears
 				gy = (this.builder.currentY + 2.5) * Constants.UnitHeight;
@@ -1171,24 +1228,37 @@ package com.jumpGame.level {
 				gy = this.builder.currentY * Constants.UnitHeight;
 				
 				if (gx < 0) {
+					this.builder.levelElementsArray.push([gy, gx, "Coin"]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true, Math.PI / 2]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true, Math.PI]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true, Math.PI * 3 / 2]);
 				} else {
+					this.builder.levelElementsArray.push([gy, gx, "Coin"]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false, Math.PI / 2]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false, Math.PI]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false, Math.PI * 3 / 2]);
 				}
 				
-				if (Math.random() < 0.33) { // coins
+				var randomNum:Number = Math.random();
+				gy = (this.builder.currentY + 3) * Constants.UnitHeight;
+				if (randomNum <= 0.33) { // coins
 					gx = Math.random() * 400 - 200;
-					gy = (this.builder.currentY + 3) * Constants.UnitHeight;
 					this.builder.levelElementsArray.push([gy, gx, "Coin", 0, 0, 0, 100, null, false]);
 					this.builder.levelElementsArray.push([gy, gx, "Coin", 0, 0, 0, 100, null, false, Math.PI / 2]);
 					this.builder.levelElementsArray.push([gy, gx, "Coin", 0, 0, 0, 100, null, false, Math.PI]);
 					this.builder.levelElementsArray.push([gy, gx, "Coin", 0, 0, 0, 100, null, false, Math.PI * 3 / 2]);
+				}
+				else if (randomNum > 0.33 && randomNum <= 0.5) { // decorative platforms
+					this.builder.levelElementsArray.push([gy, -300, "PlatformNormal", 4]);
+					this.builder.levelElementsArray.push([gy, -180, "PlatformNormal", 4]);
+					this.builder.levelElementsArray.push([gy, -60, "PlatformNormal", 4]);
+				}
+				else if (randomNum > 0.5 && randomNum <= 0.67) {
+					this.builder.levelElementsArray.push([gy, 300, "PlatformNormal", 4]);
+					this.builder.levelElementsArray.push([gy, 180, "PlatformNormal", 4]);
+					this.builder.levelElementsArray.push([gy, 60, "PlatformNormal", 4]);
 				}
 				this.builder.currentY += 6;
 			}
@@ -1235,13 +1305,13 @@ package com.jumpGame.level {
 				gy = this.builder.currentY * Constants.UnitHeight;
 				
 				if (gx < 0) {
-					this.builder.levelElementsArray.push([gy, gx, "Star"]);
+					this.builder.levelElementsArray.push([gy, gx, "StarBlue"]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, null, true]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true, Math.PI]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, null, true, Math.PI]);
 				} else {
-					this.builder.levelElementsArray.push([gy, gx, "Star"]);
+					this.builder.levelElementsArray.push([gy, gx, "StarBlue"]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 200, null, false]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false, Math.PI]);
@@ -1258,9 +1328,16 @@ package com.jumpGame.level {
 			while(this.builder.currentY < targetY) {
 				gy = this.builder.currentY * Constants.UnitHeight;
 				if (difficulty == 1) { // two straight lines at the left and right edges
-					this.builder.levelElementsArray.push([gy, -300, "Star"]);
-					this.builder.levelElementsArray.push([gy, 300, "Star"]);
-					this.builder.levelElementsArray.push([gy, 0, "Coin"]);
+					var randomNum:Number = Math.random();
+					if (randomNum < 0.5) {
+						this.builder.levelElementsArray.push([gy, -100, "Star"]);
+						this.builder.levelElementsArray.push([gy, 100, "Star"]);
+						this.builder.levelElementsArray.push([gy, 0, "Coin"]);
+					} else {
+						this.builder.levelElementsArray.push([gy, -100, "Coin"]);
+						this.builder.levelElementsArray.push([gy, 100, "Coin"]);
+						this.builder.levelElementsArray.push([gy, 0, "Star"]);
+					}
 				}
 				else if (difficulty == 2) {
 					// left column
@@ -1291,8 +1368,8 @@ package com.jumpGame.level {
 			}
 			gy = this.builder.currentY * Constants.UnitHeight;
 			if (difficulty == 1) {
-				this.builder.levelElementsArray.push([gy, -300, "StarBlue"]);
-				this.builder.levelElementsArray.push([gy, 300, "StarBlue"]);
+				this.builder.levelElementsArray.push([gy, -100, "StarBlue"]);
+				this.builder.levelElementsArray.push([gy, 100, "StarBlue"]);
 			}
 			else if (difficulty == 2 || difficulty == 3) {
 				this.builder.levelElementsArray.push([gy, gx - 50, "StarBlue"]);
@@ -1353,10 +1430,12 @@ package com.jumpGame.level {
 				}
 			}
 			
-			for (var i:uint = 0; i < 4; i++) { // obstacles
-				gx = Math.random() * 600 - 300;
-				gy = (this.builder.currentY + i + 1) * Constants.UnitHeight;
-				this.builder.levelElementsArray.push([gy, gx, "StarDark"]);
+			if (difficulty > 1) {
+				for (var i:uint = 0; i < 4; i++) { // obstacles
+					gx = Math.random() * 600 - 300;
+					gy = (this.builder.currentY + i + 1) * Constants.UnitHeight;
+					this.builder.levelElementsArray.push([gy, gx, "StarDark"]);
+				}
 			}
 			
 			if (difficulty == 2 || difficulty == 4) {
@@ -1505,18 +1584,93 @@ package com.jumpGame.level {
 			var gy:Number;
 			var targetY:int = this.builder.currentY + 60;
 			while(this.builder.currentY < targetY) {
-				gx = Math.random() * 600 - 300
+				gx = Math.random() * 600 - 300;
 				gy = this.builder.currentY * Constants.UnitHeight;
 				this.builder.levelElementsArray.push([gy, gx, "Bouncer"]);
 				
 				if (Math.random() < 0.33) {
-					gx = Math.random() * 600 - 300
+					gx = Math.random() * 600 - 300;
 					gy = (this.builder.currentY + 2) * Constants.UnitHeight;
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0.5]);
 				}
 				
 				this.builder.currentY += 4;
 			}
+		}
+		
+		/**
+		 * Pairs of bouncers
+		 */
+		private function generateBouncersPairs():void {
+			var gx:Number;
+			var gy:Number;
+			var targetY:int = this.builder.currentY + 60;
+			while(this.builder.currentY < targetY) {
+				gx = Math.random() * 400 - 200;
+				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, gx, "Bouncer"]);
+				if (gx < 0) {
+					this.builder.levelElementsArray.push([(this.builder.currentY + 1) * Constants.UnitHeight, gx - 170, "Bouncer"]);
+				} else {
+					this.builder.levelElementsArray.push([(this.builder.currentY + 1) * Constants.UnitHeight, gx + 170, "Bouncer"]);
+				}
+				
+				if (Math.random() < 0.4) {
+					gx = Math.random() * 600 - 300
+					gy = (this.builder.currentY + 2) * Constants.UnitHeight;
+					this.builder.levelElementsArray.push([gy, gx, "StarRed", 0, 0, 0.5]);
+				}
+				
+				this.builder.currentY += 4;
+			}
+		}
+		
+		/**
+		 * Ascending stair with given platform
+		 */
+		private function generateStairWithName(platformName:String, size:int = 0, stairHeight:uint = 1):void {
+			if (Math.random() < 0.5) { //left to right ascending
+				if (platformName == "Bouncer") {
+					this.builder.levelElementsArray.push([(this.builder.currentY + 0 * stairHeight + 1) * Constants.UnitHeight, -470, platformName, size]);
+				}
+				this.builder.levelElementsArray.push([(this.builder.currentY + 0 * stairHeight) * Constants.UnitHeight, -300, platformName, size]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 0 * stairHeight + 2) * Constants.UnitHeight, -300, "Coin"]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 1 * stairHeight) * Constants.UnitHeight, -180, platformName, size]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 1 * stairHeight + 2) * Constants.UnitHeight, -180, "Coin"]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 2 * stairHeight) * Constants.UnitHeight, -60, platformName, size]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 2 * stairHeight + 2) * Constants.UnitHeight, -60, "Coin"]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 3 * stairHeight) * Constants.UnitHeight, 60, platformName, size]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 3 * stairHeight + 2) * Constants.UnitHeight, 60, "Coin"]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 4 * stairHeight) * Constants.UnitHeight, 180, platformName, size]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 4 * stairHeight + 2) * Constants.UnitHeight, 180, "Coin"]);
+				if (platformName == "Bouncer") {
+					this.builder.levelElementsArray.push([(this.builder.currentY + 4 * stairHeight + 1) * Constants.UnitHeight, 350, platformName, size]);
+				} else {
+					this.builder.levelElementsArray.push([(this.builder.currentY + 5 * stairHeight) * Constants.UnitHeight, 300, platformName, size]);
+				}
+				this.builder.levelElementsArray.push([(this.builder.currentY + 5 * stairHeight + 2) * Constants.UnitHeight, 300, "Coin"]);
+			} else { // right to left ascending
+				if (platformName == "Bouncer") {
+					this.builder.levelElementsArray.push([(this.builder.currentY + 0 * stairHeight + 1) * Constants.UnitHeight, 470, platformName, size]);
+				}
+				this.builder.levelElementsArray.push([(this.builder.currentY + 0 * stairHeight) * Constants.UnitHeight, 300, platformName, size]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 0 * stairHeight + 2) * Constants.UnitHeight, 300, "Coin"]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 1 * stairHeight) * Constants.UnitHeight, 180, platformName, size]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 1 * stairHeight + 2) * Constants.UnitHeight, 180, "Coin"]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 2 * stairHeight) * Constants.UnitHeight, 60, platformName, size]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 2 * stairHeight + 2) * Constants.UnitHeight, 60, "Coin"]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 3 * stairHeight) * Constants.UnitHeight, -60, platformName, size]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 3 * stairHeight + 2) * Constants.UnitHeight, -60, "Coin"]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 4 * stairHeight) * Constants.UnitHeight, -180, platformName, size]);
+				this.builder.levelElementsArray.push([(this.builder.currentY + 4 * stairHeight + 2) * Constants.UnitHeight, -180, "Coin"]);
+				if (platformName == "Bouncer") {
+					this.builder.levelElementsArray.push([(this.builder.currentY + 4 * stairHeight + 1) * Constants.UnitHeight, -350, platformName, size]);
+				} else {
+					this.builder.levelElementsArray.push([(this.builder.currentY + 5 * stairHeight) * Constants.UnitHeight, -300, platformName, size]);
+				}
+				this.builder.levelElementsArray.push([(this.builder.currentY + 5 * stairHeight + 2) * Constants.UnitHeight, -300, "Coin"]);
+			}
+			
+			this.builder.currentY += 6 * stairHeight + 2;
 		}
 		
 		// DESIGNER TOOL

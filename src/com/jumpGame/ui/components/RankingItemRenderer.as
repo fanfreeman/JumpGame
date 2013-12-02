@@ -248,7 +248,7 @@ package com.jumpGame.ui.components
 			}
 			
 			if (!this.profilePicture) {
-				this.profilePicture = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000"));
+				this.profilePicture = new Image(Assets.getSprite("AtlasTexture8").getTexture("PictureSilhouette0000"));
 				profilePicture.touchable = false;
 				profilePicture.x = 16;
 				profilePicture.y = 15;
@@ -350,7 +350,7 @@ package com.jumpGame.ui.components
 			if(ExternalInterface.available){
 				ExternalInterface.call("getProfilePictureUrl", facebookId);
 			} else {
-				trace("External interface unavailabe");
+//				trace("External interface unavailabe");
 			}
 		}
 		

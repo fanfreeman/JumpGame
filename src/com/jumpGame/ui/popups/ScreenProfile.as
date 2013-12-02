@@ -7,7 +7,6 @@ package com.jumpGame.ui.popups
 	import flash.display.Bitmap;
 	import flash.display.Loader;
 	import flash.events.Event;
-	import flash.external.ExternalInterface;
 	import flash.net.URLRequest;
 	
 	import feathers.controls.Button;
@@ -85,7 +84,7 @@ package com.jumpGame.ui.popups
 			buttonClose.y = popup.bounds.top + 28;
 			
 			// player profile picture
-			playerPicture = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000"));
+			playerPicture = new Image(Assets.getSprite("AtlasTexture8").getTexture("PictureSilhouette0000"));
 			playerPicture.x = 107;
 			playerPicture.y = 111;
 			popupContainer.addChild(playerPicture);

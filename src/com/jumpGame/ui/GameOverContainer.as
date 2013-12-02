@@ -700,7 +700,7 @@ package com.jumpGame.ui
 		}
 		
 		private function dataReceived(event:NavigationEvent):void {
-			trace(event.params.data);
+//			trace(event.params.data);
 			proceedBtn.visible = true;
 		}
 		

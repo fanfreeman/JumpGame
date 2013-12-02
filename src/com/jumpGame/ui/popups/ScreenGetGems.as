@@ -320,11 +320,11 @@ package com.jumpGame.ui.popups
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			if(ExternalInterface.available){
-				trace("Calling JS...");
+//				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_handful");
 				ExternalInterface.addCallback("returnPurchaseStatusToAs", purchaseStatusReturnedFromJs);
 			} else {
-				trace("External interface unavailabe");
+//				trace("External interface unavailabe");
 			}
 		}
 		
@@ -332,11 +332,11 @@ package com.jumpGame.ui.popups
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			if(ExternalInterface.available){
-				trace("Calling JS...");
+//				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_pouch");
 				ExternalInterface.addCallback("returnPurchaseStatusToAs", purchaseStatusReturnedFromJs);
 			} else {
-				trace("External interface unavailabe");
+//				trace("External interface unavailabe");
 			}
 		}
 		
@@ -344,11 +344,11 @@ package com.jumpGame.ui.popups
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			if(ExternalInterface.available){
-				trace("Calling JS...");
+//				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_sack");
 				ExternalInterface.addCallback("returnPurchaseStatusToAs", purchaseStatusReturnedFromJs);
 			} else {
-				trace("External interface unavailabe");
+//				trace("External interface unavailabe");
 			}
 		}
 		
@@ -356,11 +356,11 @@ package com.jumpGame.ui.popups
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			if(ExternalInterface.available){
-				trace("Calling JS...");
+//				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_box");
 				ExternalInterface.addCallback("returnPurchaseStatusToAs", purchaseStatusReturnedFromJs);
 			} else {
-				trace("External interface unavailabe");
+//				trace("External interface unavailabe");
 			}
 		}
 		
@@ -368,11 +368,11 @@ package com.jumpGame.ui.popups
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			if(ExternalInterface.available){
-				trace("Calling JS...");
+//				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_chest");
 				ExternalInterface.addCallback("returnPurchaseStatusToAs", purchaseStatusReturnedFromJs);
 			} else {
-				trace("External interface unavailabe");
+//				trace("External interface unavailabe");
 			}
 		}
 		
@@ -380,11 +380,11 @@ package com.jumpGame.ui.popups
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			if(ExternalInterface.available){
-				trace("Calling JS...");
+//				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_truckload");
 				ExternalInterface.addCallback("returnPurchaseStatusToAs", purchaseStatusReturnedFromJs);
 			} else {
-				trace("External interface unavailabe");
+//				trace("External interface unavailabe");
 			}
 		}
 		

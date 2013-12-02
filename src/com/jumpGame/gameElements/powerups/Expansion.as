@@ -93,7 +93,7 @@ package com.jumpGame.gameElements.powerups
 			
 			this.gx = this.hero.gx;
 			this.gy = this.hero.gy;
-			this.launchInterval = 150;
+			this.launchInterval = 500;
 			
 //			chainsImage.visible = true;
 //			propellerOffImage.visible = true;
@@ -127,11 +127,13 @@ package com.jumpGame.gameElements.powerups
 			
 			this.isActivated = true;
 			this.completionWarned = false;
-			this.completionTime = Statics.gameTime + 20000;
+			this.completionTime = Statics.gameTime + 25000;
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 			
 			// schedule first obstacle
 			this.nextLaunchTime = Statics.gameTime + 1000;
+			
+			hud.showMessage("Press and Hold to Accelerate", 3000);
 		}
 		
 		public function update(timeDiff:Number):Boolean {
@@ -155,7 +157,7 @@ package com.jumpGame.gameElements.powerups
 			// launch obstacle
 			if (Statics.gameTime > this.nextLaunchTime) {
 				this.nextLaunchTime = int(Statics.gameTime + launchInterval); // schedule next launch time
-				if (launchInterval > 75) launchInterval -= 1;
+				if (launchInterval > 75) launchInterval -= 6;
 				return true;
 			}
 			

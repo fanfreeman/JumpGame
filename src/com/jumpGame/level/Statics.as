@@ -99,6 +99,8 @@ package com.jumpGame.level
 		public static var userId:String;
 		public static var facebookId:String;
 		public static var resignedBy:String;
+		public static var roundsPlayed:uint;
+		public static var tutorialStep:uint;
 		
 		// player picture
 		public static var playerPictureBitmap:Bitmap = null;
