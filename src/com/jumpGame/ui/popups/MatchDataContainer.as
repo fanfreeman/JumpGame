@@ -2,7 +2,6 @@ package com.jumpGame.ui.popups
 {
 	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.events.NavigationEvent;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	
 	import flash.display.Bitmap;
@@ -20,6 +19,7 @@ package com.jumpGame.ui.popups
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.extensions.PDParticleSystem;
 	import starling.text.TextField;
 	import starling.textures.Texture;
 	import starling.utils.HAlign;
@@ -45,6 +45,10 @@ package com.jumpGame.ui.popups
 		private var playerPictureWidth:uint = 0;
 		private var opponentPictureWidth:uint = 0;
 		
+		private var badgeFirstPlace:Image;
+		private var badgeSecondPlace:Image;
+		private var particleConfetti:PDParticleSystem;
+		
 		public function MatchDataContainer(parent:Menu)
 		{
 			super();
@@ -67,6 +71,11 @@ package com.jumpGame.ui.popups
 			
 			contentContainer = new Sprite();
 			popupContainer = new Sprite();
+			
+			// confetti
+			particleConfetti = new PDParticleSystem(XML(new ParticleAssets.ParticleConfettiXML()), Assets.getSprite("AtlasTexture2").getTexture("ParticleConfetti0000"));
+			particleConfetti.touchable = false;
+			this.addChild(particleConfetti);
 			
 			// popup artwork
 			var popup:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupMatchDetails0000"));
@@ -255,6 +264,22 @@ package com.jumpGame.ui.popups
 			btnResign.y = 524;
 			btnResign.label = "Decline";
 			
+			// second place badge
+			badgeSecondPlace = new Image(Assets.getSprite("AtlasTexture8").getTexture("BadgeSecondPlace0000"));
+			badgeSecondPlace.pivotX = Math.ceil(badgeSecondPlace.width / 2);
+			badgeSecondPlace.pivotY = Math.ceil(badgeSecondPlace.height / 2);
+			badgeSecondPlace.x = 478;
+			badgeSecondPlace.y = 274;
+			contentContainer.addChild(badgeSecondPlace);
+			
+			// first place badge
+			badgeFirstPlace = new Image(Assets.getSprite("AtlasTexture8").getTexture("BadgeFirstPlace0000"));
+			badgeFirstPlace.pivotX = Math.ceil(badgeFirstPlace.width / 2);
+			badgeFirstPlace.pivotY = Math.ceil(badgeFirstPlace.height / 2);
+			badgeFirstPlace.x = 265;
+			badgeFirstPlace.y = 274;
+			contentContainer.addChild(badgeFirstPlace);
+			
 			// winner text
 //			winnerText = new TextField(400, 50, "Player 1 Wins!", fontBadabb.fontName, fontLithosBold44.fontSize, 0xff0000);
 //			winnerText.hAlign = HAlign.CENTER;
@@ -275,24 +300,83 @@ package com.jumpGame.ui.popups
 			opponentPictureLoader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onOpponentPictureLoadComplete);
 		}
 		
+		private function animateWinLoseBadges(winningPlayer:uint, fireConfetti:Boolean):void {
+			if (winningPlayer == 1) {
+				badgeFirstPlace.x = 265;
+				badgeSecondPlace.x = 478;
+			}
+			else {
+				badgeFirstPlace.x = 478;
+				badgeSecondPlace.x = 265;
+			}
+			badgeSecondPlace.visible = true;
+			badgeSecondPlace.scaleX = 10;
+			badgeSecondPlace.scaleY = 10;
+			
+			Starling.juggler.tween(badgeSecondPlace, 0.5, {
+				transition: Transitions.EASE_IN,
+				scaleX: 1,
+				scaleY: 1
+//				onComplete: parent.shakeCamera(20)
+			});
+			
+			Starling.juggler.delayCall(animateWinnerBadge, 0.6);
+			Starling.juggler.delayCall(secondPlaceSlam, 0.5);
+			Starling.juggler.delayCall(firstPlaceSlam, 1.1);
+			
+			if (fireConfetti) {
+				Starling.juggler.delayCall(startParticleConfetti, 1.5);
+			}
+		}
+		
+		private function secondPlaceSlam():void {
+			if (!Sounds.sfxMuted) Sounds.sndDrum2.play();
+			parent.shakeCamera(16);
+		}
+		
+		private function firstPlaceSlam():void {
+			if (!Sounds.sfxMuted) Sounds.sndDrum1.play();
+			parent.shakeCamera(16);
+		}
+		
+		// scale in first place badge
+		private function animateWinnerBadge():void {
+			badgeFirstPlace.alpha = 0;
+			badgeFirstPlace.visible = true;
+			badgeFirstPlace.scaleX = 10;
+			badgeFirstPlace.scaleY = 10;
+			Starling.juggler.tween(badgeFirstPlace, 0.5, {
+				transition: Transitions.EASE_IN,
+				scaleX: 1,
+				scaleY: 1,
+				alpha: 1
+			});
+		}
+		
+		// start confetti particles
+		private function startParticleConfetti():void {
+			particleConfetti.visible = true;
+			Starling.juggler.add(particleConfetti);
+			particleConfetti.emitterX = Statics.stageWidth / 2;
+			particleConfetti.emitterY = 150;
+			particleConfetti.start();
+		}
+		
 		private function buttonPlayHandler(event:starling.events.Event):void {
 			if (btnPlay.label == "Play") {
 //				if (!Sounds.sfxMuted) Sounds.sndStart.play();
 //				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "play"}, true));
 				parent.showInstructionsPopup();
-				if (!Sounds.sfxMuted) Sounds.sndClick.play();
-				
-			} else {
-				if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			}
-			this.visible = false;
+			this.close();
 		}
 		
 		private function buttonResignHandler(event:starling.events.Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
-			
 			resignMatch();
-			this.visible = false;
+			this.close();
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on button: resign match');
+			}
 		}
 		
 		private function resignMatch():void {
@@ -302,8 +386,16 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonCloseHandler(event:starling.events.Event):void {
+			this.close();
+		}
+		
+		// close this window
+		private function close():void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
-			
+			if (particleConfetti.isEmitting) { // stop confetti particles
+				particleConfetti.stop(true);
+				Starling.juggler.remove(particleConfetti);
+			}
 			this.visible = false;
 		}
 		
@@ -376,6 +468,9 @@ package com.jumpGame.ui.popups
 			player2TotalText.text = player2ScoreTotal.toString();
 			
 			// check if a player has resigned
+			badgeFirstPlace.visible = false;
+			badgeSecondPlace.visible = false;
+			particleConfetti.visible = false;
 //			trace("resigned by: " + Statics.resignedBy);
 			btnPlay.x = Statics.stageWidth / 2;
 			btnResign.isEnabled = false;
@@ -383,15 +478,19 @@ package com.jumpGame.ui.popups
 				if (Statics.resignedBy == Statics.userId) { // current player resigned this game
 					if (Statics.isPlayer2) {
 //						winnerText.text = player1Name.text + " Wins!";
+						this.animateWinLoseBadges(1, false);
 					} else {
 //						winnerText.text = player2Name.text + " Wins!";
+						this.animateWinLoseBadges(2, false);
 					}
 				}
 				else { // the opponent resigned this game
 					if (Statics.isPlayer2) {
 //						winnerText.text = player2Name.text + " Wins!";
+						this.animateWinLoseBadges(2, true);
 					} else {
 //						winnerText.text = player1Name.text + " Wins!";
+						this.animateWinLoseBadges(1, true);
 					}
 				}
 //				winnerText.visible = true;
@@ -407,16 +506,26 @@ package com.jumpGame.ui.popups
 			
 			// check if game has ended
 //			winnerText.visible = false;
-//			if (Statics.currentRound >= 6) {
-//				if (player1ScoreTotal > player2ScoreTotal) { // player 1 wins
+			if (Statics.currentRound >= 6) {
+				if (player1ScoreTotal > player2ScoreTotal) { // player 1 wins
+					if (Statics.isPlayer2) { // current player loses
+						this.animateWinLoseBadges(1, false);
+					} else { // current player wins
+						this.animateWinLoseBadges(1, true);
+					}
 //					winnerText.text = player1Name.text + " Wins!";
-//				} else if (player2ScoreTotal > player1ScoreTotal) { // player 2 wins
+				} else if (player2ScoreTotal > player1ScoreTotal) { // player 2 wins
+					if (Statics.isPlayer2) { // current player wins
+						this.animateWinLoseBadges(2, true);
+					} else { // current player loses
+						this.animateWinLoseBadges(2, false);
+					}
 //					winnerText.text = player2Name.text + " Wins!";
-//				} else { // it's a draw
+				} else { // it's a draw
 //					winnerText.text = "It's a draw!";
-//				}
+				}
 //				winnerText.visible = true;
-//			}
+			}
 			
 			if (isDone) {
 				btnPlay.label = "Done";

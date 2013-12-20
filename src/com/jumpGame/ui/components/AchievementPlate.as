@@ -30,19 +30,19 @@ package com.jumpGame.ui.components
 			var plateHeight:Number = 50;
 			
 			// checkbox
-			var checkbox:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverCheckbox0000"));
+			var checkbox:Image = new Image(Statics.assets.getTexture("GameOverCheckbox0000"));
 			checkbox.y = (plateHeight - checkbox.height) / 2 + 2;
 			addChild(checkbox);
 			
 			// objective title
-			title = new TextField(240, 28, "Bouncy", fontMaterhorn24.fontName, fontMaterhorn24.fontSize, 0xffffff);
+			title = new TextField(300, 28, "Bouncy", fontMaterhorn24.fontName, fontMaterhorn24.fontSize, 0xffffff);
 			title.vAlign = VAlign.CENTER;
 			title.hAlign = HAlign.LEFT;
 			title.x = checkbox.bounds.right + 25;
 			addChild(title);
 			
 			// objective description
-			description = new TextField(240, plateHeight * 1 / 3, "Jump 1000 meters in one game", fontBellGothicBlack13.fontName, fontBellGothicBlack13.fontSize, 0xc89a07);
+			description = new TextField(300, plateHeight * 1 / 3, "Jump 1000 meters in one game", fontBellGothicBlack13.fontName, fontBellGothicBlack13.fontSize, 0xc89a07);
 			description.vAlign = VAlign.CENTER;
 			description.hAlign = HAlign.LEFT;
 			description.x = title.x;
@@ -50,7 +50,7 @@ package com.jumpGame.ui.components
 			addChild(description);
 			
 			// checkmark
-			checkmark = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverCheckmark0000"));
+			checkmark = new Image(Statics.assets.getTexture("GameOverCheckmark0000"));
 			checkmark.x = 3;
 			checkmark.y = (plateHeight - checkmark.height) / 2;
 			checkmark.visible = false;
@@ -58,11 +58,11 @@ package com.jumpGame.ui.components
 			
 			// coin reward
 			// coin animation
-			coin = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
+			coin = new MovieClip(Statics.assets.getTextures("CoinLarge"), 40);
 			coin.pivotX = Math.ceil(coin.width / 2);
 			coin.pivotY = Math.ceil(coin.height / 2);
 			coin.rotation = -Math.PI / 8;
-			coin.x = title.bounds.right + coin.width / 2 + 30;
+			coin.x = title.bounds.right + coin.width / 2 - 30;
 			coin.y = plateHeight / 2;
 			starling.core.Starling.juggler.add(coin);
 			addChild(coin);

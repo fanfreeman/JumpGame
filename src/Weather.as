@@ -3,13 +3,12 @@ package
 	import com.greensock.TweenLite;
 	import com.greensock.easing.Linear;
 	import com.greensock.easing.Quad;
-	import com.jumpGame.level.Statics;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.extensions.PDParticleSystem;
-	import starling.textures.Texture;
+//	import starling.textures.Texture;
 	
 	public class Weather extends Sprite
 	{
@@ -67,6 +66,7 @@ package
 		private static var particleRain:PDParticleSystem;
 		
 		public function Weather():void {
+			this.touchable = false;
 //			// setup snow
 //			wind.max = 400;
 //			wind.min = 0;
@@ -96,7 +96,7 @@ package
 			
 			// setup rain
 			if (Statics.isHardwareRendering) {
-				particleRain = new PDParticleSystem(XML(new ParticleAssets.ParticleRainXML()), Texture.fromBitmap(new ParticleAssets.ParticleRainTexture()));
+				particleRain = new PDParticleSystem(XML(new ParticleAssets.ParticleRainXML()), Assets.getSprite("AtlasTexture2").getTexture("ParticleRain0000"));
 				Starling.juggler.add(particleRain);
 				this.addChild(particleRain);
 				particleRain.emitterX = Constants.StageWidth / 2;

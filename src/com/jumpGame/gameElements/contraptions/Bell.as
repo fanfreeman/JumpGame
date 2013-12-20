@@ -1,7 +1,6 @@
 package com.jumpGame.gameElements.contraptions
 {
 	import com.jumpGame.gameElements.Contraption;
-	import com.jumpGame.level.Statics;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
@@ -27,7 +26,7 @@ package com.jumpGame.gameElements.contraptions
 		
 		protected function createArt():void
 		{
-			bellImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Bell0000"));
+			bellImage = new Image(Statics.assets.getTexture("Bell0000"));
 			bellImage.pivotX = Math.ceil(bellImage.width / 2); // center image on registration point
 			bellImage.pivotY = Math.ceil(bellImage.height / 2);
 			this.addChild(bellImage);
@@ -35,8 +34,8 @@ package com.jumpGame.gameElements.contraptions
 		
 		override public function update(timeDiff:Number):void {
 			this.dy -= Constants.Gravity * timeDiff;
-			if (this.dy < Constants.MaxHeroFallVelocity) {
-				this.dy = Constants.MaxHeroFallVelocity;
+			if (this.dy < Constants.MaxObjectFallVelocity) {
+				this.dy = Constants.MaxObjectFallVelocity;
 			}
 			
 //			if (this.dy < 0) this.isTouched = false;

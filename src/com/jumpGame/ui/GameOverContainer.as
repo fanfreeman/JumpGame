@@ -2,7 +2,6 @@ package com.jumpGame.ui
 {
 	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.events.NavigationEvent;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.AchievementPlate;
 	
@@ -43,6 +42,9 @@ package com.jumpGame.ui
 		// distance display
 		private var distanceText:TextField;
 		
+		// base score display
+		private var baseScoreText:TextField;
+		
 		// coin display
 		private var coinText:TextField;
 		
@@ -50,11 +52,8 @@ package com.jumpGame.ui
 		private var scoreText:TextField;
 		
 		// buttons
+		private var btnNext:Button;
 		private var proceedBtn:Button;
-		
-		// fonts
-		private var fontMaterhorn24:Font;
-		private var fontMaterhorn25:Font;
 		
 		private var communicator:Communicator;
 		
@@ -63,7 +62,7 @@ package com.jumpGame.ui
 		// array to store new achievement ids earned this round
 		private var newAchievementsArray:Array = new Array();
 		
-		private var achievementSetShown:uint = 0;
+		private var achievementSetShown:uint;
 		
 		// achievement plates
 		private var achievementPlate1:AchievementPlate;
@@ -83,6 +82,7 @@ package com.jumpGame.ui
 		public function GameOverContainer(menu:Menu)
 		{
 			super();
+			this.visible = false;
 			this.menu = menu;
 			this.drawGameOver();
 			this.communicator = new Communicator();
@@ -94,6 +94,8 @@ package com.jumpGame.ui
 //			this.addNewAchievement(4);
 //			this.addNewAchievement(5);
 //			this.addNewAchievement(6);
+//			this.addNewAchievement(3);
+//			this.addNewAchievement(11);
 		}
 		
 		/**
@@ -173,9 +175,40 @@ package com.jumpGame.ui
 			addChild(scoreContainer);
 			
 			// get fonts for text display
-			fontMaterhorn24 = Fonts.getFont("Materhorn24");
-			fontMaterhorn25 = Fonts.getFont("Materhorn25");
+			var fontMaterhorn24:Font = Fonts.getFont("Materhorn24");
+			var fontMaterhorn25:Font = Fonts.getFont("Materhorn25");
+			var fontTotalScore:Font = Fonts.getFont("Pulsing72");
 			
+			///////////////////////////////////////////////////////////////////
+			// bof total score
+			var totalScoreContainer:Sprite = new Sprite();
+			
+			// score icon
+//			var scoreIcon:Image = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("StarYellow0000"));
+//			totalScoreContainer.addChild(scoreIcon);
+			
+			// score label
+			var scoreLabel:TextField = new TextField(140, 80, "Total Score:", fontMaterhorn25.fontName, fontMaterhorn25.fontSize, 0xffffff);
+			scoreLabel.vAlign = VAlign.CENTER;
+			scoreLabel.hAlign = HAlign.LEFT;
+//			scoreLabel.x = scoreIcon.bounds.right + 20;
+			totalScoreContainer.addChild(scoreLabel);
+			
+			// score value
+			scoreText = new TextField(250, 80, "", fontTotalScore.fontName, fontTotalScore.fontSize, 0xffffff);
+			scoreText.vAlign = VAlign.CENTER;
+			scoreText.hAlign = HAlign.LEFT;
+			scoreText.x = scoreLabel.bounds.right + 20;
+			totalScoreContainer.addChild(scoreText);
+			
+//			totalScoreContainer.pivotX = Math.ceil(totalScoreContainer.width / 2);
+			totalScoreContainer.x = Statics.stageWidth * 3 / 10 + 2;
+			totalScoreContainer.y = Statics.stageHeight * 3.6 / 10 + yModifier;
+			scoreContainer.addChild(totalScoreContainer);
+			// eof total score
+			///////////////////////////////////////////////////////////////////
+			
+			///////////////////////////////////////////////////////////////////
 			// bof distance
 			var distanceContainer:Sprite = new Sprite();
 			
@@ -191,86 +224,112 @@ package com.jumpGame.ui
 			distanceContainer.addChild(distanceLabel);
 			
 			// distance value
-			distanceText = new TextField(70, distanceIcon.height, "", fontMaterhorn24.fontName, fontMaterhorn24.fontSize, 0xffffff);
+			distanceText = new TextField(100, distanceIcon.height, "", fontMaterhorn24.fontName, fontMaterhorn24.fontSize, 0xffffff);
 			distanceText.vAlign = VAlign.CENTER;
 			distanceText.hAlign = HAlign.LEFT;
 			distanceText.x = distanceLabel.bounds.right + 20;
 			distanceContainer.addChild(distanceText);
 			
-			distanceContainer.pivotX = Math.ceil(distanceContainer.width / 2);
-			distanceContainer.x = Statics.stageWidth * 2.5 / 10;
-			distanceContainer.y = Statics.stageHeight * 3.4 / 10 + yModifier;
+//			distanceContainer.pivotX = Math.ceil(distanceContainer.width / 2);
+			distanceContainer.x = Statics.stageWidth * 3 / 10;
+			distanceContainer.y = Statics.stageHeight * 5 / 10 + yModifier;
 			scoreContainer.addChild(distanceContainer);
 			// eof distance
+			///////////////////////////////////////////////////////////////////
 			
+			///////////////////////////////////////////////////////////////////
+			// bof base score
+			var baseScoreContainer:Sprite = new Sprite();
+			
+			// coin icon
+			var baseScoreIcon:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverIconBaseScore0000"));
+			baseScoreContainer.addChild(baseScoreIcon);
+			
+			// coin label
+			var baseScoreLabel:TextField = new TextField(130, baseScoreIcon.height, "Base Score:", fontMaterhorn24.fontName, fontMaterhorn24.fontSize, 0xffffff);
+			baseScoreLabel.vAlign = VAlign.CENTER;
+			baseScoreLabel.hAlign = HAlign.LEFT;
+			baseScoreLabel.x = baseScoreIcon.bounds.right + 20;
+			baseScoreContainer.addChild(baseScoreLabel);
+			
+			// coin value
+			baseScoreText = new TextField(100, baseScoreIcon.height, "", fontMaterhorn24.fontName, fontMaterhorn24.fontSize, 0xffffff);
+			baseScoreText.vAlign = VAlign.CENTER;
+			baseScoreText.hAlign = HAlign.LEFT;
+			baseScoreText.x = baseScoreLabel.bounds.right + 20;
+			baseScoreContainer.addChild(baseScoreText);
+			
+//			baseScoreContainer.pivotX = Math.ceil(baseScoreContainer.width / 2);
+			baseScoreContainer.x = Statics.stageWidth * 3 / 10 + 3;
+			baseScoreContainer.y = Statics.stageHeight * 6.2 / 10 + yModifier;
+			scoreContainer.addChild(baseScoreContainer);
+			// eof coins
+			///////////////////////////////////////////////////////////////////
+			
+			///////////////////////////////////////////////////////////////////
 			// bof coins
 			coinContainer = new Sprite();
 			
 			// coin icon
-			var coinIcon:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverIconCoin0000"));
+			var coinIcon:MovieClip = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("CoinLarge"), 40);
+			coinIcon.pivotX = Math.ceil(coinIcon.width / 2);
+			coinIcon.pivotY = Math.ceil(coinIcon.height / 2);
+			coinIcon.rotation = -Math.PI / 8;
+			coinIcon.x = Math.ceil(coinIcon.width / 2);
+			coinIcon.y = Math.ceil(coinIcon.height / 2);
+			starling.core.Starling.juggler.add(coinIcon);
 			coinContainer.addChild(coinIcon);
 			
 			// coin label
-			var coinLabel:TextField = new TextField(100, coinIcon.height, "Coins:", fontMaterhorn24.fontName, fontMaterhorn24.fontSize, 0xffffff);
+			var coinLabel:TextField = new TextField(150, coinIcon.height, "Coins Earned:", fontMaterhorn24.fontName, fontMaterhorn24.fontSize, 0xffffff);
 			coinLabel.vAlign = VAlign.CENTER;
 			coinLabel.hAlign = HAlign.LEFT;
-			coinLabel.x = coinIcon.bounds.right + 20;
+			coinLabel.x = coinIcon.bounds.right;
 			coinContainer.addChild(coinLabel);
 			
 			// coin value
-			coinText = new TextField(70, coinIcon.height, "", fontMaterhorn24.fontName, fontMaterhorn24.fontSize, 0xffffff);
+			coinText = new TextField(120, coinIcon.height, "", fontMaterhorn24.fontName, fontMaterhorn24.fontSize, 0xffffff);
 			coinText.vAlign = VAlign.CENTER;
 			coinText.hAlign = HAlign.LEFT;
 			coinText.x = coinLabel.bounds.right + 20;
 			coinContainer.addChild(coinText);
 			
-			coinContainer.pivotX = Math.ceil(coinContainer.width / 2);
-			coinContainer.x = Statics.stageWidth * 7.5 / 10;
-			coinContainer.y = Statics.stageHeight * 3.4 / 10 + yModifier;
+//			coinContainer.pivotX = Math.ceil(coinContainer.width / 2);
+			coinContainer.x = Statics.stageWidth * 3 / 10 - 10;
+			coinContainer.y = Statics.stageHeight * 7.4 / 10 + yModifier - 13;
 			scoreContainer.addChild(coinContainer);
 			// eof coins
-			
-			// bof total score
-			var totalScoreContainer:Sprite = new Sprite();
-			
-			// score icon
-			var scoreIcon:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverIconDistance0000"));
-			totalScoreContainer.addChild(scoreIcon);
-			
-			// score label
-			var scoreLabel:TextField = new TextField(140, scoreIcon.height, "Total Score:", fontMaterhorn25.fontName, fontMaterhorn25.fontSize, 0xffffff);
-			scoreLabel.vAlign = VAlign.CENTER;
-			scoreLabel.hAlign = HAlign.LEFT;
-			scoreLabel.x = scoreIcon.bounds.right + 20;
-			totalScoreContainer.addChild(scoreLabel);
-			
-			// score value
-			scoreText = new TextField(100, scoreIcon.height, "", fontMaterhorn25.fontName, fontMaterhorn25.fontSize, 0xffffff);
-			scoreText.vAlign = VAlign.CENTER;
-			scoreText.hAlign = HAlign.LEFT;
-			scoreText.x = scoreLabel.bounds.right + 20;
-			totalScoreContainer.addChild(scoreText);
-			
-			totalScoreContainer.pivotX = Math.ceil(totalScoreContainer.width / 2);
-			totalScoreContainer.x = Statics.stageWidth / 2;
-			totalScoreContainer.y = Statics.stageHeight * 4.2 / 10 + yModifier;
-			scoreContainer.addChild(totalScoreContainer);
-			// eof total score
+			///////////////////////////////////////////////////////////////////
 			
 			// earned achievements header
-			headerAchievementsEarned = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverHeaderAchievements0000"));
+			headerAchievementsEarned = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverHeaderObjEarned0000"));
 			headerAchievementsEarned.pivotX = Math.ceil(headerAchievementsEarned.width / 2);
 			headerAchievementsEarned.y = Statics.stageHeight * 5.3 / 10 + yModifier + 5;
 			addChild(headerAchievementsEarned);
 			
 			// earned achievements header
-			headerAchievementsAim = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverHeaderAchievements0000"));
+			headerAchievementsAim = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverHeaderObjAim0000"));
 			headerAchievementsAim.pivotX = Math.ceil(headerAchievementsAim.width / 2);
 			headerAchievementsAim.y = Statics.stageHeight * 5.3 / 10 + yModifier + 5;
 			addChild(headerAchievementsAim);
 			
 			// achievements
 			this.createAchievementPlates();
+			
+			// next button
+			btnNext = new Button();
+			var nextBtnImage:Image = new Image(Assets.getSprite("AtlasTexture8").getTexture("InstructionsBtnNext0000"));
+			btnNext.defaultSkin = nextBtnImage;
+			btnNext.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("InstructionsBtnNext0000"));
+			btnNext.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("InstructionsBtnNext0000"));
+			btnNext.hoverSkin.filter = Statics.btnBrightnessFilter;
+			btnNext.downSkin.filter = Statics.btnInvertFilter;
+			btnNext.useHandCursor = true;
+			this.addChild(btnNext);
+			btnNext.pivotX = Math.ceil(nextBtnImage.width / 2);
+			btnNext.x = Statics.stageWidth / 2;
+			btnNext.y = Statics.stageHeight - nextBtnImage.height - 35;
+			btnNext.addEventListener(Event.TRIGGERED, onNextClick);
 			
 			// finish button
 			proceedBtn = new Button();
@@ -282,7 +341,7 @@ package com.jumpGame.ui
 			proceedBtn.downSkin.filter = Statics.btnInvertFilter;
 			proceedBtn.useHandCursor = true;
 			this.addChild(proceedBtn);
-			proceedBtn.validate();
+//			proceedBtn.validate();
 			proceedBtn.pivotX = Math.ceil(proceedBtnImage.width / 2);
 			proceedBtn.x = Statics.stageWidth / 2;
 			proceedBtn.y = Statics.stageHeight - proceedBtnImage.height - 35;
@@ -293,7 +352,7 @@ package com.jumpGame.ui
 			roundCoins = new Vector.<MovieClip>();
 			var coin:MovieClip;
 			for (var i:uint = 0; i < 20; i++) {
-				coin = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
+				coin = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("CoinLarge"), 40);
 				roundCoins.push(coin);
 			}
 		}
@@ -332,6 +391,16 @@ package com.jumpGame.ui
 			achievementPlate3.uncheck();
 		}
 		
+		private function onNextClick(event:Event):void {
+			this.scoreContainer.visible = false;
+			
+			// initialize achievement plates
+//			Starling.juggler.delayCall(checkForNextAchievementSet, 4);
+			this.checkForNextAchievementSet();
+			this.btnNext.visible = false;
+			this.proceedBtn.visible = true;
+		}
+		
 		private function onProceedClick(event:Event):void
 		{
 			// clean up stuff
@@ -356,9 +425,13 @@ package com.jumpGame.ui
 		}
 		
 		// show scores and post to backend
-		public function initialize(coinsObtained:int, distanceTraveled:int):void
+		public function initialize(baseScore:int, distanceTraveled:int):void
 		{
 			if (!Sounds.sfxMuted) Sounds.sndFanfare.play();
+			
+			// hide buttons
+			btnNext.visible = false;
+			proceedBtn.visible = false;
 			
 			// ready confetti particles
 			Starling.juggler.add(Statics.particleConfetti);
@@ -374,25 +447,34 @@ package com.jumpGame.ui
 			
 			// reset other elements
 			congrats.scaleX = 0;
+			scoreContainer.visible = true;
 			scoreContainer.alpha = 0;
 			headerAchievementsEarned.x = Statics.stageWidth + headerAchievementsEarned.width / 2;
 			headerAchievementsAim.x = Statics.stageWidth + headerAchievementsAim.width / 2;
 			
 			// reset achievement plates
 			resetAchievementPlates();
+			achievementSetShown = 0;
 			
 			// calculate total score
-			if (Statics.rankCoinDoubler == 1) { // check if coin doubler in possession
-				roundScore = int(coinsObtained / 2) + distanceTraveled;
-			} else {
-				roundScore = coinsObtained + distanceTraveled;
+//			if (Statics.rankCoinDoubler == 1) { // check if coin doubler in possession
+//				roundScore = int(coinsObtained / 2) + distanceTraveled;
+//			} else {
+//				roundScore = coinsObtained + distanceTraveled;
+//			}
+			roundScore = baseScore + distanceTraveled * 3;
+			var coinsObtained:int = Math.round(roundScore / 5);
+			var coinsObtainedFinal:int = coinsObtained;
+			if (Statics.rankCoinDoubler == 1) {
+				coinsObtainedFinal = coinsObtained * 2;
 			}
 			
 			// send new score to backend
 			var jsonStr:String = JSON.stringify({
-				coins: coinsObtained,
 				distance: distanceTraveled,
+				base_score: baseScore,
 				score: roundScore,
+				coins: coinsObtained,
 				game_id: Statics.gameId,
 				round: Statics.currentRound,
 				achievements: this.newAchievementsArray
@@ -402,12 +484,14 @@ package com.jumpGame.ui
 			
 			// update score display
 			distanceText.text = distanceTraveled.toString();
-//			if (Statics.rankCoinDoubler == 1) {
-//				coinText.text = coinsObtained.toString() + " x 2 = " + coinsObtainedFinal.toString();
-//			} else {
-				coinText.text = coinsObtained.toString();
-//			}
+			baseScoreText.text = baseScore.toString();
 			scoreText.text = roundScore.toString();
+			if (Statics.rankCoinDoubler == 1) {
+				coinText.text = coinsObtained.toString() + " x 2 = " + coinsObtainedFinal.toString();
+			} else {
+				coinText.text = coinsObtained.toString();
+			}
+			
 			this.visible = true;
 			
 			// animated tweens
@@ -455,13 +539,10 @@ package com.jumpGame.ui
 				nextTween: tweenScoreContainer
 			});
 			
-			// initialize achievement plates
-			Starling.juggler.delayCall(checkForNextAchievementSet, 4);
-			
 			// round coins flyout effect
 //			if (coinsObtained > 0) {
-				var locationX:Number = coinContainer.x - coinContainer.pivotX;
-				var locationY:Number = coinContainer.y - coinContainer.pivotY;
+				var locationX:Number = coinContainer.x + 11;
+				var locationY:Number = coinContainer.y + 11;
 				for (var i:uint = 0; i < 20; i++) {
 					roundCoins[i].visible = false;
 					starling.core.Starling.juggler.add(roundCoins[i]);
@@ -617,6 +698,7 @@ package com.jumpGame.ui
 				this.showAchievementSet();
 				this.achievementSetShown++;
 			} else { // show the aim for set
+				this.newAchievementsArray.length = 0;
 				this.showAchievementAimForSet();
 			}
 		}
@@ -624,12 +706,18 @@ package com.jumpGame.ui
 		/**
 		 * Return the id of the next unearned achievement
 		 */
-		private function findNextUnearnedAchievement(index:uint):uint {
-			var listLength:uint = Statics.achievementsList.length;
-			for (var i:uint = index + 1; i < listLength; i++) {
-				if (!Statics.achievementsList[i]) return i;
+		private function findNextUnearnedAchievement(index:uint):int {
+//			var listLength:uint = Statics.achievementsList.length;
+//			for (var i:uint = index + 1; i < listLength; i++) {
+//				if (!Statics.achievementsList[i]) return i;
+//			}
+//			return 0;
+			
+			var listLength:uint = Constants.AchievementsProgression.length;
+			for (var i:uint = index; i < listLength; i++) {
+				if (!Statics.achievementsList[Constants.AchievementsProgression[i]]) return i;
 			}
-			return 0;
+			return -1;
 		}
 		
 		/**
@@ -648,38 +736,44 @@ package com.jumpGame.ui
 				x: Statics.stageWidth / 2
 			});
 			
-			var nextUnearnedIndex:uint = this.findNextUnearnedAchievement(0);
-			var data:Array = Constants.AchievementsData[nextUnearnedIndex];
-			this.achievementPlate1.initialize(data[1], data[2], data[3], data[4]);
-			achievementPlate1.visible = true;
-			if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.2); // play slide sfx
-			Starling.juggler.tween(achievementPlate1, 0.2, {
-				transition: Transitions.EASE_OUT,
-				x: Statics.stageWidth / 2,
-				delay: 0.2
-			});
+			var nextUnearnedProgressIndex:int = this.findNextUnearnedAchievement(0);
+			if (nextUnearnedProgressIndex != -1) {
+				var data:Array = Constants.AchievementsData[Constants.AchievementsProgression[nextUnearnedProgressIndex]];
+				this.achievementPlate1.initialize(data[1], data[2], data[3], data[4]);
+				achievementPlate1.visible = true;
+				if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.2); // play slide sfx
+				Starling.juggler.tween(achievementPlate1, 0.2, {
+					transition: Transitions.EASE_OUT,
+					x: Statics.stageWidth / 2,
+					delay: 0.2
+				});
+			}
 			
-			nextUnearnedIndex = this.findNextUnearnedAchievement(nextUnearnedIndex);
-			data = Constants.AchievementsData[nextUnearnedIndex];
-			this.achievementPlate2.initialize(data[1], data[2], data[3], data[4]);
-			achievementPlate2.visible = true;
-			if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.4); // play slide sfx
-			Starling.juggler.tween(achievementPlate2, 0.2, {
-				transition: Transitions.EASE_OUT,
-				x: Statics.stageWidth / 2,
-				delay: 0.4
-			});
+			nextUnearnedProgressIndex = this.findNextUnearnedAchievement(nextUnearnedProgressIndex + 1);
+			if (nextUnearnedProgressIndex != -1) {
+				data = Constants.AchievementsData[Constants.AchievementsProgression[nextUnearnedProgressIndex]];
+				this.achievementPlate2.initialize(data[1], data[2], data[3], data[4]);
+				achievementPlate2.visible = true;
+				if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.4); // play slide sfx
+				Starling.juggler.tween(achievementPlate2, 0.2, {
+					transition: Transitions.EASE_OUT,
+					x: Statics.stageWidth / 2,
+					delay: 0.4
+				});
+			}
 			
-			nextUnearnedIndex = this.findNextUnearnedAchievement(nextUnearnedIndex);
-			data = Constants.AchievementsData[nextUnearnedIndex];
-			this.achievementPlate3.initialize(data[1], data[2], data[3], data[4]);
-			achievementPlate3.visible = true;
-			if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.6); // play slide sfx
-			Starling.juggler.tween(achievementPlate3, 0.2, {
-				transition: Transitions.EASE_OUT,
-				x: Statics.stageWidth / 2,
-				delay: 0.6
-			});
+			nextUnearnedProgressIndex = this.findNextUnearnedAchievement(nextUnearnedProgressIndex + 1);
+			if (nextUnearnedProgressIndex != -1) {
+				data = Constants.AchievementsData[Constants.AchievementsProgression[nextUnearnedProgressIndex]];
+				this.achievementPlate3.initialize(data[1], data[2], data[3], data[4]);
+				achievementPlate3.visible = true;
+				if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.6); // play slide sfx
+				Starling.juggler.tween(achievementPlate3, 0.2, {
+					transition: Transitions.EASE_OUT,
+					x: Statics.stageWidth / 2,
+					delay: 0.6
+				});
+			}
 		}
 		
 		/**
@@ -701,7 +795,7 @@ package com.jumpGame.ui
 		
 		private function dataReceived(event:NavigationEvent):void {
 //			trace(event.params.data);
-			proceedBtn.visible = true;
+			btnNext.visible = true;
 		}
 		
 		/**

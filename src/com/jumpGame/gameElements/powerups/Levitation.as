@@ -1,7 +1,6 @@
 package com.jumpGame.gameElements.powerups
 {
 	import com.jumpGame.gameElements.Hero;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.HUD;
 	
 	import starling.animation.Transitions;
@@ -23,6 +22,7 @@ package com.jumpGame.gameElements.powerups
 		
 		public function Levitation(hero:Hero, hud:HUD)
 		{
+			this.touchable = false;
 			this.hero = hero;
 			this.hud = hud;
 			this.createPowerupArt();
@@ -30,39 +30,52 @@ package com.jumpGame.gameElements.powerups
 		
 		protected function createPowerupArt():void
 		{
-			ringImage = new Image(Assets.getSprite("AtlasTexture2").getTexture("MagnetRing0000"));
+			ringImage = new Image(Assets.getSprite("AtlasTexture2").getTexture("ProtectionBubble0000"));
 			ringImage.pivotX = Math.ceil(ringImage.width / 2); // center image on registration point
 			ringImage.pivotY = Math.ceil(ringImage.height / 2);
-			ringImage.scaleX = 0.6;
-			ringImage.scaleY = 0.6;
-			ringImage.visible = false;
+//			ringImage.scaleX = 0.6;
+//			ringImage.scaleY = 0.6;
 			this.addChild(ringImage);
+			this.visible = false;
 		}
 		
-		public function activate():void {
-			ringImage.visible = true;
+		public function activate(isTutorial:Boolean = false):void {
+			this.visible = true;
 			Starling.juggler.tween(ringImage, 0.5, {
 				transition: Transitions.LINEAR,
-				alpha: 0.999
+				alpha: 1
 			});
 			
-			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
+			Starling.juggler.tween(ringImage, 0.5, {
+				transition: Transitions.LINEAR,
+				scaleX: 1.1,
+				scaleY: 1.1,
+				repeatCount: 0,
+				reverse: true
+			});
 			
 			this.isActivated = true;
 			this.jetFired = false;
 			this.completionWarned = false;
-			this.completionTime = Statics.gameTime + 5000 + Statics.rankSafety * 1000; // duration
+			
+			if (isTutorial) {
+				this.completionTime = Statics.gameTime + 80000; // duration
+			} else {
+				this.completionTime = Statics.gameTime + 5000 + Statics.rankSafety * 1000; // duration
+				if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
+			}
+			
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 		}
 		
-		public function update(timeDiff:Number):void {
+		public function update(timeDiff:Number, sofHeight:Number):void {
 			if (!this.isActivated) return;
 			
-			this.ringImage.rotation += 0.004 * timeDiff;
+			this.ringImage.rotation += 0.002 * timeDiff;
 			this.gx = this.hero.gx;
 			this.gy = this.hero.gy;
-			
-			if (this.hero.dy < -1.0) {
+
+			if (this.hero.dy < -1 || (this.hero.gy - 250 < sofHeight)) {
 				if (!this.jetFired) {
 					// fire jet
 					if (!Sounds.sfxMuted) Sounds.sndSwoosh.play();
@@ -91,7 +104,8 @@ package com.jumpGame.gameElements.powerups
 			if (Statics.gameTime > this.completionTime) {
 				Starling.juggler.tween(ringImage, 0.5, {
 					transition: Transitions.LINEAR,
-					alpha: 0
+					alpha: 0,
+					onComplete: cleanup
 				});
 				this.isActivated = false;
 				
@@ -99,6 +113,11 @@ package com.jumpGame.gameElements.powerups
 				hud.clearPowerupReel();
 				Statics.powerupsEnabled = true;
 			}
+		}
+		
+		private function cleanup():void {
+			Starling.juggler.removeTweens(ringImage);
+			this.visible = false;
 		}
 	}
 }

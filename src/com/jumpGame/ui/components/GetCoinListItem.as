@@ -28,6 +28,8 @@ package com.jumpGame.ui.components
 		
 		private function addedToStageHandler(event:Event):void
 		{
+			this.removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			
 			this.createElements();
 		}
 		
@@ -81,7 +83,7 @@ package com.jumpGame.ui.components
 			addChild(btnAction);
 			
 //			// price coin graphic
-//			var coinAnimation:MovieClip = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
+//			var coinAnimation:MovieClip = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("CoinLarge"), 40);
 //			coinAnimation.scaleX = 0.5;
 //			coinAnimation.scaleY = 0.5;
 //			coinAnimation.x = btnAction.bounds.left;

@@ -1,6 +1,5 @@
 package com.jumpGame.ui.components
 {
-	import com.jumpGame.level.Statics;
 	
 	import starling.animation.Transitions;
 	import starling.core.Starling;
@@ -65,6 +64,7 @@ package com.jumpGame.ui.components
 			pointer.pivotY = Math.ceil(pointer.height / 2);
 			pointer.alpha = 0.8;
 			this.addChild(pointer);
+			this.visible = false;
 		}
 		
 		/**

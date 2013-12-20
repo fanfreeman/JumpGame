@@ -1,7 +1,6 @@
 package com.jumpGame.ui.screens
 {
 	import com.jumpGame.events.NavigationEvent;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.MatchItemRenderer;
 	import com.jumpGame.ui.components.StartGameItemRenderer;
@@ -244,6 +243,10 @@ package com.jumpGame.ui.screens
 				if (Statics.tutorialStep == 2) { // hide tutorial temporarily until new match is created
 //					Starling.juggler.delayCall(Menu(this.owner).makeTutorialInvisibleTemporarily, 0.1); // do not do this because player could just close the facebook ui dialog
 				}
+				
+				if (Statics.isAnalyticsEnabled) { // mixpanel
+					Statics.mixpanel.track('clicked on start game with Facebook friend');
+				}
 			}
 			else if (startGamePicker.selectedIndex == 1) { // smart match
 				if (!Sounds.sfxMuted) Sounds.sndClick.play();
@@ -255,6 +258,10 @@ package com.jumpGame.ui.screens
 				if (Statics.tutorialStep == 2) { // hide tutorial temporarily until new match is created
 					Starling.juggler.delayCall(Menu(this.owner).makeTutorialInvisibleTemporarily, 0.1); // delay a bit to really make it invisible
 				}
+				
+				if (Statics.isAnalyticsEnabled) { // mixpanel
+					Statics.mixpanel.track('clicked on start game smart match');
+				}
 			}
 			startGamePicker.selectedIndex = -1;
 			startGamePicker.popUpContentManager.close();
@@ -264,6 +271,10 @@ package com.jumpGame.ui.screens
 			Menu(this.owner).displayLoadingNotice("Creating a new match...");
 			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 			Menu(this.owner).communicator.createMatch(opponentId);
+			
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				Statics.mixpanel.track('selected facebook friend as opponent');
+			}
 		}
 		
 		private function listYourTurnChangeHandler(event:Event):void {

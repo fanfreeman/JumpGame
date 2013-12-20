@@ -2,7 +2,6 @@ package com.jumpGame.gameElements.powerups
 {
 	import com.jumpGame.gameElements.Hero;
 	import com.jumpGame.gameElements.Transfiguration;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.HUD;
 	
 	import starling.animation.Transitions;
@@ -33,6 +32,7 @@ package com.jumpGame.gameElements.powerups
 		
 		public function Expansion(hero:Hero, hud:HUD, transfiguration:Transfiguration)
 		{
+			this.touchable = false;
 			this.hero = hero;
 			this.hud = hud;
 			this.transfiguration = transfiguration;
@@ -102,7 +102,7 @@ package com.jumpGame.gameElements.powerups
 //				alpha: 1
 //			});
 			
-//			hero.visible = false;
+			hero.visible = false;
 			
 			Statics.particleCharge.emitterX = this.x;
 			Statics.particleCharge.emitterY = this.y;
@@ -127,7 +127,7 @@ package com.jumpGame.gameElements.powerups
 			
 			this.isActivated = true;
 			this.completionWarned = false;
-			this.completionTime = Statics.gameTime + 25000;
+			this.completionTime = Statics.gameTime + 15000;
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 			
 			// schedule first obstacle
@@ -186,8 +186,9 @@ package com.jumpGame.gameElements.powerups
 			Statics.powerupsEnabled = true;
 			
 			// brief push upward
-			if (this.hero.dy < 2.5) {
-				this.hero.dy = 2.5;
+			if (this.hero.dy < 3.5) {
+				this.hero.dy = 3.5;
+				Statics.particleJet.start(0.5);
 			}
 			
 			// set invincibility time
@@ -204,7 +205,7 @@ package com.jumpGame.gameElements.powerups
 			if (this.hero.dy < 1) this.hero.dy += 0.05;
 			
 			Statics.particleBounce.emitterX = this.hero.x;
-			Statics.particleBounce.emitterY = this.hero.bounds.bottom;
+			Statics.particleBounce.emitterY = this.hero.y + this.hero.height / 2;
 			if (!Statics.particleBounce.isEmitting) Statics.particleBounce.start();
 		}
 		

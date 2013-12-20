@@ -1,7 +1,6 @@
 package com.jumpGame.gameElements.powerups
 {
 	import com.jumpGame.gameElements.Hero;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.HUD;
 	
 	import starling.animation.Transitions;
@@ -22,23 +21,27 @@ package com.jumpGame.gameElements.powerups
 		private var nextRing1AppearanceTime:int;
 		private var nextRing2AppearanceTime:int;
 		
+		private var cometOn:Boolean;
+		
 		public function Attraction(hero:Hero, hud:HUD) {
+			this.touchable = false;
 			this.hero = hero;
 			this.hud = hud;
 			this.createPowerupArt();
 			this.isActivated = false;
+			this.cometOn = false;
 		}
 		
 		protected function createPowerupArt():void
 		{
-			ring1Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("AttractionRing0000"));
+			ring1Image = new Image(Statics.assets.getTexture("AttractionRing0000"));
 			ring1Image.pivotX = Math.ceil(ring1Image.width / 2); // center image on registration point
 			ring1Image.pivotY = Math.ceil(ring1Image.height / 2);
 			ring1Image.visible = false;
 			ring1Image.alpha = 0;
 			this.addChild(ring1Image);
 			
-			ring2Image = new Image(Assets.getSprite("AtlasTexture2").getTexture("AttractionRing0000"));
+			ring2Image = new Image(Statics.assets.getTexture("AttractionRing0000"));
 			ring2Image.pivotX = Math.ceil(ring2Image.width / 2); // center image on registration point
 			ring2Image.pivotY = Math.ceil(ring2Image.height / 2);
 			ring2Image.visible = false;
@@ -46,7 +49,7 @@ package com.jumpGame.gameElements.powerups
 			this.addChild(ring2Image);
 		}
 		
-		public function activate():void {
+		public function activate(isForCometRun:Boolean = false):void {
 			ring1Image.visible = true;
 			ring2Image.visible = true;
 			Starling.juggler.tween(ring1Image, 2.0, {
@@ -58,12 +61,16 @@ package com.jumpGame.gameElements.powerups
 			this.nextRing1AppearanceTime = Statics.gameTime + 2000;
 			this.nextRing2AppearanceTime = Statics.gameTime + 1000;
 			
-			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
 			this.isActivated = true;
 			Statics.powerupAttractionEnabled = true;
 			this.completionWarned = false;
-			this.completionTime = Statics.gameTime + 5000 + Statics.rankAttraction * 1000;
-			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
+			
+			this.cometOn = isForCometRun;
+			if (!isForCometRun) {
+				if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
+				this.completionTime = Statics.gameTime + 5000 + Statics.rankAttraction * 1000;
+				this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
+			}
 		}
 		
 		public function update(timeDiff:Number):void {
@@ -100,23 +107,36 @@ package com.jumpGame.gameElements.powerups
 				this.nextRing2AppearanceTime = Statics.gameTime + 2000;
 			}
 			
-			// almost time up, begin powerup reel warning
-			if (!this.completionWarned && Statics.gameTime > this.nearCompletionTime) {
-				hud.completionWarning();
-				this.completionWarned = true;
+			// check for timed completion unless comet run is on
+			if (!this.cometOn) {
+				// almost time up, begin powerup reel warning
+				if (!this.completionWarned && Statics.gameTime > this.nearCompletionTime) {
+					hud.completionWarning();
+					this.completionWarned = true;
+				}
+				
+				// time up, deactivate
+				if (Statics.gameTime > this.completionTime) {
+					ring1Image.visible = false;
+					ring2Image.visible = false;
+					this.isActivated = false;
+					Statics.powerupAttractionEnabled = false;
+					
+					// misc reset
+					hud.clearPowerupReel();
+					Statics.powerupsEnabled = true;
+				}
 			}
-			
-			// time up, deactivate
+		}
+		
+		public function cometDone():void {
 			if (Statics.gameTime > this.completionTime) {
 				ring1Image.visible = false;
 				ring2Image.visible = false;
 				this.isActivated = false;
 				Statics.powerupAttractionEnabled = false;
-				
-				// misc reset
-				hud.clearPowerupReel();
-				Statics.powerupsEnabled = true;
 			}
+			this.cometOn = false;
 		}
 	}
 }

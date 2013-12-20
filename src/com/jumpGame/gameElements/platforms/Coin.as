@@ -2,8 +2,7 @@ package com.jumpGame.gameElements.platforms
 {
 	import com.jumpGame.gameElements.Platform;
 	
-	import starling.core.Starling;
-	import starling.display.MovieClip;
+	import starling.display.Image;
 	
 	public class Coin extends Platform
 	{
@@ -14,6 +13,7 @@ package com.jumpGame.gameElements.platforms
 		private var revolveAngle:Number;
 		private var fixedX:Number;
 		private var fixedY:Number;
+		protected var rotationSpeed:Number = Math.PI / 10;
 		
 		private var isKinematic:Boolean;
 		public var isAcquired:Boolean;
@@ -21,11 +21,10 @@ package com.jumpGame.gameElements.platforms
 		
 		override protected function createPlatformArt():void
 		{
-			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
-			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
-			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
-			starling.core.Starling.juggler.add(platformAnimation);
-			this.addChild(platformAnimation);
+			platformImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("CoinGold0000"));
+			platformImage.pivotX = Math.ceil(platformImage.texture.width  / 2); // center art on registration point
+			platformImage.pivotY = Math.ceil(platformImage.texture.height / 2);
+			this.addChild(platformImage);
 		}
 		
 		override public function initialize(gx, gy, size:int, args = null):void {
@@ -37,7 +36,7 @@ package com.jumpGame.gameElements.platforms
 			this.dy = 0;
 			this.canBounce = false;
 			this.isTouched = false;
-			if (platformAnimation == null) createPlatformArt();
+			if (platformImage == null) createPlatformArt();
 			this.show();
 			
 			// revolving coin
@@ -73,12 +72,10 @@ package com.jumpGame.gameElements.platforms
 		override public function touch():Boolean {
 			if (!this.isTouched) {
 				// play sound effect
-				if (!Sounds.sfxMuted) Sounds.sndBling.play();
+				if (!Sounds.sfxMuted) Sounds.sndBlingHigh.play();
 				this.isTouched = true;
-				
 				return true;
 			}
-			
 			return false;
 		}
 		
@@ -92,6 +89,7 @@ package com.jumpGame.gameElements.platforms
 //			super.update(timeDiff);
 			this.gx += this.dx * timeDiff;
 			this.gy += this.dy * timeDiff;
+			this.platformImage.rotation += this.rotationSpeed;
 			
 			// check if coin should revolve around center
 			if (distanceFromCenter > 0 && this.dx == 0) {
@@ -106,6 +104,10 @@ package com.jumpGame.gameElements.platforms
 			this.isKinematic = true;
 			this.dy = Math.random() * bouncePower;
 			this.dx = Math.random() * 0.4 - 0.2;
+		}
+		
+		public function getValue():uint {
+			return 3;
 		}
 	}
 }

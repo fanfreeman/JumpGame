@@ -1,7 +1,6 @@
 package com.jumpGame.ui.popups
 {
 	import com.jumpGame.customObjects.Font;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.AchievementPlate;
 	
@@ -29,6 +28,7 @@ package com.jumpGame.ui.popups
 		private var resizableContainer:ScrollContainer;
 		private var earnedMessage:TextField;
 		private var achievementPlatesList:Vector.<AchievementPlate>;
+		private var achievementPlatesObjectivesList:Vector.<AchievementPlate>;
 		
 		public function ScreenAchievements(parent:Menu)
 		{
@@ -101,7 +101,7 @@ package com.jumpGame.ui.popups
 					button.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ScrollbarThumb0000"));
 					button.hoverSkin.filter = Statics.btnBrightnessFilter;
 					button.downSkin.filter = Statics.btnInvertFilter;
-					button.scaleY = 0.6;
+					button.scaleY = 1;
 					return button;
 				}
 				scrollBar.minimumTrackFactory = function():Button
@@ -144,31 +144,57 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(resizableContainer);
 			resizableContainer.validate();
 			
-			// number of achievements earned message
+			// next objectives header
 			var fontMaterhorn:Font = Fonts.getFont("Materhorn25");
-			earnedMessage = new TextField(400, 35, "", fontMaterhorn.fontName, fontMaterhorn.fontSize, 0xffffff);
-			earnedMessage.hAlign = HAlign.CENTER;
-			earnedMessage.vAlign = VAlign.TOP;
-			earnedMessage.pivotX = Math.ceil(earnedMessage.width / 2);
-			earnedMessage.x = Math.ceil(resizableContainer.width / 2);
-			earnedMessage.y = 10;
-			resizableContainer.addChild(earnedMessage);
+			var objectsSubtitle:TextField = new TextField(400, 35, "Next Objectives", fontMaterhorn.fontName, fontMaterhorn.fontSize, 0xffffff);
+			objectsSubtitle.hAlign = HAlign.CENTER;
+			objectsSubtitle.vAlign = VAlign.TOP;
+			objectsSubtitle.pivotX = Math.ceil(objectsSubtitle.width / 2);
+			objectsSubtitle.x = Math.ceil(resizableContainer.width / 2);
+			objectsSubtitle.y = 10;
+			resizableContainer.addChild(objectsSubtitle);
 			
-			// create achievement plates
-			this.achievementPlatesList = new Vector.<AchievementPlate>();
+			// create objective plates
+			achievementPlatesObjectivesList = new Vector.<AchievementPlate>();
 			var prevPlate:AchievementPlate = null;
 			var data:Array;
 			var achievementPlate:AchievementPlate;
-			var numAchievements:uint = Constants.AchievementsData.length;
-			for (var i:uint = 1; i < numAchievements; i++) {
-				data = Constants.AchievementsData[i];
+			for (var i:uint = 0; i < 3; i++) {
 				achievementPlate = new AchievementPlate();
 				achievementPlate.pivotX = Math.ceil(achievementPlate.width / 2);
 				achievementPlate.x = resizableContainer.width / 2;
 				if (prevPlate != null) {
 					achievementPlate.y = prevPlate.bounds.bottom + 10;
 				} else {
-					achievementPlate.y = earnedMessage.bounds.bottom + 10;
+					achievementPlate.y = objectsSubtitle.y + objectsSubtitle.height + 10;
+				}
+				resizableContainer.addChild(achievementPlate);
+				this.achievementPlatesObjectivesList.push(achievementPlate);
+				prevPlate = achievementPlate;
+			}
+			
+			// number of achievements earned message
+			earnedMessage = new TextField(400, 35, "", fontMaterhorn.fontName, fontMaterhorn.fontSize, 0xffffff);
+			earnedMessage.hAlign = HAlign.CENTER;
+			earnedMessage.vAlign = VAlign.TOP;
+			earnedMessage.pivotX = Math.ceil(earnedMessage.width / 2);
+			earnedMessage.x = Math.ceil(resizableContainer.width / 2);
+			earnedMessage.y = prevPlate.y + prevPlate.height;
+			resizableContainer.addChild(earnedMessage);
+			
+			// create achievement plates
+			this.achievementPlatesList = new Vector.<AchievementPlate>();
+			prevPlate = null;
+			var numAchievements:uint = Constants.AchievementsProgression.length;
+			for (i = 0; i < numAchievements; i++) {
+				data = Constants.AchievementsData[Constants.AchievementsProgression[i]];
+				achievementPlate = new AchievementPlate();
+				achievementPlate.pivotX = Math.ceil(achievementPlate.width / 2);
+				achievementPlate.x = resizableContainer.width / 2;
+				if (prevPlate != null) {
+					achievementPlate.y = prevPlate.bounds.bottom + 10;
+				} else {
+					achievementPlate.y = earnedMessage.y + earnedMessage.height + 10;
 				}
 				resizableContainer.addChild(achievementPlate);
 				achievementPlate.initialize(data[1], data[2], data[3], data[4]);
@@ -201,16 +227,55 @@ package com.jumpGame.ui.popups
 //				alpha: 1
 //			});
 			
-			var numAchievements:uint = Constants.AchievementsData.length;
-			var numAchievementsEarned:uint = 0;
-			for (var i:uint = 1; i < numAchievements; i++) {
-				if (Statics.achievementsList[i]) {
-					this.achievementPlatesList[i - 1].check();
-					numAchievementsEarned++;
-				}
+			// update next objectives data
+			var nextUnearnedProgressIndex:int = this.findNextUnearnedAchievement(0);
+			if (nextUnearnedProgressIndex != -1) {
+				var data:Array = Constants.AchievementsData[Constants.AchievementsProgression[nextUnearnedProgressIndex]];
+				this.achievementPlatesObjectivesList[0].initialize(data[1], data[2], data[3], data[4]);
+			} else {
+				this.achievementPlatesObjectivesList[0].visible = false;
+			}
+			nextUnearnedProgressIndex = this.findNextUnearnedAchievement(nextUnearnedProgressIndex + 1);
+			if (nextUnearnedProgressIndex != -1) {
+				data = Constants.AchievementsData[Constants.AchievementsProgression[nextUnearnedProgressIndex]];
+				this.achievementPlatesObjectivesList[1].initialize(data[1], data[2], data[3], data[4]);
+			} else {
+				this.achievementPlatesObjectivesList[1].visible = false;
+			}
+			nextUnearnedProgressIndex = this.findNextUnearnedAchievement(nextUnearnedProgressIndex + 1);
+			if (nextUnearnedProgressIndex != -1) {
+				data = Constants.AchievementsData[Constants.AchievementsProgression[nextUnearnedProgressIndex]];
+				this.achievementPlatesObjectivesList[2].initialize(data[1], data[2], data[3], data[4]);
+			} else {
+				this.achievementPlatesObjectivesList[2].visible = false;
 			}
 			
-			earnedMessage.text = numAchievementsEarned.toString() + " of " + (numAchievements - 1).toString() + " Achievements Earned";
+			// check/show earned achievements
+			var numAchievements:uint = Constants.AchievementsProgression.length;
+			var numAchievementsEarned:uint = 0;
+			for (var i:uint = 0; i < numAchievements; i++) {
+				if (Statics.achievementsList[Constants.AchievementsProgression[i]]) { // only show earned achievements
+					this.achievementPlatesList[i].check();
+					numAchievementsEarned++;
+					this.achievementPlatesList[i].visible = true;
+				} else {
+					this.achievementPlatesList[i].visible = false;
+				}
+//				if (Statics.achievementsList[i]) {
+//					this.achievementPlatesList[i - 1].check();
+//					numAchievementsEarned++;
+//				}
+			}
+			
+			earnedMessage.text = numAchievementsEarned.toString() + " of " + (numAchievements).toString() + " Achievements Earned";
+		}
+		
+		private function findNextUnearnedAchievement(index:uint):int {
+			var listLength:uint = Constants.AchievementsProgression.length;
+			for (var i:uint = index; i < listLength; i++) {
+				if (!Statics.achievementsList[Constants.AchievementsProgression[i]]) return i;
+			}
+			return -1;
 		}
 	}
 }

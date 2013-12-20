@@ -1,6 +1,5 @@
 package
 {
-	import com.jumpGame.level.Statics;
 	
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
@@ -39,9 +38,6 @@ package
 		
 		[Embed(source="../media/sounds/got_hourglass.mp3")]
 		public static const SND_GOT_HOURGLASS:Class;
-		
-		[Embed(source="../media/sounds/bling.mp3")]
-		public static const SND_BLING:Class;
 		
 		[Embed(source="../media/sounds/bell.mp3")]
 		public static const SND_BELL:Class;
@@ -85,7 +81,7 @@ package
 		[Embed(source="../media/sounds/candidates/catch_fire.mp3")]
 		public static const SND_CATCH_FIRE:Class;
 		
-		[Embed(source="../media/sounds/candidates/comet.mp3")]
+		[Embed(source="../media/sounds/candidates/comet_deep.mp3")]
 		public static const SND_COMET:Class;
 		
 		[Embed(source="../media/sounds/candidates/crumble2.mp3")]
@@ -147,6 +143,21 @@ package
 		
 		[Embed(source="../media/sounds/candidates/start2.mp3")]
 		public static const SND_START:Class;
+		
+		[Embed(source="../media/sounds/candidates/magic_explosion.mp3")]
+		public static const SND_MAGIC_EXPLOSION:Class;
+		
+		[Embed(source="../media/sounds/candidates/bling_low.mp3")]
+		public static const SND_BLING_LOW:Class;
+		
+		[Embed(source="../media/sounds/candidates/bling_mid.mp3")]
+		public static const SND_BLING_MID:Class;
+		
+		[Embed(source="../media/sounds/candidates/bling_high.mp3")]
+		public static const SND_BLING_HIGH:Class;
+		
+		[Embed(source="../media/sounds/candidates/bling_bubble.mp3")]
+		public static const SND_BLING_BUBBLE:Class;
 		
 		////////////////////////////////////////////////////////////////////////////////
 		// voice clips
@@ -265,8 +276,11 @@ package
 		/** eof notes */
 		
 		// embed bgms
-		[Embed(source="../media/sounds/bgm/magical_waltz2.mp3")]
+		[Embed(source="../media/sounds/bgm/xmas.mp3")]
 		public static const SND_BGM_MENU:Class;
+		
+//		[Embed(source="../media/sounds/bgm/magical_waltz2.mp3")]
+//		public static const SND_BGM_MENU:Class;
 		
 		[Embed(source="../media/sounds/bgm/chaoz_airflow.mp3")]
 		public static const SND_BGM_INGAME:Class;
@@ -282,7 +296,6 @@ package
 		public static var sndAirjump:Sound = new Sounds.SND_AIRJUMP() as Sound;
 		public static var sndTrainHit:Sound = new Sounds.SND_TRAIN_HIT() as Sound;
 		public static var sndGotHourglass:Sound = new Sounds.SND_GOT_HOURGLASS() as Sound;
-		public static var sndBling:Sound = new Sounds.SND_BLING() as Sound;
 		public static var sndBell:Sound = new Sounds.SND_BELL() as Sound;
 		public static var sndBoostBounce:Sound = new Sounds.SND_BOOST_BOUNCE() as Sound;
 		public static var sndBoom:Sound = new Sounds.SND_BOOM() as Sound;
@@ -318,6 +331,11 @@ package
 		public static var sndPayout:Sound = new Sounds.SND_PAYOUT() as Sound;
 		public static var sndFastSwoosh:Sound = new Sounds.SND_FAST_SWOOSH() as Sound;
 		public static var sndStart:Sound = new Sounds.SND_START() as Sound;
+		public static var sndMagicExplosion:Sound = new Sounds.SND_MAGIC_EXPLOSION() as Sound;
+		public static var sndBlingLow:Sound = new Sounds.SND_BLING_LOW() as Sound;
+		public static var sndBlingMid:Sound = new Sounds.SND_BLING_MID() as Sound;
+		public static var sndBlingHigh:Sound = new Sounds.SND_BLING_HIGH() as Sound;
+		public static var sndBlingBubble:Sound = new Sounds.SND_BLING_BUBBLE() as Sound;
 //		public static var sndVoiceAh:Sound = new Sounds.SND_VOICE_AH() as Sound;
 		
 		
@@ -360,9 +378,14 @@ package
 												new Sounds.SND_NOTE_36() as Sound];
 		
 		// play random musical note
+		private static var noteChannel:SoundChannel;
 		public static function playRandomNote():void {
-			var num:int = Math.floor(Math.random() * 18);
-			Sounds.sndNoteArray[num].play();
+			if (noteChannel != null) {
+				noteChannel.stop();
+			}
+			var num:int = Math.floor(Math.random() * 36);
+			noteChannel = Sounds.sndNoteArray[num].play();
+			
 		}
 		
 		public static function playNextNote():void {
@@ -435,6 +458,7 @@ package
 				// mute in game bgm
 				soundTransform.volume = 0;
 				bgmInGame.channel.soundTransform = soundTransform;
+				bgmMenu.volume = 0;
 			} else {
 				// fade out menu bgm
 				if (bgmMenu.volume != 0) {

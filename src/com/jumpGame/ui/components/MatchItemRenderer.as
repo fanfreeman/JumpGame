@@ -1,6 +1,5 @@
 package com.jumpGame.ui.components
 {
-	import com.jumpGame.level.Statics;
 	
 	import flash.geom.Point;
 	import flash.text.TextFormatAlign;

@@ -144,13 +144,20 @@ package com.jumpGame.gameElements
 			this.fixedGy += this.fixedDy * timeDiff;
 		}
 		
-		public function makeExtender(extenderParent, extenderStatus, targetGx):void {
+		public function makeExtender(extenderParent, extenderStatus, targetGx, isStar:Boolean = false):void {
 			this.extenderStatus = extenderStatus;
 			this.extenderParent = extenderParent;
-			Starling.juggler.tween(this, 0.3, {
-				transition: Transitions.EASE_OUT,
-				gx: targetGx
-			});
+			if (isStar) {
+				Starling.juggler.tween(this, 0.3, {
+					transition: Transitions.EASE_OUT,
+					fixedX: targetGx
+				});
+			} else {
+				Starling.juggler.tween(this, 0.3, {
+					transition: Transitions.EASE_OUT,
+					gx: targetGx
+				});
+			}
 		}
 		
 		/**

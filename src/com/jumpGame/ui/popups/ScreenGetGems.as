@@ -2,7 +2,6 @@ package com.jumpGame.ui.popups
 {
 	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.events.NavigationEvent;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	
 	import flash.external.ExternalInterface;
@@ -319,6 +318,10 @@ package com.jumpGame.ui.popups
 		public function purchaseGemHandfulHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on button: gem handful');
+			}
+			
 			if(ExternalInterface.available){
 //				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_handful");
@@ -330,6 +333,10 @@ package com.jumpGame.ui.popups
 		
 		public function purchaseGemPouchHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on button: gem pouch');
+			}
 			
 			if(ExternalInterface.available){
 //				trace("Calling JS...");
@@ -343,6 +350,10 @@ package com.jumpGame.ui.popups
 		public function purchaseGemSackHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on button: gem sack');
+			}
+			
 			if(ExternalInterface.available){
 //				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_sack");
@@ -354,6 +365,10 @@ package com.jumpGame.ui.popups
 		
 		public function purchaseGemBoxHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on button: gem box');
+			}
 			
 			if(ExternalInterface.available){
 //				trace("Calling JS...");
@@ -367,6 +382,10 @@ package com.jumpGame.ui.popups
 		public function purchaseGemChestHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on button: gem chest');
+			}
+			
 			if(ExternalInterface.available){
 //				trace("Calling JS...");
 				ExternalInterface.call("displayPurchase", "http://www.raiderbear.com/demo/product/gempacks?pack=gems_chest");
@@ -378,6 +397,10 @@ package com.jumpGame.ui.popups
 		
 		public function purchaseGemTruckloadHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on button: gem trunkload');
+			}
 			
 			if(ExternalInterface.available){
 //				trace("Calling JS...");

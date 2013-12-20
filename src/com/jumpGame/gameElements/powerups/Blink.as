@@ -1,7 +1,6 @@
 package com.jumpGame.gameElements.powerups
 {
 	import com.jumpGame.gameElements.Hero;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.HUD;
 	
 	import starling.animation.Transitions;
@@ -23,6 +22,7 @@ package com.jumpGame.gameElements.powerups
 		private var firstTeleportTime:int;
 		
 		public function Blink(hero:Hero, hud:HUD):void {
+			this.touchable = false;
 			this.hero = hero;
 			this.hud = hud;
 			this.createPowerupArt();
@@ -81,7 +81,7 @@ package com.jumpGame.gameElements.powerups
 				}
 				
 				if (blastAnimation.isComplete) {
-					if (this.totalTeleports < 12 + Statics.rankTeleportation * 2) { // teleport this many times
+					if (this.totalTeleports < 12 + Statics.rankTeleportation * 3) { // teleport this many times
 						if (!Sounds.sfxMuted) {
 							if (this.totalTeleports < 8) Sounds.sndBlink.play();
 							else Sounds.sndBlinkFast.play(); // play shorter blink sound

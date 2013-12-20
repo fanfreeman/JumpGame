@@ -1,7 +1,6 @@
 package com.jumpGame.gameElements.contraptions
 {
 	import com.jumpGame.gameElements.Contraption;
-	import com.jumpGame.level.Statics;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
@@ -22,7 +21,7 @@ package com.jumpGame.gameElements.contraptions
 			}
 			this.lookOutAnimation.visible = true;
 			this.show();
-			this.launchTime = Statics.gameTime + 2700 + int(Math.ceil(Math.random() * 500));
+			this.launchTime = Statics.gameTime + 2600 + int(Math.ceil(Math.random() * 500));
 			this.isLaunched = false;
 		}
 		

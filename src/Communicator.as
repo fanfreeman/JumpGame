@@ -79,6 +79,11 @@ package
 			this.sendPostRequest(data, Constants.UriVerifyPurchase);
 		}
 		
+		// save purchase achievements to backend
+		public function postSaveAchievements(data:String):void {
+			this.sendPostRequest(data, Constants.UriPostSaveAchievements);
+		}
+		
 		/**
 		 * Send a post request
 		 */

@@ -2,7 +2,6 @@ package com.jumpGame.ui.popups
 {
 	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.events.NavigationEvent;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	
 	import feathers.controls.Button;
@@ -279,6 +278,10 @@ package com.jumpGame.ui.popups
 		public function purchaseCoinBoosterPackHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on button: coin booster pack');
+			}
+			
 			if (Statics.playerGems < 5) { // player can't afford this
 				// show get gems prompt
 				parent.showDialogBox("You do not have enough gems, would you like to get more?", parent.showGetGemsScreen);
@@ -295,6 +298,10 @@ package com.jumpGame.ui.popups
 		
 		public function purchaseCoinSuperPackHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on button: coin super pack');
+			}
 			
 			if (Statics.playerGems < 12) { // player can't afford this
 				// show get gems prompt
@@ -313,6 +320,10 @@ package com.jumpGame.ui.popups
 		public function purchaseCoinMegaPackHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on button: coin mega pack');
+			}
+			
 			if (Statics.playerGems < 50) { // player can't afford this
 				// show get gems prompt
 				parent.showDialogBox("You do not have enough gems, would you like to get more?", parent.showGetGemsScreen);
@@ -330,6 +341,10 @@ package com.jumpGame.ui.popups
 		public function purchaseCoinUltraPackHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on button: coin ultra pack');
+			}
+			
 			if (Statics.playerGems < 120) { // player can't afford this
 				// show get gems prompt
 				parent.showDialogBox("You do not have enough gems, would you like to get more?", parent.showGetGemsScreen);
@@ -346,6 +361,10 @@ package com.jumpGame.ui.popups
 		
 		public function purchaseCoinUltimatePackHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on button: coin ultimate pack');
+			}
 			
 			if (Statics.playerGems < 240) { // player can't afford this
 				// show get gems prompt

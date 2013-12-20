@@ -1,8 +1,9 @@
 package com.jumpGame.ui.popups
 {
-	import com.jumpGame.level.Statics;
+	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.RankingItemRenderer;
+	import com.jumpGame.ui.components.TutorialPointer;
 	
 	import feathers.controls.Button;
 	import feathers.controls.List;
@@ -14,6 +15,9 @@ package com.jumpGame.ui.popups
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.text.TextField;
+	import starling.utils.HAlign;
+	import starling.utils.VAlign;
 	
 	public class ScreenRankings extends Sprite
 	{
@@ -29,6 +33,8 @@ package com.jumpGame.ui.popups
 		private var imgGlobalOn:Image;
 		private var imgFriendsOn:Image;
 		private var previouslyViewedFriends:Boolean = true;
+		
+		private var comingSoonText:TextField;
 		
 		public function ScreenRankings(parent:Menu)
 		{
@@ -153,7 +159,37 @@ package com.jumpGame.ui.popups
 			btnInvite.x = Math.ceil(popup.width / 2) - 88;
 			btnInvite.y = popup.bounds.bottom - 57;
 			popupContainer.addChild(btnInvite);
-			btnInvite.addEventListener(Event.TRIGGERED, parent.btnInviteFriendsHandler);
+			btnInvite.addEventListener(Event.TRIGGERED, this.btnInviteHandler);
+			
+			var fontMessage:Font = Fonts.getFont("Badaboom50");
+			comingSoonText = new TextField(popup.width, 100, "Coming Soon!", fontMessage.fontName, fontMessage.fontSize, 0xffa352);
+			comingSoonText.pivotY = comingSoonText.height / 2;
+			comingSoonText.y = Math.ceil(popup.height / 2);
+			comingSoonText.hAlign = HAlign.CENTER;
+			comingSoonText.vAlign = VAlign.CENTER;
+			comingSoonText.visible = false;
+			popupContainer.addChild(comingSoonText);
+		}
+		
+		private function btnInviteHandler(event:Event):void {
+			parent.btnInviteFriendsPreselectedHandler();
+			this.close();
+		}
+		
+		private function close():void {
+			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
+			this.visible = false;
+			
+			// more tutorial
+			if (Statics.tutorialStep == 3) {
+				if (parent.dialogLarge == null) {
+					parent.dialogLarge = new DialogLarge();
+					parent.addChild(parent.dialogLarge);
+					parent.dialogLarge.show("Now it's time to challenge a friend. Click on the 'Start Game' button, and then select 'Facebook Friends'");
+				}
+				Statics.tutorialStep = 4;
+			}
 		}
 		
 		private function listRankingsChangeHandler(event:Event):void {
@@ -177,27 +213,27 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonCloseHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
-			
-			this.visible = false;
-			
-			// hide tutorial pointer if needed
-			if (Statics.tutorialStep == 3) {
-				parent.hideTutorialPointer();
-				Statics.tutorialStep = 4;
-			}
+			this.close();
 		}
 		
 		private function buttonGlobalHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			this.showRankingsGlobal();
+			
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				Statics.mixpanel.track('clicked on global rankings tab');
+			}
 		}
 		
 		private function buttonFriendsHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			this.showRankingsFriends();
+			
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				Statics.mixpanel.track('clicked on friends rankings tab');
+			}
 		}
 		
 		/**
@@ -208,7 +244,9 @@ package com.jumpGame.ui.popups
 			this.imgFriendsOn.visible = false;
 			this.imgGlobalOn.visible = true;
 			this.btnFriends.visible = true;
-			Menu(this.parent).refreshRankingsGlobal();
+			comingSoonText.visible = true;
+			listRankings.visible = false;
+//			Menu(this.parent).refreshRankingsGlobal();
 			previouslyViewedFriends = false;
 		}
 		
@@ -220,6 +258,8 @@ package com.jumpGame.ui.popups
 			this.btnFriends.visible = false;
 			this.btnGlobal.visible = true;
 			this.imgFriendsOn.visible = true;
+			comingSoonText.visible = false;
+			listRankings.visible = true;
 			Menu(this.parent).refreshRankingsFriends();
 			previouslyViewedFriends = true;
 		}

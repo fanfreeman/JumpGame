@@ -2,7 +2,6 @@ package com.jumpGame.gameElements.powerups
 {
 	import com.jumpGame.gameElements.Hero;
 	import com.jumpGame.gameElements.Transfiguration;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.HUD;
 	
 	import starling.core.Starling;

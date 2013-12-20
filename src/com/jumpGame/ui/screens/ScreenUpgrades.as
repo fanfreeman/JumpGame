@@ -1,7 +1,6 @@
 package com.jumpGame.ui.screens
 {
 	import com.jumpGame.events.NavigationEvent;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.UpgradeItemRenderer;
 	
@@ -106,29 +105,34 @@ package com.jumpGame.ui.screens
 		}
 		
 		private function updateUpgradesList():void {
+			var shouldSaveAnyMaxRankAchievement:Boolean = false;
+			var shouldSaveAllMaxRankAchievement:Boolean = true;
+			
 			// teleportation
 			if (Statics.upgradePrices.teleportation != null) {
 				upgradesCollection.setItemAt({
 					icon: "Teleportation",
 					title: "Power: Teleportation", 
-					caption: "Current Rank: " + String(12 + Statics.rankTeleportation * 2) + " teleports",
-					caption2: "Next Rank: " + String(12 + (Statics.rankTeleportation + 1) * 2) + " teleports",
+					caption: "Current Rank: " + String(12 + Statics.rankTeleportation * 3) + " teleports",
+					caption2: "Next Rank: " + String(12 + (Statics.rankTeleportation + 1) * 3) + " teleports",
 					price: Statics.upgradePrices.teleportation.price,
 					price_type: Statics.upgradePrices.teleportation.price_type,
 					progress: Statics.rankTeleportation,
 					eventid: Constants.UpgradeTeleportationId
 				}, 0);
-			} else {
+				shouldSaveAllMaxRankAchievement = false;
+			} else { // max rank reached
 				upgradesCollection.setItemAt({
 					icon: "Teleportation",
 					title: "Power: Teleportation", 
-					caption: "Current Rank: " + String(12 + Statics.rankTeleportation * 2) + " teleports",
+					caption: "Current Rank: " + String(12 + Statics.rankTeleportation * 3) + " teleports",
 					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankTeleportation,
 					eventid: Constants.UpgradeTeleportationId
 				}, 0);
+				shouldSaveAnyMaxRankAchievement = true;
 			}
 			
 			// attraction
@@ -143,6 +147,7 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankAttraction,
 					eventid: Constants.UpgradeAttractionId
 				}, 1);
+				shouldSaveAllMaxRankAchievement = false;
 			} else {
 				upgradesCollection.setItemAt({
 					icon: "Attraction",
@@ -154,6 +159,7 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankAttraction,
 					eventid: Constants.UpgradeAttractionId
 				}, 1);
+				shouldSaveAnyMaxRankAchievement = true;
 			}
 			
 			// duplication
@@ -168,6 +174,7 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankDuplication,
 					eventid: Constants.UpgradeDuplicationId
 				}, 2);
+				shouldSaveAllMaxRankAchievement = false;
 			} else {
 				upgradesCollection.setItemAt({
 					icon: "Duplication",
@@ -179,8 +186,8 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankDuplication,
 					eventid: Constants.UpgradeDuplicationId
 				}, 2);
+				shouldSaveAnyMaxRankAchievement = true;
 			}
-			
 			
 			// protection
 			if (Statics.upgradePrices.safety != null) {
@@ -194,6 +201,7 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankSafety,
 					eventid: Constants.UpgradeSafetyRocketId
 				}, 3);
+				shouldSaveAllMaxRankAchievement = false;
 			} else {
 				upgradesCollection.setItemAt({
 					icon: "Safety",
@@ -205,6 +213,7 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankSafety,
 					eventid: Constants.UpgradeSafetyRocketId
 				}, 3);
+				shouldSaveAnyMaxRankAchievement = true;
 			}
 			
 			// barrels o' fire
@@ -212,24 +221,26 @@ package com.jumpGame.ui.screens
 				upgradesCollection.setItemAt({
 					icon: "Barrels",
 					title: "Power: Barrels O' Fire", 
-					caption: "Current Rank: launch " + String(20 + Statics.rankBarrels * 2) + " barrels",
-					caption2: "Next Rank: launch " + String(20 + (Statics.rankBarrels + 1) * 2) + " barrels",
+					caption: "Current Rank: launch " + String(20 + Statics.rankBarrels * 3) + " barrels",
+					caption2: "Next Rank: launch " + String(20 + (Statics.rankBarrels + 1) * 3) + " barrels",
 					price: Statics.upgradePrices.barrels.price,
 					price_type: Statics.upgradePrices.barrels.price_type,
 					progress: Statics.rankBarrels,
 					eventid: Constants.UpgradeBarrelsId
 				}, 4);
+				shouldSaveAllMaxRankAchievement = false;
 			} else {
 				upgradesCollection.setItemAt({
 					icon: "Barrels",
 					title: "Power: Barrels O' Fire", 
-					caption: "Current Rank: launch " + String(20 + Statics.rankBarrels * 2) + " barrels",
+					caption: "Current Rank: launch " + String(20 + Statics.rankBarrels * 3) + " barrels",
 					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankBarrels,
 					eventid: Constants.UpgradeBarrelsId
 				}, 4);
+				shouldSaveAnyMaxRankAchievement = true;
 			}
 			
 			// super comet
@@ -244,6 +255,7 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankComet,
 					eventid: Constants.UpgradeCometId
 				}, 5);
+				shouldSaveAllMaxRankAchievement = false;
 			} else {
 				upgradesCollection.setItemAt({
 					icon: "Comet",
@@ -255,6 +267,7 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankComet,
 					eventid: Constants.UpgradeCometId
 				}, 5);
+				shouldSaveAnyMaxRankAchievement = true;
 			}
 			
 			// ability cooldown
@@ -269,6 +282,7 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankAbilityCooldown,
 					eventid: Constants.UpgradeAbilityCooldownId
 				}, 6);
+				shouldSaveAllMaxRankAchievement = false;
 			} else {
 				upgradesCollection.setItemAt({
 					icon: "Focus",
@@ -280,6 +294,7 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankAbilityCooldown,
 					eventid: Constants.UpgradeAbilityCooldownId
 				}, 6);
+				shouldSaveAnyMaxRankAchievement = true;
 			}
 			
 			// ability launch power
@@ -294,6 +309,7 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankAbilityPower,
 					eventid: Constants.UpgradeAbilityPowerId
 				}, 7);
+				shouldSaveAllMaxRankAchievement = false;
 			} else {
 				upgradesCollection.setItemAt({
 					icon: "Power",
@@ -305,6 +321,7 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankAbilityPower,
 					eventid: Constants.UpgradeAbilityPowerId
 				}, 7);
+				shouldSaveAnyMaxRankAchievement = true;
 			}
 			
 			// extra ability
@@ -312,24 +329,26 @@ package com.jumpGame.ui.screens
 				upgradesCollection.setItemAt({
 					icon: "Extra",
 					title: "Extra Special Ability", 
-					caption: "Current Rank: " + String(2 + Statics.rankExtraAbility * 1) + " ability uses per round",
-					caption2: "Next Rank: " + String(2 + (Statics.rankExtraAbility + 1) * 1) + " ability uses per round",
+					caption: "Current Rank: " + String(3 + Statics.rankExtraAbility * 1) + " ability uses per round",
+					caption2: "Next Rank: " + String(3 + (Statics.rankExtraAbility + 1) * 1) + " ability uses per round",
 					price: Statics.upgradePrices.extra_ability.price,
 					price_type: Statics.upgradePrices.extra_ability.price_type,
 					progress: Statics.rankExtraAbility,
 					eventid: Constants.UpgradeExtraAbilityId
 				}, 8);
+				shouldSaveAllMaxRankAchievement = false;
 			} else {
 				upgradesCollection.setItemAt({
 					icon: "Extra",
 					title: "Extra Special Ability", 
-					caption: "Current Rank: " + String(2 + Statics.rankExtraAbility * 1) + " ability uses per round",
+					caption: "Current Rank: " + String(3 + Statics.rankExtraAbility * 1) + " ability uses per round",
 					caption2: "",
 					price: 0,
 					price_type: "coins",
 					progress: Statics.rankExtraAbility,
 					eventid: Constants.UpgradeExtraAbilityId
 				}, 8);
+				shouldSaveAnyMaxRankAchievement = true;
 			}
 			
 			// coin doubler
@@ -337,13 +356,14 @@ package com.jumpGame.ui.screens
 				upgradesCollection.setItemAt({
 					icon: "Doubler",
 					title: "Magical Coin Doubler", 
-					caption: "Doubles the amount of coins you collect",
-					caption2: "during gameplay. Want to be rich?",
+					caption: "DOUBLES the amount of coins you collect",
+					caption2: "during gameplay PERMANENTLY. Crazy.",
 					price: Statics.upgradePrices.coin_doubler.price,
 					price_type: Statics.upgradePrices.coin_doubler.price_type,
 					progress: Statics.rankCoinDoubler,
 					eventid: Constants.UpgradeCoinDoublerId
 				}, 9);
+				shouldSaveAllMaxRankAchievement = false;
 			} else {
 				upgradesCollection.setItemAt({
 					icon: "Doubler",
@@ -355,6 +375,10 @@ package com.jumpGame.ui.screens
 					progress: Statics.rankCoinDoubler,
 					eventid: Constants.UpgradeCoinDoublerId
 				}, 9);
+			}
+			
+			if (shouldSaveAnyMaxRankAchievement || shouldSaveAllMaxRankAchievement) {
+				this.saveNewMaxRankAchievement(shouldSaveAnyMaxRankAchievement, shouldSaveAllMaxRankAchievement);
 			}
 		}
 		
@@ -368,14 +392,22 @@ package com.jumpGame.ui.screens
 		public function upgradeTeleportationHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on Upgrade: Teleportation');
+			}
+			
 			if (Statics.upgradePrices.teleportation.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
+			// check if we are earning an upgrade achievement
+			var newAchievementsArray:Array = this.assembleUpgradeAchievementsIds(uint(Statics.upgradePrices.teleportation.rank));
+			
 			var jsonStr:String = JSON.stringify({
-				item: 'teleportation'
+				item: 'teleportation',
+				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Power...");
 			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
@@ -385,14 +417,22 @@ package com.jumpGame.ui.screens
 		public function upgradeAttractionHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on Upgrade: Attraction');
+			}
+			
 			if (Statics.upgradePrices.attraction.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
+			// check if we are earning an upgrade achievement
+			var newAchievementsArray:Array = this.assembleUpgradeAchievementsIds(uint(Statics.upgradePrices.attraction.rank));
+			
 			var jsonStr:String = JSON.stringify({
-				item: 'attraction'
+				item: 'attraction',
+				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Power...");
 			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
@@ -402,14 +442,22 @@ package com.jumpGame.ui.screens
 		public function upgradeDuplicationHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on Upgrade: Duplication');
+			}
+			
 			if (Statics.upgradePrices.duplication.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 
+			// check if we are earning an upgrade achievement
+			var newAchievementsArray:Array = this.assembleUpgradeAchievementsIds(uint(Statics.upgradePrices.duplication.rank));
+			
 			var jsonStr:String = JSON.stringify({
-				item: 'duplication'
+				item: 'duplication',
+				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Power...");
 			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
@@ -419,14 +467,22 @@ package com.jumpGame.ui.screens
 		public function upgradeSafetyRocketHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on Upgrade: Protection');
+			}
+			
 			if (Statics.upgradePrices.safety.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
+			// check if we are earning an upgrade achievement
+			var newAchievementsArray:Array = this.assembleUpgradeAchievementsIds(uint(Statics.upgradePrices.safety.rank));
+			
 			var jsonStr:String = JSON.stringify({
-				item: 'safety'
+				item: 'safety',
+				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Power...");
 			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
@@ -436,14 +492,22 @@ package com.jumpGame.ui.screens
 		public function upgradeBarrelsHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on Upgrade: Barrels');
+			}
+			
 			if (Statics.upgradePrices.barrels.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
+			// check if we are earning an upgrade achievement
+			var newAchievementsArray:Array = this.assembleUpgradeAchievementsIds(uint(Statics.upgradePrices.barrels.rank));
+			
 			var jsonStr:String = JSON.stringify({
-				item: 'barrels'
+				item: 'barrels',
+				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Power...");
 			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
@@ -453,14 +517,22 @@ package com.jumpGame.ui.screens
 		public function upgradeCometHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on Upgrade: Comet');
+			}
+			
 			if (Statics.upgradePrices.comet.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
+			// check if we are earning an upgrade achievement
+			var newAchievementsArray:Array = this.assembleUpgradeAchievementsIds(uint(Statics.upgradePrices.comet.rank));
+			
 			var jsonStr:String = JSON.stringify({
-				item: 'comet'
+				item: 'comet',
+				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Power...");
 			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
@@ -470,14 +542,22 @@ package com.jumpGame.ui.screens
 		public function upgradeCooldownHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on Upgrade: Ability Cooldown');
+			}
+			
 			if (Statics.upgradePrices.cooldown.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
+			// check if we are earning an upgrade achievement
+			var newAchievementsArray:Array = this.assembleUpgradeAchievementsIds(uint(Statics.upgradePrices.cooldown.rank));
+			
 			var jsonStr:String = JSON.stringify({
-				item: 'cooldown'
+				item: 'cooldown',
+				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Ability...");
 			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
@@ -487,14 +567,22 @@ package com.jumpGame.ui.screens
 		public function upgradeAbilityPowerHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on Upgrade: Ability Power');
+			}
+			
 			if (Statics.upgradePrices.ability_power.price > Statics.playerCoins) { // player can't afford this
 				// show get coins prompt
 				Menu(this.owner).showDialogBox("You do not have enough coins, would you like to get more?", showGetCoinsScreen);
 				return;
 			}
 			
+			// check if we are earning an upgrade achievement
+			var newAchievementsArray:Array = this.assembleUpgradeAchievementsIds(uint(Statics.upgradePrices.ability_power.rank));
+			
 			var jsonStr:String = JSON.stringify({
-				item: 'ability_power'
+				item: 'ability_power',
+				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Ability...");
 			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
@@ -503,6 +591,10 @@ package com.jumpGame.ui.screens
 		
 		public function upgradeExtraAbilityHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on Upgrade: Extra Ability');
+			}
 			
 			if (Statics.upgradePrices.extra_ability.price_type == "coins") {
 				if (Statics.upgradePrices.extra_ability.price > Statics.playerCoins) { // player can't afford this
@@ -519,9 +611,17 @@ package com.jumpGame.ui.screens
 				}
 			}
 			
+			// check if we are earning an upgrade achievement
+			var newAchievementsArray:Array = this.assembleUpgradeAchievementsIds(uint(Statics.upgradePrices.extra_ability.rank));
+			// also check for extra ability upgrade achievement
+			if (!Statics.achievementsList[21]) {
+				Statics.achievementsList[21] = true;
+				newAchievementsArray.push(21);
+			}
 			
 			var jsonStr:String = JSON.stringify({
-				item: 'extra_ability'
+				item: 'extra_ability',
+				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Ability...");
 			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
@@ -531,18 +631,65 @@ package com.jumpGame.ui.screens
 		public function upgradeCoinDoublerHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('clicked on Upgrade: Coin Doubler');
+			}
+			
 			if (Statics.upgradePrices.coin_doubler.price > Statics.playerGems) { // player can't afford this
 				// show get gems prompt
 				Menu(this.owner).showDialogBox("You do not have enough gems, would you like to get more?", showGetGemsScreen);
 				return;
 			}
 			
+			// check if we are earning an upgrade achievement
+			var newAchievementsArray:Array = new Array();
+			if (!Statics.achievementsList[22]) {
+				Statics.achievementsList[22] = true;
+				newAchievementsArray.push(22);
+			}
+			if (!Statics.achievementsList[33]) {
+				Statics.achievementsList[33] = true;
+				newAchievementsArray.push(33);
+			}
+			
 			var jsonStr:String = JSON.stringify({
-				item: 'coin_doubler'
+				item: 'coin_doubler',
+				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Fabricating Coin Doubler...");
 			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 			Menu(this.owner).communicator.postPurchaseUpgrade(jsonStr);
+		}
+		
+		private function assembleUpgradeAchievementsIds(tier:uint):Array {
+			var newAchievementsArray:Array = new Array();
+			for (var i:uint = 1; i <= tier; i++) { // process all unrecorded upgrade achievements
+				if (!Statics.achievementsList[23 + i - 1]) { // first upgrade achievement has id 23
+					Statics.achievementsList[23 + i - 1] = true;
+					newAchievementsArray.push(23 + i - 1);
+				}
+			}
+			return newAchievementsArray;
+		}
+		
+		// check if new max rank reached achievements are earned, if so, send to backend
+		private function saveNewMaxRankAchievement(anyMaxRank, allMaxRank):void {
+			var newAchievementsArray:Array = new Array();
+			if (anyMaxRank && !Statics.achievementsList[33]) {
+				Statics.achievementsList[33] = true;
+				newAchievementsArray.push(33);
+			}
+			if (allMaxRank && !Statics.achievementsList[34]) {
+				Statics.achievementsList[34] = true;
+				newAchievementsArray.push(34);
+			}
+			if (newAchievementsArray.length > 0) {
+				var jsonStr:String = JSON.stringify({
+					achievements: newAchievementsArray
+				});
+				Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
+				Menu(this.owner).communicator.postSaveAchievements(jsonStr);
+			}
 		}
 		
 		private function showGetCoinsScreen():void {

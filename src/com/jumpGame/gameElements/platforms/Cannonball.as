@@ -22,7 +22,7 @@ package com.jumpGame.gameElements.platforms
 			platformImage.pivotY = Math.ceil(platformImage.texture.height / 2);
 			this.addChild(platformImage);
 			
-			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("Explosion"), 40);
+			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PulseRed"), 40);
 			bounceAnimation.pivotX = Math.ceil(bounceAnimation.texture.width  / 2); // center art on registration point
 			bounceAnimation.pivotY = Math.ceil(bounceAnimation.texture.height / 2);
 			bounceAnimation.loop = false;
@@ -84,8 +84,8 @@ package com.jumpGame.gameElements.platforms
 //				}
 //			} else {
 				this.dy -= Constants.Gravity * timeDiff;
-				if (this.dy < Constants.MaxHeroFallVelocity) {
-					this.dy = Constants.MaxHeroFallVelocity;
+				if (this.dy < Constants.MaxObjectFallVelocity) {
+					this.dy = Constants.MaxObjectFallVelocity;
 				}
 				
 				this.gx += this.dx * timeDiff;

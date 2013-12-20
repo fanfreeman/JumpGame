@@ -52,8 +52,9 @@ package com.jumpGame.ui
 			indicatorNoGlow.pivotX = Math.ceil(indicatorNoGlow.texture.width  / 2); // center art on registration point
 			indicatorNoGlow.pivotY = Math.ceil(indicatorNoGlow.texture.height / 2);
 			indicatorSprite.addChild(indicatorNoGlow);
-			this.spriteClipRect = indicatorSprite.bounds;
 			this.addChild(indicatorSprite);
+			
+			this.spriteClipRect = new Rectangle();
 			
 			// sparkles
 			sparklesAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("SpecialSparkle"), 10);
@@ -100,7 +101,7 @@ package com.jumpGame.ui
 		}
 		
 		public function updateClipRectByRatio(ratio:Number):void {
-			this.spriteClipRect = indicatorDark.bounds;
+			indicatorDark.getBounds(this, this.spriteClipRect);
 			this.spriteClipRect.offset(0, this.spriteClipRect.height * (1 - ratio));
 			indicatorSprite.clipRect = this.spriteClipRect;
 		}

@@ -1,6 +1,5 @@
 package com.jumpGame.ui.popups
 {
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	
 	import feathers.controls.Button;
@@ -130,6 +129,10 @@ package com.jumpGame.ui.popups
 			
 			this.visible = false;
 			Menu(parent).showBuyLivesDialog();
+			
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				Statics.mixpanel.track('clicked on buy lives with gems');
+			}
 		}
 		
 		private function buttonAskHandler(event:Event):void {
@@ -137,6 +140,10 @@ package com.jumpGame.ui.popups
 			
 			this.visible = false;
 			Menu(parent).showAskFriendsForLives();
+			
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				Statics.mixpanel.track('clicked on ask for lives');
+			}
 		}
 		
 		private function buttonCloseHandler(event:Event):void {

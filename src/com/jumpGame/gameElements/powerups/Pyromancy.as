@@ -1,6 +1,5 @@
 package com.jumpGame.gameElements.powerups
 {
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.HUD;
 
 	public class Pyromancy extends GameObject
@@ -33,7 +32,7 @@ package com.jumpGame.gameElements.powerups
 			if (Statics.gameTime > this.nextLaunchTime) {
 				// laucnh
 				this.numLaunches++;
-				if (this.numLaunches >= 20 + Statics.rankBarrels * 2) {
+				if (this.numLaunches >= 20 + Statics.rankBarrels * 3) {
 					// deactivate
 					this.isActivated = false;
 					

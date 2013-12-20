@@ -1,6 +1,5 @@
 package com.jumpGame.gameElements
 {
-	import com.jumpGame.level.Statics;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
@@ -54,7 +53,7 @@ package com.jumpGame.gameElements
 				this.movieclipVec = new Vector.<MovieClip>();
 				var movieClip:MovieClip;
 				if (this._layer == 15) { // dragon/stingray
-					movieClip = new MovieClip(Assets.getSprite("AtlasTexture6").getTextures("Dragon"), 20);
+					movieClip = new MovieClip(Statics.assets.getTextures("Dragon"), 20);
 					movieClip.pivotY = movieClip.height;
 					movieClip.scaleX = 1.2;
 					movieClip.scaleY = 1.2;
@@ -63,7 +62,7 @@ package com.jumpGame.gameElements
 					starling.core.Starling.juggler.add(movieClip);
 					this.movieclipVec.push(movieClip); // store in vector
 					
-					movieClip = new MovieClip(Assets.getSprite("AtlasTexture6").getTextures("Stingray"), 20);
+					movieClip = new MovieClip(Statics.assets.getTextures("Stingray"), 20);
 					movieClip.pivotY = movieClip.height;
 					movieClip.scaleX = 1.2;
 					movieClip.scaleY = 1.2;
@@ -73,7 +72,7 @@ package com.jumpGame.gameElements
 					this.movieclipVec.push(movieClip); // store in vector
 				}
 				else if (this._layer == 70) { // fairy
-					movieClip = new MovieClip(Assets.getSprite("AtlasTexture7").getTextures("Fairy"), 30);
+					movieClip = new MovieClip(Statics.assets.getTextures("Fairy"), 30);
 					movieClip.pivotX = Math.ceil(movieClip.width / 2);
 					movieClip.pivotY = movieClip.height;
 					movieClip.x = this.stageWidth + movieClip.width;
@@ -88,14 +87,14 @@ package com.jumpGame.gameElements
 				this.imageVec = new Vector.<Image>();
 				var image:Image;
 				if (this._layer == 10) { // moon/planet/pirate ship
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("Moon0000"));
+					image = new Image(Statics.assets.getTexture("Moon0000"));
 					image.pivotX = 0; // set registration point to bottom left corner
 					image.pivotY = image.texture.height;
 					image.x = - image.texture.width;
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("PirateShip0000"));
+					image = new Image(Statics.assets.getTexture("PirateShip0000"));
 					image.pivotX = 0; // set registration point to bottom left corner
 					image.pivotY = image.texture.height;
 					image.x = Constants.StageWidth;
@@ -103,7 +102,7 @@ package com.jumpGame.gameElements
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("Planet0000"));
+					image = new Image(Statics.assets.getTexture("Planet0000"));
 					image.pivotX = image.texture.width;
 					image.pivotY = image.texture.height;
 					image.x = this.stageWidth;

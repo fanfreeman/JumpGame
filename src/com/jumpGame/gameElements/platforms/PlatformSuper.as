@@ -1,7 +1,6 @@
 package com.jumpGame.gameElements.platforms
 {
 	import com.jumpGame.gameElements.Platform;
-	import com.jumpGame.level.Statics;
 	
 	import starling.core.Starling;
 	import starling.display.Image;

@@ -1,6 +1,5 @@
 package com.jumpGame.gameElements.powerups
 {
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.HUD;
 
 	public class Extender extends GameObject

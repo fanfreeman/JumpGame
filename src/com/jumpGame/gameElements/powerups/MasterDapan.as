@@ -2,7 +2,6 @@ package com.jumpGame.gameElements.powerups
 {
 	import com.jumpGame.gameElements.Hero;
 	import com.jumpGame.gameElements.Transfiguration;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.HUD;
 	
 	import starling.animation.Transitions;
@@ -30,6 +29,7 @@ package com.jumpGame.gameElements.powerups
 		
 		public function MasterDapan(hero:Hero, hud:HUD, transfiguration:Transfiguration)
 		{
+			this.touchable = false;
 			this.hero = hero;
 			this.hud = hud;
 			this.transfiguration = transfiguration;
@@ -68,7 +68,7 @@ package com.jumpGame.gameElements.powerups
 //			Statics.particleJet.start();
 //			Statics.particleCharge.start();
 			Statics.particleBounce.emitterX = this.x;
-			Statics.particleBounce.emitterY = (this.y + this.bounds.bottom) / 2;
+			Statics.particleBounce.emitterY = this.y + this.height / 2;
 			Statics.particleBounce.start();
 			Statics.particleCharge.emitterX = this.x;
 			Statics.particleCharge.emitterY = this.y;
@@ -108,7 +108,7 @@ package com.jumpGame.gameElements.powerups
 			Statics.cameraTargetModifierY = 250;
 			
 			this.completionWarned = false;
-			this.completionTime = Statics.gameTime + 20000;
+			this.completionTime = Statics.gameTime + 15000;
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 			
 			// schedule first obstacle
@@ -140,13 +140,13 @@ package com.jumpGame.gameElements.powerups
 			this.gx = this.hero.gx;
 			this.gy = this.hero.gy;
 			Statics.particleBounce.emitterX = this.x;
-			Statics.particleBounce.emitterY = (this.y + this.bounds.bottom) / 2;
+			Statics.particleBounce.emitterY = this.y + this.height / 2;
 //			this.snapToBorder(timeDiff);
 //			if (this.hero.gx > 100) this.arrivingOnRight();
 //			else if (this.hero.gx < -100) this.arrivingOnLeft();
 //			this.hero.dy = 0.5 + this.incrementalHeroDy;
 			
-			if (this.hero.dy < 0.4 && !this.isDynamicDisabled) { // stop falling due to gravity once slowed down
+			if (this.hero.dy < 0.5 && !this.isDynamicDisabled) { // stop falling due to gravity once slowed down
 				this.hero.isDynamic = false;
 				this.isDynamicDisabled = true;
 			}
@@ -203,8 +203,9 @@ package com.jumpGame.gameElements.powerups
 			Statics.powerupsEnabled = true;
 			
 			// brief push upward
-			if (this.hero.dy < 2.5) {
-				this.hero.dy = 2.5;
+			if (this.hero.dy < 3.5) {
+				this.hero.dy = 3.5;
+				Statics.particleJet.start(0.5);
 			}
 			
 			// set invincibility time

@@ -6,10 +6,12 @@ package com.jumpGame.level  {
 		public var levelElementsArray:Array;
 		
 		private var generator:LevelGenerator;
-		private var difficulty:int;
+		public var difficulty:int;
 		private var nextDifficultyDistance:Number;
 		
-		private var repetitions:uint; // number of times the entire difficulty sequence has repeated
+		public var repetitions:uint; // number of times the entire difficulty sequence has repeated
+		
+		private var _maxHeroFallVelocity:Number;
 		
 		// parse level definition file
 		public function LevelParser() { // create new objects here
@@ -18,10 +20,12 @@ package com.jumpGame.level  {
 		}
 		
 		public function initialize():void { // reset properties here
+			this.generator.initialize();
 			currentY = 30;
 			nextDifficultyDistance = 18000; // distance of the very first difficulty level
 			difficulty = 7;
 			repetitions = 0;
+			_maxHeroFallVelocity = -1.02;
 			
 			if (Constants.isDesignerMode) this.difficulty = 999999;
 			this.levelElementsArray.length = 0; // clear this array
@@ -43,19 +47,23 @@ package com.jumpGame.level  {
 		 */
 		public function requestBlock():void {
 //			trace("requesting difficulty " + this.difficulty);
+			
+			// reenable power duplication each time we are generating a new block
+			this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.PowerSettingDuplication, true]);
+			
 			var blockNumber:int;
 			switch (this.difficulty) {
 				case 7:
 					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingBell, 10]);
-					blockNumber = int(Math.floor(Math.random() * 3) + 700);
+					blockNumber = int(Math.floor(Math.random() * 4) + 700);
 					this.generator.generate(blockNumber);
 					break;
 				case 8:
+					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 18]);
 					blockNumber = int(Math.floor(Math.random() * 1) + 800);
 					this.generator.generate(blockNumber);
 					break;
 				case 9:
-					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 30]);
 					blockNumber = int(Math.floor(Math.random() * 5) + 900);
 					this.generator.generate(blockNumber);
 					break;
@@ -93,7 +101,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 17:
-					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 20]);
+//					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 18]);
 					blockNumber = int(Math.floor(Math.random() * 6) + 8000);
 					this.generator.generate(blockNumber);
 					break;
@@ -137,7 +145,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 27:
-					blockNumber = int(Math.floor(Math.random() * 3) + 18000);
+					blockNumber = int(Math.floor(Math.random() * 2) + 18000);
 					this.generator.generate(blockNumber);
 					break;
 				case 28:
@@ -185,7 +193,11 @@ package com.jumpGame.level  {
 					}
 					else if (this.difficulty == 25) { // only one repetition of boss level
 						this.raiseDifficulty();
-						this.nextDifficultyDistance = Statics.maxDist + 5000;
+						this.nextDifficultyDistance = Statics.maxDist + 6000;
+					}
+					else if (this.difficulty == 26) { // make reward level longer
+						this.raiseDifficulty();
+						this.nextDifficultyDistance = Statics.maxDist + 30000;
 					}
 					else {
 						this.raiseDifficulty();
@@ -194,15 +206,21 @@ package com.jumpGame.level  {
 							this.difficulty = 12;
 							if (this.repetitions == 0) { // second go through, schedule cannons
 								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 15]);
-								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingCannon, 15]);
+								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingCannon, 30]);
+								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingWitch, 8]);
 							}
 							else { // third go through and beyond
 								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 10]);
-								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingCannon, 10]);
+								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingCannon, 20]);
+								this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingWitch, 5]);
 							}
 							this.repetitions++;
+							
+							if (Statics.isAnalyticsEnabled) { // mixpanel
+								Statics.mixpanel.track('repeating levels', { "repetitions": this.repetitions });
+							}
 						}
-						if (this.difficulty % 2 == 0) this.nextDifficultyDistance = Statics.maxDist + 8000;
+						if (this.difficulty % 2 == 0) this.nextDifficultyDistance = Statics.maxDist + 16000; // platform levels
 						else this.nextDifficultyDistance = Statics.maxDist + 16000; // star levels are longer
 					}
 					
@@ -214,7 +232,14 @@ package com.jumpGame.level  {
 		
 		private function raiseDifficulty():void {
 			this.difficulty++;
-			if (Statics.speedFactor < 1.2) Statics.speedFactor += 0.005;
+			if (Statics.speedFactor < 1.35) Statics.speedFactor += 0.005;
+			if (this._maxHeroFallVelocity > -2) this._maxHeroFallVelocity -= 0.03;
+//			trace("max hero fall velocity: " + this._maxHeroFallVelocity);
+		}
+		
+		public function get maxHeroFallVelocity():Number
+		{
+			return this._maxHeroFallVelocity;
 		}
 	}
 }

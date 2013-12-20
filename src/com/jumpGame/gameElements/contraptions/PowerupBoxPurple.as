@@ -10,6 +10,7 @@ package com.jumpGame.gameElements.contraptions
 			boxAnimation.pivotX = Math.ceil(boxAnimation.texture.width  / 2); // center art on registration point
 			boxAnimation.pivotY = Math.ceil(boxAnimation.texture.height);
 			this.addChild(boxAnimation);
+			super.createArt();
 		}
 	}
 }

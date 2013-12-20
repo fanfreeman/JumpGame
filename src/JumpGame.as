@@ -7,11 +7,13 @@ package
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.events.ProgressEvent;
 	import flash.system.Security;
 	import flash.ui.ContextMenu;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getTimer;
+	import flash.display.StageScaleMode;
+	import flash.display.StageAlign;
+	import flash.display.DisplayObject;
 	
 	[SWF(width = "756", height = "650", frameRate = "60", backgroundColor = "#4a4137")]
 	
@@ -50,7 +52,9 @@ package
 //		private var myStarling:Starling;
 		private static const PROGRESS_BAR_HEIGHT:Number = 20;
 		
-		/**.k   
+		private const STARTUP_CLASS:String = "JumpStart";
+		
+		/**
 		 * This is typed as Object so that the compiler doesn't include the
 		 * starling.core.Starling class in frame 1. We'll access the Starling
 		 * class dynamically once the SWF is completely loaded.
@@ -61,10 +65,6 @@ package
 		
 		public function JumpGame()
 		{
-//			super();
-//			
-//			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			
 			// load security policy files
 //			Security.loadPolicyFile("https://www.raiderbear.com/crossdomain.xml");
 			Security.allowDomain("raiderbear.com");
@@ -72,15 +72,28 @@ package
 			Security.loadPolicyFile("http://profile.ak.fbcdn.net/crossdomain.xml");
 			Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
 			
+			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			stop();
+			
+			//the two most important events for preloading
+//			this.loaderInfo.addEventListener(ProgressEvent.PROGRESS, loaderInfo_progressHandler);
+//			this.loaderInfo.addEventListener(Event.COMPLETE, loaderInfo_completeHandler);
+		}
+		
+		private function onAddedToStage(event:Event):void 
+		{
+			stage.scaleMode = StageScaleMode.SHOW_ALL;
+			stage.align = StageAlign.TOP_LEFT;
+			
 			this.gameStartTime = getTimer();
 			
 			var menu:ContextMenu = new ContextMenu();
 			menu.hideBuiltInItems();
 			this.contextMenu = menu;
 			
-//			brandBitmap = new brandImage() as Bitmap;
-//			brandBitmap.alpha = 0;
-//			this.addChild(brandBitmap);
+			//			brandBitmap = new brandImage() as Bitmap;
+			//			brandBitmap.alpha = 0;
+			//			this.addChild(brandBitmap);
 			
 			titleBgBitmap = new titleBgImage() as Bitmap;
 			titleBgBitmap.alpha = 0;
@@ -102,25 +115,20 @@ package
 			this.addChild(titleGirlBitmap);
 			
 			// progress bars
-//			barSpriteTop = new Sprite();
-//			this.addChild(barSpriteTop);
+			//			barSpriteTop = new Sprite();
+			//			this.addChild(barSpriteTop);
 			
-//			barSpriteRight = new Sprite();
-//			this.addChild(barSpriteRight);
+			//			barSpriteRight = new Sprite();
+			//			this.addChild(barSpriteRight);
 			
 			barSpriteBottom = new Sprite();
 			this.addChild(barSpriteBottom);
 			
-//			barSpriteLeft = new Sprite();
-//			this.addChild(barSpriteLeft);
-			
-			this.stop();
-			
-//			TweenLite.to(brandBitmap, 1, {alpha: 1});
-//			TweenLite.to(titleBgBitmap, 1, {alpha: 1, delay: 3});
-//			TweenLite.to(titleBoyBitmap, 0.9, {y: 118, delay: 3.4, onComplete: boyYoyo});
-//			TweenLite.to(titleGirlBitmap, 0.5, {y: 358, delay: 3.8});
-//			TweenLite.to(titleLogoBitmap, 0.7, {y: PROGRESS_BAR_HEIGHT, delay: 3.6});
+			//			TweenLite.to(brandBitmap, 1, {alpha: 1});
+			//			TweenLite.to(titleBgBitmap, 1, {alpha: 1, delay: 3});
+			//			TweenLite.to(titleBoyBitmap, 0.9, {y: 118, delay: 3.4, onComplete: boyYoyo});
+			//			TweenLite.to(titleGirlBitmap, 0.5, {y: 358, delay: 3.8});
+			//			TweenLite.to(titleLogoBitmap, 0.7, {y: PROGRESS_BAR_HEIGHT, delay: 3.6});
 			TweenLite.to(titleBgBitmap, 1, {alpha: 1});
 			TweenLite.to(titleBoyBitmap, 0.9, {y: 118, delay: 0.4, onComplete: boyYoyo});
 			TweenLite.to(titleGirlBitmap, 0.5, {y: 358, delay: 0.8});
@@ -130,22 +138,39 @@ package
 			function boyYoyo():void {
 				myTween = new TweenLite(titleBoyBitmap, 0.5, {ease: Linear.easeNone, y :138, onComplete:reverseTween, onReverseComplete:restartTween});
 				TweenLite.to(titleGirlBitmap, 0.5, {ease: Linear.easeNone, y: 348});
-//				TweenLite.to(titleLogoBitmap, 0.5, {ease: Quad.easeInOut, x: 315});
+				//				TweenLite.to(titleLogoBitmap, 0.5, {ease: Quad.easeInOut, x: 315});
 			}
 			function reverseTween():void {
 				myTween.reverse();
 				TweenLite.to(titleGirlBitmap, 0.5, {ease: Linear.easeNone, y: 358});
-//				TweenLite.to(titleLogoBitmap, 0.5, {ease: Quad.easeInOut, x: 335});
+				//				TweenLite.to(titleLogoBitmap, 0.5, {ease: Quad.easeInOut, x: 335});
 			}
 			function restartTween():void {
 				myTween.restart();
 				TweenLite.to(titleGirlBitmap, 0.5, {ease: Linear.easeNone, y: 348});
-//				TweenLite.to(titleLogoBitmap, 0.5, {ease: Quad.easeInOut, x: 315});
+				//				TweenLite.to(titleLogoBitmap, 0.5, {ease: Quad.easeInOut, x: 315});
 			}
 			
-			//the two most important events for preloading
-			this.loaderInfo.addEventListener(ProgressEvent.PROGRESS, loaderInfo_progressHandler);
-			this.loaderInfo.addEventListener(Event.COMPLETE, loaderInfo_completeHandler);
+			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+		}
+		
+		private function onEnterFrame(event:Event):void 
+		{
+			var bytesLoaded:int = root.loaderInfo.bytesLoaded;
+			var bytesTotal:int  = root.loaderInfo.bytesTotal;
+			
+			if (bytesLoaded >= bytesTotal)
+			{
+				removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+				this.checkShouldStart();
+			}
+			else {
+				barSpriteBottom.graphics.clear();
+				barSpriteBottom.graphics.beginFill(0xcccccc);
+				barSpriteBottom.graphics.drawRect(0, this.stage.stageHeight - PROGRESS_BAR_HEIGHT, this.stage.stageWidth * bytesLoaded / bytesTotal, PROGRESS_BAR_HEIGHT);
+				barSpriteBottom.graphics.endFill();
+			}
 		}
 		
 		/**
@@ -153,8 +178,8 @@ package
 		 * will give you a value between 0 and 1. Multiply by 100 to get a value
 		 * between 0 and 100.
 		 */
-		private function loaderInfo_progressHandler(event:ProgressEvent):void
-		{
+//		private function loaderInfo_progressHandler(event:ProgressEvent):void
+//		{
 			// update progress bars
 //			barSpriteTop.graphics.clear();
 //			barSpriteTop.graphics.beginFill(0xff6d00);
@@ -166,25 +191,21 @@ package
 //			barSpriteRight.graphics.drawRect(this.stage.stageWidth - PROGRESS_BAR_HEIGHT, 0, PROGRESS_BAR_HEIGHT, this.stage.stageHeight * event.bytesLoaded / event.bytesTotal);
 //			barSpriteRight.graphics.endFill();
 			
-			barSpriteBottom.graphics.clear();
-			barSpriteBottom.graphics.beginFill(0xcccccc);
-//			barSpriteBottom.graphics.drawRect(this.stage.stageWidth, this.stage.stageHeight - PROGRESS_BAR_HEIGHT, -this.stage.stageWidth * event.bytesLoaded / event.bytesTotal, PROGRESS_BAR_HEIGHT);
-			barSpriteBottom.graphics.drawRect(0, this.stage.stageHeight - PROGRESS_BAR_HEIGHT, this.stage.stageWidth * event.bytesLoaded / event.bytesTotal, PROGRESS_BAR_HEIGHT);
-			barSpriteBottom.graphics.endFill();
+			
 			
 //			barSpriteLeft.graphics.clear();
 //			barSpriteLeft.graphics.beginFill(0xff6d00);
 //			barSpriteLeft.graphics.drawRect(0, this.stage.stageHeight, PROGRESS_BAR_HEIGHT, -this.stage.stageHeight * event.bytesLoaded / event.bytesTotal);
 //			barSpriteLeft.graphics.endFill();
-		}
+//		}
 		
 		/**
 		 * The entire SWF has finished loading when this listener is called.
 		 */
-		private function loaderInfo_completeHandler(event:Event):void
-		{
-			this.checkShouldStart();
-		}
+//		private function loaderInfo_completeHandler(event:Event):void
+//		{
+//			this.checkShouldStart();
+//		}
 		
 		private function checkShouldStart():void {
 			var timeElapsed:int = getTimer() - this.gameStartTime;
@@ -227,18 +248,23 @@ package
 			barSpriteBottom = null;
 			//			barSpriteLeft = null;
 			
+			this.run();
 			//go to frame two because that's where the classes we need are located
-			this.gotoAndStop(2);
-			
-			//getDefinitionByName() will let us access the classes without importing
-			const StarlingType:Class = getDefinitionByName("starling.core.Starling") as Class;
-			const GameType:Class = getDefinitionByName("Game") as Class;
-			this._starling = new StarlingType(GameType, this.stage); // baseline_constrained
-			//			this._starling = new StarlingType(GameType, this.stage, null, null, Context3DRenderMode.AUTO, Context3DProfile.BASELINE_EXTENDED);
-			this._starling.antiAliasing = 1;
-			this._starling.showStats = true;
-			this._starling.showStatsAt("left", "bottom");
-			this._starling.start();
+//			this.gotoAndStop(2);
+//			
+//			//getDefinitionByName() will let us access the classes without importing
+//			const StarlingType:Class = getDefinitionByName("starling.core.Starling") as Class;
+//			const GameType:Class = getDefinitionByName("Game") as Class;
+//			this._starling = new StarlingType(GameType, this.stage); // baseline_constrained
+//			//			this._starling = new StarlingType(GameType, this.stage, null, null, Context3DRenderMode.AUTO, Context3DProfile.BASELINE_EXTENDED);
+//			this._starling.antiAliasing = 0;
+////			this._starling.enableErrorChecking = Capabilities.isDebugger;
+//			// bof show starling stats
+//			this._starling.showStats = true;
+//			this._starling.showStatsAt("left", "bottom");
+//			// eof show starling stats
+//			this._starling.start();
+////			this._starling.addEventListener(Event.ROOT_CREATED, onRootCreated);
 		}
 		
 //		protected function onAddedToStage(event:Event):void
@@ -260,5 +286,20 @@ package
 //			// Start Starling Framework.
 //			myStarling.start();
 //		}
+		
+		private function run():void 
+		{
+			nextFrame();
+			
+			var startupClass:Class = getDefinitionByName(STARTUP_CLASS) as Class;
+			if (startupClass == null)
+				throw new Error("Invalid Startup class in Preloader: " + STARTUP_CLASS);
+			
+			var startupObject:DisplayObject = new startupClass() as DisplayObject;
+			if (startupObject == null)
+				throw new Error("Startup class needs to inherit from Sprite or MovieClip.");
+			
+			addChildAt(startupObject, 0);
+		}
 	}
 }

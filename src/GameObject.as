@@ -1,6 +1,5 @@
 package
 {
-	import com.jumpGame.gameElements.Camera;
 	
 	import starling.display.Sprite;
 	
@@ -14,6 +13,7 @@ package
 		private var _gy:Number;
 		
 		public function GameObject() {
+			this.touchable = false;
 			this._gx = 0;
 			this._gy = 0;
 		}
@@ -38,7 +38,7 @@ package
 		public function set gy(value:Number):void
 		{
 			this._gy = value;
-			this.y = int(Constants.StageHeight / 2 - (value - Camera.gy));
+			this.y = int(Constants.StageHeight / 2 - (value - Statics.cameraGy));
 		}
 	}
 }

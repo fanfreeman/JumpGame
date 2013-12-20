@@ -1,7 +1,6 @@
 package com.jumpGame.ui.popups
 {
 	import com.jumpGame.customObjects.Font;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	
 	import flash.display.Bitmap;
@@ -62,10 +61,10 @@ package com.jumpGame.ui.popups
 			this.addChild(popupContainer);
 			
 			// popup header
-			var popupHeader:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupHeaderCharacters0000"));
+			var popupHeader:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupHeaderProfile0000"));
 			popupHeader.pivotX = Math.ceil(popupHeader.width / 2);
 			popupHeader.x = popupContainer.width / 2;
-			popupHeader.y = popup.bounds.top + 26;
+			popupHeader.y = popup.bounds.top + 27;
 			popupContainer.addChild(popupHeader);
 			
 			// popup close button

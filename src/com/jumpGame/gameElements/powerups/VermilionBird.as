@@ -2,7 +2,6 @@ package com.jumpGame.gameElements.powerups
 {
 	import com.jumpGame.gameElements.Hero;
 	import com.jumpGame.gameElements.Transfiguration;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.HUD;
 	
 	import starling.animation.Transitions;
@@ -26,6 +25,7 @@ package com.jumpGame.gameElements.powerups
 		
 		public function VermilionBird(hero:Hero, hud:HUD, transfiguration:Transfiguration)
 		{
+			this.touchable = false;
 			this.hero = hero;
 			this.hud = hud;
 			this.transfiguration = transfiguration;
@@ -91,7 +91,7 @@ package com.jumpGame.gameElements.powerups
 			
 			this.isActivated = true;
 			this.completionWarned = false;
-			this.completionTime = Statics.gameTime + 20000;
+			this.completionTime = Statics.gameTime + 15000;
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 			
 			// schedule first obstacle
@@ -151,8 +151,9 @@ package com.jumpGame.gameElements.powerups
 			Statics.powerupsEnabled = true;
 			
 			// brief push upward
-			if (this.hero.dy < 2.5) {
-				this.hero.dy = 2.5;
+			if (this.hero.dy < 3.5) {
+				this.hero.dy = 3.5;
+				Statics.particleJet.start(0.5);
 			}
 			
 			// set invincibility time

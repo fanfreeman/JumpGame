@@ -1,7 +1,6 @@
 package com.jumpGame.ui.popups
 {
 	import com.jumpGame.events.NavigationEvent;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	
 	import feathers.controls.Button;

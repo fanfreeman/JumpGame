@@ -3,13 +3,15 @@ package com.jumpGame.screens
 	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.customObjects.PictureLoader;
 	import com.jumpGame.events.NavigationEvent;
-	import com.jumpGame.level.Statics;
+	import com.jumpGame.gameElements.BgStar;
 	import com.jumpGame.ui.components.Badge;
 	import com.jumpGame.ui.components.TutorialPointer;
 	import com.jumpGame.ui.popups.DialogBox;
+	import com.jumpGame.ui.popups.DialogLarge;
 	import com.jumpGame.ui.popups.GetLives;
 	import com.jumpGame.ui.popups.Instructions;
 	import com.jumpGame.ui.popups.MatchDataContainer;
+	import com.jumpGame.ui.popups.PurchaseStatus;
 	import com.jumpGame.ui.popups.ScreenAchievements;
 	import com.jumpGame.ui.popups.ScreenCharacters;
 	import com.jumpGame.ui.popups.ScreenGetCoins;
@@ -79,6 +81,9 @@ package com.jumpGame.screens
 		// objective achievement effect
 		private var badge:Badge;
 		
+		// purchase status popup
+		private var purchaseStatus:PurchaseStatus;
+		
 		// countdown
 		private var timeTillLifeCountdown:int = -1;
 		private var timeUpdated:int;
@@ -106,6 +111,16 @@ package com.jumpGame.screens
 		private var firstClickSoundHidden:Boolean = false; // hide very first click sound because of tab change on game start
 		
 		private var tutorialPointer:TutorialPointer;
+		
+		public var dialogLarge:DialogLarge; // large dialog box with just ok button
+		
+//		private var popupStory:ScreenStory;
+		
+		// snow
+		private var starList:Vector.<BgStar>;
+		private var starDx:Number;
+		
+		private var rankingsDisplayedOnStart:Boolean = false;
 		
 		public function Menu()
 		{
@@ -141,6 +156,7 @@ package com.jumpGame.screens
 						Statics.playerCoins = int(dataObj.coins);
 						Statics.playerGems = int(dataObj.gems);
 						Statics.roundsPlayed = int(dataObj.rounds_played);
+						Statics.topFriendsIds = dataObj.top_friends;
 						if (Statics.tutorialStep != 4) Statics.tutorialStep = int(dataObj.tutorial_step); // 4 means tutorials completed, so don't show tutorials again
 						coinLabel.text = dataObj.coins;
 						gemLabel.text = dataObj.gems;
@@ -195,7 +211,7 @@ package com.jumpGame.screens
 						var numAchievements:int = dataObj.achievements.length;
 						for (i = 0; i < numAchievements; i++) { // loop through matches retrieved
 							Statics.achievementsList[int(dataObj.achievements[i].achievement_id)] = true;
-							trace ("achievement " + int(dataObj.achievements[i].achievement_id) + " earned");
+//							trace ("achievement " + int(dataObj.achievements[i].achievement_id) + " earned");
 						}
 						
 						// parse player matches
@@ -302,6 +318,7 @@ package com.jumpGame.screens
 						if (Statics.tutorialStep == 1 && Statics.roundsPlayed == 0 && this.screenMatches.gamesMyTurn.length > 0) {
 							// if new player, show match details popup for tutorial match
 							this.screenMatches.listYourTurn.selectedIndex = 0;
+//							this.showStoryPopup(); // also show the story popup on top
 							if (this.tutorialPointer == null) {
 								this.tutorialPointer = new TutorialPointer();
 								this.addChild(this.tutorialPointer);
@@ -320,7 +337,10 @@ package com.jumpGame.screens
 								this.tutorialPointer = new TutorialPointer();
 								this.addChild(this.tutorialPointer);
 							}
-							this.showRankingsTutorial();
+							if (!rankingsDisplayedOnStart) this.showRankingsTutorial();
+						}
+						else { // tutorials are done, just show friends rankings
+							if (!rankingsDisplayedOnStart) this.showRankingsTutorial();
 						}
 					}
 					else if (dataObj.status == "new_match") { // new game created
@@ -408,13 +428,13 @@ package com.jumpGame.screens
 						
 						this.screenRankings.listRankings.dataProvider = rankingsCollection;
 						
-						if (Statics.tutorialStep == 3) { // tutorial second three: invite friends button
-							if (this.tutorialPointer == null) {
-								this.tutorialPointer = new TutorialPointer();
-								this.addChild(this.tutorialPointer);
-							}
-							this.showTutorialRankingsInvite();
-						}
+//						if (Statics.tutorialStep == 3) { // tutorial step three: invite friends button
+//							if (this.tutorialPointer == null) {
+//								this.tutorialPointer = new TutorialPointer();
+//								this.addChild(this.tutorialPointer);
+//							}
+//							this.showTutorialRankingsInvite();
+//						}
 					}
 					else if (dataObj.status == "purchased_upgrade") { // successfully purchased upgrade
 						Statics.playerCoins = int(dataObj.coins);
@@ -435,8 +455,17 @@ package com.jumpGame.screens
 						Statics.upgradePrices = dataObj.prices;
 						this.screenUpgrades.refresh();
 						
+						// show purchase success popup
+						setChildIndex(this.purchaseStatus, numChildren - 1);
+						this.purchaseStatus.show();
+						
+						// show upgrade achievement badges (do not save, all saving is done in ScreenUpgrades.as)
+						var newAchievements:Array = dataObj.new_achievements as Array;
+						var numNewAchievements:uint = newAchievements.length;
 						setChildIndex(this.badge, numChildren - 1);
-						this.badge.showAchievement("Self Improvement");
+						for (i = 0; i < numNewAchievements; i++) {
+							this.badge.showAchievement(Constants.AchievementsData[newAchievements[i]][1]);
+						}
 					}
 					else if (dataObj.status == "purchased_coins") { // successfully purchased coins
 						Statics.playerCoins = int(dataObj.coins);
@@ -444,12 +473,18 @@ package com.jumpGame.screens
 						Statics.playerGems = int(dataObj.gems);
 						gemLabel.text = dataObj.gems;
 						
+						setChildIndex(this.purchaseStatus, numChildren - 1);
+						this.purchaseStatus.show();
+						
 						setChildIndex(this.badge, numChildren - 1);
 						this.badge.showAchievement("Bling Bling");
 					}
 					else if (dataObj.status == "purchased_gems") { // successfully purchased gems
 						Statics.playerGems = int(dataObj.gems);
 						gemLabel.text = dataObj.gems;
+						
+						setChildIndex(this.purchaseStatus, numChildren - 1);
+						this.purchaseStatus.show();
 						
 						setChildIndex(this.badge, numChildren - 1);
 						this.badge.showAchievement("Shiny!");
@@ -460,8 +495,20 @@ package com.jumpGame.screens
 						this.lives = 5;
 						lifeLabel.text = "5";
 						
+						setChildIndex(this.purchaseStatus, numChildren - 1);
+						this.purchaseStatus.show();
+						
 						setChildIndex(this.badge, numChildren - 1);
 						this.badge.showAchievement("My Life Will Go On");
+					}
+					else if (dataObj.status == "achievements_saved") { // successfully saved newly earned achievements
+						// show upgrade achievement badges (do not save, all saving is done in ScreenUpgrades.as)
+						newAchievements = dataObj.new_achievements as Array;
+						numNewAchievements = newAchievements.length;
+						setChildIndex(this.badge, numChildren - 1);
+						for (i = 0; i < numNewAchievements; i++) {
+							this.badge.showAchievement(Constants.AchievementsData[newAchievements[i]][1]);
+						}
 					}
 					else if (dataObj.status == "error") { // error message received
 //						trace("Error: " + dataObj.reason);
@@ -489,27 +536,29 @@ package com.jumpGame.screens
 		
 		private function addedToStageHandler(event:starling.events.Event):void
 		{
+			this.removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			
 			DeviceCapabilities.dpi = 326; //simulate iPhone Retina resolution
-//			this.theme = new MetalWorksMobileTheme(this.stage);
+			//			this.theme = new MetalWorksMobileTheme(this.stage);
 			
 			// bg
-			var bgImage:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("UiMainBg0000"));
+			var bgImage:Image = new Image(Statics.assets.getTexture("UiMainBg0000"));
 			bgImage.pivotX = Math.ceil(bgImage.texture.width / 2);
 			bgImage.x = stage.stageWidth / 2;
 			this.addChild(bgImage);
 			
 			// top bar
-			var topBar:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("UiMainTop0000"));
+			var topBar:Image = new Image(Statics.assets.getTexture("UiMainTop0000"));
 			this.addChild(topBar);
 			
 			// bottom bar
-			var bottomBar:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("UiMainBottom0000"));
+			var bottomBar:Image = new Image(Statics.assets.getTexture("UiMainBottom0000"));
 			bottomBar.pivotY = bottomBar.height;
 			bottomBar.y = Statics.stageHeight;
 			this.addChild(bottomBar);
 			
 			// rank badge
-			var rankBadge:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("RankBadge10000"));
+			var rankBadge:Image = new Image(Statics.assets.getTexture("RankBadge10000"));
 			rankBadge.x = 15;
 			rankBadge.y = 5;
 			this.addChild(rankBadge);
@@ -530,9 +579,9 @@ package com.jumpGame.screens
 			// add coins button
 			var buttonAddCoins:Button = new Button();
 			buttonAddCoins.useHandCursor = true;
-			buttonAddCoins.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"))
-			buttonAddCoins.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"));
-			buttonAddCoins.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"));
+			buttonAddCoins.defaultSkin = new Image(Statics.assets.getTexture("ButtonMainTopPlus0000"))
+			buttonAddCoins.hoverSkin = new Image(Statics.assets.getTexture("ButtonMainTopPlus0000"));
+			buttonAddCoins.downSkin = new Image(Statics.assets.getTexture("ButtonMainTopPlus0000"));
 			buttonAddCoins.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonAddCoins.downSkin.filter = Statics.btnInvertFilter;
 			buttonAddCoins.x = 212;
@@ -551,9 +600,9 @@ package com.jumpGame.screens
 			// add gems button
 			var buttonAddGems:Button = new Button();
 			buttonAddGems.useHandCursor = true;
-			buttonAddGems.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"))
-			buttonAddGems.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"));
-			buttonAddGems.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"));
+			buttonAddGems.defaultSkin = new Image(Statics.assets.getTexture("ButtonMainTopPlus0000"))
+			buttonAddGems.hoverSkin = new Image(Statics.assets.getTexture("ButtonMainTopPlus0000"));
+			buttonAddGems.downSkin = new Image(Statics.assets.getTexture("ButtonMainTopPlus0000"));
 			buttonAddGems.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonAddGems.downSkin.filter = Statics.btnInvertFilter;
 			buttonAddGems.x = 379;
@@ -572,9 +621,9 @@ package com.jumpGame.screens
 			// add lives button
 			var buttonAddLives:Button = new Button();
 			buttonAddLives.useHandCursor = true;
-			buttonAddLives.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"))
-			buttonAddLives.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"));
-			buttonAddLives.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMainTopPlus0000"));
+			buttonAddLives.defaultSkin = new Image(Statics.assets.getTexture("ButtonMainTopPlus0000"))
+			buttonAddLives.hoverSkin = new Image(Statics.assets.getTexture("ButtonMainTopPlus0000"));
+			buttonAddLives.downSkin = new Image(Statics.assets.getTexture("ButtonMainTopPlus0000"));
 			buttonAddLives.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonAddLives.downSkin.filter = Statics.btnInvertFilter;
 			buttonAddLives.x = 545;
@@ -593,9 +642,9 @@ package com.jumpGame.screens
 			// invite friends button
 			var buttonInviteFriends:Button = new Button();
 			buttonInviteFriends.useHandCursor = true;
-			buttonInviteFriends.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonInviteFriends0000"))
-			buttonInviteFriends.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonInviteFriends0000"));
-			buttonInviteFriends.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonInviteFriends0000"));
+			buttonInviteFriends.defaultSkin = new Image(Statics.assets.getTexture("ButtonInviteFriends0000"))
+			buttonInviteFriends.hoverSkin = new Image(Statics.assets.getTexture("ButtonInviteFriends0000"));
+			buttonInviteFriends.downSkin = new Image(Statics.assets.getTexture("ButtonInviteFriends0000"));
 			buttonInviteFriends.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonInviteFriends.downSkin.filter = Statics.btnInvertFilter;
 			buttonInviteFriends.x = 597;
@@ -623,10 +672,10 @@ package com.jumpGame.screens
 			tabs.tabFactory = function():Button
 			{
 				var tab:Button = new Button();
-				tab.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonMiddle0000"));
-				tab.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonMiddle0000"));
-				tab.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonMiddle0000"));
-				tab.defaultSelectedSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonMiddle0000"));
+				tab.defaultSkin = new Image(Statics.assets.getTexture("TabButtonMiddle0000"));
+				tab.hoverSkin = new Image(Statics.assets.getTexture("TabButtonMiddle0000"));
+				tab.downSkin = new Image(Statics.assets.getTexture("TabButtonMiddle0000"));
+				tab.defaultSelectedSkin = new Image(Statics.assets.getTexture("TabButtonMiddle0000"));
 				
 				tab.hoverSkin.filter = Statics.btnBrightnessFilter;
 				tab.downSkin.filter = Statics.btnInvertFilter;
@@ -637,10 +686,10 @@ package com.jumpGame.screens
 			tabs.firstTabFactory = function():Button
 			{
 				var tab:Button = new Button();
-				tab.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonLeft0000"));
-				tab.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonLeft0000"));
-				tab.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonLeft0000"));
-				tab.defaultSelectedSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonLeft0000"));
+				tab.defaultSkin = new Image(Statics.assets.getTexture("TabButtonLeft0000"));
+				tab.hoverSkin = new Image(Statics.assets.getTexture("TabButtonLeft0000"));
+				tab.downSkin = new Image(Statics.assets.getTexture("TabButtonLeft0000"));
+				tab.defaultSelectedSkin = new Image(Statics.assets.getTexture("TabButtonLeft0000"));
 				
 				tab.hoverSkin.filter = Statics.btnBrightnessFilter;
 				tab.downSkin.filter = Statics.btnInvertFilter;
@@ -651,10 +700,10 @@ package com.jumpGame.screens
 			tabs.lastTabFactory = function():Button
 			{
 				var tab:Button = new Button();
-				tab.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonRight0000"));
-				tab.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonRight0000"));
-				tab.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonRight0000"));
-				tab.defaultSelectedSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("TabButtonRight0000"));
+				tab.defaultSkin = new Image(Statics.assets.getTexture("TabButtonRight0000"));
+				tab.hoverSkin = new Image(Statics.assets.getTexture("TabButtonRight0000"));
+				tab.downSkin = new Image(Statics.assets.getTexture("TabButtonRight0000"));
+				tab.defaultSelectedSkin = new Image(Statics.assets.getTexture("TabButtonRight0000"));
 				
 				tab.hoverSkin.filter = Statics.btnBrightnessFilter;
 				tab.downSkin.filter = Statics.btnInvertFilter;
@@ -733,12 +782,21 @@ package com.jumpGame.screens
 			dialogBox2.visible = false;
 			this.addChild(dialogBox2);
 			
+			// story popup
+			//			popupStory = new ScreenStory(this);
+			//			popupStory.visible = false;
+			//			this.addChild(popupStory);
+			
 			// objective achievement effect
 			this.badge = new Badge();
 			this.addChild(this.badge);
 			
+			// purchase status
+			this.purchaseStatus = new PurchaseStatus();
+			this.addChild(this.purchaseStatus);
+			
 			// animated characters
-			heroIdle = new MovieClip(Assets.getSprite("AtlasTexture7").getTextures("CharBoyIdle"), 40);
+			heroIdle = new MovieClip(Statics.assets.getTextures("CharPrinceIdle"), 40);
 			heroIdle.pivotX = Math.ceil(heroIdle.width  / 2); // center art on registration point
 			heroIdle.pivotY = heroIdle.height;
 			heroIdle.scaleX = 0.6;
@@ -746,6 +804,15 @@ package com.jumpGame.screens
 			heroIdle.x = 260;
 			heroIdle.y = 380;
 			this.addChild(heroIdle);
+			
+			// setup snow
+			this.starList = new Vector.<BgStar>();
+			for (var i:uint = 0; i < Constants.NumBgFloatingStarsMenu; i++) { // add this many floating stars
+				var star:BgStar = new BgStar();
+				star.touchable = false;
+				this.starList.push(star);
+				this.addChild(star);
+			}
 			
 			// create picture loader object
 			pictureLoader = new PictureLoader();
@@ -874,7 +941,7 @@ package com.jumpGame.screens
 			loadingNotice.addChild(bg);
 			
 			// spinning box
-			var boxAnimation:MovieClip = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("BoxBlue"), 20);
+			var boxAnimation:MovieClip = new MovieClip(Statics.assets.getTextures("BoxBlue"), 20);
 			boxAnimation.pivotX = Math.ceil(boxAnimation.texture.width  / 2); // center art on registration point
 			boxAnimation.pivotY = Math.ceil(boxAnimation.texture.height / 2);
 			boxAnimation.x = stage.stageWidth / 2 - 200;
@@ -916,7 +983,8 @@ package com.jumpGame.screens
 			
 			// set up achievements, the element at index 0 is not used in order to sync with db ids
 			Statics.achievementsList = new Vector.<Boolean>();
-			for (var i:uint = 0; i < 36; i++) {
+			var numAchievements:uint = Constants.AchievementsProgression.length + 1;
+			for (var i:uint = 0; i < numAchievements; i++) {
 				Statics.achievementsList[i] = false;
 			}
 			
@@ -926,9 +994,35 @@ package com.jumpGame.screens
 			// animated characters
 			starling.core.Starling.juggler.add(heroIdle);
 			
+			// snow
+			starDx = (Math.random() - 0.5) * Constants.FloatingStarsBaseVelocity;
+			for (i = 0; i < Constants.NumBgFloatingStarsMenu; i++) {
+				this.starList[i].initialize();
+				this.starList[i].updateWindDx(starDx);
+				starling.core.Starling.juggler.add(this.starList[i]);
+			}
+			// change snow direction
+			Starling.juggler.delayCall(updateSnow, 1);
+			
 			// play menu bgm
 			Sounds.stopBgm();
 			Sounds.playBgmMenu(); // play bgm regardless of whether bgm is muted
+		}
+		
+		private function updateSnow():void {
+			// update wind dx
+			if (Math.random() < 0.6) {
+				if (starDx < 0) starDx += 0.02;
+				else starDx -= 0.02;
+			}
+			else {
+				if (starDx > 0) starDx += 0.02;
+				else starDx -= 0.02;
+			}
+			for (var i:uint = 0; i < Constants.NumBgFloatingStarsMenu; i++) {
+				this.starList[i].updateWindDx(starDx);
+			}
+			Starling.juggler.delayCall(updateSnow, 1);
 		}
 		
 		private function refreshMatches():void {
@@ -957,6 +1051,12 @@ package com.jumpGame.screens
 			// stop animated characters
 			starling.core.Starling.juggler.remove(heroIdle);
 			
+			// stop snow
+			for (var i:uint = 0; i < Constants.NumBgFloatingStarsMenu; i++) {
+				this.starList[i].visible = false;
+				starling.core.Starling.juggler.remove(this.starList[i]);
+			}
+			
 			this.visible = false;
 		}
 		
@@ -982,6 +1082,7 @@ package com.jumpGame.screens
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			this.screenRankings.showRankingsPrevious();
+			setChildIndex(this.loadingNotice, this.numChildren - 1); // TODO: remove when global ranking is implemented
 			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
 			screenRankings.initialize();
 			
@@ -994,6 +1095,8 @@ package com.jumpGame.screens
 		 * Simply open the rankings screen to friends rankings
 		 */
 		public function showRankingsTutorial():void {
+			rankingsDisplayedOnStart = true;
+			
 			this.screenRankings.showRankingsFriends();
 			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
 			screenRankings.initialize();
@@ -1079,6 +1182,11 @@ package com.jumpGame.screens
 		private function showGetLivesPopup(isOut:Boolean = false):void {
 			setChildIndex(popupGetLives, numChildren - 1);
 			popupGetLives.show(isOut);
+			
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				if (isOut) Statics.mixpanel.track('out of lives, showing get lives popup');
+				else Statics.mixpanel.track('clicked on add lives button');
+			}
 		}
 		
 		public function showInstructionsPopup(isOut:Boolean = false):void {
@@ -1093,6 +1201,11 @@ package com.jumpGame.screens
 				this.showTutorialInstructions();
 			}
 		}
+		
+//		public function showStoryPopup():void {
+//			setChildIndex(popupStory, numChildren - 1);
+//			popupStory.initialize();
+//		}
 		
 		public function showBuyLivesDialog():void {
 			this.showDialogBox("Would you like to purchase a full set of lives for " + Constants.SetOfLivesCost + " gems?", purchaseLivesWithGems);
@@ -1156,9 +1269,15 @@ package com.jumpGame.screens
 			if(ExternalInterface.available){
 //				trace("Calling JS...");
 				ExternalInterface.call("selectFriendsForLife");
-//				ExternalInterface.addCallback("returnFriendsForLifeToAs", friendsForLifeReturnedFromAs);
+				ExternalInterface.addCallback("returnFriendsForLifeCountToAs", friendsForLifeCountReturnedFromAs);
 			} else {
 //				trace("External interface unavailabe");
+			}
+		}
+		
+		private function friendsForLifeCountReturnedFromAs(inviteCount:uint):void {
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				Statics.mixpanel.track('asked friends for life, count: ' + inviteCount);
 			}
 		}
 		
@@ -1176,6 +1295,10 @@ package com.jumpGame.screens
 			this.displayLoadingNotice("Cooking up some lives...");
 			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
 			this.communicator.postPurchaseLives(jsonStr);
+			
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				Statics.mixpanel.track('bought lives with gems');
+			}
 		}
 		
 		// call js to send life
@@ -1237,22 +1360,39 @@ package com.jumpGame.screens
 			this.tabs.selectedIndex = -1;
 			this.screenMatches.visible = false;
 			this.screenUpgrades.visible = false;
+			
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				Statics.mixpanel.track('closed all popups to display menu background');
+			}
 		}
 		
 		public function btnInviteFriendsHandler():void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
 			
 			if(ExternalInterface.available){
-//				trace("Calling JS...");
+				ExternalInterface.addCallback("returnInviteCount", invitesReturnedFromJs);
 				ExternalInterface.call("inviteFriends");
-			} else {
-//				trace("External interface unavailabe");
 			}
 			
-			// hide tutorial pointer if needed
-			if (Statics.tutorialStep == 3) {
-				this.hideTutorialPointer();
-				Statics.tutorialStep = 4;
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				Statics.mixpanel.track('clicked on menu top right invite friends button');
+			}
+		}
+		
+		public function btnInviteFriendsPreselectedHandler():void {
+			if(ExternalInterface.available){
+				ExternalInterface.addCallback("returnInviteCount", invitesReturnedFromJs);
+				ExternalInterface.call("invitePreSelectedFriends", Statics.topFriendsIds);
+			}
+			
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				Statics.mixpanel.track('clicked on rankings invite friends button');
+			}
+		}
+		
+		private function invitesReturnedFromJs(inviteCount:uint):void {
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				Statics.mixpanel.track('invited friends, count: ' + inviteCount);
 			}
 		}
 		
@@ -1312,6 +1452,19 @@ package com.jumpGame.screens
 				this.tutorialPointer.hide();
 				setChildIndex(tutorialPointer, numChildren - 1);
 				this.tutorialPointer.pointAtRankingsInvite();
+			}
+		}
+		
+		public function shakeCamera(shakeValue:Number):void {
+			if (shakeValue > 0) {
+				shakeValue -= 2;
+				this.x = int(Math.random() * shakeValue - shakeValue * 0.5);
+				this.y = int(Math.random() * shakeValue - shakeValue * 0.5);
+				Starling.juggler.delayCall(shakeCamera, 0.02, shakeValue);
+			}
+			else if (this.x != 0 || this.y != 0) {
+				this.x = 0;
+				this.y = 0;
 			}
 		}
 	}

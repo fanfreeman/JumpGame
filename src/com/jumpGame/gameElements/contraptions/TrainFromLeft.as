@@ -1,6 +1,5 @@
 package com.jumpGame.gameElements.contraptions
 {
-	import com.jumpGame.level.Statics;
 	
 	import starling.core.Starling;
 	import starling.display.Image;

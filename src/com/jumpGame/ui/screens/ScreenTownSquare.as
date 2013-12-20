@@ -1,6 +1,5 @@
 package com.jumpGame.ui.screens
 {
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.screens.Menu;
 	
 	import feathers.controls.Button;

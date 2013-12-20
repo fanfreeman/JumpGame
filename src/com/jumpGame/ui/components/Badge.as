@@ -1,7 +1,6 @@
 package com.jumpGame.ui.components
 {
 	import com.jumpGame.customObjects.Font;
-	import com.jumpGame.level.Statics;
 	
 	import starling.animation.Transitions;
 	import starling.core.Starling;
@@ -26,7 +25,7 @@ package com.jumpGame.ui.components
 			super();
 			
 			// badge animations
-			badgeAnimationBottom = new MovieClip(Assets.getSprite("AtlasTexture8").getTextures("BadgeFlash"), 30);
+			badgeAnimationBottom = new MovieClip(Statics.assets.getTextures("BadgeFlash"), 30);
 			badgeAnimationBottom.pivotX = Math.ceil(badgeAnimationBottom.width / 2); // center art on registration point
 			badgeAnimationBottom.pivotY = badgeAnimationBottom.height;
 			badgeAnimationBottom.x = Statics.stageWidth / 2;
@@ -35,7 +34,7 @@ package com.jumpGame.ui.components
 			badgeAnimationBottom.visible = false;
 			this.addChild(badgeAnimationBottom);
 			
-			badgeAnimationTop = new MovieClip(Assets.getSprite("AtlasTexture8").getTextures("BadgeFlash"), 30);
+			badgeAnimationTop = new MovieClip(Statics.assets.getTextures("BadgeFlash"), 30);
 			badgeAnimationTop.pivotX = Math.ceil(badgeAnimationTop.width / 2); // center art on registration point
 			badgeAnimationTop.pivotY = badgeAnimationTop.height;
 			badgeAnimationTop.x = Statics.stageWidth / 2;

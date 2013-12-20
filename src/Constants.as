@@ -43,7 +43,8 @@ package
 		
 		// physics
 		public static const Gravity:Number = 0.00158;
-		public static const MaxHeroFallVelocity:Number = -2.0;
+//		public static const MaxHeroFallVelocity:Number = -0.5;
+		public static const MaxObjectFallVelocity:Number = -2;
 		public static const MaxHeroBouncePower:Number = 3.0;
 		
 		public static const HeroMaxSpeedX:Number = 0.5;
@@ -103,6 +104,9 @@ package
 		public static const ContraptionSettingCannon:String = "ContraptionSettingCannon";
 		public static const ContraptionSettingWitch:String = "ContraptionSettingWitch";
 		
+		// powerup setting definitions
+		public static const PowerSettingDuplication:String = "PowerSettingDuplication";
+		
 		// bounce power definitions
 //		public static const NormalBouncePower:Number = 0.85;
 //		public static const BoostBouncePower:Number = 1.1;
@@ -112,7 +116,11 @@ package
 		public static const BoostBouncePower:Number = 1.35;
 		public static const PowerBouncePower:Number = 1.6;
 		public static const SuperBouncePower:Number = 2.4;
-		public static const DarkBouncePower:Number = -0.4;
+		// star bounce powers
+		public static const StarWhiteBouncePower:Number = 1.4;
+		public static const StarBlueBouncePower:Number = 1.6;
+		public static const StarRedBouncePower:Number = 2.4;
+		public static const StarDarkBouncePower:Number = -0.4;
 		
 		// platform attributes
 		public static const PlatformMaxSize:int = 3; // platform max size
@@ -126,6 +134,8 @@ package
 		public static const TrainVelocity:Number = -1.0;
 		public static const DirectionUp:uint = 0;
 		public static const DirectionDown:uint = 1;
+		public static const DirectionLeft:uint = 2;
+		public static const DirectionRight:uint = 3;
 		
 		/** Sea of Fire ********************************************************/
 		// enable sea of fire or not
@@ -198,12 +208,13 @@ package
 		public static const UriGetRoundBegin:String = "user/round/begin";
 		public static const UriGetRankingsGlobal:String = "rankings/global";
 		public static const UriGetRankingsFriends:String = "rankings/friends";
+		public static const UriPostSaveAchievements:String = "user/achievements/save";
 		
 		// camera
 		public static const CameraEasingTimeY:Number = 10.0;
 		public static const CameraEasingTimeX:Number = 10.0;
-		public static const CameraBoundTop:Number = 0.0;
-		public static const CameraBoundBottom:Number = 200.0;
+//		public static const CameraBoundTop:Number = 0.0;
+//		public static const CameraBoundBottom:Number = 150.0;
 		public static const CameraBoundLeft:Number = 10;
 		public static const CameraBoundRight:Number = 10;
 		public static const CameraMoveX:Boolean = false;
@@ -272,32 +283,52 @@ package
 		// attractor area of effect radius
 		public static const AttractorRadius:uint = StageHeight / 2;
 		
-		public static const NumBgFloatingStars:uint = 10; // change this to turn stars into snow (50)
+		public static const NumBgFloatingStarsInGame:uint = 30;
+		public static const NumBgFloatingStarsMenu:uint = 100; // change this to turn stars into snow (50)
 		public static const FloatingStarsBaseVelocity:Number = 0.4;
 		
 		public static const AchievementsData:Array = new Array(
 			// id, title, description, reward coins, reward gems
 			new Array(0, "none", "none", 0, 0),
-			new Array(1, "Rookie Jumper", "Jump 100 meters in one round", 100, 0),
-			new Array(2, "I Can Jump!", "Jump 500 meters in one round", 200, 0),
-			new Array(3, "Bouncy", "Jump 1000 meters in one round", 400, 0),
-			new Array(4, "Acrobatic", "Jump 2000 meters in one round", 1000, 0),
-			new Array(5, "Like a Bunny", "Jump 3000 meters in one round", 2000, 0),
-			new Array(6, "Up!", "Jump 4000 meters in one round", 3000, 0),
-			new Array(7, "Prodigy", "Jump 5000 meters in one round", 5000, 0),
-			new Array(8, "Defying Gravity", "Jump 6500 meters in one round", 6000, 0),
-			new Array(9, "Superman", "Jump 8000 meters in one round", 8000, 1),
-			new Array(10, "Invincible", "Jump 10000 meters in one round", 10000, 2),
-			new Array(11, "Spare Change", "Collect 250 coins in one round", 100, 0),
-			new Array(12, "In Ur Couch, Stealng Ur Change", "Collect 500 coins in one round", 200, 0),
-			new Array(13, "Pay Day", "Collect 1000 coins in one round", 400, 0),
-			new Array(14, "Money Machine", "Collect 2000 coins in one round", 1000, 0),
-			new Array(15, "Golden Bells", "Collect 3000 coins in one round", 2000, 0),
-			new Array(16, "It's Raining Gold", "Collect 4000 coins in one round", 3000, 0),
-			new Array(17, "Cash Cow", "Collect 5000 coins in one round", 5000, 0),
-			new Array(18, "Golden Touch", "Collect 6500 coins in one round", 7000, 0),
-			new Array(19, "Royal Mint", "Collect 8000 coins in one round", 10000, 0),
-			new Array(20, "Revenues Department", "Collect 10000 coins in one round", 0, 5)
+			new Array(1, "The Journey Begins", "Jump 200 meters in one round", 100, 0),
+			new Array(2, "Yes I Can Jump", "Jump 500 meters in one round", 200, 0),
+			new Array(3, "Bouncy Legs", "Jump 1000 meters in one round", 400, 0),
+			new Array(4, "Like a Boss", "Jump 2000 meters in one round", 1000, 0),
+			new Array(5, "Defying Gravity", "Jump 3500 meters in one round", 2000, 0),
+			new Array(6, "Am I Cool or What?", "Jump 5000 meters in one round", 3000, 0),
+			new Array(7, "Prodigy", "Jump 6500 meters in one round", 4000, 0),
+			new Array(8, "Up!", "Jump 8000 meters in one round", 6000, 0),
+			new Array(9, "Superhero", "Jump 10000 meters in one round", 8000, 0),
+			new Array(10, "Invincible", "Jump 15000 meters in one round", 10000, 0),
+			new Array(11, "Spare Change", "Collect 500 coins in one round", 100, 0),
+			new Array(12, "In Ur Couch, Stealng Ur Change", "Collect 1000 coins in one round", 200, 0),
+			new Array(13, "Pay Day", "Collect 2000 coins in one round", 400, 0),
+			new Array(14, "Money Machine", "Collect 3000 coins in one round", 1000, 0),
+			new Array(15, "High Roller", "Collect 4000 coins in one round", 2000, 0),
+			new Array(16, "It's Raining Gold", "Collect 5000 coins in one round", 3000, 0),
+			new Array(17, "Cash Cow", "Collect 6500 coins in one round", 4000, 0),
+			new Array(18, "Golden Touch", "Collect 8000 coins in one round", 6000, 0),
+			new Array(19, "Royal Mint", "Collect 10000 coins in one round", 8000, 0),
+			new Array(20, "Tycoon", "Collect 15000 coins in one round", 10000, 0),
+			new Array(21, "The Secret to Success", "Purchase an Extra Ability Upgrade", 0, 0),
+			new Array(22, "Bulge Bracket", "Obtain the Coin Doubler", 0, 0),
+			new Array(23, "Self Improvement", "Purchase a tier 1 upgrade", 0, 0),
+			new Array(24, "Refinement", "Purchase a tier 2 upgrade", 0, 0),
+			new Array(25, "Expertise", "Purchase a tier 3 upgrade", 0, 0),
+			new Array(26, "Feeling Powerful", "Purchase a tier 4 upgrade", 0, 0),
+			new Array(27, "Force to Reckon With", "Purchase a tier 5 upgrade", 0, 0),
+			new Array(28, "All Grown Up", "Purchase a tier 6 upgrade", 0, 0),
+			new Array(29, "Mastery", "Purchase a tier 7 upgrade", 0, 0),
+			new Array(30, "Transcendance", "Purchase a tier 8 upgrade", 0, 0),
+			new Array(31, "Power Overwhelming", "Purchase a tier 9 upgrade", 0, 0),
+			new Array(32, "Sublime Magic", "Purchase a tier 10 upgrade", 0, 0),
+			new Array(33, "Deck Me Out", "Upgrade anything to max rank. Rock on.", 0, 0),
+			new Array(34, "Master of the Universe", "Upgrade EVERYTHING to max rank. Wow!", 0, 0)
+		);
+		
+		public static const AchievementsProgression:Array = new Array(
+			1, 2, 11, 23, 3, 12, 24, 4, 21, 13, 25, 5, 14, 26, 6, 15, 27, 7, 22, 16, 28, 8, 17, 29, 9, 18, 30, 10, 19, 31,
+			20, 32, 33, 34
 		);
 	}
 }

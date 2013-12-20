@@ -1,6 +1,5 @@
 package com.jumpGame.gameElements
 {
-	import com.jumpGame.level.Statics;
 	
 	import starling.animation.Transitions;
 	import starling.animation.Tween;
@@ -26,6 +25,7 @@ package com.jumpGame.gameElements
 		{
 			super();
 			
+			this.touchable = false;
 			this.hero = hero;
 			
 			activationBg = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("TransfigActivationBg"), 30);

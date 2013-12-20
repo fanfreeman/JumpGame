@@ -1,8 +1,6 @@
 package com.jumpGame.gameElements.platforms
 {
-	import starling.core.Starling;
 	import starling.display.Image;
-	import starling.display.MovieClip;
 
 	public class Comet extends Star
 	{
@@ -16,13 +14,13 @@ package com.jumpGame.gameElements.platforms
 			platformImage.pivotY = Math.ceil(platformImage.height / 2);
 			this.addChild(platformImage);
 			
-			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Sparkle"), 60);
-			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
-			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
-			platformAnimation.stop();
-			platformAnimation.loop = false;
-			starling.core.Starling.juggler.add(platformAnimation);
-			this.addChild(platformAnimation);
+//			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Sparkle"), 60);
+//			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
+//			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
+//			platformAnimation.stop();
+//			platformAnimation.loop = false;
+//			starling.core.Starling.juggler.add(platformAnimation);
+//			this.addChild(platformAnimation);
 		}
 		
 		override public function getBouncePower():Number {
@@ -32,8 +30,8 @@ package com.jumpGame.gameElements.platforms
 		override public function update(timeDiff:Number):void {
 			if (this.isKinematic) {
 				this.dy -= Constants.Gravity * timeDiff;
-				if (this.dy < Constants.MaxHeroFallVelocity) {
-					this.dy = Constants.MaxHeroFallVelocity;
+				if (this.dy < Constants.MaxObjectFallVelocity) {
+					this.dy = Constants.MaxObjectFallVelocity;
 				}
 			}
 			this.gx += this.dx * timeDiff;

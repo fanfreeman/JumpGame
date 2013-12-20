@@ -1,6 +1,5 @@
 package com.jumpGame.gameElements
 {
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.HUD;
 	
 	import starling.core.Starling;
@@ -44,6 +43,7 @@ package com.jumpGame.gameElements
 		{
 			super();
 			this.hud = hud;
+			this.touchable = false;
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
@@ -86,27 +86,27 @@ package com.jumpGame.gameElements
 		}
 		
 		private function createHeroArt():void {
-			animationJump = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharBoyJump"), 10);
+			animationJump = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharPrinceJump"), 10);
 			animationJump.pivotX = Math.ceil(animationJump.texture.width  / 2);
 			animationJump.pivotY = Math.ceil(animationJump.texture.height / 2);
 			animationJump.loop = false;
 			starling.core.Starling.juggler.add(animationJump);
 			this.addChild(animationJump);
 			
-			animationBrace = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharBoyBrace"), 10);
+			animationBrace = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharPrinceBrace"), 10);
 			animationBrace.pivotX = Math.ceil(animationBrace.texture.width  / 2);
 			animationBrace.pivotY = Math.ceil(animationBrace.texture.height / 2);
 			animationBrace.loop = false;
 			starling.core.Starling.juggler.add(animationBrace);
 			this.addChild(animationBrace);
 			
-			animationHurt = new MovieClip(Assets.getSprite("AtlasTexture7").getTextures("CharBoyHurt"), 24);
+			animationHurt = new MovieClip(Assets.getSprite("AtlasTexture7").getTextures("CharPrinceHurt"), 24);
 			animationHurt.pivotX = Math.ceil(animationHurt.width  / 2);
 			animationHurt.pivotY = Math.ceil(animationHurt.height / 2);
 //			animationHurt.loop = false;
 			this.addChild(animationHurt);
 			
-			animationSuper = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharBoySuper"), 24);
+			animationSuper = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharPrinceSuper"), 24);
 			animationSuper.pivotX = Math.ceil(animationSuper.width  / 2);
 			animationSuper.pivotY = Math.ceil(animationSuper.height / 2);
 			this.addChild(animationSuper);
@@ -144,7 +144,7 @@ package com.jumpGame.gameElements
 //		}
 		
 		// return true if ability triggered
-		public function triggerSpecialAbility():Boolean {
+		public function triggerSpecialAbility(levelDifficulty:int):Boolean {
 			if (Statics.numSpecials <= 0) {
 				hud.showMessage("No More Abilities Left");
 			}
@@ -152,7 +152,11 @@ package com.jumpGame.gameElements
 				hud.turnOffSpecials();
 				
 				// activate ability
-				this.dy = 1.7 + Statics.rankAbilityPower * 0.1;
+				if (levelDifficulty == 26) { // unify ability power during boss level
+					this.dy = 2.2;
+				} else {
+					this.dy = 1.7 + Statics.rankAbilityPower * 0.2;
+				}
 				Statics.particleCharge.start(0.2);
 				Statics.particleJet.start(1);
 				if (!Sounds.sfxMuted) Sounds.sndAirjump.play();
@@ -160,6 +164,8 @@ package com.jumpGame.gameElements
 				Statics.specialReady = false;
 				Statics.specialUseTime = Statics.gameTime;
 				Statics.specialReadyTime = Statics.gameTime + 10000 - Statics.rankAbilityCooldown * 500;
+				
+				if (Statics.isAnalyticsEnabled) Statics.mixpanel.track('used ability');
 				
 				return true;
 			}
@@ -226,7 +232,7 @@ package com.jumpGame.gameElements
 		}
 		*/
 		
-		public function update(timeDiff:Number):void {
+		public function update(timeDiff:Number, maxHeroFallVelocity:Number):void {
 			// check if ability is ready
 			if (!Statics.specialReady && Statics.numSpecials > 0 && Statics.gameTime > Statics.specialReadyTime) {
 				this.setAbilityReady();
@@ -240,8 +246,8 @@ package com.jumpGame.gameElements
 			// fall down due to gravity
 			if (this.isDynamic) {
 				this.dy -= this.gravity * timeDiff;
-				if (this.dy < Constants.MaxHeroFallVelocity) {
-					this.dy = Constants.MaxHeroFallVelocity;
+				if (this.dy < maxHeroFallVelocity) {
+					this.dy = maxHeroFallVelocity;
 				}
 			}
 			
@@ -252,6 +258,11 @@ package com.jumpGame.gameElements
 			// move hero
 			this.gx += timeDiff * dxAvg;
 			this.gy += timeDiff * dyAvg;
+			
+			// connect left and right borders
+			var borderPosition:Number = Statics.stageWidth / 2;
+			if (this.gx > borderPosition) this.gx = -borderPosition;
+			else if (this.gx < -borderPosition) this.gx = borderPosition;
 			
 			// save previous velocities
 			this.dxPrev = this.dx;
@@ -283,25 +294,28 @@ package com.jumpGame.gameElements
 		}
 		
 		public function bounceAndFade(direction:uint, bouncePower:Number):void {
-			if (direction == Constants.DirectionUp) {
+			if (direction == Constants.DirectionUp) { // train bounce up
+				if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
 				this.dy = bouncePower;
-			} else {
-//				this.dy = -bouncePower;
+			}
+			else if (direction == Constants.DirectionDown) { // train bounce down
+				if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
 				this.dy = 0;
 				this.scaleY *= -1;
 			}
-			
-			// play sound effect
-//			var temp:Number = Math.random() * 3;
-//			if (temp < 1) {
-//				Sounds.sndBounce1.play();
-//			} else if (temp >= 1 && temp < 2) {
-//				Sounds.sndBounce2.play();
-//			} else if (temp >= 2 && temp < 3) {
-//				Sounds.sndBounce3.play();
-//			}
-			if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
-			
+			else if (direction == Constants.DirectionLeft) { // train hit left
+				if (!Sounds.sfxMuted) Sounds.sndTrainHit.play();
+				this.dx = bouncePower;
+				this.dy = Constants.NormalBouncePower; // also bounce up
+				Statics.particleJet.start(1);
+			}
+			else if (direction == Constants.DirectionRight) { // train hit right
+				if (!Sounds.sfxMuted) Sounds.sndTrainHit.play();
+				this.dx = -bouncePower;
+				this.dy = Constants.NormalBouncePower; // also bounce up
+				Statics.particleJet.start(1);
+			}
+
 			// disable collision detection for a while
 			this.canBounce = false;
 			this.canBounceTime = Statics.gameTime + 200;
@@ -417,7 +431,7 @@ package com.jumpGame.gameElements
 		
 		public function repulseSpikyBomb():void {
 			this.dy -= 2.0;
-			this.controlRestoreTime = Statics.gameTime + 500;
+			this.controlRestoreTime = Statics.gameTime + 1000;
 		}
 		
 		/**

@@ -1,7 +1,6 @@
 package com.jumpGame.ui.popups
 {
 	import com.jumpGame.customObjects.Font;
-	import com.jumpGame.screens.Menu;
 	
 	import feathers.controls.Button;
 	
@@ -15,25 +14,16 @@ package com.jumpGame.ui.popups
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
 	
-	public class DialogBox extends Sprite
+	public class DialogLarge extends Sprite
 	{
-		public var isInUse:Boolean = false;
-		
-		private var parent:Menu;
 		private var data:Object;
 		private var promptText:TextField;
-		
 		private var btnOk:Button;
-		private var btnCancel:Button;
-		
 		private var popupContainer:Sprite;
 		
-		private var callback:Function = null;
-		
-		public function DialogBox(parent:Menu)
+		public function DialogLarge()
 		{
 			super();
-			this.parent = parent;
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
@@ -49,7 +39,7 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture8").getTexture("PromptBg0000"));
+			var popup:Image = new Image(Assets.getSprite("AtlasTexture8").getTexture("DialogLarge0000"));
 			popupContainer.addChild(popup);
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
@@ -59,47 +49,33 @@ package com.jumpGame.ui.popups
 			
 			// prompt
 			var font:Font = Fonts.getFont("BellGothicBlack25");
-			promptText = new TextField(popup.width - 160, 100, "", font.fontName, font.fontSize, 0x9B4B16);
+			promptText = new TextField(popup.width - 200, 150, "", font.fontName, font.fontSize, 0x9B4B16);
 			promptText.hAlign = HAlign.CENTER;
 			promptText.vAlign = VAlign.TOP;
 			promptText.pivotX = Math.ceil(promptText.width / 2);
 			promptText.x = Math.ceil(popupContainer.width / 2);
-			promptText.y = 50;
+			promptText.y = 70;
 			popupContainer.addChild(promptText);
-			
-			// cancel button
-			btnCancel = new Button();
-			btnCancel.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonCancel0000"));
-			btnCancel.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonCancel0000"));
-			btnCancel.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonCancel0000"));
-			btnCancel.hoverSkin.filter = Statics.btnBrightnessFilter;
-			btnCancel.downSkin.filter = Statics.btnInvertFilter;
-			btnCancel.useHandCursor = true;
-			btnCancel.x = 86;
-			btnCancel.y = 180;
-			btnCancel.addEventListener(Event.TRIGGERED, buttonCancelHandler);
-			popupContainer.addChild(btnCancel);
 			
 			// ok button
 			btnOk = new Button();
-			btnOk.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
+			var btnImage:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
+			btnOk.defaultSkin = btnImage;
 			btnOk.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
 			btnOk.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
 			btnOk.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnOk.downSkin.filter = Statics.btnInvertFilter;
 			btnOk.useHandCursor = true;
-			btnOk.x = popupContainer.width - 207;
-			btnOk.y = 180;
+			btnOk.pivotX = Math.ceil(btnImage.width / 2);
+			btnOk.x = popup.width / 2;
+			btnOk.y = popup.height - 85;
 			btnOk.addEventListener(Event.TRIGGERED, buttonOkHandler);
 			popupContainer.addChild(btnOk);
 		}
 		
-		public function show(promptString:String, callbackFunction:Function):void {
-			if (this.isInUse) return;
-			this.isInUse = true;
+		public function show(promptString:String):void {
 			this.visible = true;
 			this.promptText.text = promptString;
-			this.callback = callbackFunction;
 			
 			// popup pop out effect
 			popupContainer.scaleX = 0.5;
@@ -112,20 +88,8 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonOkHandler(event:Event):void {
-//			if (!Sounds.sfxMuted) Sounds.sndClick.play();
-			
-			if (this.callback != null) {
-				this.callback();
-			}
-			this.visible = false;
-			this.isInUse = false;
-		}
-		
-		private function buttonCancelHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Sounds.sndClick.play();
-			
 			this.visible = false;
-			this.isInUse = false;
 		}
 	}
 }

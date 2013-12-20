@@ -1,7 +1,6 @@
 package com.jumpGame.ui.components
 {
 	import com.jumpGame.customObjects.Font;
-	import com.jumpGame.level.Statics;
 	
 	import flash.geom.Point;
 	import flash.text.TextFormatAlign;
@@ -340,7 +339,7 @@ package com.jumpGame.ui.components
 			//			this.addChild(progress);
 			
 			// price coin graphic
-			coinAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Coin"), 40);
+			coinAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("CoinLarge"), 40);
 			coinAnimation.scaleX = 0.5;
 			coinAnimation.scaleY = 0.5;
 			coinAnimation.x = this.width - 125;

@@ -1,7 +1,6 @@
 package com.jumpGame.ui
 {
 	import com.jumpGame.customObjects.Font;
-	import com.jumpGame.level.Statics;
 	import com.jumpGame.ui.components.Badge;
 	
 	import flash.geom.Rectangle;
@@ -24,8 +23,6 @@ package com.jumpGame.ui
 	 */
 	public class HUD extends Sprite
 	{
-		private var pauseButton:PauseButton;
-		
 		// distance display
 		private var _distance:int;
 //		private var distanceLabel:TextField;
@@ -112,9 +109,10 @@ package com.jumpGame.ui
 			coinsText.text = "0";
 			charmActivationBg.visible = false;
 			charmActivationCaption.visible = false;
+			powerupToActivate = -1;
 			
 			// speical ability indicators
-			Statics.numSpecials = 2 + Statics.rankExtraAbility * 1;
+			Statics.numSpecials = 3 + Statics.rankExtraAbility * 1;
 			var numExistingIndicators:uint = specialIndicatorsList.length;
 			if (Statics.numSpecials > numExistingIndicators) { // if purchased extra ability, add more indicators
 				for (var i:uint = 0; i < (Statics.numSpecials - numExistingIndicators); i++) {
@@ -132,17 +130,14 @@ package com.jumpGame.ui
 		public function HUD()
 		{
 			super();
+			
+			this.touchable = false;
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
 		private function onAddedToStage(event:Event):void
 		{
-			// pause button
-			pauseButton = new PauseButton();
-			pauseButton.x = pauseButton.width * 0.5;
-			pauseButton.y = pauseButton.height * 0.5;
-			pauseButton.addEventListener(Event.TRIGGERED, onPauseButtonClick);
-			this.addChild(pauseButton);
+			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			
 			// get fonts for score labels and values
 			fontScoreLabel = Fonts.getFont("ScoreLabel");
@@ -166,7 +161,7 @@ package com.jumpGame.ui
 //			this.addChild(distanceText);
 			
 			// coins label
-			coinsLabel = new TextField(150, 20, "C O I N S", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
+			coinsLabel = new TextField(100, 20, "S C O R E", fontScoreLabel.fontName, fontScoreLabel.fontSize, 0xffffff);
 			coinsLabel.hAlign = HAlign.RIGHT;
 			coinsLabel.vAlign = VAlign.TOP;
 			coinsLabel.x = int(Statics.stageWidth - coinsLabel.width - 20);
@@ -209,7 +204,7 @@ package com.jumpGame.ui
 			// eof charm activation transition
 			
 			// icon frame
-			powerupIconFrame = new Image(Assets.getSprite("AtlasTexture4").getTexture("SlotsFrame0000"));
+			powerupIconFrame = new Image(Assets.getSprite("AtlasTexture7").getTexture("SlotsFrame0000"));
 			powerupIconFrame.pivotX = Math.ceil(powerupIconFrame.width / 2);
 			powerupIconFrame.pivotY = Math.ceil(powerupIconFrame.height / 2);
 			powerupIconFrame.x = 150;
@@ -221,59 +216,66 @@ package com.jumpGame.ui
 			this.powerupIconsImages = new Vector.<Image>();
 			var iconImage:Image;
 			// reel image 1
-			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon10000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture7").getTexture("PowerupIcon10000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = 0;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 2
-			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon20000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture7").getTexture("PowerupIcon20000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 1;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 3
-			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon30000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture7").getTexture("PowerupIcon30000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 2;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 4
-			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon40000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture7").getTexture("PowerupIcon40000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 3;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 5
-			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon50000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture7").getTexture("PowerupIcon50000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 4;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 6
-			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon60000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture7").getTexture("PowerupIcon60000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 5
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 7
-			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon70000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture7").getTexture("PowerupIcon70000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 6;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// reel image 8
-			iconImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("PowerupIcon80000"));
+			iconImage = new Image(Assets.getSprite("AtlasTexture7").getTexture("PowerupIcon80000"));
 			iconImage.pivotX = Math.ceil(iconImage.width / 2);
 			iconImage.pivotY = Math.ceil(iconImage.height);
 			iconImage.y = -Constants.PowerupIconHeight * 7;
+			powerupIcons.addChild(iconImage);
+			this.powerupIconsImages.push(iconImage);
+			// reel image 9
+			iconImage = new Image(Assets.getSprite("AtlasTexture7").getTexture("PowerupIcon90000"));
+			iconImage.pivotX = Math.ceil(iconImage.width / 2);
+			iconImage.pivotY = Math.ceil(iconImage.height);
+			iconImage.y = -Constants.PowerupIconHeight * 8;
 			powerupIcons.addChild(iconImage);
 			this.powerupIconsImages.push(iconImage);
 			// container sprite
@@ -508,16 +510,17 @@ package com.jumpGame.ui
 		}
 		
 		public function update():void {
-			if (Statics.calculateEmaVelocity && Statics.gameTime > prevDistanceCalculationTime + 200) calculateEMA();
+			var gameTime:int = Statics.gameTime;
+			if (Statics.calculateEmaVelocity && gameTime > prevDistanceCalculationTime + 200) calculateEMA();
 			
 			// if a message line expires, hide that line
-			if (Statics.gameTime > messageExpireTime1) messageText1.visible = false;
-			if (Statics.gameTime > messageExpireTime2) messageText2.visible = false;
-			if (Statics.gameTime > messageExpireTime3) messageText3.visible = false;
+			if (gameTime > messageExpireTime1) messageText1.visible = false;
+			if (gameTime > messageExpireTime2) messageText2.visible = false;
+			if (gameTime > messageExpireTime3) messageText3.visible = false;
 			
 			// update ability indicator clipping
 			if (!Statics.specialReady) {
-				var ratio:Number = (Statics.gameTime - Statics.specialUseTime) / (Statics.specialReadyTime - Statics.specialUseTime);
+				var ratio:Number = (gameTime - Statics.specialUseTime) / (Statics.specialReadyTime - Statics.specialUseTime);
 				for (var i:uint = 0; i < Statics.numSpecials; i++) {
 					specialIndicatorsList[i].updateClipRectByRatio(ratio);
 				}
@@ -533,17 +536,60 @@ package com.jumpGame.ui
 //			});
 //		}
 		
-		public function spinPowerupReel():void {
-			if (!isReelSpinning) {
-				powerupIconFrame.visible = true;
-				powerupIconFrame.alpha = 1;
-				powerupIcons.visible = true;
-				powerupIcons.alpha = 1;
-				isReelSpinning = true;
+		private var powerupToActivate:int;
+		public function activateRandomPowerup():void {
+//			if (Math.random() < 0.15) { // activate comet
+//				this.powerupToActivate = 8;
+//				return;
+//			}
+			
+			this.powerupToActivate = Math.floor(Math.random() * this.powerupIconsImages.length)
 				
-				if (!Sounds.sfxMuted) Sounds.sndSlots.play();
+			powerupIconFrame.visible = true;
+			powerupIconFrame.alpha = 1;
+			powerupIcons.visible = true;
+			powerupIcons.alpha = 1;
+			
+			// reposition powerup icons
+			var numImages:uint = this.powerupIconsImages.length;
+			for (var i:uint = 0; i < numImages; i++) { // loop through powerup icons
+				this.powerupIconsImages[i].y = (i - this.powerupToActivate) * this.powerupIconsImages[i].height;
 			}
+			
+			// icon tween
+			Starling.juggler.tween(this.powerupIconsImages[this.powerupToActivate], 0.2, {
+				transition: Transitions.EASE_IN_BACK,
+				repeatCount: 2,
+				reverse: true,
+				scaleX: 3.0
+			});
+			
+			// icon frame tween
+			Starling.juggler.tween(powerupIconFrame, 0.2, {
+				transition: Transitions.EASE_IN_BACK,
+				repeatCount: 2,
+				reverse: true,
+				scaleX: 3.0
+			});
 		}
+		
+		public function getPowerupToActivate():int {
+			var returnVal:int = this.powerupToActivate;
+			this.powerupToActivate = -1;
+			return returnVal;
+		}
+		
+//		public function spinPowerupReel():void {
+//			if (!isReelSpinning) {
+//				powerupIconFrame.visible = true;
+//				powerupIconFrame.alpha = 1;
+//				powerupIcons.visible = true;
+//				powerupIcons.alpha = 1;
+//				isReelSpinning = true;
+//				
+//				if (!Sounds.sfxMuted) Sounds.sndSlots.play();
+//			}
+//		}
 		
 		public function clearPowerupReel():void {
 			powerupIconFrame.visible = false;
@@ -660,25 +706,6 @@ package com.jumpGame.ui
 			
 			distancePrevTimePeriod = _distance;
 			prevDistanceCalculationTime = Statics.gameTime;
-		}
-		
-		public function hidePauseButton():void {
-			this.pauseButton.visible = false;
-		}
-		
-		public function showPauseButton():void {
-			this.pauseButton.visible = true;
-		}
-		
-		/**
-		 * On click of pause button
-		 */
-		private function onPauseButtonClick(event:Event):void {
-			event.stopImmediatePropagation();
-			
-			// pause or unpause the game
-			if (Statics.gamePaused) Statics.gamePaused = false;
-			else Statics.gamePaused = true;
 		}
 		
 		public function showCharmActivation(powerup:uint):void {

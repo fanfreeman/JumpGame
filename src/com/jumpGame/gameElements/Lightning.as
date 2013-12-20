@@ -1,6 +1,5 @@
 package com.jumpGame.gameElements
 {
-	import com.jumpGame.level.Statics;
 	
 	import starling.core.Starling;
 	import starling.display.MovieClip;
@@ -15,6 +14,7 @@ package com.jumpGame.gameElements
 		{
 			super();
 			
+			this.touchable = false;
 			lightningAnimation  = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("Lightning"), 30);
 			lightningAnimation.pivotX = Math.ceil(lightningAnimation.width  / 2); // center art on registration point
 			lightningAnimation.pivotY = Math.ceil(lightningAnimation.height / 2);
