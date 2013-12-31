@@ -2,6 +2,7 @@ package
 {
 	import flash.display.Sprite;
 	import flash.system.Capabilities;
+//	import flash.display3D.Context3DRenderMode;
 	
 	import starling.core.Starling;
 	import starling.events.Event;
@@ -22,12 +23,13 @@ package
 			Starling.multitouchEnabled = true; // for Multitouch Scene
 			Starling.handleLostContext = true; // required on Windows, needs more memory
 			
+//			mStarling = new Starling(Game, stage, null, null, Context3DRenderMode.SOFTWARE); // force software rendermode
 			mStarling = new Starling(Game, stage);
 			mStarling.antiAliasing = 0;
-			// bof show starling stats
-			mStarling.showStats = true;
-			mStarling.showStatsAt("left", "bottom");
-			// eof show starling stats
+			// bof show starling stats //////////////////////////////////////////////////////
+//			mStarling.showStats = true;
+//			mStarling.showStatsAt("left", "bottom");
+			// eof show starling stats //////////////////////////////////////////////////////
 //			mStarling.simulateMultitouch = true;
 			mStarling.enableErrorChecking = Capabilities.isDebugger;
 			mStarling.start();
@@ -46,11 +48,11 @@ package
 		{
 			// set framerate to 30 in software mode
 			if (mStarling.context.driverInfo.toLowerCase().indexOf("software") != -1)
-				mStarling.nativeStage.frameRate = 30;
+				mStarling.nativeStage.frameRate = 40;
 			
 			// define which resources to load
 			var assets:AssetManager = new AssetManager();
-			assets.verbose = Capabilities.isDebugger;
+//			assets.verbose = Capabilities.isDebugger;
 			assets.enqueue(Assets);
 			
 			// background texture is embedded, because we need it right away!

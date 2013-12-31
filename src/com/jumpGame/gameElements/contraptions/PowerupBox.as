@@ -21,7 +21,7 @@ package com.jumpGame.gameElements.contraptions
 		}
 		
 		protected function createArt():void {
-			blastAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("Blast"), 30);
+			blastAnimation = new MovieClip(Statics.assets.getTextures("Blast"), 30);
 			blastAnimation.pivotX = Math.ceil(blastAnimation.texture.width  / 2); // center art on registration point
 			blastAnimation.pivotY = Math.ceil(blastAnimation.texture.height / 2);
 			blastAnimation.visible = false;
@@ -34,7 +34,7 @@ package com.jumpGame.gameElements.contraptions
 			if (!this.touched) {
 				this.touched = true;
 				this.boxAnimation.visible = false;
-				if (!Sounds.sfxMuted) Sounds.sndGotHourglass.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_GOT_HOURGLASS");
 				blastAnimation.visible = true;
 				Starling.juggler.add(this.blastAnimation);
 				blastAnimation.play();

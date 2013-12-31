@@ -21,7 +21,7 @@ package com.jumpGame.gameElements.platforms
 		
 		override protected function createPlatformArt():void
 		{
-			platformImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("CoinGold0000"));
+			platformImage = new Image(Statics.assets.getTexture("CoinGold0000"));
 			platformImage.pivotX = Math.ceil(platformImage.texture.width  / 2); // center art on registration point
 			platformImage.pivotY = Math.ceil(platformImage.texture.height / 2);
 			this.addChild(platformImage);
@@ -72,7 +72,7 @@ package com.jumpGame.gameElements.platforms
 		override public function touch():Boolean {
 			if (!this.isTouched) {
 				// play sound effect
-				if (!Sounds.sfxMuted) Sounds.sndBlingHigh.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_BLING_HIGH");
 				this.isTouched = true;
 				return true;
 			}
@@ -95,8 +95,8 @@ package com.jumpGame.gameElements.platforms
 			if (distanceFromCenter > 0 && this.dx == 0) {
 				this.gx = fixedX + distanceFromCenter * Math.cos(revolveAngle);
 				this.gy = fixedY + distanceFromCenter * Math.sin(revolveAngle);
-				if (revolveClockwise) revolveAngle -= revolveVelocity;
-				else revolveAngle += revolveVelocity;
+				if (revolveClockwise) revolveAngle -= revolveVelocity * timeDiff * 0.06;
+				else revolveAngle += revolveVelocity * timeDiff * 0.06;
 			}
 		}
 		

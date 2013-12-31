@@ -14,8 +14,8 @@ package
 //		public static const contraptionsEnabled:Boolean = true;
 		
 		// stage size
-		public static const StageWidth:uint = 756;
-		public static const StageHeight:uint = 650;
+//		public static const StageWidth:uint = 756;
+//		public static const StageHeight:uint = 650;
 		
 		// element preload window
 		public static const ElementPreloadWindow:Number = 650 / 2 + 100;
@@ -47,9 +47,9 @@ package
 		public static const MaxObjectFallVelocity:Number = -2;
 		public static const MaxHeroBouncePower:Number = 3.0;
 		
-		public static const HeroMaxSpeedX:Number = 0.5;
-		public static const HeroExpansionMaxSpeedX:Number = 0.5;
-		public static const HeroSpeedX:Number = 0.004;
+		public static const HeroMaxSpeedX:Number = 0.6;
+		public static const HeroExpansionMaxSpeedX:Number = 0.6;
+		public static const HeroSpeedX:Number = 0.0025;
 		
 		/** Level Elements ********************************************************/
 		// level element name definitions
@@ -115,7 +115,7 @@ package
 		public static const NormalBouncePower:Number = 1.05;
 		public static const BoostBouncePower:Number = 1.35;
 		public static const PowerBouncePower:Number = 1.6;
-		public static const SuperBouncePower:Number = 2.4;
+		public static const SuperBouncePower:Number = 3;
 		// star bounce powers
 		public static const StarWhiteBouncePower:Number = 1.4;
 		public static const StarBlueBouncePower:Number = 1.6;
@@ -203,6 +203,8 @@ package
 		public static const UriPurchaseCoins:String = "user/purchase/coins";
 		public static const UriVerifyPurchase:String = "user/verify/purchase";
 		public static const UriFindMatch:String = "user/findmatch";
+		public static const UriFindMatchSuper:String = "user/findmatch?super=true";
+		public static const UriFindMatchAndSendRoundBegin:String = "user/findmatch?begin=true";
 		public static const UriCreateMatchFacebook:String = "user/creatematchfb";
 		public static const UriResignMatch:String = "user/resignmatch";
 		public static const UriGetRoundBegin:String = "user/round/begin";
@@ -281,7 +283,8 @@ package
 		public static const SetOfLivesCost:uint = 10;
 		
 		// attractor area of effect radius
-		public static const AttractorRadius:uint = StageHeight / 2;
+//		public static const AttractorRadius:uint = StageHeight / 2;
+		public static const AttractorRadius:uint = 325;
 		
 		public static const NumBgFloatingStarsInGame:uint = 30;
 		public static const NumBgFloatingStarsMenu:uint = 100; // change this to turn stars into snow (50)

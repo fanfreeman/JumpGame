@@ -75,7 +75,7 @@ package com.jumpGame.ui.components
 //				setChildIndex(badgeAnimationBottom, numChildren - 1);
 //				setChildIndex(badgeTextBottom, numChildren - 1);
 				badgeBottomInUse = true;
-				if (!Sounds.sfxMuted) Sounds.sndGong.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_GONG");
 				
 				starling.core.Starling.juggler.add(badgeAnimationBottom);
 				badgeAnimationBottom.alpha = 1;
@@ -89,7 +89,7 @@ package com.jumpGame.ui.components
 			}
 			else if (!badgeTopInUse) {
 				badgeTopInUse = true;
-				if (!Sounds.sfxMuted) Sounds.sndGong.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_GONG");
 				
 				starling.core.Starling.juggler.add(badgeAnimationTop);
 				badgeAnimationTop.alpha = 1;

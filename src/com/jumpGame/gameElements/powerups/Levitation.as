@@ -30,7 +30,7 @@ package com.jumpGame.gameElements.powerups
 		
 		protected function createPowerupArt():void
 		{
-			ringImage = new Image(Assets.getSprite("AtlasTexture2").getTexture("ProtectionBubble0000"));
+			ringImage = new Image(Statics.assets.getTexture("ProtectionBubble0000"));
 			ringImage.pivotX = Math.ceil(ringImage.width / 2); // center image on registration point
 			ringImage.pivotY = Math.ceil(ringImage.height / 2);
 //			ringImage.scaleX = 0.6;
@@ -39,7 +39,7 @@ package com.jumpGame.gameElements.powerups
 			this.visible = false;
 		}
 		
-		public function activate(isTutorial:Boolean = false):void {
+		public function activate(isTutorial:Boolean = false, duration:int = -1):void {
 			this.visible = true;
 			Starling.juggler.tween(ringImage, 0.5, {
 				transition: Transitions.LINEAR,
@@ -61,8 +61,9 @@ package com.jumpGame.gameElements.powerups
 			if (isTutorial) {
 				this.completionTime = Statics.gameTime + 80000; // duration
 			} else {
-				this.completionTime = Statics.gameTime + 5000 + Statics.rankSafety * 1000; // duration
-				if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
+				if (duration == -1) this.completionTime = Statics.gameTime + 7000 + Statics.rankSafety * 1000; // duration
+				else this.completionTime = Statics.gameTime + duration; // custom duration for start of round
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_POWERUP");
 			}
 			
 			this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
@@ -78,7 +79,7 @@ package com.jumpGame.gameElements.powerups
 			if (this.hero.dy < -1 || (this.hero.gy - 250 < sofHeight)) {
 				if (!this.jetFired) {
 					// fire jet
-					if (!Sounds.sfxMuted) Sounds.sndSwoosh.play();
+					if (!Sounds.sfxMuted) Statics.assets.playSound("SND_SWOOSH");
 					Statics.particleJet.start(1);
 					this.heroD2y = 0;
 					this.jetFired = true;

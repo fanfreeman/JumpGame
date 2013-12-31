@@ -49,7 +49,7 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("GetGemsBg0000"));
+			var popup:Image = new Image(Statics.assets.getTexture("GetGemsBg0000"));
 			popupContainer.addChild(popup);
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
@@ -59,9 +59,9 @@ package com.jumpGame.ui.popups
 			
 			// popup close button
 			var buttonClose:Button = new Button();
-			buttonClose.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.defaultSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.hoverSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.downSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
 			buttonClose.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonClose.downSkin.filter = Statics.btnInvertFilter;
 			buttonClose.useHandCursor = true;
@@ -140,9 +140,9 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(priceField1);
 			// buy button
 			var buttonBuy1:Button = new Button();
-			buttonBuy1.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy1.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy1.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
+			buttonBuy1.defaultSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy1.hoverSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy1.downSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
 			buttonBuy1.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonBuy1.downSkin.filter = Statics.btnInvertFilter;
 			buttonBuy1.useHandCursor = true;
@@ -170,9 +170,9 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(priceField2);
 			// buy button
 			var buttonBuy2:Button = new Button();
-			buttonBuy2.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy2.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy2.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
+			buttonBuy2.defaultSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy2.hoverSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy2.downSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
 			buttonBuy2.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonBuy2.downSkin.filter = Statics.btnInvertFilter;
 			buttonBuy2.useHandCursor = true;
@@ -200,9 +200,9 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(priceField3);
 			// buy button
 			var buttonBuy3:Button = new Button();
-			buttonBuy3.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy3.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy3.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
+			buttonBuy3.defaultSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy3.hoverSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy3.downSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
 			buttonBuy3.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonBuy3.downSkin.filter = Statics.btnInvertFilter;
 			buttonBuy3.useHandCursor = true;
@@ -230,9 +230,9 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(priceField4);
 			// buy button
 			var buttonBuy4:Button = new Button();
-			buttonBuy4.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy4.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy4.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
+			buttonBuy4.defaultSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy4.hoverSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy4.downSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
 			buttonBuy4.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonBuy4.downSkin.filter = Statics.btnInvertFilter;
 			buttonBuy4.useHandCursor = true;
@@ -260,9 +260,9 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(priceField5);
 			// buy button
 			var buttonBuy5:Button = new Button();
-			buttonBuy5.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy5.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy5.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
+			buttonBuy5.defaultSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy5.hoverSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy5.downSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
 			buttonBuy5.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonBuy5.downSkin.filter = Statics.btnInvertFilter;
 			buttonBuy5.useHandCursor = true;
@@ -290,9 +290,9 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(priceField6);
 			// buy button
 			var buttonBuy6:Button = new Button();
-			buttonBuy6.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy6.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy6.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
+			buttonBuy6.defaultSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy6.hoverSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy6.downSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
 			buttonBuy6.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonBuy6.downSkin.filter = Statics.btnInvertFilter;
 			buttonBuy6.useHandCursor = true;
@@ -316,7 +316,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseGemHandfulHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on button: gem handful');
@@ -332,7 +332,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseGemPouchHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on button: gem pouch');
@@ -348,7 +348,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseGemSackHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on button: gem sack');
@@ -364,7 +364,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseGemBoxHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on button: gem box');
@@ -380,7 +380,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseGemChestHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on button: gem chest');
@@ -396,7 +396,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseGemTruckloadHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on button: gem trunkload');
@@ -418,12 +418,12 @@ package com.jumpGame.ui.popups
 			});
 			
 			parent.displayLoadingNotice("Verifying purchase...");
-			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
+//			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
 			parent.communicator.postVerifyPurchase(jsonStr);
 		}
 		
 		private function buttonCloseHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.visible = false;
 		}

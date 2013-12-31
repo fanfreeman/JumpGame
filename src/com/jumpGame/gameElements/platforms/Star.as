@@ -25,10 +25,11 @@ package com.jumpGame.gameElements.platforms
 		
 		override protected function createPlatformArt():void
 		{
-			platformImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Star720000"));
+			platformImage = new Image(Statics.assets.getTexture("Star720000"));
 			platformImage.pivotX = Math.ceil(platformImage.texture.width  / 2); // center art on registration point
 			platformImage.pivotY = Math.ceil(platformImage.texture.height / 2);
 			this.addChild(platformImage);
+			this.platformWidth = platformImage.texture.width;
 			
 //			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Sparkle"), 60);
 //			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
@@ -40,8 +41,9 @@ package com.jumpGame.gameElements.platforms
 		}
 		
 		override public function initialize(gx, gy, size:int, args = null):void {
+			this.fixedX = gx;
+			this.fixedY = gy;
 			this.gx = gx;
-			fixedX = gx;
 			this.gy = gy;
 			this.extenderStatus = 0;
 			this.extenderParent = null;
@@ -67,7 +69,7 @@ package com.jumpGame.gameElements.platforms
 					distanceFromCenter = args[2];
 					revolveAngle = 0;
 //					fixedX = gx;
-					fixedY = gy;
+//					fixedY = gy;
 					
 					if (args[3] != undefined) revolveVelocity = args[3]; // custom revolve velocity
 					else revolveVelocity = 5 * Math.PI / 180;
@@ -116,15 +118,16 @@ package com.jumpGame.gameElements.platforms
 			}
 			this.fixedX += this.dx * timeDiff;
 			this.gx = this.fixedX;
-			this.gy += this.dy * timeDiff;
+			this.fixedY += this.dy * timeDiff;
+			this.gy = this.fixedY;
 			this.platformImage.rotation += Math.PI / 72;
 			
 			// check if star should revolve around center
 			if (distanceFromCenter > 0 && this.dx == 0) {
 				this.gx = fixedX + distanceFromCenter * Math.cos(revolveAngle);
 				this.gy = fixedY + distanceFromCenter * Math.sin(revolveAngle);
-				if (revolveClockwise) revolveAngle -= revolveVelocity;
-				else revolveAngle += revolveVelocity;
+				if (revolveClockwise) revolveAngle -= revolveVelocity * timeDiff * 0.06;
+				else revolveAngle += revolveVelocity * timeDiff * 0.06;
 			}
 		}
 		

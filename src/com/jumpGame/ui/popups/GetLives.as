@@ -39,7 +39,7 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupGetLivesBg0000"));
+			var popup:Image = new Image(Statics.assets.getTexture("PopupGetLivesBg0000"));
 			popupContainer.addChild(popup);
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
@@ -49,9 +49,9 @@ package com.jumpGame.ui.popups
 			
 			// popup close button
 			var buttonClose:Button = new Button();
-			buttonClose.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.defaultSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.hoverSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.downSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
 			buttonClose.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonClose.downSkin.filter = Statics.btnInvertFilter;
 			buttonClose.useHandCursor = true;
@@ -63,14 +63,14 @@ package com.jumpGame.ui.popups
 			buttonClose.y = popup.bounds.top + 23;
 			
 			// stock up message
-			headerStockUp = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupGetLivesHeaderStock0000"));
+			headerStockUp = new Image(Statics.assets.getTexture("PopupGetLivesHeaderStock0000"));
 			headerStockUp.pivotX = Math.ceil(headerStockUp.width / 2);
 			headerStockUp.x = Math.ceil(popupContainer.width / 2);
 			headerStockUp.y = 56;
 			popupContainer.addChild(headerStockUp);
 			
 			// out of lives message
-			headerOut = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupGetLivesHeaderOut0000"));
+			headerOut = new Image(Statics.assets.getTexture("PopupGetLivesHeaderOut0000"));
 			headerOut.pivotX = Math.ceil(headerOut.width / 2);
 			headerOut.x = Math.ceil(popupContainer.width / 2);
 			headerOut.y = 56;
@@ -79,9 +79,9 @@ package com.jumpGame.ui.popups
 			
 			// buy with gems button
 			btnShop = new Button();
-			btnShop.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupGetLivesBtnShop0000"));
-			btnShop.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupGetLivesBtnShop0000"));
-			btnShop.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupGetLivesBtnShop0000"));
+			btnShop.defaultSkin = new Image(Statics.assets.getTexture("PopupGetLivesBtnShop0000"));
+			btnShop.hoverSkin = new Image(Statics.assets.getTexture("PopupGetLivesBtnShop0000"));
+			btnShop.downSkin = new Image(Statics.assets.getTexture("PopupGetLivesBtnShop0000"));
 			btnShop.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnShop.downSkin.filter = Statics.btnInvertFilter;
 			btnShop.useHandCursor = true;
@@ -92,9 +92,9 @@ package com.jumpGame.ui.popups
 			
 			// ask friends button
 			btnAsk = new Button();
-			btnAsk.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupGetLivesBtnAsk0000"));
-			btnAsk.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupGetLivesBtnAsk0000"));
-			btnAsk.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupGetLivesBtnAsk0000"));
+			btnAsk.defaultSkin = new Image(Statics.assets.getTexture("PopupGetLivesBtnAsk0000"));
+			btnAsk.hoverSkin = new Image(Statics.assets.getTexture("PopupGetLivesBtnAsk0000"));
+			btnAsk.downSkin = new Image(Statics.assets.getTexture("PopupGetLivesBtnAsk0000"));
 			btnAsk.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnAsk.downSkin.filter = Statics.btnInvertFilter;
 			btnAsk.useHandCursor = true;
@@ -125,7 +125,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonShopHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.visible = false;
 			Menu(parent).showBuyLivesDialog();
@@ -136,7 +136,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonAskHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.visible = false;
 			Menu(parent).showAskFriendsForLives();
@@ -147,7 +147,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonCloseHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.visible = false;
 		}

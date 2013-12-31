@@ -22,6 +22,9 @@ package com.jumpGame.gameElements
 		protected var platformAnimation:MovieClip = null;
 		protected var bounceAnimation:MovieClip = null;
 		protected var platformImage:Image = null;
+		protected var platformWidth:Number;
+		
+		protected var borderPosition:Number = Statics.stageWidth / 2; // connect left and right borders
 		
 		private var _destroyed:Boolean = true; // required by interface
 		
@@ -99,7 +102,8 @@ package com.jumpGame.gameElements
 //					Sounds.sndBounce3.play();
 //				}
 //			}
-			if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
+//			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_BOOST_BOUNCE");
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (this.bounceAnimation != null) {
 				platformAnimation.visible = false;
@@ -140,6 +144,10 @@ package com.jumpGame.gameElements
 			
 			this.gx += this.dx * timeDiff;
 			this.gy += this.dy * timeDiff;
+			
+			// connect left and right borders
+			if (this.gx > borderPosition) this.gx = -borderPosition;
+			else if (this.gx < -borderPosition) this.gx = borderPosition;
 			
 			this.fixedGy += this.fixedDy * timeDiff;
 		}
@@ -206,6 +214,10 @@ package com.jumpGame.gameElements
 			if (platformAnimation != null) return this.platformAnimation.height;
 			else return platformImage.height;
 //			return this.platformAnimation.height;
+		}
+		
+		public function getWidthFast():Number {
+			return this.platformWidth * this.scaleX;
 		}
 		
 		// methods required by interface

@@ -10,16 +10,17 @@ package com.jumpGame.gameElements.platforms
 	{
 		override protected function createPlatformArt():void
 		{
-			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Bouncer"), 30);
+			platformAnimation = new MovieClip(Statics.assets.getTextures("Bouncer"), 30);
 			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
 			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
 			starling.core.Starling.juggler.add(platformAnimation);
 			this.addChild(platformAnimation);
+			this.platformWidth = platformAnimation.texture.width;
 			
 			var hueFilter:ColorMatrixFilter = new ColorMatrixFilter();
 			hueFilter.adjustHue(-0.7);
 			
-			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PulseRed"), 30);
+			bounceAnimation = new MovieClip(Statics.assets.getTextures("PulseRed"), 30);
 			bounceAnimation.filter = hueFilter;
 			bounceAnimation.pivotX = Math.ceil(bounceAnimation.width  / 2); // center art on registration point
 			bounceAnimation.pivotY = Math.ceil(bounceAnimation.height / 2);
@@ -47,7 +48,7 @@ package com.jumpGame.gameElements.platforms
 		}
 		
 		override public function contact():void {
-			if (!Sounds.sfxMuted) Sounds.sndBounce2.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_BOUNCE_2");
 			
 			platformAnimation.visible = false;
 			bounceAnimation.visible = true;

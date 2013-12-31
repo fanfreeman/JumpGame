@@ -2,6 +2,7 @@ package com.jumpGame.gameElements
 {
 	import com.jumpGame.ui.HUD;
 	
+//	import starling.animation.Transitions;
 	import starling.core.Starling;
 	import starling.display.MovieClip;
 	import starling.events.Event;
@@ -38,6 +39,13 @@ package com.jumpGame.gameElements
 		public var controlRestoreTime:int;
 		
 		private var hud:HUD;
+		
+		private var borderPosition:Number; // connect left and right borders
+		
+		private var jumpWidth:Number;
+		private var braceWidth:Number;
+		private var superWidth:Number;
+		public var fastHeight:Number;
 		
 		public function Hero(hud:HUD)
 		{
@@ -83,35 +91,40 @@ package com.jumpGame.gameElements
 			animationSuper.visible = false;
 			animationPoof.visible = false;
 			this.turnRight();
+			this.borderPosition = Statics.stageWidth / 2;
 		}
 		
 		private function createHeroArt():void {
-			animationJump = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharPrinceJump"), 10);
+			animationJump = new MovieClip(Statics.assets.getTextures("CharPrinceJump"), 10);
 			animationJump.pivotX = Math.ceil(animationJump.texture.width  / 2);
 			animationJump.pivotY = Math.ceil(animationJump.texture.height / 2);
 			animationJump.loop = false;
 			starling.core.Starling.juggler.add(animationJump);
 			this.addChild(animationJump);
+			this.jumpWidth = animationJump.texture.width;
+			this.fastHeight = animationJump.texture.height;
 			
-			animationBrace = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharPrinceBrace"), 10);
-			animationBrace.pivotX = Math.ceil(animationBrace.texture.width  / 2);
-			animationBrace.pivotY = Math.ceil(animationBrace.texture.height / 2);
+			animationBrace = new MovieClip(Statics.assets.getTextures("CharPrinceBrace"), 10);
+			animationBrace.pivotX = Math.ceil(animationBrace.width  / 2);
+			animationBrace.pivotY = Math.ceil(animationBrace.height / 2);
 			animationBrace.loop = false;
 			starling.core.Starling.juggler.add(animationBrace);
 			this.addChild(animationBrace);
+			this.braceWidth = animationBrace.width;
 			
-			animationHurt = new MovieClip(Assets.getSprite("AtlasTexture7").getTextures("CharPrinceHurt"), 24);
+			animationHurt = new MovieClip(Statics.assets.getTextures("CharPrinceHurt"), 24);
 			animationHurt.pivotX = Math.ceil(animationHurt.width  / 2);
 			animationHurt.pivotY = Math.ceil(animationHurt.height / 2);
 //			animationHurt.loop = false;
 			this.addChild(animationHurt);
 			
-			animationSuper = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("CharPrinceSuper"), 24);
+			animationSuper = new MovieClip(Statics.assets.getTextures("CharPrinceSuper"), 24);
 			animationSuper.pivotX = Math.ceil(animationSuper.width  / 2);
 			animationSuper.pivotY = Math.ceil(animationSuper.height / 2);
 			this.addChild(animationSuper);
+			this.superWidth = animationSuper.width;
 			
-			animationPoof = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("TransfigAnimPoof"), 24);
+			animationPoof = new MovieClip(Statics.assets.getTextures("TransfigAnimPoof"), 24);
 			animationPoof.pivotX = Math.ceil(animationPoof.width  / 2); // center art on registration point
 			animationPoof.pivotY = Math.ceil(animationPoof.height / 2);
 			animationPoof.loop = false;
@@ -159,7 +172,7 @@ package com.jumpGame.gameElements
 				}
 				Statics.particleCharge.start(0.2);
 				Statics.particleJet.start(1);
-				if (!Sounds.sfxMuted) Sounds.sndAirjump.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_AIRJUMP");
 				
 				Statics.specialReady = false;
 				Statics.specialUseTime = Statics.gameTime;
@@ -182,6 +195,7 @@ package com.jumpGame.gameElements
 			hud.showMessage("Ability Ready!");
 		}
 		
+		// bounce off any platform
 		public function bounce(bouncePower:Number):void {
 			if (this.canBounce) {
 				if (bouncePower > Constants.MaxHeroBouncePower) this.dy = Constants.MaxHeroBouncePower;
@@ -198,8 +212,8 @@ package com.jumpGame.gameElements
 				animationJump.play();
 				
 				// rotate hero
-				if (this.dx > 0.2) this.rotationSpeed = Math.PI / 27;
-				else if (this.dx < -0.2) this.rotationSpeed = -Math.PI / 27;
+				if (this.dx > 0.599) this.rotationSpeed = Math.PI / 27;
+				else if (this.dx < -0.599) this.rotationSpeed = -Math.PI / 27;
 			}
 		}
 		
@@ -260,7 +274,6 @@ package com.jumpGame.gameElements
 			this.gy += timeDiff * dyAvg;
 			
 			// connect left and right borders
-			var borderPosition:Number = Statics.stageWidth / 2;
 			if (this.gx > borderPosition) this.gx = -borderPosition;
 			else if (this.gx < -borderPosition) this.gx = borderPosition;
 			
@@ -270,8 +283,8 @@ package com.jumpGame.gameElements
 			
 			// stop bounce rotation after a full spin
 			var prevRotation:Number = animationJump.rotation;
-			animationJump.rotation += this.rotationSpeed;
-			animationBrace.rotation += this.rotationSpeed;
+			animationJump.rotation += this.rotationSpeed * timeDiff * 0.06;
+			animationBrace.rotation += this.rotationSpeed * timeDiff * 0.06;
 			if ((prevRotation < 0 && animationJump.rotation >= 0 || 
 				prevRotation > 0 && animationJump.rotation <= 0) &&
 				Math.abs(prevRotation) < 1) {
@@ -295,22 +308,22 @@ package com.jumpGame.gameElements
 		
 		public function bounceAndFade(direction:uint, bouncePower:Number):void {
 			if (direction == Constants.DirectionUp) { // train bounce up
-				if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_BOOST_BOUNCE");
 				this.dy = bouncePower;
 			}
 			else if (direction == Constants.DirectionDown) { // train bounce down
-				if (!Sounds.sfxMuted) Sounds.sndBoostBounce.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_BOOST_BOUNCE");
 				this.dy = 0;
 				this.scaleY *= -1;
 			}
 			else if (direction == Constants.DirectionLeft) { // train hit left
-				if (!Sounds.sfxMuted) Sounds.sndTrainHit.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_TRAIN_HIT");
 				this.dx = bouncePower;
 				this.dy = Constants.NormalBouncePower; // also bounce up
 				Statics.particleJet.start(1);
 			}
 			else if (direction == Constants.DirectionRight) { // train hit right
-				if (!Sounds.sfxMuted) Sounds.sndTrainHit.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_TRAIN_HIT");
 				this.dx = -bouncePower;
 				this.dy = Constants.NormalBouncePower; // also bounce up
 				Statics.particleJet.start(1);
@@ -329,26 +342,26 @@ package com.jumpGame.gameElements
 		public function turnLeft():void {
 			if (animationSuper.visible) {
 				animationSuper.scaleX = -1;
-				animationSuper.pivotX = Math.ceil(animationSuper.texture.width  / 2);
+				animationSuper.pivotX = Math.ceil(this.superWidth / 2);
 			} else {
 				animationJump.scaleX = -1;
-				animationJump.pivotX = Math.ceil(animationJump.texture.width  / 2);
+				animationJump.pivotX = Math.ceil(this.jumpWidth / 2);
 				
 				animationBrace.scaleX = -1;
-				animationBrace.pivotX = Math.ceil(animationBrace.texture.width  / 2);
+				animationBrace.pivotX = Math.ceil(this.braceWidth / 2);
 			}
 		}
 		
 		public function turnRight():void {
 			if (animationSuper.visible) {
 				animationSuper.scaleX = 1;
-				animationSuper.pivotX = Math.ceil(animationSuper.texture.width  / 2);
+				animationSuper.pivotX = Math.ceil(this.superWidth / 2);
 			} else {
 				animationJump.scaleX = 1;
-				animationJump.pivotX = Math.ceil(animationJump.texture.width  / 2);
+				animationJump.pivotX = Math.ceil(this.jumpWidth / 2);
 				
 				animationBrace.scaleX = 1;
-				animationBrace.pivotX = Math.ceil(animationJump.texture.width  / 2);
+				animationBrace.pivotX = Math.ceil(this.braceWidth / 2);
 			}
 		}
 		

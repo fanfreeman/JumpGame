@@ -119,14 +119,14 @@ package com.jumpGame.ui.components
 			if(this._data && this._owner)
 			{
 				if (this._index == 0) {
-					itemBgButton.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("StartGameBtnFacebook0000"));
-					itemBgButton.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("StartGameBtnFacebook0000"));
-					itemBgButton.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("StartGameBtnFacebook0000"));
+					itemBgButton.defaultSkin = new Image(Statics.assets.getTexture("StartGameBtnFacebook0000"));
+					itemBgButton.hoverSkin = new Image(Statics.assets.getTexture("StartGameBtnFacebook0000"));
+					itemBgButton.downSkin = new Image(Statics.assets.getTexture("StartGameBtnFacebook0000"));
 				}
 				else if (this._index == 1) {
-					itemBgButton.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("StartGameBtnMatch0000"));
-					itemBgButton.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("StartGameBtnMatch0000"));
-					itemBgButton.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("StartGameBtnMatch0000"));
+					itemBgButton.defaultSkin = new Image(Statics.assets.getTexture("StartGameBtnMatch0000"));
+					itemBgButton.hoverSkin = new Image(Statics.assets.getTexture("StartGameBtnMatch0000"));
+					itemBgButton.downSkin = new Image(Statics.assets.getTexture("StartGameBtnMatch0000"));
 				}
 				itemBgButton.hoverSkin.filter = Statics.btnBrightnessFilter;
 				itemBgButton.downSkin.filter = Statics.btnInvertFilter;

@@ -30,6 +30,8 @@ package com.jumpGame.gameElements.powerups
 		private var completionTime:int;
 		private var completionWarned:Boolean;
 		
+		private var fastHeight:Number;
+		
 		public function Expansion(hero:Hero, hud:HUD, transfiguration:Transfiguration)
 		{
 			this.touchable = false;
@@ -76,17 +78,18 @@ package com.jumpGame.gameElements.powerups
 //			chainsImage.alpha = 0;
 //			this.addChild(chainsImage);
 			
-			flightAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("TransfigAnimBroomFlight"), 20);
+			flightAnimation = new MovieClip(Statics.assets.getTextures("TransfigAnimBroomFlight"), 20);
 			flightAnimation.pivotX = Math.ceil(flightAnimation.texture.width  / 2); // center art on registration point
 			flightAnimation.pivotY = Math.ceil(flightAnimation.texture.height / 2);
 			flightAnimation.stop();
 			flightAnimation.visible = false;
 			flightAnimation.alpha = 0;
 			this.addChild(flightAnimation);
+			this.fastHeight = flightAnimation.texture.height;
 		}
 		
 		public function activate():void {
-			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_POWERUP");
 			
 			// transfiguration animation
 			this.transfiguration.displayActivation(Constants.PowerupExpansion);
@@ -196,16 +199,18 @@ package com.jumpGame.gameElements.powerups
 			
 			// transfiguration deactivation effect
 			this.transfiguration.displayDeactivation();
+			
+			this.engineOff();
 		}
 		
 		/**
 		 * Move broom up
 		 */
-		public function engineOn():void {
-			if (this.hero.dy < 1) this.hero.dy += 0.05;
+		public function engineOn(timeDiff:Number):void {
+			if (this.hero.dy < 1) this.hero.dy += 0.05 * timeDiff * 0.06;
 			
 			Statics.particleBounce.emitterX = this.hero.x;
-			Statics.particleBounce.emitterY = this.hero.y + this.hero.height / 2;
+			Statics.particleBounce.emitterY = this.hero.y + this.fastHeight / 2;
 			if (!Statics.particleBounce.isEmitting) Statics.particleBounce.start();
 		}
 		

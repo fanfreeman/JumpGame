@@ -13,6 +13,7 @@ package com.jumpGame.gameElements.contraptions
 		private var dy:Number;
 		private var rotationSpeed:Number = Math.PI / 72;
 		private var isTouched:Boolean = false;
+		public var fastHeight:Number;
 		
 		override public function initialize():void {
 			if (bellImage == null) createArt();
@@ -30,6 +31,7 @@ package com.jumpGame.gameElements.contraptions
 			bellImage.pivotX = Math.ceil(bellImage.width / 2); // center image on registration point
 			bellImage.pivotY = Math.ceil(bellImage.height / 2);
 			this.addChild(bellImage);
+			this.fastHeight = bellImage.height;
 		}
 		
 		override public function update(timeDiff:Number):void {
@@ -53,7 +55,7 @@ package com.jumpGame.gameElements.contraptions
 		public function contact(distanceFromCenter:Number, heroDy:Number):Boolean {
 			if (!this.isTouched) {
 				this.isTouched = true;
-				if (!Sounds.sfxMuted) Sounds.sndBell.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_BELL");
 				this.numDings++;
 				
 				this.dx = -(distanceFromCenter / 100);

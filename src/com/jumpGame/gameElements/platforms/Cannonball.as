@@ -17,12 +17,12 @@ package com.jumpGame.gameElements.platforms
 		
 		override protected function createPlatformArt():void
 		{
-			platformImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Cannonball0000"));
+			platformImage = new Image(Statics.assets.getTexture("Cannonball0000"));
 			platformImage.pivotX = Math.ceil(platformImage.texture.width / 2); // center art on registration point
 			platformImage.pivotY = Math.ceil(platformImage.texture.height / 2);
 			this.addChild(platformImage);
 			
-			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PulseRed"), 40);
+			bounceAnimation = new MovieClip(Statics.assets.getTextures("PulseRed"), 40);
 			bounceAnimation.pivotX = Math.ceil(bounceAnimation.texture.width  / 2); // center art on registration point
 			bounceAnimation.pivotY = Math.ceil(bounceAnimation.texture.height / 2);
 			bounceAnimation.loop = false;
@@ -57,7 +57,7 @@ package com.jumpGame.gameElements.platforms
 			if (!this.isTouched) {
 				
 				// play sound effect
-				if (!Sounds.sfxMuted) Sounds.sndCannonballHit.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CANNONBALL_HIT");
 				
 				// explosion animation
 				platformImage.visible = false;
@@ -83,7 +83,7 @@ package com.jumpGame.gameElements.platforms
 //					this.gy = Camera.gy + Constants.StageHeight / 2 + platformImage.texture.height / 2;
 //				}
 //			} else {
-				this.dy -= Constants.Gravity * timeDiff;
+				this.dy -= Constants.Gravity * timeDiff * 0.3;
 				if (this.dy < Constants.MaxObjectFallVelocity) {
 					this.dy = Constants.MaxObjectFallVelocity;
 				}

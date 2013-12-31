@@ -4,6 +4,7 @@ package com.jumpGame.ui
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.AchievementPlate;
+	import com.jumpGame.ui.components.BadgeHighScore;
 	
 	import flash.external.ExternalInterface;
 	
@@ -21,6 +22,7 @@ package com.jumpGame.ui
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
 	import starling.utils.deg2rad;
+	import com.jumpGame.screens.InGame;
 	
 	public class GameOverContainer extends Sprite
 	{
@@ -55,8 +57,9 @@ package com.jumpGame.ui
 		private var btnNext:Button;
 		private var proceedBtn:Button;
 		
-		private var communicator:Communicator;
+//		private var communicator:Communicator;
 		
+		private var distanceTraveled:int;
 		private var roundScore:int;
 		
 		// array to store new achievement ids earned this round
@@ -70,8 +73,13 @@ package com.jumpGame.ui
 		private var achievementPlate3:AchievementPlate;
 		
 		private var menu:Menu;
+		private var inGame:InGame;
 		
 		private var roundCoins:Vector.<MovieClip>; // coin fly out effect
+		
+		private var badgeHighScore:BadgeHighScore;
+		
+		private var btnPlayAgainSmartMatch:Button;
 		
 		// coin pools
 //		private var roundCoins:Vector.<MovieClip>;
@@ -79,13 +87,14 @@ package com.jumpGame.ui
 //		private var achievementCoins2:Vector.<MovieClip>;
 //		private var achievementCoins3:Vector.<MovieClip>;
 		
-		public function GameOverContainer(menu:Menu)
+		public function GameOverContainer(menu:Menu, inGame:InGame)
 		{
 			super();
 			this.visible = false;
 			this.menu = menu;
+			this.inGame = inGame;
 			this.drawGameOver();
-			this.communicator = new Communicator();
+//			this.communicator = new Communicator();
 			
 			//testing
 //			this.addNewAchievement(1);
@@ -96,6 +105,7 @@ package com.jumpGame.ui
 //			this.addNewAchievement(6);
 //			this.addNewAchievement(3);
 //			this.addNewAchievement(11);
+			this.menu.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, this.dataReceived);
 		}
 		
 		/**
@@ -113,14 +123,14 @@ package com.jumpGame.ui
 			
 			// big stars (off)
 			// center
-			var starCenter:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("BigStarOff0000"));
+			var starCenter:Image = new Image(Statics.assets.getTexture("BigStarOff0000"));
 			starCenter.pivotX = Math.ceil(starCenter.width / 2);
 			starCenter.pivotY = Math.ceil(starCenter.height / 2);
 			starCenter.x = Statics.stageWidth / 2;
 			starCenter.y = 100 + yModifier;
 			this.addChild(starCenter);
 			// left
-			var starLeft:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("BigStarOff0000"));
+			var starLeft:Image = new Image(Statics.assets.getTexture("BigStarOff0000"));
 			starLeft.pivotX = Math.ceil(starLeft.width / 2);
 			starLeft.pivotY = Math.ceil(starLeft.height / 2);
 			starLeft.x = Statics.stageWidth / 2 - starLeft.width - 15;
@@ -128,7 +138,7 @@ package com.jumpGame.ui
 			starLeft.rotation = -15 * Math.PI / 180;
 			this.addChild(starLeft);
 			// right
-			var starRight:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("BigStarOff0000"));
+			var starRight:Image = new Image(Statics.assets.getTexture("BigStarOff0000"));
 			starRight.pivotX = Math.ceil(starRight.width / 2);
 			starRight.pivotY = Math.ceil(starRight.height / 2);
 			starRight.x = Statics.stageWidth / 2 + starRight.width + 15;
@@ -139,14 +149,14 @@ package com.jumpGame.ui
 			
 			// big stars (on)
 			// center
-			starCenterOn = new Image(Assets.getSprite("AtlasTexture4").getTexture("BigStarOn0000"));
+			starCenterOn = new Image(Statics.assets.getTexture("BigStarOn0000"));
 			starCenterOn.pivotX = Math.ceil(starCenterOn.width / 2);
 			starCenterOn.pivotY = Math.ceil(starCenterOn.height / 2);
 			starCenterOn.x = Statics.stageWidth / 2;
 			starCenterOn.y = 100 + yModifier;
 			this.addChild(starCenterOn);
 			// left
-			starLeftOn = new Image(Assets.getSprite("AtlasTexture4").getTexture("BigStarOn0000"));
+			starLeftOn = new Image(Statics.assets.getTexture("BigStarOn0000"));
 			starLeftOn.pivotX = Math.ceil(starLeftOn.width / 2);
 			starLeftOn.pivotY = Math.ceil(starLeftOn.height / 2);
 			starLeftOn.x = Statics.stageWidth / 2 - starLeftOn.width - 15;
@@ -154,7 +164,7 @@ package com.jumpGame.ui
 			starLeftOn.rotation = -15 * Math.PI / 180;
 			this.addChild(starLeftOn);
 			// right
-			starRightOn = new Image(Assets.getSprite("AtlasTexture4").getTexture("BigStarOn0000"));
+			starRightOn = new Image(Statics.assets.getTexture("BigStarOn0000"));
 			starRightOn.pivotX = Math.ceil(starRightOn.width / 2);
 			starRightOn.pivotY = Math.ceil(starRightOn.height / 2);
 			starRightOn.x = Statics.stageWidth / 2 + starRightOn.width + 15;
@@ -164,7 +174,7 @@ package com.jumpGame.ui
 			// eof big stars (on)
 			
 			// congratulations image
-			congrats = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverCongrats0000"));
+			congrats = new Image(Statics.assets.getTexture("GameOverCongrats0000"));
 			congrats.pivotX = Math.ceil(congrats.width  / 2); // center art on registration point
 			congrats.x = Statics.stageWidth / 2;
 			congrats.y = Statics.stageHeight * 2.6 / 10 + yModifier;
@@ -213,7 +223,7 @@ package com.jumpGame.ui
 			var distanceContainer:Sprite = new Sprite();
 			
 			// distance icon
-			var distanceIcon:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverIconDistance0000"));
+			var distanceIcon:Image = new Image(Statics.assets.getTexture("GameOverIconDistance0000"));
 			distanceContainer.addChild(distanceIcon);
 			
 			// distance label
@@ -242,7 +252,7 @@ package com.jumpGame.ui
 			var baseScoreContainer:Sprite = new Sprite();
 			
 			// coin icon
-			var baseScoreIcon:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverIconBaseScore0000"));
+			var baseScoreIcon:Image = new Image(Statics.assets.getTexture("GameOverIconBaseScore0000"));
 			baseScoreContainer.addChild(baseScoreIcon);
 			
 			// coin label
@@ -271,7 +281,7 @@ package com.jumpGame.ui
 			coinContainer = new Sprite();
 			
 			// coin icon
-			var coinIcon:MovieClip = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("CoinLarge"), 40);
+			var coinIcon:MovieClip = new MovieClip(Statics.assets.getTextures("CoinLarge"), 40);
 			coinIcon.pivotX = Math.ceil(coinIcon.width / 2);
 			coinIcon.pivotY = Math.ceil(coinIcon.height / 2);
 			coinIcon.rotation = -Math.PI / 8;
@@ -302,13 +312,13 @@ package com.jumpGame.ui
 			///////////////////////////////////////////////////////////////////
 			
 			// earned achievements header
-			headerAchievementsEarned = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverHeaderObjEarned0000"));
+			headerAchievementsEarned = new Image(Statics.assets.getTexture("GameOverHeaderObjEarned0000"));
 			headerAchievementsEarned.pivotX = Math.ceil(headerAchievementsEarned.width / 2);
 			headerAchievementsEarned.y = Statics.stageHeight * 5.3 / 10 + yModifier + 5;
 			addChild(headerAchievementsEarned);
 			
 			// earned achievements header
-			headerAchievementsAim = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverHeaderObjAim0000"));
+			headerAchievementsAim = new Image(Statics.assets.getTexture("GameOverHeaderObjAim0000"));
 			headerAchievementsAim.pivotX = Math.ceil(headerAchievementsAim.width / 2);
 			headerAchievementsAim.y = Statics.stageHeight * 5.3 / 10 + yModifier + 5;
 			addChild(headerAchievementsAim);
@@ -318,10 +328,10 @@ package com.jumpGame.ui
 			
 			// next button
 			btnNext = new Button();
-			var nextBtnImage:Image = new Image(Assets.getSprite("AtlasTexture8").getTexture("InstructionsBtnNext0000"));
+			var nextBtnImage:Image = new Image(Statics.assets.getTexture("InstructionsBtnNext0000"));
 			btnNext.defaultSkin = nextBtnImage;
-			btnNext.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("InstructionsBtnNext0000"));
-			btnNext.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("InstructionsBtnNext0000"));
+			btnNext.hoverSkin = new Image(Statics.assets.getTexture("InstructionsBtnNext0000"));
+			btnNext.downSkin = new Image(Statics.assets.getTexture("InstructionsBtnNext0000"));
 			btnNext.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnNext.downSkin.filter = Statics.btnInvertFilter;
 			btnNext.useHandCursor = true;
@@ -333,10 +343,10 @@ package com.jumpGame.ui
 			
 			// finish button
 			proceedBtn = new Button();
-			var proceedBtnImage:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverBtnReturn0000"));
+			var proceedBtnImage:Image = new Image(Statics.assets.getTexture("GameOverBtnReturn0000"));
 			proceedBtn.defaultSkin = proceedBtnImage;
-			proceedBtn.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverBtnReturn0000"));
-			proceedBtn.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("GameOverBtnReturn0000"));
+			proceedBtn.hoverSkin = new Image(Statics.assets.getTexture("GameOverBtnReturn0000"));
+			proceedBtn.downSkin = new Image(Statics.assets.getTexture("GameOverBtnReturn0000"));
 			proceedBtn.hoverSkin.filter = Statics.btnBrightnessFilter;
 			proceedBtn.downSkin.filter = Statics.btnInvertFilter;
 			proceedBtn.useHandCursor = true;
@@ -348,13 +358,32 @@ package com.jumpGame.ui
 			proceedBtn.visible = false;
 			proceedBtn.addEventListener(Event.TRIGGERED, onProceedClick);
 			
+			// play again smart match button
+			this.btnPlayAgainSmartMatch = new Button();
+			var btnPlayAgainSmartMatchImage:Image = new Image(Statics.assets.getTexture("PlayAgainMatch0000"));
+			btnPlayAgainSmartMatch.defaultSkin = btnPlayAgainSmartMatchImage;
+			btnPlayAgainSmartMatch.hoverSkin = new Image(Statics.assets.getTexture("PlayAgainMatch0000"));
+			btnPlayAgainSmartMatch.downSkin = new Image(Statics.assets.getTexture("PlayAgainMatch0000"));
+			btnPlayAgainSmartMatch.hoverSkin.filter = Statics.btnBrightnessFilter;
+			btnPlayAgainSmartMatch.downSkin.filter = Statics.btnInvertFilter;
+			btnPlayAgainSmartMatch.useHandCursor = true;
+			this.addChild(btnPlayAgainSmartMatch);
+			//			proceedBtn.validate();
+			btnPlayAgainSmartMatch.x = Statics.stageWidth - btnPlayAgainSmartMatchImage.width - 55;
+			btnPlayAgainSmartMatch.y = Statics.stageHeight - btnPlayAgainSmartMatchImage.height - 10;
+			btnPlayAgainSmartMatch.addEventListener(Event.TRIGGERED, onPlayAgainSmartMatchClick);
+			
 			// round coins fly out effect
 			roundCoins = new Vector.<MovieClip>();
 			var coin:MovieClip;
 			for (var i:uint = 0; i < 20; i++) {
-				coin = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("CoinLarge"), 40);
+				coin = new MovieClip(Statics.assets.getTextures("CoinLarge"), 40);
 				roundCoins.push(coin);
 			}
+			
+			// high score badge
+			this.badgeHighScore = new BadgeHighScore;
+			this.addChild(this.badgeHighScore);
 		}
 		
 		private function createAchievementPlates():void {
@@ -406,6 +435,7 @@ package com.jumpGame.ui
 			// clean up stuff
 			Starling.juggler.remove(Statics.particleConfetti);
 			this.removeChild(Statics.particleConfetti);
+			Starling.juggler.remove(badgeHighScore);
 			
 			// clean up coin fly out effect
 			for (var i:uint = 0; i < 20; i++) {
@@ -417,21 +447,68 @@ package com.jumpGame.ui
 			Statics.roundScores[Statics.currentRound] = roundScore;
 			this.menu.showMatchDetailsPopup(true);
 			
-			// call JS to send notification
+			// call JS to send a player to player request
 			ExternalInterface.call("sendTurnRequest", Statics.opponentFbid, Statics.gameId);
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "menu"}, true));
+			
+			// show interstitial ad
+//			this.menu.showInterstitialAd();
 			
 			this.visible = false;
 		}
 		
-		// show scores and post to backend
-		public function initialize(baseScore:int, distanceTraveled:int):void
+		// send scores to backend
+		public function sendRoundData(baseScore:int, distanceTraveled:int):void
 		{
-			if (!Sounds.sfxMuted) Sounds.sndFanfare.play();
-			
 			// hide buttons
+			this.btnPlayAgainSmartMatch.visible = false;
 			btnNext.visible = false;
 			proceedBtn.visible = false;
+			
+			// calculate total score
+			this.distanceTraveled = distanceTraveled;
+			roundScore = baseScore + distanceTraveled * 3;
+			var coinsObtained:int = Math.round(roundScore / 5);
+			var coinsObtainedFinal:int = coinsObtained;
+			if (Statics.rankCoinDoubler == 1) {
+				coinsObtainedFinal = coinsObtained * 2;
+			}
+			
+			// send new score to backend
+			var jsonStr:String = JSON.stringify({
+				distance: distanceTraveled,
+				base_score: baseScore,
+				score: roundScore,
+				coins: coinsObtained,
+				game_id: Statics.gameId,
+				round: Statics.currentRound,
+				achievements: this.newAchievementsArray
+			});
+			this.menu.communicator.postUserData(jsonStr);
+			trace("json string: " + jsonStr);
+			
+			// update score display
+			distanceText.text = distanceTraveled.toString();
+			baseScoreText.text = baseScore.toString();
+			scoreText.text = roundScore.toString();
+			if (Statics.rankCoinDoubler == 1) {
+				coinText.text = coinsObtained.toString() + " x 2 = " + coinsObtainedFinal.toString();
+			} else {
+				coinText.text = coinsObtained.toString();
+			}
+			
+			// call JS to send app to player notification
+			if(ExternalInterface.available) {
+				ExternalInterface.call("sendTurnNotification", Statics.opponentFbid);
+			}
+		}
+		
+		// display fanfare animation
+		public function initialize():void
+		{
+			trace("initializing game over screen");
+			
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_FANFARE");
 			
 			// ready confetti particles
 			Starling.juggler.add(Statics.particleConfetti);
@@ -455,42 +532,6 @@ package com.jumpGame.ui
 			// reset achievement plates
 			resetAchievementPlates();
 			achievementSetShown = 0;
-			
-			// calculate total score
-//			if (Statics.rankCoinDoubler == 1) { // check if coin doubler in possession
-//				roundScore = int(coinsObtained / 2) + distanceTraveled;
-//			} else {
-//				roundScore = coinsObtained + distanceTraveled;
-//			}
-			roundScore = baseScore + distanceTraveled * 3;
-			var coinsObtained:int = Math.round(roundScore / 5);
-			var coinsObtainedFinal:int = coinsObtained;
-			if (Statics.rankCoinDoubler == 1) {
-				coinsObtainedFinal = coinsObtained * 2;
-			}
-			
-			// send new score to backend
-			var jsonStr:String = JSON.stringify({
-				distance: distanceTraveled,
-				base_score: baseScore,
-				score: roundScore,
-				coins: coinsObtained,
-				game_id: Statics.gameId,
-				round: Statics.currentRound,
-				achievements: this.newAchievementsArray
-			});
-			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
-			this.communicator.postUserData(jsonStr);
-			
-			// update score display
-			distanceText.text = distanceTraveled.toString();
-			baseScoreText.text = baseScore.toString();
-			scoreText.text = roundScore.toString();
-			if (Statics.rankCoinDoubler == 1) {
-				coinText.text = coinsObtained.toString() + " x 2 = " + coinsObtainedFinal.toString();
-			} else {
-				coinText.text = coinsObtained.toString();
-			}
 			
 			this.visible = true;
 			
@@ -540,20 +581,25 @@ package com.jumpGame.ui
 			});
 			
 			// round coins flyout effect
-//			if (coinsObtained > 0) {
-				var locationX:Number = coinContainer.x + 11;
-				var locationY:Number = coinContainer.y + 11;
-				for (var i:uint = 0; i < 20; i++) {
-					roundCoins[i].visible = false;
-					starling.core.Starling.juggler.add(roundCoins[i]);
-					addChild(roundCoins[i]);
-				}
-				Starling.juggler.delayCall(nextCoinFlyout, 3, roundCoins, 0, locationX, locationY);
-//			}
+			var locationX:Number = coinContainer.x + 11;
+			var locationY:Number = coinContainer.y + 11;
+			for (var i:uint = 0; i < 20; i++) {
+				roundCoins[i].visible = false;
+				starling.core.Starling.juggler.add(roundCoins[i]);
+				addChild(roundCoins[i]);
+			}
+			Starling.juggler.delayCall(nextCoinFlyout, 3, roundCoins, 0, locationX, locationY);
+			
+			// high score badge
+			badgeHighScore.visible = false;
+			if (roundScore > Statics.playerHighScore) {
+				starling.core.Starling.juggler.add(badgeHighScore);
+				badgeHighScore.initialize(this.distanceTraveled, this.roundScore);
+			}
 		}
 		
 		private function fireConfettiLeft():void {
-			if (!Sounds.sfxMuted) Sounds.sndFirework.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_FIREWORK");
 			
 			Statics.particleConfetti.emitterX = starLeftOn.x;
 			Statics.particleConfetti.emitterY = starLeftOn.y;
@@ -562,7 +608,7 @@ package com.jumpGame.ui
 		}
 		
 		private function fireConfettiCenter():void {
-			if (!Sounds.sfxMuted) Sounds.sndFirework.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_FIREWORK");
 			
 			Statics.particleConfetti.emitterX = starCenterOn.x;
 			Statics.particleConfetti.emitterY = starCenterOn.y;
@@ -571,7 +617,7 @@ package com.jumpGame.ui
 		}
 		
 		private function fireConfettiRight():void {
-			if (!Sounds.sfxMuted) Sounds.sndFirework.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_FIREWORK");
 			
 			Statics.particleConfetti.emitterX = starRightOn.x;
 			Statics.particleConfetti.emitterY = starRightOn.y;
@@ -581,7 +627,7 @@ package com.jumpGame.ui
 		
 		// make one coin fly out of the screen and schedule the next coin
 		private function nextCoinFlyout(coinPool:Vector.<MovieClip>, coinIndex:uint, startLocationX, startLocationY):void {
-			if (!Sounds.sfxMuted && coinIndex == 0) Sounds.sndPayout.play();
+			if (!Sounds.sfxMuted && coinIndex == 0) Statics.assets.playSound("SND_PAYOUT");
 			
 			if (coinIndex >= coinPool.length) return;
 			coinPool[coinIndex].x = startLocationX;
@@ -616,7 +662,7 @@ package com.jumpGame.ui
 					x: Statics.stageWidth / 2,
 					delay: 0.2
 				});
-				if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.2); // play slide sfx
+				if (!Sounds.sfxMuted) Starling.juggler.delayCall(Statics.assets.playSound, 0.2, "SND_FAST_SWOOSH");; // play slide sfx
 				Starling.juggler.delayCall(achievementPlateCheck, 0.5, 1);
 				// coins flyout effect
 				var locationX:Number = Statics.stageWidth / 2 - achievementPlate1.pivotX + achievementPlate1.coin.x - achievementPlate1.coin.pivotX;
@@ -632,7 +678,7 @@ package com.jumpGame.ui
 						x: Statics.stageWidth / 2,
 						delay: 0.4
 					});
-					if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.4); // play slide sfx
+					if (!Sounds.sfxMuted) Starling.juggler.delayCall(Statics.assets.playSound, 0.4, "SND_FAST_SWOOSH"); // play slide sfx
 					Starling.juggler.delayCall(achievementPlateCheck, 1, 2);
 					// coins flyout effect
 					var location2X:Number = Statics.stageWidth / 2 - achievementPlate2.pivotX + achievementPlate2.coin.x - achievementPlate2.coin.pivotX;
@@ -648,7 +694,7 @@ package com.jumpGame.ui
 							x: Statics.stageWidth / 2,
 							delay: 0.6
 						});
-						if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.6); // play slide sfx
+						if (!Sounds.sfxMuted) Starling.juggler.delayCall(Statics.assets.playSound, 0.6, "SND_FAST_SWOOSH"); // play slide sfx
 						Starling.juggler.delayCall(achievementPlateCheck, 1.5, 3);
 						// coins flyout effect
 						var location3X:Number = Statics.stageWidth / 2 - achievementPlate3.pivotX + achievementPlate3.coin.x - achievementPlate3.coin.pivotX;
@@ -665,14 +711,14 @@ package com.jumpGame.ui
 		 */
 		private function achievementPlatesFlyout():void {
 			if (achievementPlate1.visible) {
-				if (!Sounds.sfxMuted) Sounds.sndFastSwoosh.play(); // play slide sfx
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_FAST_SWOOSH"); // play slide sfx
 				Starling.juggler.tween(achievementPlate1, 0.2, {
 					transition: Transitions.EASE_IN,
 					x: -Math.ceil(achievementPlate1.width / 2) - 10
 				});
 				
 				if (achievementPlate2.visible) {
-					if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.2); // play slide sfx
+					if (!Sounds.sfxMuted) Starling.juggler.delayCall(Statics.assets.playSound, 0.2, "SND_FAST_SWOOSH"); // play slide sfx
 					Starling.juggler.tween(achievementPlate2, 0.2, {
 						transition: Transitions.EASE_IN,
 						x: -Math.ceil(achievementPlate2.width / 2) - 10,
@@ -680,7 +726,7 @@ package com.jumpGame.ui
 					});
 					
 					if (achievementPlate3.visible) {
-						if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.4); // play slide sfx
+						if (!Sounds.sfxMuted) Starling.juggler.delayCall(Statics.assets.playSound, 0.4, "SND_FAST_SWOOSH"); // play slide sfx
 						Starling.juggler.tween(achievementPlate3, 0.2, {
 							transition: Transitions.EASE_IN,
 							x: -Math.ceil(achievementPlate3.width / 2) - 10,
@@ -741,7 +787,7 @@ package com.jumpGame.ui
 				var data:Array = Constants.AchievementsData[Constants.AchievementsProgression[nextUnearnedProgressIndex]];
 				this.achievementPlate1.initialize(data[1], data[2], data[3], data[4]);
 				achievementPlate1.visible = true;
-				if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.2); // play slide sfx
+				if (!Sounds.sfxMuted) Starling.juggler.delayCall(Statics.assets.playSound, 0.2, "SND_FAST_SWOOSH"); // play slide sfx
 				Starling.juggler.tween(achievementPlate1, 0.2, {
 					transition: Transitions.EASE_OUT,
 					x: Statics.stageWidth / 2,
@@ -754,7 +800,7 @@ package com.jumpGame.ui
 				data = Constants.AchievementsData[Constants.AchievementsProgression[nextUnearnedProgressIndex]];
 				this.achievementPlate2.initialize(data[1], data[2], data[3], data[4]);
 				achievementPlate2.visible = true;
-				if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.4); // play slide sfx
+				if (!Sounds.sfxMuted) Starling.juggler.delayCall(Statics.assets.playSound, 0.4, "SND_FAST_SWOOSH"); // play slide sfx
 				Starling.juggler.tween(achievementPlate2, 0.2, {
 					transition: Transitions.EASE_OUT,
 					x: Statics.stageWidth / 2,
@@ -767,7 +813,7 @@ package com.jumpGame.ui
 				data = Constants.AchievementsData[Constants.AchievementsProgression[nextUnearnedProgressIndex]];
 				this.achievementPlate3.initialize(data[1], data[2], data[3], data[4]);
 				achievementPlate3.visible = true;
-				if (!Sounds.sfxMuted) Starling.juggler.delayCall(Sounds.sndFastSwoosh.play, 0.6); // play slide sfx
+				if (!Sounds.sfxMuted) Starling.juggler.delayCall(Statics.assets.playSound, 0.6, "SND_FAST_SWOOSH"); // play slide sfx
 				Starling.juggler.tween(achievementPlate3, 0.2, {
 					transition: Transitions.EASE_OUT,
 					x: Statics.stageWidth / 2,
@@ -795,6 +841,10 @@ package com.jumpGame.ui
 		
 		private function dataReceived(event:NavigationEvent):void {
 //			trace(event.params.data);
+//			this.menu.dataReceived(event); // pass return data to main response receiver for processing
+			if (this.menu.lives >= 1) {
+				this.btnPlayAgainSmartMatch.visible = true;
+			}
 			btnNext.visible = true;
 		}
 		
@@ -803,6 +853,28 @@ package com.jumpGame.ui
 		 */
 		public function addNewAchievement(achievementId:uint):void {
 			this.newAchievementsArray.push(achievementId);
+		}
+		
+		private function onPlayAgainSmartMatchClick():void {
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
+			
+			trace("num matches: " + this.menu.screenMatches.listYourTurn.dataProvider.length);
+			var numPlayableMatches:int = this.menu.screenMatches.listYourTurn.dataProvider.length;
+			
+			if (numPlayableMatches > 0) {
+				trace("playing existing match");
+				this.menu.screenMatches.listYourTurn.selectedIndex = 0;
+				this.menu.communicator.sendRoundBegin();
+			} else {
+				trace("creating new match");
+				Statics.gameId = 0;
+				this.menu.communicator.findSmartMatch(true); // do not sendRoundBegin separately
+			}
+			this.inGame.initializeNormalMode();
+			
+			if (Statics.isAnalyticsEnabled) { // mixpanel
+				Statics.mixpanel.track('clicked on Play Again Smart Match button');
+			}
 		}
 	}
 }

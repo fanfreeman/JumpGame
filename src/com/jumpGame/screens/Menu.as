@@ -17,12 +17,14 @@ package com.jumpGame.screens
 	import com.jumpGame.ui.popups.ScreenGetCoins;
 	import com.jumpGame.ui.popups.ScreenGetGems;
 	import com.jumpGame.ui.popups.ScreenProfile;
-	import com.jumpGame.ui.popups.ScreenRankings;
 	import com.jumpGame.ui.screens.ScreenMatches;
 	import com.jumpGame.ui.screens.ScreenTownSquare;
 	import com.jumpGame.ui.screens.ScreenUpgrades;
 	
+	import flash.display.Loader;
+	import flash.events.Event;
 	import flash.external.ExternalInterface;
+	import flash.net.URLRequest;
 	import flash.utils.getTimer;
 	
 	import feathers.controls.Button;
@@ -44,7 +46,7 @@ package com.jumpGame.screens
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
 	
-	public class Menu  extends ScreenNavigator
+	public class Menu extends ScreenNavigator
 	{
 		protected var theme:MetalWorksMobileTheme;
 		private var coinLabel:TextField;
@@ -61,12 +63,12 @@ package com.jumpGame.screens
 		private var transitionManager:TabBarSlideTransitionManager;
 		
 		// screens
-		private var screenMatches:ScreenMatches;
+		public var screenMatches:ScreenMatches;
 		private var screenUpgrades:ScreenUpgrades;
 		private var screenTownSquare:ScreenTownSquare;
 		
 		private var screenAchievements:ScreenAchievements;
-		private var screenRankings:ScreenRankings;
+//		private var screenRankings:ScreenRankings;
 		private var screenProfile:ScreenProfile;
 		private var screenCharacters:ScreenCharacters;
 		private var screenGetCoins:ScreenGetCoins;
@@ -87,7 +89,7 @@ package com.jumpGame.screens
 		// countdown
 		private var timeTillLifeCountdown:int = -1;
 		private var timeUpdated:int;
-		private var lives:int;
+		public var lives:int;
 		
 		// life giving
 		private var lifeRequests:String; // incoming requests for life
@@ -132,14 +134,16 @@ package com.jumpGame.screens
 //			ExternalInterface.addCallback("returnFbId", returnFbId);
 			
 			this.communicator = new Communicator();
+			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, this.dataReceived);
 		}
 		
 		/**
 		 * Receive data from backend
 		 */
 		public function dataReceived(event:NavigationEvent):void {
-			dismissLoadingNotice();
+			trace("data received!");
 			
+			dismissLoadingNotice();
 			var data:String = event.params.data;
 			
 			if (event.params.data != null) {
@@ -156,7 +160,7 @@ package com.jumpGame.screens
 						Statics.playerCoins = int(dataObj.coins);
 						Statics.playerGems = int(dataObj.gems);
 						Statics.roundsPlayed = int(dataObj.rounds_played);
-						Statics.topFriendsIds = dataObj.top_friends;
+//						Statics.topFriendsIds = dataObj.top_friends;
 						if (Statics.tutorialStep != 4) Statics.tutorialStep = int(dataObj.tutorial_step); // 4 means tutorials completed, so don't show tutorials again
 						coinLabel.text = dataObj.coins;
 						gemLabel.text = dataObj.gems;
@@ -174,7 +178,7 @@ package com.jumpGame.screens
 								"first name": dataObj.first_name,
 								"last name": dataObj.last_name
 							});
-							Statics.mixpanel.track('game initialized', { "isHardwareRendering": Statics.isHardwareRendering.toString() });
+							Statics.mixpanel.track('player data received', { "isHardwareRendering": Statics.isHardwareRendering.toString() });
 						}
 						
 						// get player profile picture
@@ -239,11 +243,11 @@ package com.jumpGame.screens
 							
 							// check if game has been resigned
 							if (String(dataObj.matches[i].resigned_by) == Statics.userId) { // current player resigned this game
-								matchesFinishedCollection.addItem({ title: "You resigned match against " + opponentName, caption: dataObj.matches[i].time_text});
+								matchesFinishedCollection.addItem({ title: "You resigned match vs " + opponentName, caption: dataObj.matches[i].time_text});
 								this.screenMatches.gamesFinished.push(dataObj.matches[i]);
 							}
 							else if (String(dataObj.matches[i].resigned_by) != "0") { // the opponent resigned this game
-								matchesFinishedCollection.addItem({ title: opponentName + " resigned match against you", caption: dataObj.matches[i].time_text});
+								matchesFinishedCollection.addItem({ title: opponentName + " resigned match vs you", caption: dataObj.matches[i].time_text});
 								this.screenMatches.gamesFinished.push(dataObj.matches[i]);
 							}
 							else { // no one resigned this game
@@ -253,11 +257,11 @@ package com.jumpGame.screens
 								} else { // match not yet ended
 									if (Boolean(int(dataObj.matches[i].is_player_2))) { // is player 2
 										if (roundNumber == 1) { // my first turn, allow resigning from match
-											matchesYourTurnCollection.addItem({ title: opponentName + " challenges you to a match!", caption: dataObj.matches[i].time_text});
+											matchesYourTurnCollection.addItem({ title: opponentName + " challenges you to a match!", caption: dataObj.matches[i].time_text, isnew: true });
 											this.screenMatches.gamesMyTurn.push(dataObj.matches[i]);
 										} else { // turn 3 or turn 5
 											if (roundNumber % 2 == 1) {
-												matchesYourTurnCollection.addItem({ title: "Your turn against " + opponentName, caption: dataObj.matches[i].time_text});
+												matchesYourTurnCollection.addItem({ title: "Your turn vs " + opponentName, caption: dataObj.matches[i].time_text, isnew: true });
 												this.screenMatches.gamesMyTurn.push(dataObj.matches[i]);
 											}
 											else {
@@ -267,7 +271,7 @@ package com.jumpGame.screens
 										}
 									} else { // is player 1
 										if (roundNumber % 2 == 0) {
-											matchesYourTurnCollection.addItem({ title: "Your turn against " + opponentName, caption: dataObj.matches[i].time_text });
+											matchesYourTurnCollection.addItem({ title: "Your turn vs " + opponentName, caption: dataObj.matches[i].time_text, isnew: true });
 											this.screenMatches.gamesMyTurn.push(dataObj.matches[i]);
 										}
 										else {
@@ -332,110 +336,50 @@ package com.jumpGame.screens
 							}
 							this.showTutorialStartGame();
 						}
-						else if (Statics.tutorialStep == 3) { // tutorial second three: friends rankings
-							if (this.tutorialPointer == null) {
-								this.tutorialPointer = new TutorialPointer();
-								this.addChild(this.tutorialPointer);
-							}
-							if (!rankingsDisplayedOnStart) this.showRankingsTutorial();
+//						else if (Statics.roundsPlayed == 3) {
+//							if (this.dialogLarge == null) {
+//								this.dialogLarge = new DialogLarge();
+//								this.addChild(this.dialogLarge);
+//							}
+//							this.dialogLarge.show("Now it's time to challenge a friend. Click on the 'Start Game' button, and then select 'Challenge Friend'");
+//						}
+						else if (Statics.roundsPlayed == 3) {
+							this.showLargeDialog("Support a fledgling indie developer! Like our app page by clicking the Like button above. We will never post spam.");
 						}
-						else { // tutorials are done, just show friends rankings
-							if (!rankingsDisplayedOnStart) this.showRankingsTutorial();
-						}
+//						else if (Statics.tutorialStep == 3) { // tutorial second three: friends rankings
+//							if (this.tutorialPointer == null) {
+//								this.tutorialPointer = new TutorialPointer();
+//								this.addChild(this.tutorialPointer);
+//							}
+//							if (!rankingsDisplayedOnStart) this.showRankingsTutorial();
+//						}
+//						else { // tutorials are done, just show friends rankings
+//							if (!rankingsDisplayedOnStart) this.showRankingsTutorial();
+//						}
+						this.updateFriendsRankingsList(dataObj); // update friends rankings list
 					}
 					else if (dataObj.status == "new_match") { // new game created
 						// display match data popup
+						trace("new match created");
+						
 //						Statics.opponentName = dataObj.opponent_first_name + " " + dataObj.opponent_last_name.toString().substr(0, 1) + ".";
 						Statics.opponentName = dataObj.opponent_first_name + "\n" + dataObj.opponent_last_name;
+						Statics.opponentNameOneLine = dataObj.opponent_first_name + " " + dataObj.opponent_last_name;
 						Statics.roundScores = [0, 0, 0, 0, 0, 0];
 						Statics.isPlayer2 = false;
 						Statics.gameId = dataObj.game_id;
 						Statics.opponentFbid = dataObj.opponent_fbid;
 						Statics.resignedBy = '0';
+						Statics.isSupersonic = dataObj.is_supersonic;
 						this.showMatchDetailsPopup(false);
 						
 						if (Statics.tutorialStep == 2) { // tutorial second step: create new match
 							this.showTutorialPlay();
 						}
 					}
-					else if (dataObj.status == "rankings") {
-						rankingsCollection = new ListCollection();
-//						this.screenRankings.rankingsArray.length = 0;
-						var numRankings:int = dataObj.rankings.length;
-						var playerItemAdded:Boolean = false;
-						for (i = 0; i < numRankings; i++) { // loop through rankings retrieved
-							// read score
-							var otherPlayerScore:uint = uint(dataObj.rankings[i].high_score);
-							if (!playerItemAdded && Statics.playerHighScore >= otherPlayerScore) { // should insert player item at this location
-								var pictureUrl:String = "none";
-								loadedUrl = this.pictureLoader.getProfilePictureUrl(Statics.facebookId);
-								if (loadedUrl != null) pictureUrl = loadedUrl;
-								rankingsCollection.addItem({
-									title: Statics.firstName + " " + Statics.lastName, 
-									caption: Statics.playerHighScore,
-									facebook_id: Statics.facebookId,
-									picture_url: pictureUrl,
-									picture_width: this.pictureLoader.getProfilePictureWidth(Statics.facebookId)
-								});
-								playerItemAdded = true;
-							}
-							
-							// add other player to rankings list
-							if (dataObj.rankings[i].picture != null) { // picture data available
-								rankingsCollection.addItem({
-									title: dataObj.rankings[i].firstname + " " + dataObj.rankings[i].lastname, 
-									caption: dataObj.rankings[i].high_score,
-									facebook_id: dataObj.rankings[i].facebookId,
-									picture_url: dataObj.rankings[i].picture.url,
-									picture_width: uint(dataObj.rankings[i].picture.width)
-								});
-							} else { // picture data not available yet
-								pictureUrl = "none";
-								var pictureWidth:uint = 0;
-								// check pictureLoader to see if picture data for this user has already been loaded
-								var loadedUrl:String = this.pictureLoader.getProfilePictureUrl(dataObj.rankings[i].facebookId);
-								if (loadedUrl != null) {
-									pictureUrl = loadedUrl;
-									pictureWidth = this.pictureLoader.getProfilePictureWidth(dataObj.rankings[i].facebookId);
-								}
-								rankingsCollection.addItem({
-									title: dataObj.rankings[i].firstname + " " + dataObj.rankings[i].lastname, 
-									caption: dataObj.rankings[i].high_score,
-									facebook_id: dataObj.rankings[i].facebookId,
-									picture_url: pictureUrl,
-									picture_width: pictureWidth
-								});
-							}
-//							this.screenRankings.rankingsArray.push(dataObj.rankings[i]);
-						}
-						
-						// if player score is not higher than anyone else's, or if there are no friends, add player item here
-						if (!playerItemAdded) {
-							pictureUrl = "none";
-							loadedUrl = this.pictureLoader.getProfilePictureUrl(Statics.facebookId);
-							if (loadedUrl != null) {
-								pictureUrl = loadedUrl;
-							}
-							rankingsCollection.addItem({
-								title: Statics.firstName + " " + Statics.lastName, 
-								caption: Statics.playerHighScore,
-								facebook_id: Statics.facebookId,
-								picture_url: pictureUrl,
-								picture_width: this.pictureLoader.getProfilePictureWidth(Statics.facebookId)
-							});
-							playerItemAdded = true;
-						}
-						
-						this.screenRankings.listRankings.dataProvider = rankingsCollection;
-						
-//						if (Statics.tutorialStep == 3) { // tutorial step three: invite friends button
-//							if (this.tutorialPointer == null) {
-//								this.tutorialPointer = new TutorialPointer();
-//								this.addChild(this.tutorialPointer);
-//							}
-//							this.showTutorialRankingsInvite();
-//						}
-					}
+//					else if (dataObj.status == "rankings") {
+//						this.updateFriendsRankingsList(dataObj);
+//					}
 					else if (dataObj.status == "purchased_upgrade") { // successfully purchased upgrade
 						Statics.playerCoins = int(dataObj.coins);
 						coinLabel.text = dataObj.coins;
@@ -519,6 +463,75 @@ package com.jumpGame.screens
 			}
 		} // eof dataReceived()
 		
+		private function updateFriendsRankingsList(dataObj:Object):void {
+			rankingsCollection = new ListCollection();
+			var numRankings:int = dataObj.rankings.length;
+			var playerItemAdded:Boolean = false;
+			for (var i:uint = 0; i < numRankings; i++) { // loop through rankings retrieved
+				// read score
+				var otherPlayerScore:uint = uint(dataObj.rankings[i].high_score);
+				if (!playerItemAdded && Statics.playerHighScore >= otherPlayerScore) { // should insert player item at this location
+					var pictureUrl:String = "none";
+					loadedUrl = this.pictureLoader.getProfilePictureUrl(Statics.facebookId);
+					if (loadedUrl != null) pictureUrl = loadedUrl;
+					rankingsCollection.addItem({
+						title: Statics.firstName + " " + Statics.lastName, 
+						caption: Statics.playerHighScore,
+						facebook_id: Statics.facebookId,
+						picture_url: pictureUrl,
+						picture_width: this.pictureLoader.getProfilePictureWidth(Statics.facebookId)
+					});
+					playerItemAdded = true;
+				}
+				
+				// add other player to rankings list
+				if (dataObj.rankings[i].picture != null) { // picture data available
+					rankingsCollection.addItem({
+						title: dataObj.rankings[i].firstname + " " + dataObj.rankings[i].lastname, 
+						caption: dataObj.rankings[i].high_score,
+						facebook_id: dataObj.rankings[i].facebookId,
+						picture_url: dataObj.rankings[i].picture.url,
+						picture_width: uint(dataObj.rankings[i].picture.width)
+					});
+				} else { // picture data not available yet
+					pictureUrl = "none";
+					var pictureWidth:uint = 0;
+					// check pictureLoader to see if picture data for this user has already been loaded
+					var loadedUrl:String = this.pictureLoader.getProfilePictureUrl(dataObj.rankings[i].facebookId);
+					if (loadedUrl != null) {
+						pictureUrl = loadedUrl;
+						pictureWidth = this.pictureLoader.getProfilePictureWidth(dataObj.rankings[i].facebookId);
+					}
+					rankingsCollection.addItem({
+						title: dataObj.rankings[i].firstname + " " + dataObj.rankings[i].lastname, 
+						caption: dataObj.rankings[i].high_score,
+						facebook_id: dataObj.rankings[i].facebookId,
+						picture_url: pictureUrl,
+						picture_width: pictureWidth
+					});
+				}
+			}
+			
+			// if player score is not higher than anyone else's, or if there are no friends, add player item here
+			if (!playerItemAdded) {
+				pictureUrl = "none";
+				loadedUrl = this.pictureLoader.getProfilePictureUrl(Statics.facebookId);
+				if (loadedUrl != null) {
+					pictureUrl = loadedUrl;
+				}
+				rankingsCollection.addItem({
+					title: Statics.firstName + " " + Statics.lastName, 
+					caption: Statics.playerHighScore,
+					facebook_id: Statics.facebookId,
+					picture_url: pictureUrl,
+					picture_width: this.pictureLoader.getProfilePictureWidth(Statics.facebookId)
+				});
+				playerItemAdded = true;
+			}
+			
+			this.screenMatches.listRankings.dataProvider = rankingsCollection;
+		}
+		
 		private function getCurrentRoundFromScores(scores:Array):uint {
 			var i:uint = 0;
 			while (i < 6 && scores[i] != 0) {
@@ -536,7 +549,7 @@ package com.jumpGame.screens
 		
 		private function addedToStageHandler(event:starling.events.Event):void
 		{
-			this.removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			this.removeEventListener(starling.events.Event.ADDED_TO_STAGE, addedToStageHandler);
 			
 			DeviceCapabilities.dpi = 326; //simulate iPhone Retina resolution
 			//			this.theme = new MetalWorksMobileTheme(this.stage);
@@ -739,9 +752,9 @@ package com.jumpGame.screens
 			this.addChild(screenAchievements);
 			
 			// rankings screen
-			screenRankings = new ScreenRankings(this);
-			screenRankings.visible = false;
-			this.addChild(screenRankings);
+//			screenRankings = new ScreenRankings(this);
+//			screenRankings.visible = false;
+//			this.addChild(screenRankings);
 			
 			// profile screen
 			screenProfile = new ScreenProfile(this);
@@ -774,11 +787,11 @@ package com.jumpGame.screens
 			this.addChild(popupInstructions);
 			
 			// dialog boxes
-			dialogBox1 = new DialogBox(this);
+			dialogBox1 = new DialogBox();
 			dialogBox1.visible = false;
 			this.addChild(dialogBox1);
 			
-			dialogBox2 = new DialogBox(this);
+			dialogBox2 = new DialogBox();
 			dialogBox2.visible = false;
 			this.addChild(dialogBox2);
 			
@@ -814,6 +827,11 @@ package com.jumpGame.screens
 				this.addChild(star);
 			}
 			
+			// large dialog box
+			this.dialogLarge = new DialogLarge();
+			this.dialogLarge.visible = false;
+			this.addChild(this.dialogLarge);
+			
 			// create picture loader object
 			pictureLoader = new PictureLoader();
 			pictureLoader.addEventListener("pictureDataLoaded", onPictureLoaded);
@@ -823,7 +841,7 @@ package com.jumpGame.screens
 		 * Picture loader dispatched event notifying us that a new profile picture has been loaded.
 		 * Check if this picture should be placed in rankings list
 		 */
-		private function onPictureLoaded(event:Event, facebookId:String):void
+		private function onPictureLoaded(event:starling.events.Event, facebookId:String):void
 		{
 //			trace("picture loaded event received: " + facebookId);
 			
@@ -850,7 +868,9 @@ package com.jumpGame.screens
 						rankingsCollectionUpdated = true;
 					}
 				}
-				if (rankingsCollectionUpdated) this.screenRankings.listRankings.dataProvider = rankingsCollection; // update list component
+				if (rankingsCollectionUpdated) {
+					this.screenMatches.listRankings.dataProvider = rankingsCollection; // update list component
+				}
 			}
 		}
 		
@@ -879,7 +899,7 @@ package com.jumpGame.screens
 			
 			// hide custom screens
 			screenAchievements.visible = false;
-			screenRankings.visible = false;
+//			screenRankings.visible = false;
 			screenProfile.visible = false;
 			screenCharacters.visible = false;
 			screenGetCoins.visible = false;
@@ -900,7 +920,7 @@ package com.jumpGame.screens
 			if (!firstClickSoundHidden) {
 				firstClickSoundHidden = true;
 			} else {
-				if (!Sounds.sfxMuted) Sounds.sndSlide.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_SLIDE");
 			}
 			
 			// display the selected screen
@@ -909,7 +929,8 @@ package com.jumpGame.screens
 			// when displaying the matches screen, refresh matches
 			if (this.tabs.selectedItem.action == Constants.ScreenMatches) {
 				this.screenMatches.visible = true;
-				this.refreshMatches();
+//				this.refreshMatches();
+//				setChildIndex(screenMatches, this.getChildIndex(this.loadingNotice) - 1);
 				
 				if (Statics.isAnalyticsEnabled) {
 					Statics.mixpanel.track('switched to Matches screen');
@@ -1007,9 +1028,19 @@ package com.jumpGame.screens
 			// play menu bgm
 			Sounds.stopBgm();
 			Sounds.playBgmMenu(); // play bgm regardless of whether bgm is muted
+			
+			if (Statics.adsShowCount == 0) { // do not show ads on game start
+				Statics.adsShowCount = 1;
+				this.refreshMatches();
+			} else {
+				// show interstitial ad
+				this.showInterstitialAd();
+			}
 		}
 		
 		private function updateSnow():void {
+//			trace("native children: " + Starling.current.nativeOverlay.numChildren);
+			
 			// update wind dx
 			if (Math.random() < 0.6) {
 				if (starDx < 0) starDx += 0.02;
@@ -1027,19 +1058,19 @@ package com.jumpGame.screens
 		
 		private function refreshMatches():void {
 			displayLoadingNotice("Refreshing matches...");
-			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
+//			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
 			this.communicator.retrieveUserData();
 		}
 		
 		public function refreshRankingsGlobal():void {
 			displayLoadingNotice("Refreshing rankings...");
-			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
+//			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
 			this.communicator.retrieveRankingsGlobal();
 		}
 		
 		public function refreshRankingsFriends():void {
 			displayLoadingNotice("Refreshing rankings...");
-			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
+//			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
 			this.communicator.retrieveRankingsFriends();
 		}
 		
@@ -1061,14 +1092,14 @@ package com.jumpGame.screens
 		}
 		
 		public function showMatchDetailsPopup(isDone:Boolean):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			matchDataPopup.initialize(isDone);
 			setChildIndex(matchDataPopup, numChildren - 1);
 		}
 		
 		public function showAchievementsScreen(event:starling.events.Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			setChildIndex(screenAchievements, numChildren - 1);
 			screenAchievements.initialize();
@@ -1078,39 +1109,40 @@ package com.jumpGame.screens
 			}
 		}
 		
-		public function showRankingsScreen(event:starling.events.Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
-			
-			this.screenRankings.showRankingsPrevious();
-			setChildIndex(this.loadingNotice, this.numChildren - 1); // TODO: remove when global ranking is implemented
-			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
-			screenRankings.initialize();
-			
-			if (Statics.isAnalyticsEnabled) {
-				Statics.mixpanel.track('displayed Rankings screen');
-			}
-		}
+//		public function showRankingsScreen(event:starling.events.Event):void {
+//			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
+//			
+//			this.screenRankings.showRankingsPrevious();
+//			setChildIndex(this.loadingNotice, this.numChildren - 1); // TODO: remove when global ranking is implemented
+//			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
+//			screenRankings.initialize();
+//			
+//			if (Statics.isAnalyticsEnabled) {
+//				Statics.mixpanel.track('displayed Rankings screen');
+//			}
+//		}
 		
 		/**
 		 * Simply open the rankings screen to friends rankings
 		 */
-		public function showRankingsTutorial():void {
-			rankingsDisplayedOnStart = true;
-			
-			this.screenRankings.showRankingsFriends();
-			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
-			screenRankings.initialize();
-			
-			if (Statics.isAnalyticsEnabled) {
-				Statics.mixpanel.track('displayed tutorial friends Rankings screen');
-			}
-		}
+//		public function showRankingsTutorial():void {
+//			rankingsDisplayedOnStart = true;
+//			
+////			this.screenRankings.showRankingsFriends();
+//			this.screenRankings.showRankingsGlobal();
+//			setChildIndex(screenRankings, this.getChildIndex(this.loadingNotice) - 1);
+//			screenRankings.initialize();
+//			
+//			if (Statics.isAnalyticsEnabled) {
+//				Statics.mixpanel.track('displayed global Rankings screen');
+//			}
+//		}
 		
 		/**
 		 * Show player's own profile
 		 */
 		public function showProfileScreen(event:starling.events.Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			setChildIndex(screenProfile, numChildren - 1);
 			var playerData:Object = new Object();
@@ -1129,7 +1161,7 @@ package com.jumpGame.screens
 		 * Show other player profile
 		 */
 		public function showProfileScreenGivenData(dataIndexInCollection:int):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			setChildIndex(screenProfile, numChildren - 1);
 			var playerData:Object = this.rankingsCollection.getItemAt(dataIndexInCollection);
@@ -1141,7 +1173,7 @@ package com.jumpGame.screens
 		}
 		
 		public function showCharactersScreen(event:starling.events.Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			setChildIndex(screenCharacters, numChildren - 1);
 			screenCharacters.initialize();
@@ -1152,7 +1184,7 @@ package com.jumpGame.screens
 		}
 		
 		public function showGetCoinsScreen(event:starling.events.Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			setChildIndex(screenGetCoins, numChildren - 1);
 			screenGetCoins.initialize();
@@ -1163,7 +1195,7 @@ package com.jumpGame.screens
 		}
 		
 		public function showGetGemsScreen(event:starling.events.Event = null):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			setChildIndex(screenGetGems, numChildren - 1);
 			screenGetGems.initialize();
@@ -1174,7 +1206,7 @@ package com.jumpGame.screens
 		}
 		
 		private function btnAddLivesHandler(event:starling.events.Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.showGetLivesPopup();
 		}
@@ -1187,6 +1219,11 @@ package com.jumpGame.screens
 				if (isOut) Statics.mixpanel.track('out of lives, showing get lives popup');
 				else Statics.mixpanel.track('clicked on add lives button');
 			}
+			
+			// show interstitial ad on out of lives
+//			if (isOut) {
+//				this.showInterstitialAd(true);
+//			}
 		}
 		
 		public function showInstructionsPopup(isOut:Boolean = false):void {
@@ -1257,9 +1294,9 @@ package com.jumpGame.screens
 			
 			this.communicator.sendRoundBegin();
 			
-			if (Statics.isAnalyticsEnabled) {
-				Statics.mixpanel.people_increment("games played");
-			}
+//			if (Statics.isAnalyticsEnabled) {
+//				Statics.mixpanel.people_increment("games played");
+//			}
 			
 			return true;
 		}
@@ -1293,7 +1330,7 @@ package com.jumpGame.screens
 				item: 'lives'
 			});
 			this.displayLoadingNotice("Cooking up some lives...");
-			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
+//			this.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, dataReceived);
 			this.communicator.postPurchaseLives(jsonStr);
 			
 			if (Statics.isAnalyticsEnabled) { // mixpanel
@@ -1355,7 +1392,7 @@ package com.jumpGame.screens
 		}
 		
 		public function buttonClosePopupHandler(event:starling.events.Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.tabs.selectedIndex = -1;
 			this.screenMatches.visible = false;
@@ -1367,7 +1404,7 @@ package com.jumpGame.screens
 		}
 		
 		public function btnInviteFriendsHandler():void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if(ExternalInterface.available){
 				ExternalInterface.addCallback("returnInviteCount", invitesReturnedFromJs);
@@ -1382,7 +1419,8 @@ package com.jumpGame.screens
 		public function btnInviteFriendsPreselectedHandler():void {
 			if(ExternalInterface.available){
 				ExternalInterface.addCallback("returnInviteCount", invitesReturnedFromJs);
-				ExternalInterface.call("invitePreSelectedFriends", Statics.topFriendsIds);
+//				ExternalInterface.call("invitePreSelectedFriends", Statics.topFriendsIds);
+				ExternalInterface.call("inviteFriends");
 			}
 			
 			if (Statics.isAnalyticsEnabled) { // mixpanel
@@ -1466,6 +1504,34 @@ package com.jumpGame.screens
 				this.x = 0;
 				this.y = 0;
 			}
+		}
+		
+		// display an interstitial ad
+		private var adLoader:Loader;
+		public function showInterstitialAd():void {
+			var embedId:String;
+//			if (isOutOfLives) embedId = "a438ddad-e9ee-47ad-a955-397b13972895";
+//			else {
+				if (Statics.adsShowCount == 1) {
+					embedId = "a06da227-c848-4798-b1ec-bc6734af38cb";
+					adLoader = new Loader();
+					adLoader.contentLoaderInfo.addEventListener(flash.events.Event.INIT, function(e:flash.events.Event):void {
+						adLoader.x = Statics.stageWidth / 2 - adLoader.contentLoaderInfo.width / 2 + 40;
+						adLoader.y = Statics.stageHeight / 2 - adLoader.contentLoaderInfo.height / 2 + 45;
+						if (Starling.current.nativeOverlay.numChildren == 0) Starling.current.nativeOverlay.addChild(adLoader);
+						else adLoader.visible = true;
+					});
+				}
+				else embedId = "a5a4e92e-d6b8-4b4f-8a12-ecf728199f68";
+//			}
+			
+			adLoader.load(new URLRequest("http://admin.appnext.com/AppNextFlash.swf?id=" + embedId));
+			Statics.adsShowCount++;
+		}
+		
+		public function showLargeDialog(message:String):void {
+			setChildIndex(this.dialogLarge, numChildren - 1);
+			this.dialogLarge.show(message);
 		}
 	}
 }

@@ -73,12 +73,12 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// confetti
-			particleConfetti = new PDParticleSystem(XML(new ParticleAssets.ParticleConfettiXML()), Assets.getSprite("AtlasTexture2").getTexture("ParticleConfetti0000"));
+			particleConfetti = new PDParticleSystem(XML(new ParticleAssets.ParticleConfettiXML()), Statics.assets.getTexture("ParticleConfetti0000"));
 			particleConfetti.touchable = false;
 			this.addChild(particleConfetti);
 			
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupMatchDetails0000"));
+			var popup:Image = new Image(Statics.assets.getTexture("PopupMatchDetails0000"));
 			popupContainer.addChild(popup);
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
@@ -88,9 +88,9 @@ package com.jumpGame.ui.popups
 			
 			// popup close button
 			var buttonClose:Button = new Button();
-			buttonClose.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.defaultSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.hoverSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.downSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
 			buttonClose.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonClose.downSkin.filter = Statics.btnInvertFilter;
 			buttonClose.useHandCursor = true;
@@ -120,7 +120,7 @@ package com.jumpGame.ui.popups
 			contentContainer.addChild(player2Name);
 			
 			// player profile pictures
-			player1Picture = new Image(Assets.getSprite("AtlasTexture8").getTexture("PictureSilhouette0000"));
+			player1Picture = new Image(Statics.assets.getTexture("PictureSilhouette0000"));
 			player1Picture.x = 231;
 			player1Picture.y = 139;
 			var pictureScaleFactor:Number = 70 / player1Picture.width;
@@ -128,19 +128,19 @@ package com.jumpGame.ui.popups
 			this.player1Picture.scaleY = pictureScaleFactor;
 			contentContainer.addChild(player1Picture);
 			
-			var pictureFrame1:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PictureFrame0000"));
+			var pictureFrame1:Image = new Image(Statics.assets.getTexture("PictureFrame0000"));
 			pictureFrame1.x = 219;
 			pictureFrame1.y = 129;
 			contentContainer.addChild(pictureFrame1);
 			
-			player2Picture = new Image(Assets.getSprite("AtlasTexture8").getTexture("PictureSilhouette0000"));
+			player2Picture = new Image(Statics.assets.getTexture("PictureSilhouette0000"));
 			player2Picture.x = 444;
 			player2Picture.y = 139;
 			this.player2Picture.scaleX = pictureScaleFactor;
 			this.player2Picture.scaleY = pictureScaleFactor;
 			contentContainer.addChild(player2Picture);
 			
-			var pictureFrame2:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PictureFrame0000"));
+			var pictureFrame2:Image = new Image(Statics.assets.getTexture("PictureFrame0000"));
 			pictureFrame2.x = 432;
 			pictureFrame2.y = 129;
 			contentContainer.addChild(pictureFrame2);
@@ -231,9 +231,9 @@ package com.jumpGame.ui.popups
 			
 			// play button
 			btnPlay = new Button();
-			btnPlay.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMatchDetailsCta0000"));
-			btnPlay.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMatchDetailsCta0000"));
-			btnPlay.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMatchDetailsCta0000"));
+			btnPlay.defaultSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
+			btnPlay.hoverSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
+			btnPlay.downSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
 			btnPlay.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnPlay.downSkin.filter = Statics.btnInvertFilter;
 			var ctaTextFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("Materhorn25"));
@@ -249,9 +249,9 @@ package com.jumpGame.ui.popups
 			
 			// resign button
 			btnResign = new Button();
-			btnResign.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMatchDetailsCta0000"));
-			btnResign.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMatchDetailsCta0000"));
-			btnResign.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonMatchDetailsCta0000"));
+			btnResign.defaultSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
+			btnResign.hoverSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
+			btnResign.downSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
 			btnResign.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnResign.downSkin.filter = Statics.btnInvertFilter;
 			btnResign.defaultLabelProperties.textFormat = ctaTextFormat;
@@ -265,7 +265,7 @@ package com.jumpGame.ui.popups
 			btnResign.label = "Decline";
 			
 			// second place badge
-			badgeSecondPlace = new Image(Assets.getSprite("AtlasTexture8").getTexture("BadgeSecondPlace0000"));
+			badgeSecondPlace = new Image(Statics.assets.getTexture("BadgeSecondPlace0000"));
 			badgeSecondPlace.pivotX = Math.ceil(badgeSecondPlace.width / 2);
 			badgeSecondPlace.pivotY = Math.ceil(badgeSecondPlace.height / 2);
 			badgeSecondPlace.x = 478;
@@ -273,7 +273,7 @@ package com.jumpGame.ui.popups
 			contentContainer.addChild(badgeSecondPlace);
 			
 			// first place badge
-			badgeFirstPlace = new Image(Assets.getSprite("AtlasTexture8").getTexture("BadgeFirstPlace0000"));
+			badgeFirstPlace = new Image(Statics.assets.getTexture("BadgeFirstPlace0000"));
 			badgeFirstPlace.pivotX = Math.ceil(badgeFirstPlace.width / 2);
 			badgeFirstPlace.pivotY = Math.ceil(badgeFirstPlace.height / 2);
 			badgeFirstPlace.x = 265;
@@ -330,12 +330,12 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function secondPlaceSlam():void {
-			if (!Sounds.sfxMuted) Sounds.sndDrum2.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_DRUM2");
 			parent.shakeCamera(16);
 		}
 		
 		private function firstPlaceSlam():void {
-			if (!Sounds.sfxMuted) Sounds.sndDrum1.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_DRUM1");
 			parent.shakeCamera(16);
 		}
 		
@@ -381,7 +381,7 @@ package com.jumpGame.ui.popups
 		
 		private function resignMatch():void {
 			parent.displayLoadingNotice("Updating matches...");
-			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
+//			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
 			parent.communicator.resignMatch(Statics.gameId);
 		}
 		
@@ -391,7 +391,7 @@ package com.jumpGame.ui.popups
 		
 		// close this window
 		private function close():void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			if (particleConfetti.isEmitting) { // stop confetti particles
 				particleConfetti.stop(true);
 				Starling.juggler.remove(particleConfetti);
@@ -400,7 +400,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function initialize(isDone:Boolean):void {
-//			trace("game id: " + Statics.gameId);
+			trace("game id: " + Statics.gameId);
 			
 			contentContainer.alpha = 0;
 			popupContainer.scaleX = 0.5;

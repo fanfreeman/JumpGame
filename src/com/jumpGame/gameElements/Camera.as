@@ -10,21 +10,24 @@ package com.jumpGame.gameElements
 		// camera velocity
 		public var dx:Number;
 		public var dy:Number;
+		public var gyChange:Number; // for scrolling bg layers
 		
 		private var boundTop:Number;
 		private var boundBottom:Number;
+		public var isHardwareRendering:Boolean;
 		
 		public function initialize():void {
 			gx = 0;
 			gy = 0;
 			dx = 0;
 			dy = 0;
+			gyChange = 0;
 			boundTop = 0;
 			boundBottom = 150;
 		}
 		
 		// move camera by following hero
-		public function update(heroGx:Number, heroGy:Number, heroDy):void {
+		public function update(timeDiff:Number, heroGx:Number, heroGy:Number, heroDy):void {
 			//var targetX:Number = (Camera.nextPlatformX + heroGx) / 2;
 			var targetX:Number = heroGx;
 			var targetY:Number = heroGy + Statics.cameraTargetModifierY;
@@ -63,7 +66,8 @@ package com.jumpGame.gameElements
 //			}
 			
 			// y
-			var cameraEasingFactorY:Number = 15 - Math.abs(targetY - gy) / 10;
+			var cameraEasingFactorY:Number;
+			cameraEasingFactorY = 15 - Math.abs(targetY - gy) / 10;
 			if (cameraEasingFactorY < 5) cameraEasingFactorY = 5;
 			var d2y:Number = 0.0; // camera acceleration
 			if (targetY >= gy + boundTop) { // move camera up
@@ -75,8 +79,9 @@ package com.jumpGame.gameElements
 			else { // bring camera to rest
 				d2y = -dy / cameraEasingFactorY;
 			}
-			dy += d2y;
-			gy += dy;
+			dy += d2y * timeDiff * 0.06;
+			gyChange = dy * timeDiff * 0.06;
+			gy += gyChange;
 			
 			Statics.cameraGy = this.gy;
 		}

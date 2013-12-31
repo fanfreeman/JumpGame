@@ -16,6 +16,7 @@ package com.jumpGame.gameElements
 		
 		// list of images
 		private var imageVec:Vector.<Image>;
+		private var imageWidthVec:Vector.<uint>;
 		
 		// list of movieclips
 		private var movieclipVec:Vector.<MovieClip>;
@@ -87,20 +88,24 @@ package com.jumpGame.gameElements
 				this.imageVec = new Vector.<Image>();
 				var image:Image;
 				if (this._layer == 10) { // moon/planet/pirate ship
+					this.imageWidthVec = new Vector.<uint>(); // store image widths
+					
 					image = new Image(Statics.assets.getTexture("Moon0000"));
 					image.pivotX = 0; // set registration point to bottom left corner
 					image.pivotY = image.texture.height;
 					image.x = - image.texture.width;
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
+					this.imageWidthVec.push(image.texture.width);
 					
 					image = new Image(Statics.assets.getTexture("PirateShip0000"));
 					image.pivotX = 0; // set registration point to bottom left corner
 					image.pivotY = image.texture.height;
-					image.x = Constants.StageWidth;
+					image.x = this.stageWidth;
 					image.visible = false;
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
+					this.imageWidthVec.push(image.texture.width);
 					
 					image = new Image(Statics.assets.getTexture("Planet0000"));
 					image.pivotX = image.texture.width;
@@ -109,54 +114,61 @@ package com.jumpGame.gameElements
 					image.visible = false;
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
+					this.imageWidthVec.push(image.texture.width);
 					
 					this.activeImage = 0;
 				}
 				else if (this._layer == 20) { // clouds
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("Cloud10000"));
+					this.imageWidthVec = new Vector.<uint>(); // store image widths
+					
+					image = new Image(Statics.assets.getTexture("Cloud10000"));
 					image.pivotY = image.texture.height;
 					image.x = this.stageWidth;
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
+					this.imageWidthVec.push(image.texture.width);
 					
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("Cloud20000"));
+					image = new Image(Statics.assets.getTexture("Cloud20000"));
 					image.pivotY = image.texture.height;
 					image.x = this.stageWidth;
 					image.visible = false;
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
+					this.imageWidthVec.push(image.texture.width);
 					
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("Cloud30000"));
+					image = new Image(Statics.assets.getTexture("Cloud30000"));
 					image.pivotY = image.texture.height;
 					image.x = this.stageWidth;
 					image.visible = false;
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
+					this.imageWidthVec.push(image.texture.width);
 					
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("Cloud40000"));
+					image = new Image(Statics.assets.getTexture("Cloud40000"));
 					image.pivotY = image.texture.height;
 					image.x = this.stageWidth;
 					image.visible = false;
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
+					this.imageWidthVec.push(image.texture.width);
 					
 					this.activeImage = 0;
 				}
 				else if (this._layer == 30) { // small islands
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("IslandSmall10000"));
+					image = new Image(Statics.assets.getTexture("IslandSmall10000"));
 					image.pivotY = image.texture.height;
 					image.x = Math.floor(Math.random() * (this.stageWidth - image.texture.width));
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("IslandSmall20000"));
+					image = new Image(Statics.assets.getTexture("IslandSmall20000"));
 					image.pivotY = image.texture.height;
 					image.x = Math.floor(Math.random() * (this.stageWidth - image.texture.width));
 					image.visible = false;
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("IslandSmall30000"));
+					image = new Image(Statics.assets.getTexture("IslandSmall30000"));
 					image.pivotY = image.texture.height;
 					image.x = Math.floor(Math.random() * (this.stageWidth - image.texture.width));
 					image.visible = false;
@@ -166,22 +178,14 @@ package com.jumpGame.gameElements
 					this.activeImage = 0;
 				}
 				else if (this._layer == 40) { // medium/large islands
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("IslandLarge0000"));
+					image = new Image(Statics.assets.getTexture("IslandLarge0000"));
 					image.pivotX = Math.ceil(image.texture.width / 2);
 					image.pivotY = image.texture.height;
 					image.x = Math.ceil(this.stageWidth / 2);
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("IslandMedium10000"));
-					image.pivotX = Math.ceil(image.texture.width / 2);
-					image.pivotY = image.texture.height;
-					image.x = Math.ceil(this.stageWidth / 2);
-					image.visible = false;
-					this.addChild(image);
-					this.imageVec.push(image); // store in vector
-					
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("IslandMedium20000"));
+					image = new Image(Statics.assets.getTexture("IslandMedium10000"));
 					image.pivotX = Math.ceil(image.texture.width / 2);
 					image.pivotY = image.texture.height;
 					image.x = Math.ceil(this.stageWidth / 2);
@@ -189,7 +193,15 @@ package com.jumpGame.gameElements
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("IslandMedium30000"));
+					image = new Image(Statics.assets.getTexture("IslandMedium20000"));
+					image.pivotX = Math.ceil(image.texture.width / 2);
+					image.pivotY = image.texture.height;
+					image.x = Math.ceil(this.stageWidth / 2);
+					image.visible = false;
+					this.addChild(image);
+					this.imageVec.push(image); // store in vector
+					
+					image = new Image(Statics.assets.getTexture("IslandMedium30000"));
 					image.pivotX = Math.ceil(image.texture.width / 2);
 					image.pivotY = image.texture.height;
 					image.x = Math.ceil(this.stageWidth / 2);
@@ -200,12 +212,12 @@ package com.jumpGame.gameElements
 					this.activeImage = 0;
 				}
 				else if (this._layer == 50) { // bridges
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("Bridge10000"));
+					image = new Image(Statics.assets.getTexture("Bridge10000"));
 					image.pivotY = image.texture.height;
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture3").getTexture("Bridge20000"));
+					image = new Image(Statics.assets.getTexture("Bridge20000"));
 					image.pivotY = image.texture.height;
 					image.visible = false;
 					this.addChild(image);
@@ -214,14 +226,14 @@ package com.jumpGame.gameElements
 					this.activeImage = 0;
 				}
 				else if (this._layer == 60) {
-					image = new Image(Assets.getSprite("AtlasTexture5").getTexture("Branch10000"));
+					image = new Image(Statics.assets.getTexture("Branch10000"));
 					image.pivotX = image.texture.width;
 					image.pivotY = image.texture.height;
 					image.x = this.stageWidth;
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture5").getTexture("Branch20000"));
+					image = new Image(Statics.assets.getTexture("Branch20000"));
 					image.pivotX = image.texture.width;
 					image.pivotY = image.texture.height;
 					image.x = this.stageWidth
@@ -229,7 +241,7 @@ package com.jumpGame.gameElements
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture5").getTexture("Branch30000"));
+					image = new Image(Statics.assets.getTexture("Branch30000"));
 					image.pivotX = image.texture.width;
 					image.pivotY = image.texture.height;
 					image.x = this.stageWidth
@@ -237,7 +249,7 @@ package com.jumpGame.gameElements
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture5").getTexture("Branch40000"));
+					image = new Image(Statics.assets.getTexture("Branch40000"));
 					image.pivotX = image.texture.width;
 					image.pivotY = image.texture.height;
 					image.x = this.stageWidth
@@ -245,7 +257,7 @@ package com.jumpGame.gameElements
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture5").getTexture("Branch10000"));
+					image = new Image(Statics.assets.getTexture("Branch10000"));
 					image.pivotX = image.texture.width;
 					image.pivotY = image.texture.height;
 					image.scaleX = -1;
@@ -253,7 +265,7 @@ package com.jumpGame.gameElements
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture5").getTexture("Branch20000"));
+					image = new Image(Statics.assets.getTexture("Branch20000"));
 					image.pivotX = image.texture.width;
 					image.pivotY = image.texture.height;
 					image.scaleX = -1;
@@ -261,7 +273,7 @@ package com.jumpGame.gameElements
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture5").getTexture("Branch30000"));
+					image = new Image(Statics.assets.getTexture("Branch30000"));
 					image.pivotX = image.texture.width;
 					image.pivotY = image.texture.height;
 					image.scaleX = -1;
@@ -269,7 +281,7 @@ package com.jumpGame.gameElements
 					this.addChild(image);
 					this.imageVec.push(image); // store in vector
 					
-					image = new Image(Assets.getSprite("AtlasTexture5").getTexture("Branch40000"));
+					image = new Image(Statics.assets.getTexture("Branch40000"));
 					image.pivotX = image.texture.width;
 					image.pivotY = image.texture.height;
 					image.scaleX = -1;
@@ -311,8 +323,8 @@ package com.jumpGame.gameElements
 				this.imageVec[0].x += 0.01 * timeDiff;
 //				this.imageVec[0].y = -400 * Math.cos(this.imageVec[0].x / 240) + 300;
 				// move moon back to left
-				if (this.imageVec[0].x > Constants.StageWidth) {
-					this.imageVec[0].x = - this.imageVec[0].texture.width;
+				if (this.imageVec[0].x > this.stageWidth) {
+					this.imageVec[0].x = - this.imageWidthVec[0];
 				}
 			}
 			
@@ -320,8 +332,8 @@ package com.jumpGame.gameElements
 			if (this.imageVec[1].visible) {
 				this.imageVec[1].x -= 0.02 * timeDiff;
 				// move pirate ship back to right
-				if (this.imageVec[1].x < - this.imageVec[1].width) {
-					this.imageVec[1].x = Constants.StageWidth;
+				if (this.imageVec[1].x < - this.imageWidthVec[1]) {
+					this.imageVec[1].x = this.stageWidth;
 				}
 			}
 		}
@@ -433,8 +445,8 @@ package com.jumpGame.gameElements
 				if (this.imageVec[i].visible) {
 					this.imageVec[i].x -= 0.015 * timeDiff;
 					// move back to right
-					if (this.imageVec[i].x < - this.imageVec[i].width) {
-						this.imageVec[i].x = Constants.StageWidth;
+					if (this.imageVec[i].x < - this.imageWidthVec[i]) {
+						this.imageVec[i].x = this.stageWidth;
 					}
 				}
 			}

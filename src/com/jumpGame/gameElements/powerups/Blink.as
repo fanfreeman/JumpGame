@@ -30,14 +30,14 @@ package com.jumpGame.gameElements.powerups
 		
 		protected function createPowerupArt():void
 		{
-			magicCircleImage = new Image(Assets.getSprite("AtlasTexture2").getTexture("MagicCircle0000"));
+			magicCircleImage = new Image(Statics.assets.getTexture("MagicCircle0000"));
 			magicCircleImage.pivotX = Math.ceil(magicCircleImage.width / 2); // center image on registration point
 			magicCircleImage.pivotY = Math.ceil(magicCircleImage.height / 2);
 			magicCircleImage.visible = false;
 			magicCircleImage.alpha = 0;
 			this.addChild(magicCircleImage);
 			
-			blastAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("BlastCircle"), 20);
+			blastAnimation = new MovieClip(Statics.assets.getTextures("TeleportCircle"), 20);
 			blastAnimation.pivotX = Math.ceil(blastAnimation.width  / 2); // center art on registration point
 			blastAnimation.pivotY = Math.ceil(blastAnimation.height / 2);
 			blastAnimation.loop = false;
@@ -57,7 +57,7 @@ package com.jumpGame.gameElements.powerups
 			this.firstTeleportTime = Statics.gameTime + 2000;
 			this.isActivated = true;
 			this.isAnimationActivated = false;
-			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_POWERUP");
 		}
 		
 		public function update(timeDiff:Number):void {
@@ -70,7 +70,7 @@ package com.jumpGame.gameElements.powerups
 			
 			if (Statics.gameTime >= this.firstTeleportTime) {
 				if (!this.isAnimationActivated) {
-					if (!Sounds.sfxMuted) Sounds.sndBlink.play();
+					if (!Sounds.sfxMuted) Statics.assets.playSound("SND_BLINK");
 					
 					Starling.juggler.add(blastAnimation);
 					blastAnimation.fps = 20;
@@ -83,8 +83,8 @@ package com.jumpGame.gameElements.powerups
 				if (blastAnimation.isComplete) {
 					if (this.totalTeleports < 12 + Statics.rankTeleportation * 3) { // teleport this many times
 						if (!Sounds.sfxMuted) {
-							if (this.totalTeleports < 8) Sounds.sndBlink.play();
-							else Sounds.sndBlinkFast.play(); // play shorter blink sound
+							if (this.totalTeleports < 8) Statics.assets.playSound("SND_BLINK");
+							else Statics.assets.playSound("SND_BLINK_FAST"); // play shorter blink sound
 						}
 						
 						// teleport
@@ -103,7 +103,7 @@ package com.jumpGame.gameElements.powerups
 						Starling.juggler.remove(blastAnimation);
 						this.hero.dy = Constants.SuperBouncePower;
 						Statics.particleJet.start(1);
-						if (!Sounds.sfxMuted) Sounds.sndBoom.play();
+						if (!Sounds.sfxMuted) Statics.assets.playSound("SND_BOOM");
 						//this.hero.isDynamic = true;
 						this.isActivated = false;
 						

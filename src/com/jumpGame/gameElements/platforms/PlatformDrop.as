@@ -12,14 +12,15 @@ package com.jumpGame.gameElements.platforms
 		
 		override protected function createPlatformArt():void
 		{
-			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformDropIdle"), 30);
+			platformAnimation = new MovieClip(Statics.assets.getTextures("PlatformDropIdle"), 30);
 			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
 			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
 			starling.core.Starling.juggler.add(platformAnimation);
 //			platformAnimation.loop = false;
 			this.addChild(platformAnimation);
+			this.platformWidth = platformAnimation.texture.width;
 			
-			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformDropBounce"), 15);
+			bounceAnimation = new MovieClip(Statics.assets.getTextures("PlatformDropBounce"), 15);
 			bounceAnimation.pivotX = Math.ceil(bounceAnimation.width  / 2); // center art on registration point
 			bounceAnimation.pivotY = Math.ceil(bounceAnimation.height / 2);
 			Starling.juggler.add(this.bounceAnimation);
@@ -30,7 +31,7 @@ package com.jumpGame.gameElements.platforms
 		}
 		
 		override public function contact():void {
-			if (!Sounds.sfxMuted) Sounds.sndCrumble.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CRUMBLE");
 //			
 //			this.platformAnimation.stop();
 //			this.platformAnimation.play();
@@ -45,6 +46,10 @@ package com.jumpGame.gameElements.platforms
 			}
 			this.gx += this.dx * timeDiff;
 			this.gy += this.dy * timeDiff;
+			
+			// connect left and right borders
+			if (this.gx > borderPosition) this.gx = -borderPosition;
+			else if (this.gx < -borderPosition) this.gx = borderPosition;
 		}
 		
 		override public function initialize(gx, gy, size:int, args = null):void {

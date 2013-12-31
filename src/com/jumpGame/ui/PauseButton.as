@@ -17,7 +17,7 @@ package com.jumpGame.ui
 		
 		public function PauseButton()
 		{
-			super(Texture.fromBitmapData(new BitmapData(Assets.getSprite("AtlasTexture4").getTexture("BtnPause0000").width, Assets.getSprite("AtlasTexture4").getTexture("BtnPause0000").height, true, 0)));
+			super(Texture.fromBitmapData(new BitmapData(Statics.assets.getTexture("BtnPause0000").width, Statics.assets.getTexture("BtnPause0000").height, true, 0)));
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -32,7 +32,7 @@ package com.jumpGame.ui
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			
 			// Pause Image
-			pauseImage = new Image(Assets.getSprite("AtlasTexture4").getTexture("BtnPause0000"));
+			pauseImage = new Image(Statics.assets.getTexture("BtnPause0000"));
 			this.addChild(pauseImage);
 		}
 	}

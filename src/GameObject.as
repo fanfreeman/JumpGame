@@ -26,8 +26,8 @@ package
 		public function set gx(value:Number):void
 		{
 			this._gx = value;
-//			this.x = int(Constants.StageWidth / 2 + (value - Camera.gx));
-			this.x = int(Constants.StageWidth / 2 + value);
+//			this.x = int(Constants.StageWidth / 2 + value);
+			this.x = int(756 / 2 + value);
 		}
 		
 		public function get gy():Number
@@ -38,7 +38,8 @@ package
 		public function set gy(value:Number):void
 		{
 			this._gy = value;
-			this.y = int(Constants.StageHeight / 2 - (value - Statics.cameraGy));
+//			this.y = int(Constants.StageHeight / 2 - (value - Statics.cameraGy));
+			this.y = int(650 / 2 - (value - Statics.cameraGy));
 		}
 	}
 }

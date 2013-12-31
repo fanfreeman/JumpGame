@@ -13,15 +13,16 @@ package com.jumpGame.gameElements.platforms
 		
 		override protected function createPlatformArt():void
 		{
-			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformMobileIdle"), 30);
-			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
+			platformAnimation = new MovieClip(Statics.assets.getTextures("PlatformMobileIdle"), 30);
+			platformAnimation.pivotX = Math.ceil(platformAnimation.width / 2); // center art on registration point
 			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
 			starling.core.Starling.juggler.add(platformAnimation);
 //			platformAnimation.loop = false;
 			this.addChild(platformAnimation);
+			this.platformWidth = platformAnimation.texture.width;
 			
-			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("PlatformMobileBounce"), 15);
-			bounceAnimation.pivotX = Math.ceil(bounceAnimation.width  / 2); // center art on registration point
+			bounceAnimation = new MovieClip(Statics.assets.getTextures("PlatformMobileBounce"), 15);
+			bounceAnimation.pivotX = Math.ceil(bounceAnimation.width / 2); // center art on registration point
 			bounceAnimation.pivotY = Math.ceil(bounceAnimation.height / 2);
 			Starling.juggler.add(this.bounceAnimation);
 			bounceAnimation.stop();

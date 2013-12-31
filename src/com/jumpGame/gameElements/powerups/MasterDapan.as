@@ -27,6 +27,8 @@ package com.jumpGame.gameElements.powerups
 		private var completionTime:int;
 		private var completionWarned:Boolean;
 		
+		private var fastHeight:Number;
+		
 		public function MasterDapan(hero:Hero, hud:HUD, transfiguration:Transfiguration)
 		{
 			this.touchable = false;
@@ -38,14 +40,14 @@ package com.jumpGame.gameElements.powerups
 		
 		protected function createPowerupArt():void
 		{
-			runAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("TransfigAnimCatRun"), 20);
+			runAnimation = new MovieClip(Statics.assets.getTextures("TransfigAnimCatRun"), 20);
 			runAnimation.pivotX = Math.ceil(runAnimation.texture.width  / 2); // center art on registration point
 			runAnimation.pivotY = Math.ceil(runAnimation.texture.height / 2);
 //			runAnimation.stop();
 			runAnimation.visible = false;
 			this.addChild(runAnimation);
 			
-			jumpAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("TransfigAnimCatJump"), 60);
+			jumpAnimation = new MovieClip(Statics.assets.getTextures("TransfigAnimCatJump"), 60);
 			jumpAnimation.pivotX = Math.ceil(jumpAnimation.texture.width  / 2); // center art on registration point
 			jumpAnimation.pivotY = Math.ceil(jumpAnimation.texture.height / 2);
 			jumpAnimation.loop = false;
@@ -53,10 +55,12 @@ package com.jumpGame.gameElements.powerups
 			jumpAnimation.visible = false;
 			jumpAnimation.alpha = 0;
 			this.addChild(jumpAnimation);
+			
+			this.fastHeight = runAnimation.texture.height;
 		}
 		
 		public function activate():void {
-			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_POWERUP");
 			this.isActivated = true;
 			
 			// transfiguration animation
@@ -68,7 +72,7 @@ package com.jumpGame.gameElements.powerups
 //			Statics.particleJet.start();
 //			Statics.particleCharge.start();
 			Statics.particleBounce.emitterX = this.x;
-			Statics.particleBounce.emitterY = this.y + this.height / 2;
+			Statics.particleBounce.emitterY = this.y + this.fastHeight / 2;
 			Statics.particleBounce.start();
 			Statics.particleCharge.emitterX = this.x;
 			Statics.particleCharge.emitterY = this.y;
@@ -113,6 +117,8 @@ package com.jumpGame.gameElements.powerups
 			
 			// schedule first obstacle
 			this.nextLaunchTime = Statics.gameTime + 2000;
+			
+			hud.showMessage("Avoid the Bombs!", 3000);
 		}
 		
 		private function arrivingOnRight():void {
@@ -140,13 +146,13 @@ package com.jumpGame.gameElements.powerups
 			this.gx = this.hero.gx;
 			this.gy = this.hero.gy;
 			Statics.particleBounce.emitterX = this.x;
-			Statics.particleBounce.emitterY = this.y + this.height / 2;
+			Statics.particleBounce.emitterY = this.y + this.fastHeight / 2;
 //			this.snapToBorder(timeDiff);
 //			if (this.hero.gx > 100) this.arrivingOnRight();
 //			else if (this.hero.gx < -100) this.arrivingOnLeft();
 //			this.hero.dy = 0.5 + this.incrementalHeroDy;
 			
-			if (this.hero.dy < 0.5 && !this.isDynamicDisabled) { // stop falling due to gravity once slowed down
+			if (this.hero.dy < 0.75 && !this.isDynamicDisabled) { // stop falling due to gravity once slowed down
 				this.hero.isDynamic = false;
 				this.isDynamicDisabled = true;
 			}
@@ -247,8 +253,8 @@ package com.jumpGame.gameElements.powerups
 		public function snapToLeft():void {
 			if (!isControlDisabled && this.isActivated) {
 				if (!Sounds.sfxMuted) {
-					if (Math.random() < 0.5) Sounds.sndMasterShout1.play();
-					else Sounds.sndMasterShout2.play();
+					if (Math.random() < 0.5) Statics.assets.playSound("SND_MASTER_SHOUT1");
+					else Statics.assets.playSound("SND_MASTER_SHOUT2");
 				}
 				
 				isControlDisabled = true;
@@ -269,8 +275,8 @@ package com.jumpGame.gameElements.powerups
 		public function snapToRight():void {
 			if (!isControlDisabled && this.isActivated) {
 				if (!Sounds.sfxMuted) {
-					if (Math.random() < 0.5) Sounds.sndMasterShout1.play();
-					else Sounds.sndMasterShout2.play();
+					if (Math.random() < 0.5) Statics.assets.playSound("SND_MASTER_SHOUT1");
+					else Statics.assets.playSound("SND_MASTER_SHOUT2");
 				}
 				
 				isControlDisabled = true;

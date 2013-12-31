@@ -16,7 +16,7 @@ package com.jumpGame.gameElements.powerups
 		}
 		
 		public function activate():void {
-			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_POWERUP");
 			
 			this.isActivated = true;
 			this.completionWarned = false;

@@ -13,13 +13,13 @@ package com.jumpGame.gameElements.platforms
 		
 		override protected function createPlatformArt():void
 		{
-			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexture7").getTextures("ObstacleSpiky"), 20);
+			platformAnimation = new MovieClip(Statics.assets.getTextures("ObstacleSpiky"), 20);
 			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point
 			platformAnimation.pivotY = Math.ceil(platformAnimation.height / 2);
 			starling.core.Starling.juggler.add(platformAnimation);
 			this.addChild(platformAnimation);
 			
-			bounceAnimation = new MovieClip(Assets.getSprite("AtlasTexture7").getTextures("Explosion"), 40);
+			bounceAnimation = new MovieClip(Statics.assets.getTextures("Explosion"), 40);
 			bounceAnimation.pivotX = Math.ceil(bounceAnimation.width  / 2); // center art on registration point
 			bounceAnimation.pivotY = Math.ceil(bounceAnimation.height / 2);
 			bounceAnimation.loop = false;
@@ -50,7 +50,7 @@ package com.jumpGame.gameElements.platforms
 			if (!this.isTouched) {
 				
 				// play sound effect
-				if (!Sounds.sfxMuted) Sounds.sndBoom.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_BOOM");
 				
 				// explosion animation
 				platformAnimation.visible = false;

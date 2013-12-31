@@ -10,19 +10,33 @@ package com.jumpGame.gameElements
 		private var velocity:Number;
 		private var windDx:Number;
 		
+		private var starWidth:Number;
+		private var starHeight:Number;
+		
+		private var stageWidth:int;
+		private var stageHeight:int;
+		
 		public function BgStar()
 		{
 			super();
-			var starImage:Image = new Image(Assets.getSprite("AtlasTexture3").getTexture("Star0000"));
-//			var starImage:Image = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Snowflake0000"));
-//			starImage.pivotX = Math.ceil(starImage.width  / 2); // center art on registration point
-//			starImage.pivotY = Math.ceil(starImage.height / 2);
+//			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			
+			var starImage:Image = new Image(Statics.assets.getTexture("Star0000"));
 			this.addChild(starImage);
+			this.starWidth = starImage.width;
+			this.starHeight = starImage.height;
 		}
 		
+//		private function onAddedToStage():void {
+//			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+//			
+//		}
+		
 		public function initialize(forMenu:Boolean = true):void {
-			this.x = Math.random() * Statics.stageWidth;
-			this.y = Math.random() * Statics.stageHeight;
+			this.stageWidth = Statics.stageWidth;
+			this.stageHeight = Statics.stageHeight;
+			this.x = Math.random() * this.stageWidth;
+			this.y = Math.random() * this.stageHeight;
 			
 			var dice:Number = Math.random();
 			
@@ -72,11 +86,11 @@ package com.jumpGame.gameElements
 //		public function update(timeDiff:int, leftKeyDown:Boolean = false, rightKeyDown:Boolean = false):void {
 		public function update(timeDiff:int, heroDx:Number):void {
 			this.x -= heroDx * this.velocity * timeDiff * 2;
-			if (this.x > Statics.stageWidth) {
-				this.x = -this.width;
+			if (this.x > this.stageWidth) {
+				this.x = -this.starWidth;
 			}
-			else if (this.x < -this.width) {
-				this.x = Statics.stageWidth;
+			else if (this.x < -this.starWidth) {
+				this.x = this.stageWidth;
 			}
 //			if (leftKeyDown) {
 //				this.x += this.velocity * timeDiff;
@@ -96,8 +110,8 @@ package com.jumpGame.gameElements
 //				this.y = Statics.stageHeight;
 //			}
 			this.y += this.velocity * timeDiff * 0.3;
-			if (this.y > Statics.stageHeight) {
-				this.y = -this.height;
+			if (this.y > this.stageHeight) {
+				this.y = -this.starHeight;
 			}
 		}
 		

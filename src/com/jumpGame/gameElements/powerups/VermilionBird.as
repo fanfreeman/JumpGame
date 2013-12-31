@@ -34,7 +34,7 @@ package com.jumpGame.gameElements.powerups
 		
 		protected function createPowerupArt():void
 		{
-			flightAnimation = new MovieClip(Assets.getSprite("AtlasTexture2").getTextures("TransfigAnimVermilionFlight"), 20);
+			flightAnimation = new MovieClip(Statics.assets.getTextures("TransfigAnimVermilionFlight"), 20);
 			flightAnimation.pivotX = Math.ceil(flightAnimation.texture.width  / 2); // center art on registration point
 			flightAnimation.pivotY = Math.ceil(flightAnimation.texture.height / 2);
 			flightAnimation.stop();
@@ -52,7 +52,7 @@ package com.jumpGame.gameElements.powerups
 		}
 		
 		public function activate():void {
-			if (!Sounds.sfxMuted) Sounds.sndPowerup.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_POWERUP");
 			
 			// transfiguration animation
 			this.transfiguration.displayActivation(Constants.PowerupVermilionBird);
@@ -96,6 +96,8 @@ package com.jumpGame.gameElements.powerups
 			
 			// schedule first obstacle
 			this.nextLaunchTime = Statics.gameTime + 1000;
+			
+			hud.showMessage("Avoid the Bombs!", 3000);
 		}
 		
 		public function update(timeDiff:Number):Boolean {
@@ -166,7 +168,7 @@ package com.jumpGame.gameElements.powerups
 		public function beatWings():void {
 //			glideAnimation.visible = false;
 //			flightAnimation.visible = true;
-			if (!Sounds.sfxMuted) Sounds.sndWingFlap.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_WING_FLAP");
 			
 			flightAnimation.stop();
 			flightAnimation.play();

@@ -23,7 +23,7 @@ package com.jumpGame.gameElements.contraptions
 		
 		protected function createArt():void
 		{
-			witchImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Witch0000"));
+			witchImage = new Image(Statics.assets.getTexture("Witch0000"));
 			witchImage.pivotX = Math.ceil(witchImage.width / 2); // center x
 			witchImage.pivotY = Math.ceil(witchImage.height / 2); // center y
 			this.addChild(witchImage);

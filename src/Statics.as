@@ -56,9 +56,6 @@ package
 		// number of milliseconds of bonus mode time left
 		public static var bonusTimeLeft:int;
 		
-		// next musical note to play when a star is touched
-		public static var nextStarNote:int;
-		
 		// whether game is rendering through hardware
 		public static var isHardwareRendering:Boolean;
 		
@@ -93,6 +90,7 @@ package
 		public static var lastName:String;
 		public static var playerHighScore:int;
 		public static var opponentName:String;
+		public static var opponentNameOneLine:String;
 		public static var currentRound:uint;
 		public static var roundScores:Array;
 		public static var isPlayer2:Boolean;
@@ -104,6 +102,7 @@ package
 		public static var roundsPlayed:uint;
 		public static var tutorialStep:uint;
 		public static var topFriendsIds:String;
+		public static var isSupersonic:Boolean;
 		
 		// player picture
 		public static var playerPictureBitmap:Bitmap = null;
@@ -153,6 +152,15 @@ package
 		public static var levelNumber:uint;
 		
 		public static var powerDuplicationEnabled:Boolean;
+		
+		// background sky texture index, loaded from cloudfront
+		public static var randomSkyNum:String = null;
+		
+		// counter for how many times interstitial ads have been shown
+		public static var adsShowCount:uint = 0;
+		
+		// whether profile pictures should be shown on rankings screen
+//		public static var showRankingsProfilePics:Boolean;
 		
 		// assets
 		private static var sAssets:AssetManager;

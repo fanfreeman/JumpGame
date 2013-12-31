@@ -39,7 +39,7 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture8").getTexture("DialogLarge0000"));
+			var popup:Image = new Image(Statics.assets.getTexture("DialogLarge0000"));
 			popupContainer.addChild(popup);
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
@@ -59,10 +59,10 @@ package com.jumpGame.ui.popups
 			
 			// ok button
 			btnOk = new Button();
-			var btnImage:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
+			var btnImage:Image = new Image(Statics.assets.getTexture("PromptButtonOk0000"));
 			btnOk.defaultSkin = btnImage;
-			btnOk.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
-			btnOk.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
+			btnOk.hoverSkin = new Image(Statics.assets.getTexture("PromptButtonOk0000"));
+			btnOk.downSkin = new Image(Statics.assets.getTexture("PromptButtonOk0000"));
 			btnOk.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnOk.downSkin.filter = Statics.btnInvertFilter;
 			btnOk.useHandCursor = true;
@@ -88,7 +88,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonOkHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			this.visible = false;
 		}
 	}

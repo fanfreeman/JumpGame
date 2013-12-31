@@ -62,8 +62,27 @@ package com.jumpGame.ui.components
 			this.invalidate(INVALIDATION_FLAG_DATA);
 		}
 		
+		protected var _isnewField:String;
+		
+		public function get isnewField():String
+		{
+			return this._isnewField;
+		}
+		
+		public function set isnewField(value:String):void
+		{
+			if(this._isnewField == value)
+			{
+				return;
+			}
+			this._isnewField = value;
+			this.invalidate(INVALIDATION_FLAG_DATA);
+		}
+		
 		protected var titleLabel:Label;
 		protected var captionLabel:Label;
+		protected var itemBgButton:Button;
+		protected var newFlag:Image;
 		
 		protected var _index:int = -1;
 		
@@ -136,17 +155,26 @@ package com.jumpGame.ui.components
 		
 		override protected function initialize():void
 		{
-			this.width = 570;
+			this.width = 410;
 			this.height = 78;
 			this.useHandCursor = true;
 			
-			var itemBgButton:Button = new Button();
-			itemBgButton.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
-			itemBgButton.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
-			itemBgButton.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("MatchesItemBg0000"));
-			itemBgButton.hoverSkin.filter = Statics.btnBrightnessFilter;
-			itemBgButton.downSkin.filter = Statics.btnInvertFilter;
-			this.addChild(itemBgButton);
+			if (!this.itemBgButton) {
+				itemBgButton = new Button();
+				itemBgButton.defaultSkin = new Image(Statics.assets.getTexture("MatchesItemBg0000"));
+				itemBgButton.hoverSkin = new Image(Statics.assets.getTexture("MatchesItemBg0000"));
+				itemBgButton.downSkin = new Image(Statics.assets.getTexture("MatchesItemBg0000"));
+				itemBgButton.hoverSkin.filter = Statics.btnBrightnessFilter;
+				itemBgButton.downSkin.filter = Statics.btnInvertFilter;
+				itemBgButton.x = 20;
+				this.addChild(itemBgButton);
+			}
+			
+			if (!this.newFlag) {
+				newFlag = new Image(Statics.assets.getTexture("MatchesItemNew0000"));
+				newFlag.y = 12;
+				this.addChild(newFlag);
+			}
 			
 			if (!this.titleLabel) {
 				this.titleLabel = new Label();
@@ -235,6 +263,8 @@ package com.jumpGame.ui.components
 			{
 				this.titleLabel.text = this.itemToTitle(this._data);
 				this.captionLabel.text = this.itemToCaption(this._data);
+				if (this.itemToIsnew(this._data)) this.newFlag.visible = true;
+				else this.newFlag.visible = false;
 			}
 			else
 			{
@@ -269,6 +299,15 @@ package com.jumpGame.ui.components
 				return item[this._captionField].toString();
 			}
 			return "";
+		}
+		
+		public function itemToIsnew(item:Object):Boolean
+		{
+			if(this._isnewField != null && item && item.hasOwnProperty(this._isnewField))
+			{
+				return true;
+			}
+			return false;
 		}
 		
 		protected var touchPointID:int = -1;

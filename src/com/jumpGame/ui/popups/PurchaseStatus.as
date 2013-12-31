@@ -30,7 +30,7 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture8").getTexture("PurchaseStatusBg0000"));
+			var popup:Image = new Image(Statics.assets.getTexture("PurchaseStatusBg0000"));
 			popupContainer.addChild(popup);
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
@@ -54,7 +54,7 @@ package com.jumpGame.ui.popups
 			popupContainer.alpha = 1;
 			this.visible = true;
 			
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			// popup pop out effect
 			popupContainer.scaleX = 0.5;

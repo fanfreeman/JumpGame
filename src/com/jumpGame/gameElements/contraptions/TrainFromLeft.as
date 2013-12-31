@@ -9,7 +9,7 @@ package com.jumpGame.gameElements.contraptions
 	{
 		override protected function createArt():void
 		{
-			headImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("TrainHead0000"));
+			headImage = new Image(Statics.assets.getTexture("TrainHead0000"));
 			headImage.scaleX = -1;
 			headImage.pivotY = Math.ceil(headImage.height / 2); // center y
 			this.addChild(headImage);
@@ -17,7 +17,7 @@ package com.jumpGame.gameElements.contraptions
 		
 		override protected function createLookOutAnimation():void
 		{
-			lookOutAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Lookout"), 40);
+			lookOutAnimation = new MovieClip(Statics.assets.getTextures("Lookout"), 40);
 			lookOutAnimation.pivotY = lookOutAnimation.height;
 			this.addChild(lookOutAnimation);
 			Starling.juggler.add(lookOutAnimation);
@@ -27,7 +27,7 @@ package com.jumpGame.gameElements.contraptions
 			if (!this.isLaunched) {
 				if (Statics.gameTime > this.launchTime) {
 					this.lookOutAnimation.visible = false;
-					if (!Sounds.sfxMuted) Sounds.sndTrain.play();
+					if (!Sounds.sfxMuted) Statics.assets.playSound("SND_TRAIN");
 					this.isLaunched = true;
 				}
 			} else {

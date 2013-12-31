@@ -1,7 +1,6 @@
 package com.jumpGame.ui.popups
 {
 	import com.jumpGame.customObjects.Font;
-	import com.jumpGame.screens.Menu;
 	
 	import feathers.controls.Button;
 	
@@ -19,7 +18,6 @@ package com.jumpGame.ui.popups
 	{
 		public var isInUse:Boolean = false;
 		
-		private var parent:Menu;
 		private var data:Object;
 		private var promptText:TextField;
 		
@@ -30,10 +28,9 @@ package com.jumpGame.ui.popups
 		
 		private var callback:Function = null;
 		
-		public function DialogBox(parent:Menu)
+		public function DialogBox()
 		{
 			super();
-			this.parent = parent;
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
@@ -49,7 +46,7 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture8").getTexture("PromptBg0000"));
+			var popup:Image = new Image(Statics.assets.getTexture("PromptBg0000"));
 			popupContainer.addChild(popup);
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
@@ -69,9 +66,9 @@ package com.jumpGame.ui.popups
 			
 			// cancel button
 			btnCancel = new Button();
-			btnCancel.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonCancel0000"));
-			btnCancel.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonCancel0000"));
-			btnCancel.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonCancel0000"));
+			btnCancel.defaultSkin = new Image(Statics.assets.getTexture("PromptButtonCancel0000"));
+			btnCancel.hoverSkin = new Image(Statics.assets.getTexture("PromptButtonCancel0000"));
+			btnCancel.downSkin = new Image(Statics.assets.getTexture("PromptButtonCancel0000"));
 			btnCancel.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnCancel.downSkin.filter = Statics.btnInvertFilter;
 			btnCancel.useHandCursor = true;
@@ -82,9 +79,9 @@ package com.jumpGame.ui.popups
 			
 			// ok button
 			btnOk = new Button();
-			btnOk.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
-			btnOk.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
-			btnOk.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("PromptButtonOk0000"));
+			btnOk.defaultSkin = new Image(Statics.assets.getTexture("PromptButtonOk0000"));
+			btnOk.hoverSkin = new Image(Statics.assets.getTexture("PromptButtonOk0000"));
+			btnOk.downSkin = new Image(Statics.assets.getTexture("PromptButtonOk0000"));
 			btnOk.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnOk.downSkin.filter = Statics.btnInvertFilter;
 			btnOk.useHandCursor = true;
@@ -122,7 +119,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonCancelHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.visible = false;
 			this.isInUse = false;

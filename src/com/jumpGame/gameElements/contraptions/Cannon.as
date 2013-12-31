@@ -42,12 +42,12 @@ package com.jumpGame.gameElements.contraptions
 		
 		protected function createArt():void
 		{
-			cannonOffImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("CannonOff0000"));
+			cannonOffImage = new Image(Statics.assets.getTexture("CannonOff0000"));
 			cannonOffImage.pivotX = Math.ceil(cannonOffImage.width / 2); // center x
 			cannonOffImage.pivotY = Math.ceil(cannonOffImage.height / 2); // center y
 			this.addChild(cannonOffImage);
 			
-			cannonOnImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("CannonOn0000"));
+			cannonOnImage = new Image(Statics.assets.getTexture("CannonOn0000"));
 			cannonOnImage.pivotX = Math.ceil(cannonOnImage.width / 2); // center x
 			cannonOnImage.pivotY = Math.ceil(cannonOnImage.height / 2); // center y
 			cannonOnImage.visible = false;
@@ -114,7 +114,7 @@ package com.jumpGame.gameElements.contraptions
 			if (!this.isTouched) {
 				this.isTouched = true;
 				
-				if (!Sounds.sfxMuted) Sounds.sndCrash.play();
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CRASH");
 				this.rotationSpeed = Math.PI / 18;
 				return true;
 			}

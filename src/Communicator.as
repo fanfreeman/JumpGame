@@ -4,11 +4,11 @@ package
 	import com.jumpGame.events.NavigationEvent;
 	
 	import flash.events.Event;
-	import flash.events.HTTPStatusEvent;
+//	import flash.events.HTTPStatusEvent;
 	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
-	import flash.events.ProgressEvent;
-	import flash.events.SecurityErrorEvent;
+//	import flash.events.ProgressEvent;
+//	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
@@ -18,11 +18,14 @@ package
 		
 	public class Communicator extends EventDispatcher
 	{
-		private var _loader:URLLoader;
+//		private var loader:URLLoader;
 		private var _request:URLRequest;
 		
 		public function Communicator()
 		{
+			// NOTE: do not use an instance loader because it is unable to handle multiple simultaneous requests
+//			this.loader = new URLLoader();
+//			this.configureListeners(this.loader);
 		}
 		
 		/**
@@ -113,8 +116,17 @@ package
 		/**
 		 * Find a smart match opponent for the current user
 		 */
-		public function findSmartMatch():void {
-			this.sendGetRequest(Constants.UriFindMatch);
+		public function findSmartMatch(alsoSendRoundBegin:Boolean = false):void {
+			if (alsoSendRoundBegin) this.sendGetRequest(Constants.UriFindMatchAndSendRoundBegin);
+			else this.sendGetRequest(Constants.UriFindMatch);
+		}
+		
+		/**
+		 * Find a smart match opponent for the current user
+		 */
+		public function findSmartMatchSuper(alsoSendRoundBegin:Boolean = false):void {
+			if (alsoSendRoundBegin) this.sendGetRequest(Constants.UriFindMatchAndSendRoundBegin);
+			else this.sendGetRequest(Constants.UriFindMatchSuper);
 		}
 		
 		/**
@@ -139,6 +151,7 @@ package
 		private function sendGetRequest(url:String):void {
 //			var randomParam:String = "?p=" + Math.floor(Math.random() * (10000000)); // random parameter to avoid getting cached result
 //			trace("Communicating: " + url);
+			
 			var loader:URLLoader = new URLLoader();
 			configureListeners(loader);
 			
@@ -154,11 +167,11 @@ package
 		
 		private function configureListeners(dispatcher:IEventDispatcher):void {
 			dispatcher.addEventListener(Event.COMPLETE, completeHandler);
-			dispatcher.addEventListener(Event.OPEN, openHandler);
-			dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-			dispatcher.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
+//			dispatcher.addEventListener(Event.OPEN, openHandler);
+//			dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+//			dispatcher.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
 			dispatcher.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-			dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
+//			dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 			//dispatcher.addEventListener(IOErrorEvent.NETWORK_ERROR, errorHandler);
 			//dispatcher.addEventListener(IOErrorEvent.VERIFY_ERROR, errorHandler);
 			//dispatcher.addEventListener(IOErrorEvent.DISK_ERROR, errorHandler);
@@ -167,29 +180,32 @@ package
 		private function completeHandler(event:Event):void {
 			var loader:URLLoader = URLLoader(event.target);
 			var data:String = loader.data;
-//			trace("completeHandler: " + data);
+			trace("completeHandler: " + data);
 			
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.RESPONSE_RECEIVED, {data: data}, true));
 		}
 		
-		private function openHandler(event:Event):void {
-//			trace("openHandler: " + event);
-		}
-		
-		private function progressHandler(event:ProgressEvent):void {
-//			trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);
-		}
-		
-		private function securityErrorHandler(event:SecurityErrorEvent):void {
-//			trace("securityErrorHandler: " + event);
-		}
-		
-		private function httpStatusHandler(event:HTTPStatusEvent):void {
+//		private function httpStatusHandler(event:HTTPStatusEvent):void {
 //			trace("httpStatusHandler: " + event);
-		}
+//		}
 		
 		private function ioErrorHandler(event:IOErrorEvent):void {
-//			trace("ioErrorHandler: " + event);
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('communicator io error');
+			}
+			trace("ioErrorHandler: " + event);
 		}
+		
+//		private function openHandler(event:Event):void {
+			//			trace("openHandler: " + event);
+//		}
+		
+//		private function progressHandler(event:ProgressEvent):void {
+			//			trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);
+//		}
+		
+//		private function securityErrorHandler(event:SecurityErrorEvent):void {
+			//			trace("securityErrorHandler: " + event);
+//		}
 	}
 }

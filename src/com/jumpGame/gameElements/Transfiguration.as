@@ -20,6 +20,11 @@ package com.jumpGame.gameElements
 		private var activationCaptionMaster:Image;
 		private var energyWave:Image;
 		private var hero:Hero;
+		private var stageWidth:int;
+		private var stageHeight:int;
+		private var activationCaptionWidthMax:Number;
+		private var activationIconWidthMax:Number;
+		private var activationBgHeight:Number;
 		
 		public function Transfiguration(hero:Hero)
 		{
@@ -27,55 +32,68 @@ package com.jumpGame.gameElements
 			
 			this.touchable = false;
 			this.hero = hero;
+			this.stageWidth = Statics.stageWidth;
+			this.stageHeight = Statics.stageHeight;
 			
-			activationBg = new MovieClip(Assets.getSprite("AtlasTexture5").getTextures("TransfigActivationBg"), 30);
-			activationBg.y = Statics.stageHeight;
+			activationBg = new MovieClip(Statics.assets.getTextures("TransfigActivationBg"), 30);
+			activationBg.y = this.stageHeight;
 			activationBg.visible = false;
 			this.addChild(activationBg);
+			this.activationBgHeight = activationBg.height;
 			
-			activationIconBroom = new Image(Assets.getSprite("AtlasTexture5").getTexture("TransfigActivationIconBroom0000"));
+			activationIconBroom = new Image(Statics.assets.getTexture("TransfigActivationIconBroom0000"));
 			activationIconBroom.pivotY = Math.ceil(activationIconBroom.height / 2);
 			activationIconBroom.x = -activationIconBroom.width;
-			activationIconBroom.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationIconBroom.y = this.stageHeight * 2.7 / 5 + activationBg.height / 2;
 			activationIconBroom.visible = false;
 			addChild(activationIconBroom);
+			this.activationIconWidthMax = activationIconBroom.width;
 			
-			activationIconVermilion = new Image(Assets.getSprite("AtlasTexture5").getTexture("TransfigActivationIconVermilion0000"));
+			activationIconVermilion = new Image(Statics.assets.getTexture("TransfigActivationIconVermilion0000"));
 			activationIconVermilion.pivotY = Math.ceil(activationIconVermilion.height / 2);
 			activationIconVermilion.x = -activationIconVermilion.width;
-			activationIconVermilion.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationIconVermilion.y = this.stageHeight * 2.7 / 5 + activationBg.height / 2;
 			activationIconVermilion.visible = false;
 			addChild(activationIconVermilion);
+			if (activationIconVermilion.width > this.activationIconWidthMax)
+				this.activationIconWidthMax = activationIconVermilion.width;
 			
-			activationIconMaster = new Image(Assets.getSprite("AtlasTexture5").getTexture("TransfigActivationIconDapan0000"));
+			activationIconMaster = new Image(Statics.assets.getTexture("TransfigActivationIconDapan0000"));
 			activationIconMaster.pivotY = Math.ceil(activationIconMaster.height / 2);
 			activationIconMaster.x = -activationIconMaster.width;
-			activationIconMaster.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationIconMaster.y = this.stageHeight * 2.7 / 5 + activationBg.height / 2;
 			activationIconMaster.visible = false;
 			addChild(activationIconMaster);
+			if (activationIconMaster.width > this.activationIconWidthMax)
+				this.activationIconWidthMax = activationIconMaster.width;
 			
-			activationCaptionBroom = new Image(Assets.getSprite("AtlasTexture5").getTexture("TransfigActivationCaptionBroom0000"));
+			activationCaptionBroom = new Image(Statics.assets.getTexture("TransfigActivationCaptionBroom0000"));
 			activationCaptionBroom.pivotY = Math.ceil(activationCaptionBroom.height / 2);
-			activationCaptionBroom.x = Statics.stageWidth;
-			activationCaptionBroom.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationCaptionBroom.x = this.stageWidth;
+			activationCaptionBroom.y = this.stageHeight * 2.7 / 5 + activationBg.height / 2;
 			activationCaptionBroom.visible = false;
 			addChild(activationCaptionBroom);
+			this.activationCaptionWidthMax = activationCaptionBroom.width;
 			
-			activationCaptionVermilion = new Image(Assets.getSprite("AtlasTexture5").getTexture("TransfigActivationCaptionVermilion0000"));
+			activationCaptionVermilion = new Image(Statics.assets.getTexture("TransfigActivationCaptionVermilion0000"));
 			activationCaptionVermilion.pivotY = Math.ceil(activationCaptionVermilion.height / 2);
-			activationCaptionVermilion.x = Statics.stageWidth;
-			activationCaptionVermilion.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationCaptionVermilion.x = this.stageWidth;
+			activationCaptionVermilion.y = this.stageHeight * 2.7 / 5 + activationBg.height / 2;
 			activationCaptionVermilion.visible = false;
 			addChild(activationCaptionVermilion);
+			if (activationCaptionVermilion.width > this.activationCaptionWidthMax)
+				this.activationCaptionWidthMax = activationCaptionVermilion.width;
 			
-			activationCaptionMaster = new Image(Assets.getSprite("AtlasTexture5").getTexture("TransfigActivationCaptionDapan0000"));
+			activationCaptionMaster = new Image(Statics.assets.getTexture("TransfigActivationCaptionDapan0000"));
 			activationCaptionMaster.pivotY = Math.ceil(activationCaptionMaster.height / 2);
-			activationCaptionMaster.x = Statics.stageWidth;
-			activationCaptionMaster.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationCaptionMaster.x = this.stageWidth;
+			activationCaptionMaster.y = this.stageHeight * 2.7 / 5 + activationBg.height / 2;
 			activationCaptionMaster.visible = false;
 			addChild(activationCaptionMaster);
+			if (activationCaptionMaster.width > this.activationCaptionWidthMax)
+				this.activationCaptionWidthMax = activationCaptionMaster.width;
 			
-			energyWave = new Image(Assets.getSprite("AtlasTexture2").getTexture("MagicCircle0000"));
+			energyWave = new Image(Statics.assets.getTexture("MagicCircle0000"));
 			energyWave.pivotX = Math.ceil(energyWave.width / 2);
 			energyWave.pivotY = Math.ceil(energyWave.height / 2);
 			energyWave.scaleX = 0;
@@ -93,12 +111,12 @@ package com.jumpGame.gameElements
 			
 			// tween for activation bg flyout
 			var tweenActivationBgFlyout:Tween = new Tween(activationBg, 0.3, Transitions.EASE_IN);
-			tweenActivationBgFlyout.animate("y", -activationBg.height);
+			tweenActivationBgFlyout.animate("y", -this.activationBgHeight);
 			tweenActivationBgFlyout.onComplete = resetTransfigurationActivation;
 			
 			// tween for activation bg slow motion
 			var tweenActivationBgSlowmo:Tween = new Tween(activationBg, 1.8, Transitions.EASE_OUT);
-			tweenActivationBgSlowmo.animate("y", Statics.stageHeight * 2.7 / 5);
+			tweenActivationBgSlowmo.animate("y", this.stageHeight * 2.7 / 5);
 			tweenActivationBgSlowmo.nextTween = tweenActivationBgFlyout;
 			
 			// tween for activation bg flyin
@@ -106,7 +124,7 @@ package com.jumpGame.gameElements
 			starling.core.Starling.juggler.add(activationBg);
 			Starling.juggler.tween(activationBg, 0.3, {
 				transition: Transitions.EASE_IN,
-				y: Statics.stageHeight * 3 / 5,
+				y: this.stageHeight * 3 / 5,
 				nextTween: tweenActivationBgSlowmo
 			});
 			
@@ -128,11 +146,11 @@ package com.jumpGame.gameElements
 			// bof icon tween
 			// tween for activation icon flyout
 			var tweenActivationIconFlyout:Tween = new Tween(activationIcon, 0.3, Transitions.EASE_IN);
-			tweenActivationIconFlyout.animate("x", Statics.stageWidth);
+			tweenActivationIconFlyout.animate("x", this.stageWidth);
 			
 			// tween for activation icon slow motion
 			var tweenActivationIconSlowmo:Tween = new Tween(activationIcon, 1.4, Transitions.EASE_OUT);
-			tweenActivationIconSlowmo.animate("x", Statics.stageWidth * 0.8 / 5);
+			tweenActivationIconSlowmo.animate("x", this.stageWidth * 0.8 / 5);
 			tweenActivationIconSlowmo.nextTween = tweenActivationIconFlyout;
 			
 			// tween for activation icon flyin
@@ -140,7 +158,7 @@ package com.jumpGame.gameElements
 			Starling.juggler.tween(activationIcon, 0.3, {
 				delay: 0.25,
 				transition: Transitions.EASE_IN,
-				x: Statics.stageWidth * 0.4 / 5,
+				x: this.stageWidth * 0.4 / 5,
 				nextTween: tweenActivationIconSlowmo
 			});
 			// eof caption tween
@@ -148,11 +166,11 @@ package com.jumpGame.gameElements
 			// bof caption tween
 			// tween for activation caption flyout
 			var tweenActivationCaptionFlyout:Tween = new Tween(activationCaption, 0.3, Transitions.EASE_IN);
-			tweenActivationCaptionFlyout.animate("x", -activationCaption.width);
+			tweenActivationCaptionFlyout.animate("x", -this.activationCaptionWidthMax);
 			
 			// tween for activation caption slow motion
 			var tweenActivationCaptionSlowmo:Tween = new Tween(activationCaption, 1.4, Transitions.EASE_OUT);
-			tweenActivationCaptionSlowmo.animate("x", Statics.stageWidth * 2.1 / 5);
+			tweenActivationCaptionSlowmo.animate("x", this.stageWidth * 2.1 / 5);
 			tweenActivationCaptionSlowmo.nextTween = tweenActivationCaptionFlyout;
 			
 			// tween for activation caption flyin
@@ -160,7 +178,7 @@ package com.jumpGame.gameElements
 			Starling.juggler.tween(activationCaption, 0.3, {
 				delay: 0.2,
 				transition: Transitions.EASE_IN,
-				x: Statics.stageWidth * 2.7 / 5,
+				x: this.stageWidth * 2.7 / 5,
 				nextTween: tweenActivationCaptionSlowmo
 			});
 			// eof caption tween
@@ -179,7 +197,7 @@ package com.jumpGame.gameElements
 		
 		private function releaseEnergyWave():void {
 			energyWave.x = hero.x;
-			energyWave.y = Statics.stageHeight / 2;
+			energyWave.y = this.stageHeight / 2;
 			energyWave.visible = true;
 			Starling.juggler.tween(energyWave, 0.7, {
 				transition: Transitions.EASE_OUT,
@@ -194,17 +212,17 @@ package com.jumpGame.gameElements
 			// bg
 			starling.core.Starling.juggler.remove(activationBg);
 			activationBg.visible = false;
-			activationBg.y = Statics.stageHeight;
+			activationBg.y = this.stageHeight;
 			
 			// icon
 			activationIcon.visible = false;
-			activationIcon.x = -activationIcon.width;
-			activationIcon.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationIcon.x = -this.activationIconWidthMax;
+			activationIcon.y = this.stageHeight * 2.7 / 5 + this.activationBgHeight / 2;
 			
 			// caption
 			activationCaption.visible = false;
-			activationCaption.x = Statics.stageWidth;
-			activationCaption.y = Statics.stageHeight * 2.7 / 5 + activationBg.height / 2;
+			activationCaption.x = this.stageWidth;
+			activationCaption.y = this.stageHeight * 2.7 / 5 + this.activationBgHeight / 2;
 			
 			// unpause game
 			Statics.gamePaused = false;

@@ -6,7 +6,7 @@ package com.jumpGame.gameElements.platforms
 	{
 		override protected function createPlatformArt():void {
 			super.createPlatformArt();
-			platformImage = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("MobileTriangle0000"));
+			platformImage = new Image(Statics.assets.getTexture("MobileTriangle0000"));
 			platformImage.pivotX = Math.ceil(platformImage.width  / 2); // center art on registration point
 			platformImage.pivotY = platformImage.height;
 			this.addChild(platformImage);

@@ -20,7 +20,7 @@ package com.jumpGame.gameElements.powerups
 		}
 		
 		public function activate():void {
-			if (!Sounds.sfxMuted) Sounds.sndComet.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_COMET");
 			
 			Statics.particleComet.start();
 			Statics.particleWind.start();

@@ -16,6 +16,7 @@ package com.jumpGame.ui
 		private var sparklesAnimation:MovieClip;
 		private var blastAnimation:MovieClip;
 		private var spriteClipRect:Rectangle;
+		private var spriteClipRectHeight:Number;
 		
 		public function initialize():void {
 			this.visible = false;
@@ -35,20 +36,21 @@ package com.jumpGame.ui
 		private function createArt():void
 		{
 			// glowing indicator
-			indicatorGlow = new Image(Assets.getSprite("AtlasTexture4").getTexture("SpecialGlow0000"));
+			indicatorGlow = new Image(Statics.assets.getTexture("SpecialGlow0000"));
 			indicatorGlow.pivotX = Math.ceil(indicatorGlow.texture.width  / 2); // center art on registration point
 			indicatorGlow.pivotY = Math.ceil(indicatorGlow.texture.height / 2);
 			this.addChild(indicatorGlow);
 			
 			// dark indicator
-			indicatorDark = new Image(Assets.getSprite("AtlasTexture4").getTexture("SpecialDark0000"));
+			indicatorDark = new Image(Statics.assets.getTexture("SpecialDark0000"));
 			indicatorDark.pivotX = Math.ceil(indicatorDark.texture.width  / 2); // center art on registration point
 			indicatorDark.pivotY = Math.ceil(indicatorDark.texture.height / 2);
 			this.addChild(indicatorDark);
+			this.spriteClipRectHeight = indicatorDark.texture.height;
 			
 			// no glow indicator for cooldown effect
 			indicatorSprite = new Sprite();
-			indicatorNoGlow = new Image(Assets.getSprite("AtlasTexture4").getTexture("SpecialNoGlow0000"));
+			indicatorNoGlow = new Image(Statics.assets.getTexture("SpecialNoGlow0000"));
 			indicatorNoGlow.pivotX = Math.ceil(indicatorNoGlow.texture.width  / 2); // center art on registration point
 			indicatorNoGlow.pivotY = Math.ceil(indicatorNoGlow.texture.height / 2);
 			indicatorSprite.addChild(indicatorNoGlow);
@@ -57,14 +59,14 @@ package com.jumpGame.ui
 			this.spriteClipRect = new Rectangle();
 			
 			// sparkles
-			sparklesAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("SpecialSparkle"), 10);
+			sparklesAnimation = new MovieClip(Statics.assets.getTextures("SpecialSparkle"), 10);
 			sparklesAnimation.pivotX = Math.ceil(sparklesAnimation.texture.width  / 2); // center art on registration point
 			sparklesAnimation.pivotY = Math.ceil(sparklesAnimation.texture.height / 2);
 			sparklesAnimation.loop = false;
 			this.addChild(sparklesAnimation);
 			
 			// blast
-			blastAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("Blast"), 30);
+			blastAnimation = new MovieClip(Statics.assets.getTextures("Blast"), 30);
 			blastAnimation.pivotX = Math.ceil(blastAnimation.texture.width  / 2); // center art on registration point
 			blastAnimation.pivotY = Math.ceil(blastAnimation.texture.height / 2);
 			blastAnimation.loop = false;
@@ -102,7 +104,7 @@ package com.jumpGame.ui
 		
 		public function updateClipRectByRatio(ratio:Number):void {
 			indicatorDark.getBounds(this, this.spriteClipRect);
-			this.spriteClipRect.offset(0, this.spriteClipRect.height * (1 - ratio));
+			this.spriteClipRect.offset(0, this.spriteClipRectHeight * (1 - ratio));
 			indicatorSprite.clipRect = this.spriteClipRect;
 		}
 	}

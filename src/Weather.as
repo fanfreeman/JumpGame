@@ -1,8 +1,8 @@
 package
 {
-	import com.greensock.TweenLite;
-	import com.greensock.easing.Linear;
-	import com.greensock.easing.Quad;
+//	import com.greensock.TweenLite;
+//	import com.greensock.easing.Linear;
+//	import com.greensock.easing.Quad;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
@@ -95,88 +95,86 @@ package
 //			this.addChild(this.snowContainer);
 			
 			// setup rain
-			if (Statics.isHardwareRendering) {
-				particleRain = new PDParticleSystem(XML(new ParticleAssets.ParticleRainXML()), Assets.getSprite("AtlasTexture2").getTexture("ParticleRain0000"));
-				Starling.juggler.add(particleRain);
-				this.addChild(particleRain);
-				particleRain.emitterX = Constants.StageWidth / 2;
-				particleRain.emitterY = 0;
-			}
+			particleRain = new PDParticleSystem(XML(new ParticleAssets.ParticleRainXML()), Statics.assets.getTexture("ParticleRain0000"));
+			Starling.juggler.add(particleRain);
+			this.addChild(particleRain);
+			particleRain.emitterX = Statics.stageWidth / 2;
+			particleRain.emitterY = 0;
 		}
 		
-		private function windRandom():void {
-			if (wind.dir == "right") {
-				nWind = Math.random() * (wind.max - wind.min) + wind.min;
-			} else if(wind.dir == "left") {
-				nWind = -Math.random() * (wind.max - wind.min) - wind.min;
-			} else {
-				nWind = Math.random() * (wind.max * 2 - wind.min) - wind.min - wind.max;
-			}
-			TweenLite.to(wind, Math.random() * 3 + 1, {force:nWind, delay:Math.random() * (windTimeMax - windTimeMin) + windTimeMin, onComplete:windRandom});
-		}
-		
-		private function createSnow(i:int):void {
-			var m:Image = new Image(Assets.getSprite("AtlasTexturePlatforms").getTexture("Snowflake0000"));
-			m.pivotX = Math.ceil(m.width / 2);
-			m.pivotY = Math.ceil(m.height / 2);
-			this.snowList[this.snowListLength] = m;
-			
-			m.y = Math.random() * - margin *2;
-			m.x = Math.random() * (Constants.StageWidth / 2 + margin) - margin * 2;
-			
-			m.rotation = Math.random() * Math.PI * 2;
-			this.snowDepthList[this.snowListLength] = Math.random() * (snowZmax * 2 - snowZmin) + snowZmin;
-			this.snowDepthList[this.snowListLength] = int(this.snowDepthList[this.snowListLength] * 100) / 100;
-			m.scaleX = m.scaleY = Math.max(0.4, (1 / (Math.max(0, this.snowDepthList[this.snowListLength])) - 0.5) * snowSize);
-			//trace("d : "+m.depth + " = scaleX " + m.scaleX)
-			if (fade == true) {
-				m.alpha = 0;
-			} else {
-				m.alpha = newAlpha(this.snowListLength);
-			}
-			this.snowContainer.addChild(m);
-			snowX(this.snowListLength);
-			snowY(this.snowListLength);
-			
-			this.snowListLength++;
-		}
-		
-		private function newAlpha(index:uint):Number {
-			if(this.snowList[index].scaleX < 2 * snowSize) {
-				nAlpha = (Math.random() * (snowAlphaMax - snowAlphaMin) + snowAlphaMin);
-			} else if(this.snowList[index].scaleX > 2 * snowSize && this.snowList[index].scaleX < 4 * snowSize) {
-				nAlpha = (Math.random() * (snowAlphaMax - snowAlphaMin) + snowAlphaMin) * 0.6;
-			} else if(this.snowList[index].scaleX > 4 * snowSize) {
-				nAlpha = (Math.random() * (snowAlphaMax - snowAlphaMin) + snowAlphaMin) * 0.4;
-			}
-			return nAlpha;
-		}
-		
-		private function snowX(index:uint):void {
-			xReset(index);
-			TweenLite.to(this.snowList[index], Math.random()*2+1, {alpha:newAlpha(index), x:this.snowList[index].x+(Math.random()*80-40+wind.force)*(this.snowList[index].scaleX), rotation:String(Math.random() * snowRotation * Math.PI * 5), onComplete:snowX, onCompleteParams:[index], ease:Quad.easeInOut, overwrite:false});
-		}
-		
-		private function snowY(index:uint):void {
-			yReset(index);
-			TweenLite.to(this.snowList[index], Math.random()*2+1, {y:this.snowList[index].y+(Math.random()*(gravity/2)+(gravity/2))*(this.snowList[index].scaleX)*3, onComplete:snowY, onCompleteParams:[index], ease:Linear.easeInOut, overwrite:false});
-		}
-		
-		private function xReset(index:uint):void {
-			if (this.snowList[index].x > Constants.StageWidth + margin) {
-				this.snowList[index].x = Math.random() * -margin;
-			} else 	if (this.snowList[index].x < -margin) {
-				this.snowList[index].x = Constants.StageWidth + Math.random() * margin;
-			}
-		}
-		
-		private function yReset(index:uint):void {
-			if (this.snowList[index].y > Constants.StageHeight + margin) {
-				this.snowList[index].y = Math.random() * -margin;
-			} else if (this.snowList[index].y < -margin) {
-				this.snowList[index].y = Constants.StageHeight + Math.random() * margin;
-			}
-		}
+//		private function windRandom():void {
+//			if (wind.dir == "right") {
+//				nWind = Math.random() * (wind.max - wind.min) + wind.min;
+//			} else if(wind.dir == "left") {
+//				nWind = -Math.random() * (wind.max - wind.min) - wind.min;
+//			} else {
+//				nWind = Math.random() * (wind.max * 2 - wind.min) - wind.min - wind.max;
+//			}
+//			TweenLite.to(wind, Math.random() * 3 + 1, {force:nWind, delay:Math.random() * (windTimeMax - windTimeMin) + windTimeMin, onComplete:windRandom});
+//		}
+//		
+//		private function createSnow(i:int):void {
+//			var m:Image = new Image(Statics.assets.getTexture("Snowflake0000"));
+//			m.pivotX = Math.ceil(m.width / 2);
+//			m.pivotY = Math.ceil(m.height / 2);
+//			this.snowList[this.snowListLength] = m;
+//			
+//			m.y = Math.random() * - margin *2;
+//			m.x = Math.random() * (Constants.StageWidth / 2 + margin) - margin * 2;
+//			
+//			m.rotation = Math.random() * Math.PI * 2;
+//			this.snowDepthList[this.snowListLength] = Math.random() * (snowZmax * 2 - snowZmin) + snowZmin;
+//			this.snowDepthList[this.snowListLength] = int(this.snowDepthList[this.snowListLength] * 100) / 100;
+//			m.scaleX = m.scaleY = Math.max(0.4, (1 / (Math.max(0, this.snowDepthList[this.snowListLength])) - 0.5) * snowSize);
+//			//trace("d : "+m.depth + " = scaleX " + m.scaleX)
+//			if (fade == true) {
+//				m.alpha = 0;
+//			} else {
+//				m.alpha = newAlpha(this.snowListLength);
+//			}
+//			this.snowContainer.addChild(m);
+//			snowX(this.snowListLength);
+//			snowY(this.snowListLength);
+//			
+//			this.snowListLength++;
+//		}
+//		
+//		private function newAlpha(index:uint):Number {
+//			if(this.snowList[index].scaleX < 2 * snowSize) {
+//				nAlpha = (Math.random() * (snowAlphaMax - snowAlphaMin) + snowAlphaMin);
+//			} else if(this.snowList[index].scaleX > 2 * snowSize && this.snowList[index].scaleX < 4 * snowSize) {
+//				nAlpha = (Math.random() * (snowAlphaMax - snowAlphaMin) + snowAlphaMin) * 0.6;
+//			} else if(this.snowList[index].scaleX > 4 * snowSize) {
+//				nAlpha = (Math.random() * (snowAlphaMax - snowAlphaMin) + snowAlphaMin) * 0.4;
+//			}
+//			return nAlpha;
+//		}
+//		
+//		private function snowX(index:uint):void {
+//			xReset(index);
+//			TweenLite.to(this.snowList[index], Math.random()*2+1, {alpha:newAlpha(index), x:this.snowList[index].x+(Math.random()*80-40+wind.force)*(this.snowList[index].scaleX), rotation:String(Math.random() * snowRotation * Math.PI * 5), onComplete:snowX, onCompleteParams:[index], ease:Quad.easeInOut, overwrite:false});
+//		}
+//		
+//		private function snowY(index:uint):void {
+//			yReset(index);
+//			TweenLite.to(this.snowList[index], Math.random()*2+1, {y:this.snowList[index].y+(Math.random()*(gravity/2)+(gravity/2))*(this.snowList[index].scaleX)*3, onComplete:snowY, onCompleteParams:[index], ease:Linear.easeInOut, overwrite:false});
+//		}
+//		
+//		private function xReset(index:uint):void {
+//			if (this.snowList[index].x > Constants.StageWidth + margin) {
+//				this.snowList[index].x = Math.random() * -margin;
+//			} else 	if (this.snowList[index].x < -margin) {
+//				this.snowList[index].x = Constants.StageWidth + Math.random() * margin;
+//			}
+//		}
+//		
+//		private function yReset(index:uint):void {
+//			if (this.snowList[index].y > Constants.StageHeight + margin) {
+//				this.snowList[index].y = Math.random() * -margin;
+//			} else if (this.snowList[index].y < -margin) {
+//				this.snowList[index].y = Constants.StageHeight + Math.random() * margin;
+//			}
+//		}
 		
 		public function scheduleFirst():void {
 			// schedule next weather effect in 10 to 20 seconds

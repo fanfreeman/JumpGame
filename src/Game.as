@@ -1,19 +1,18 @@
 package
 {
 //	import com.adobe.images.JPGEncoder;
-	import flash.system.System;
-	
+	import com.jumpGame.customObjects.ProgressBar;
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.screens.InGame;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.SoundButton;
 	
+	import flash.system.System;
+	
+	import starling.core.Starling;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.utils.AssetManager;
-	import starling.core.Starling;
-	
-	import com.jumpGame.customObjects.ProgressBar;
 
 //	import flash.utils.ByteArray;
 	
@@ -54,10 +53,10 @@ package
 			// yet. This takes some time (the assets might be loaded from disk or even via the
 			// network), during which we display a progress indicator. 
 			
-			mLoadingProgress = new ProgressBar(stage.width, 20);
+			mLoadingProgress = new ProgressBar(756, 20);
 //			mLoadingProgress.x = (stage.width - mLoadingProgress.width) / 2;
 			mLoadingProgress.x = 0;
-			mLoadingProgress.y = stage.height * 0.7;
+			mLoadingProgress.y = 650 * 0.7;
 			addChild(mLoadingProgress);
 			
 			assets.loadQueue(function(ratio:Number):void
@@ -70,20 +69,45 @@ package
 				if (ratio == 1)
 					Starling.juggler.delayCall(function():void
 					{
-						mLoadingProgress.removeFromParent(true);
-						mLoadingProgress = null;
-						showMainMenu();
-						soundButton.visible = true;
+//						mLoadingProgress.removeFromParent(true);
+//						mLoadingProgress = null;
+						mLoadingProgress.visible = false;
+						initialize(assets);
 					}, 0.15);
 			});
+		}
+		
+		private function initialize(assets:AssetManager):void {
+			// initialize static vars
+			Statics.stageWidth = stage.stageWidth;
+			Statics.stageHeight = stage.stageHeight;
+			Statics.initialize(assets);
 			
-			this.initGame(assets);
+			// start loading bgm
+			Sounds.loadBgm();
+			
+			this.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
+			
+			// menu screen
+			screenMenu = new Menu();
+			
+			// game screen
+			screenInGame = new InGame(screenMenu);
+			
+			// Create and add Sound/Mute button.
+			soundButton = new SoundButton();
+			soundButton.x = Statics.stageWidth - 46;
+			soundButton.y = Statics.stageHeight - 90;
+			soundButton.addEventListener(Event.TRIGGERED, onSoundButtonClick);
+			this.addChild(soundButton)
+				
+			showMainMenu();
 		}
 		
 		private function showMainMenu():void
 		{
 			if (screenMenu == null) {
-				Starling.juggler.delayCall(showMainMenu, 1);
+				Starling.juggler.delayCall(showMainMenu, 0.5);
 				return;
 			}
 			
@@ -127,34 +151,9 @@ package
 		 * Initialize screens. 
 		 * 
 		 */
-		private function initGame(assets:AssetManager):void
+		private function initGame():void
 		{
-			// initialize static vars
-			Statics.stageWidth = stage.stageWidth;
-			Statics.stageHeight = stage.stageHeight;
-			Statics.initialize(assets);
 			
-			// start loading bgm
-			Sounds.loadBgm();
-			
-			this.addEventListener(NavigationEvent.CHANGE_SCREEN, onChangeScreen);
-			
-			// menu screen
-			screenMenu = new Menu();
-//			this.addChild(screenMenu);
-			
-			// game screen
-			screenInGame = new InGame(screenMenu);
-//			screenInGame.visible = false;
-//			this.addChild(screenInGame);
-			
-			// Create and add Sound/Mute button.
-			soundButton = new SoundButton();
-			soundButton.x = Statics.stageWidth - 46;
-			soundButton.y = Statics.stageHeight - 90;
-			soundButton.addEventListener(Event.TRIGGERED, onSoundButtonClick);
-			soundButton.visible = false;
-			this.addChild(soundButton)
 			
 //			screenMenu.initialize();
 		}
@@ -237,8 +236,18 @@ package
 					
 					screenMenu.disposeTemporarily();
 					screenMenu.removeFromParent();
-					// initialize in game screen
-					showGame();
+					
+					// load random sky background image
+					Statics.randomSkyNum = int(Math.ceil(Math.random() * 20)).toString();
+					Statics.assets.enqueue("http://d3et7r3ga59g4e.cloudfront.net/bg/bg" + Statics.randomSkyNum + ".png");
+					mLoadingProgress.visible = true;
+					Statics.assets.loadQueue(function(ratio:Number):void {
+						mLoadingProgress.ratio = ratio;
+						if (ratio == 1.0) {
+							mLoadingProgress.visible = false;
+							showGame(); // initialize in game screen
+						}
+					});
 					break;
 			}
 		}

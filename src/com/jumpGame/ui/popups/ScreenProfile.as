@@ -52,7 +52,7 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupLarge0000"));
+			var popup:Image = new Image(Statics.assets.getTexture("PopupLarge0000"));
 			popupContainer.addChild(popup);
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
@@ -61,7 +61,7 @@ package com.jumpGame.ui.popups
 			this.addChild(popupContainer);
 			
 			// popup header
-			var popupHeader:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupHeaderProfile0000"));
+			var popupHeader:Image = new Image(Statics.assets.getTexture("PopupHeaderProfile0000"));
 			popupHeader.pivotX = Math.ceil(popupHeader.width / 2);
 			popupHeader.x = popupContainer.width / 2;
 			popupHeader.y = popup.bounds.top + 27;
@@ -69,9 +69,9 @@ package com.jumpGame.ui.popups
 			
 			// popup close button
 			var buttonClose:Button = new Button();
-			buttonClose.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.defaultSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.hoverSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.downSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
 			buttonClose.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonClose.downSkin.filter = Statics.btnInvertFilter;
 			buttonClose.useHandCursor = true;
@@ -83,12 +83,15 @@ package com.jumpGame.ui.popups
 			buttonClose.y = popup.bounds.top + 28;
 			
 			// player profile picture
-			playerPicture = new Image(Assets.getSprite("AtlasTexture8").getTexture("PictureSilhouette0000"));
+			playerPicture = new Image(Statics.assets.getTexture("PictureSilhouette0000"));
 			playerPicture.x = 107;
 			playerPicture.y = 111;
 			popupContainer.addChild(playerPicture);
+			var pictureScaleFactor:Number = 59 / playerPicture.texture.width;
+			playerPicture.scaleX = pictureScaleFactor;
+			playerPicture.scaleY = pictureScaleFactor;
 			// player profile picture frame
-			var pictureFrame:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("RankingsPictureFrame0000"));
+			var pictureFrame:Image = new Image(Statics.assets.getTexture("RankingsPictureFrame0000"));
 			pictureFrame.x = 100;
 			pictureFrame.y = 100;
 			popupContainer.addChild(pictureFrame);
@@ -149,13 +152,13 @@ package com.jumpGame.ui.popups
 		private function onPlayerPictureLoadComplete(event:flash.events.Event):void {
 			this.playerPicture.texture = Texture.fromBitmap(event.currentTarget.loader.content as Bitmap);
 			this.playerPicture.readjustSize();
-			var pictureScaleFactor:Number = 78 / playerPictureWidth;
+			var pictureScaleFactor:Number = 59 / playerPictureWidth;
 			this.playerPicture.scaleX = pictureScaleFactor;
 			this.playerPicture.scaleY = pictureScaleFactor;
 		}
 		
 		private function buttonCloseHandler(event:starling.events.Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.visible = false;
 		}

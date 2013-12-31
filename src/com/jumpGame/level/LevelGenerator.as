@@ -2,10 +2,12 @@ package com.jumpGame.level {
 	
 	public class LevelGenerator {
 		
-		private var prevElementX:Number = 0;
+//		private var prevElementX:Number = 0;
 		private var builder:LevelParser;
 		private var prevBlockNumber:uint; // prevent generating the same block again
 		private var coinGenerator:CoinPatternGenerator;
+		private var stageWidth:int;
+		private var stageHeight:int;
 		
 		public function LevelGenerator(builder:LevelParser) {
 			this.builder = builder;
@@ -13,8 +15,11 @@ package com.jumpGame.level {
 		}
 		
 		public function initialize():void {
+			this.stageWidth = Statics.stageWidth;
+			this.stageHeight = Statics.stageHeight;
 			this.prevBlockNumber = 0;
 			this.coinGenerator.initailize();
+			this.rowsToSkip = 0;
 		}
 		
 		public function generate(type:uint):void {
@@ -33,18 +38,18 @@ package com.jumpGame.level {
 			
 			switch(type) {
 				// random generation
-				case 700:
-					this.generateDesigned2001();
-					break;
-				case 701:
-					this.generateBeginnerRadiator();
-					break;
-				case 702:
-					this.generateBeginnerHearts();
-					break;
-				case 703:
-					this.generateStarCrossLarge();
-					break;
+//				case 700:
+//					this.generateDesigned2001();
+//					break;
+//				case 701:
+//					this.generateBeginnerRadiator();
+//					break;
+//				case 702:
+//					this.generateBeginnerHearts();
+//					break;
+//				case 703:
+//					this.generateStarCrossLarge();
+//					break;
 				
 				case 800:
 					this.prevBlockNumber = 0; // only one block type for this difficulty, therefore allow immediate repeat
@@ -76,18 +81,21 @@ package com.jumpGame.level {
 				case 904:
 					this.generateStairWithName("PlatformNormal", 4);
 					break;
+				case 905:
+					this.generateDesigned2001();
+					break;
 				
 				case 1000: // 1 size 5 normal platform per row
 					// normal, drop, mobile, normalboost, etc.
 					elementDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
 					// size 1, 2, 3, 4, 5
 					sizeDistribution = new Array(0, 0, 0, 0.6, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				case 1001: // [1] size [4-5] [normal, drop] platforms per row
 					elementDistribution = new Array(0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
 					sizeDistribution = new Array(0, 0, 0, 0.5, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				
 				case 2000: // designed pattern
@@ -118,12 +126,12 @@ package com.jumpGame.level {
 				case 3000: // [1] size [3-5] [normal, drop, mobile, normalboost, mobileboost]
 					elementDistribution = new Array(0.3, 0.6, 0.9, 0.97, 0.97, 1.0, 1.0, 1.0);
 					sizeDistribution = new Array(0, 0, 0, 0.6, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				case 3001: // [1] size [3-5] [normal, drop, mobile, normalboost, dropboost, mobileboost]
 					elementDistribution = new Array(0.2, 0.5, 0.8, 0.9, 0.98, 1.0, 1.0, 1.0);
 					sizeDistribution = new Array(0, 0, 0, 0.7, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				
 				case 4000: // designed pattern
@@ -133,7 +141,7 @@ package com.jumpGame.level {
 					this.generateEasySpinners();
 					break;
 				case 4002:
-					this.generateAttractorsTwoColumns();
+					this.generateStairWithName("PlatformNormalBoost", 4, 2);
 					break;
 				case 4003:
 					this.generateMovingStarsHorizontal();
@@ -144,15 +152,15 @@ package com.jumpGame.level {
 				case 4005:
 					this.generateBeginnerSpinningCircles(2);
 					break;
-				case 4006:
-					this.generateStairWithName("PlatformNormalBoost", 4, 2);
-					break;
+//				case 4006:
+//					this.generateAttractorsTwoColumns();
+//					break;
 				
-				case 5000: // [2] size [3-4] [normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
+				case 5000: // [2] size [3-4] [normal, drop, mobile, normalboost, dropboost, mobileboost, bouncer, super]
 					this.prevBlockNumber = 0; // only one block type for this difficulty, therefore allow immediate repeat
-					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
+					elementDistribution = new Array(0.1, 0.4, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0);
 					sizeDistribution = new Array(0, 0, 0.3, 1.0, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				
 				case 6000: // designed pattern
@@ -202,9 +210,9 @@ package com.jumpGame.level {
 				
 				case 9000: // [2] size [1-3] [normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
 					this.prevBlockNumber = 0; // only one block type for this difficulty, therefore allow immediate repeat
-					elementDistribution = new Array(0.03, 0.35, 0.8, 0.83, 0.86, 0.9, 0.95, 1.0);
+					elementDistribution = new Array(0.03, 0.3, 0.7, 0.76, 0.82, 0.88, 0.94, 1.0);
 					sizeDistribution = new Array(0, 0, 1.0, 1.0, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
 				
 				case 10000:
@@ -231,7 +239,7 @@ package com.jumpGame.level {
 				
 				case 11000: // [1] size [2-4] [normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
 					this.prevBlockNumber = 0; // only one block type for this difficulty, therefore allow immediate repeat
-					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
+					elementDistribution = new Array(0.1, 0.3, 0.6, 0.68, 0.76, 0.84, 0.92, 1.0);
 					sizeDistribution = new Array(0, 0, 0.7, 1.0, 1.0)
 					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 					break;
@@ -257,7 +265,7 @@ package com.jumpGame.level {
 				
 				case 13000:
 					this.prevBlockNumber = 0; // only one block type for this difficulty, therefore allow immediate repeat
-					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
+					elementDistribution = new Array(0.1, 0.3, 0.6, 0.68, 0.76, 0.84, 0.92, 1.0);
 					sizeDistribution = new Array(0, 0, 0.5, 1.0, 1.0)
 					this.generateRandom(height, false, elementDistribution, sizeDistribution, false, 0.2, 0);
 					break;
@@ -280,7 +288,7 @@ package com.jumpGame.level {
 				
 				case 15000:
 					this.prevBlockNumber = 0; // only one block type for this difficulty, therefore allow immediate repeat
-					elementDistribution = new Array(0.1, 0.4, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0);
+					elementDistribution = new Array(0.1, 0.3, 0.6, 0.68, 0.76, 0.84, 0.92, 1.0);
 					sizeDistribution = new Array(0, 0, 0.7, 1.0, 1.0)
 					this.generateRandom(height, false, elementDistribution, sizeDistribution, false, 0.25, 0);
 					break;
@@ -357,10 +365,10 @@ package com.jumpGame.level {
 //					this.generateRandom(height, false, elementDistribution, sizeDistribution, false, 0, 0.5);
 					
 //					this.generateDesigned2000(6);
-					
-					elementDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
-					sizeDistribution = new Array(0.0, 0.0, 0.0, 0.6, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
+					//[normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
+					elementDistribution = new Array(0, 0, 0, 0.2, 0.5, 0.8, 0.9, 1.0);
+					sizeDistribution = new Array(0, 0, 0, 0.7, 1.0)
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 //					this.generateSingleRisingMobile(3);
 //					this.generateDesignedPlatformAndReuplsor(2);
 //					this.generateStairWithName("PlatformNormal", 4);
@@ -396,6 +404,7 @@ package com.jumpGame.level {
 		 * generate random segment according to specifications
 		 * @param height the height of a block to generate
 		 */
+		private var rowsToSkip:uint;
 		private function generateRandom(height:int, isBonusMode:Boolean, elementDistribution:Array, 
 										sizeDistribution:Array, twoPerRow:Boolean, chanceRepulsor:Number = 0, chanceStarDark:Number = 0):void {
 			var gx:Number = 0;
@@ -406,49 +415,55 @@ package com.jumpGame.level {
 			if (twoPerRow) elementsPerRow = 2;
 			
 			while (this.builder.currentY < roof) { // one row of platforms
-				for (var i:uint = 0; i < elementsPerRow; i++) { // loop through elements on the same row
-					var border:Number = Constants.StageWidth / 15;
-					if (elementsPerRow == 2 && i == 0) { // left element
-						gx = Math.random() * (Constants.StageWidth / 2 - border * 2) - (Constants.StageWidth / 2 - border);
-					}
-					else if (elementsPerRow == 2 && i == 1) { // right element
-						gx = Math.random() * (Constants.StageWidth / 2 - border * 2) + (border);
-					}
-					else gx = Math.random() * 400 - 200 + this.prevElementX; // do not place consecutive platforms too far apart
-					// do not go off sides of screen
-					if (gx < -Constants.StageWidth / 2 + 300) {
-						this.prevElementX = -Constants.StageWidth / 2 + 300;
-					}
-					else if (gx > Constants.StageWidth / 2 - 300) {
-						this.prevElementX = Constants.StageWidth / 2 - 300;
-					}
-					gy = this.builder.currentY * Constants.UnitHeight;
-					
-					var elementClass:String = this.getElementClassByDistribution(elementDistribution);
-					var elementSize:int = 0;
-					if ([Constants.PlatformNormal, Constants.PlatformDrop, Constants.PlatformMobile,
-						Constants.PlatformNormalBoost, Constants.PlatformDropBoost, Constants.PlatformMobileBoost].indexOf(elementClass) != -1) {
-						elementSize = this.getElementSizeByDistribution(sizeDistribution);
-					}
-					// make platforms smaller on repetitions
-					if (this.builder.repetitions > 0) {
-						if (this.builder.repetitions > 1) elementSize -= 2;
-						else elementSize--;
-						if (elementSize < 2) elementSize = 2;
-					}
-					this.builder.levelElementsArray.push([gy, gx, elementClass, elementSize]);
-				} // eof loop through elements on the same row
-				
-				// add coins
-//				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, Math.random() * 400 - 200, Constants.Coin]);
-//				this.builder.currentY++;
-//				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, Math.random() * 400 - 200, Constants.Coin]);
-//				this.builder.currentY++;
-//				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, Math.random() * 400 - 200, Constants.Coin]);
-//				this.builder.currentY++;
-//				if (Math.random() < 0.33) { // add coins
-//					this.addCoins();
-//				}
+				if (this.rowsToSkip > 0) { // skip row
+					this.rowsToSkip--;
+				} else { // do not skp row; add platform(s)
+					for (var i:uint = 0; i < elementsPerRow; i++) { // loop through elements on the same row
+						var border:Number = this.stageWidth / 15;
+						if (elementsPerRow == 2 && i == 0) { // left element
+							gx = Math.random() * (this.stageWidth / 2 - border * 2) - (this.stageWidth / 2 - border);
+						}
+						else if (elementsPerRow == 2 && i == 1) { // right element
+							gx = Math.random() * (this.stageWidth / 2 - border * 2) + (border);
+						}
+							//					else gx = Math.random() * 400 - 200 + this.prevElementX; // do not place consecutive platforms too far apart
+						else gx = Math.random() * 600 - 300;
+						// do not go off sides of screen
+						//					if (gx < -this.stageWidth / 2 + 300) {
+						//						this.prevElementX = -this.stageWidth / 2 + 300;
+						//					}
+						//					else if (gx > this.stageWidth / 2 - 300) {
+						//						this.prevElementX = this.stageWidth / 2 - 300;
+						//					}
+						gy = this.builder.currentY * Constants.UnitHeight;
+						
+						var elementClass:String = this.getElementClassByDistribution(elementDistribution);
+						var elementSize:int = 0;
+						
+						if ([Constants.PlatformNormal, Constants.PlatformDrop, Constants.PlatformMobile].indexOf(elementClass) != -1) {
+							elementSize = this.getElementSizeByDistribution(sizeDistribution);
+						}
+						else if ([Constants.PlatformNormalBoost, Constants.PlatformDropBoost, Constants.PlatformMobileBoost].indexOf(elementClass) != -1) {
+							if (Math.random() < 0.5) this.rowsToSkip = 1;
+							elementSize = this.getElementSizeByDistribution(sizeDistribution);
+						}
+//						else if (elementClass == Constants.PlatformSuper) {
+//							if (Math.random() < 0.5) this.rowsToSkip = 6;
+//						}
+						
+						//					if ([Constants.PlatformNormal, Constants.PlatformDrop, Constants.PlatformMobile,
+						//						Constants.PlatformNormalBoost, Constants.PlatformDropBoost, Constants.PlatformMobileBoost].indexOf(elementClass) != -1) {
+						//						elementSize = this.getElementSizeByDistribution(sizeDistribution);
+						//					}
+						// make platforms smaller on repetitions
+						if (this.builder.repetitions > 0) {
+							if (this.builder.repetitions > 1) elementSize -= 2;
+							else elementSize--;
+							if (elementSize < 2) elementSize = 2;
+						}
+						this.builder.levelElementsArray.push([gy, gx, elementClass, elementSize]);
+					} // eof loop through elements on the same row
+				}
 				
 				// repulsor/dark stars
 				var prevElemGx:Number = gx;
@@ -472,7 +487,9 @@ package com.jumpGame.level {
 //				this.coinGenerator.addRow();
 				this.builder.currentY++;
 				this.coinGenerator.addSimplePattern();
-				this.builder.currentY+=2;
+				this.builder.currentY++;
+				this.addRedStarsAtRandom(0.03);
+				this.builder.currentY++;
 			} // eof one row
 		} // eof generateRandom()
 		
@@ -547,16 +564,18 @@ package com.jumpGame.level {
 			var gy:Number;
 			for (var i:uint = 0; i < 24; i++) {
 				gy = this.builder.currentY * Constants.UnitHeight;
+				this.builder.levelElementsArray.push([gy, gx - 50, "StarBlue"]);
 				this.builder.levelElementsArray.push([gy, gx, "StarBlue"]);
+				this.builder.levelElementsArray.push([gy, gx + 50, "StarBlue"]);
 				this.builder.currentY += 2;
 			}
 			if (difficulty < 3) {
 				this.builder.levelElementsArray.push([gy, gx, "PlatformMobileBoost", 4, 0, 0.5]);
 			}
 			else {
-				var separationX:Number = (Statics.stageWidth) / 12;
+				var separationX:Number = (this.stageWidth) / 12;
 				for (i = 0; i < 12; i++) {
-					gx = 35 + i * separationX - (Statics.stageWidth) / 2;
+					gx = 35 + i * separationX - (this.stageWidth) / 2;
 					this.builder.levelElementsArray.push([gy, gx, "PlatformDropBoost", 2, 0, 0.5]);
 				}
 				
@@ -588,7 +607,7 @@ package com.jumpGame.level {
 				var numElementsPerRow:uint = 6;
 				for (i = 0;  i < numElementsPerRow; i++) { // loop through elements on the same row
 					// get new gx and gy values for new element
-					gx = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1) - Constants.StageWidth / 2;
+					gx = (this.stageWidth / (numElementsPerRow + 1)) * (i + 1) - this.stageWidth / 2;
 					gy = this.builder.currentY * Constants.UnitHeight;
 					this.builder.levelElementsArray.push([gy, gx, "StarRed"]);
 				} // eof loop through elements on the same row
@@ -804,21 +823,22 @@ package com.jumpGame.level {
 				for (var i:uint = 0;  i < numElementsPerRow; i++) { // loop through elements on the same row
 					// get new gx and gy values for new element
 					if (prevType == 1)
-						gx = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1) - Constants.StageWidth / 2;
+						gx = (this.stageWidth / (numElementsPerRow + 1)) * (i + 1) - this.stageWidth / 2;
 					else {
 						if (i == numElementsPerRow - 1) break;
-						gx = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1.5) - Constants.StageWidth / 2;
+						gx = (this.stageWidth / (numElementsPerRow + 1)) * (i + 1.5) - this.stageWidth / 2;
 					}
 					
 					if (difficulty == 1) {
-						this.builder.levelElementsArray.push([gy, gx, "Star"]);
+						if (Math.random() < 0.2) this.builder.levelElementsArray.push([gy, gx, "StarBlue"]);
+						else this.builder.levelElementsArray.push([gy, gx, "Star"]);
 					}
 					else if (difficulty == 2) {
-						if (Math.random() > 0.8) this.builder.levelElementsArray.push([gy, gx, "Repulsor"]);
+						if (Math.random() < 0.2) this.builder.levelElementsArray.push([gy, gx, "Repulsor"]);
 						else this.builder.levelElementsArray.push([gy, gx, "Star", 0]);
 					}
 					else if (difficulty == 3) {
-						if (Math.random() > 0.8) this.builder.levelElementsArray.push([gy, gx, "StarDark"]);
+						if (Math.random() < 0.2) this.builder.levelElementsArray.push([gy, gx, "StarDark"]);
 						else this.builder.levelElementsArray.push([gy, gx, "Star", 0]);
 					}
 				} // eof loop through elements on the same row
@@ -874,12 +894,12 @@ package com.jumpGame.level {
 		private function generateSineWave(difficulty:uint = 1):void {
 			var gx:Number = 0;
 			var gy:Number = 0;
-			for (var ri:uint = 0; ri < 80; ri++) { // loop through rows
+			for (var ri:uint = 0; ri < 40; ri++) { // loop through rows
 				var numElementsPerRow:int = 2;
 				gy = this.builder.currentY * Constants.UnitHeight;
 				for (var i:uint = 0;  i < numElementsPerRow; i++) { // loop through elements on the same row
 					// get new gx and gy values for new element
-					gx = ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8) + (i - 0.5) * 100;
+					gx = ((this.stageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8) + (i - 0.5) * 100;
 					
 					if (difficulty == 1) {
 						this.builder.levelElementsArray.push([gy, gx, "Star", 0]);
@@ -897,17 +917,18 @@ package com.jumpGame.level {
 				
 				// add coin
 				this.builder.currentY ++;
-				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8), Constants.Coin]); // coin
+				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, ((this.stageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8), Constants.Coin]); // coin
 				this.builder.currentY ++;
 			}
 			// two blue stars at the end
 			gy = this.builder.currentY * Constants.UnitHeight;
-			gx = ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8) + (-0.5) * 100;
+			gx = ((this.stageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8) + (-0.5) * 100;
 			this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0]);
-			gx = ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8) + (0.5) * 100;
+			gx = ((this.stageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8) + (0.5) * 100;
 			this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0]);
 			
 			this.builder.currentY += 4;
+			this.addRedStarsAtRandom(0.1);
 		}
 		
 		// easy two random curved lines of stars
@@ -920,15 +941,15 @@ package com.jumpGame.level {
 				var numElementsPerRow:int = 2;
 				// line 1
 				gx = Math.random() * 100 - 50 + prevGx1;
-				if (gx > Constants.StageWidth / 2 - 50) gx = Constants.StageWidth / 2 - 50;
-				else if (gx < -Constants.StageWidth / 2 + 50) gx = -Constants.StageWidth / 2 + 50;
+				if (gx > this.stageWidth / 2 - 50) gx = this.stageWidth / 2 - 50;
+				else if (gx < -this.stageWidth / 2 + 50) gx = -this.stageWidth / 2 + 50;
 				prevGx1 = gx;
 				gy = this.builder.currentY * Constants.UnitHeight;
 				this.builder.levelElementsArray.push([gy, gx, "Star"]);
 				// line 2
 				gx = Math.random() * 100 - 50 + prevGx2;
-				if (gx > Constants.StageWidth / 2 - 50) gx = Constants.StageWidth / 2 - 50;
-				else if (gx < -Constants.StageWidth / 2 + 50) gx = -Constants.StageWidth / 2 + 50;
+				if (gx > this.stageWidth / 2 - 50) gx = this.stageWidth / 2 - 50;
+				else if (gx < -this.stageWidth / 2 + 50) gx = -this.stageWidth / 2 + 50;
 				prevGx2 = gx;
 				gy = this.builder.currentY * Constants.UnitHeight;
 				this.builder.levelElementsArray.push([gy, gx, "Star"]);
@@ -1012,7 +1033,7 @@ package com.jumpGame.level {
 			var gy:Number = this.builder.currentY * Constants.UnitHeight;
 			for (var i:uint = 0;  i < numElementsPerRow; i++) { // loop through elements on the same row
 				// get new gx and gy values for new element
-				gx = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1) - Constants.StageWidth / 2;
+				gx = (this.stageWidth / (numElementsPerRow + 1)) * (i + 1) - this.stageWidth / 2;
 				this.builder.levelElementsArray.push([gy, gx, "StarRed"]);
 			} // eof loop through elements on the same row
 			
@@ -1028,7 +1049,7 @@ package com.jumpGame.level {
 			var gy:Number = this.builder.currentY * Constants.UnitHeight;
 			for (var i:uint = 0;  i < numElementsPerRow; i++) { // loop through elements on the same row
 				// get new gx and gy values for new element
-				gx = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1) - Constants.StageWidth / 2;
+				gx = (this.stageWidth / (numElementsPerRow + 1)) * (i + 1) - this.stageWidth / 2;
 				this.builder.levelElementsArray.push([gy, gx, "StarBlue"]);
 			} // eof loop through elements on the same row
 			
@@ -1041,7 +1062,7 @@ package com.jumpGame.level {
 					var numElementsPerRow:uint = 8;
 					for (var i:uint = 0;  i < numElementsPerRow; i++) { // loop through elements on the same row
 						// get new gx and gy values for new element
-						var gx:Number = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1) - Constants.StageWidth / 2;
+						var gx:Number = (this.stageWidth / (numElementsPerRow + 1)) * (i + 1) - this.stageWidth / 2;
 						var gy:Number = (this.builder.currentY + 1 + ri) * Constants.UnitHeight;
 						this.builder.levelElementsArray.push([gy, gx, "Coin"]);
 					} // eof loop through elements on the same row
@@ -1099,6 +1120,7 @@ package com.jumpGame.level {
 				patternArray.sort(sortOnElementGy);
 				this.builder.levelElementsArray = this.builder.levelElementsArray.concat(patternArray);
 				this.builder.currentY += 8;
+				this.addRedStarsAtRandom(0.2);
 			}
 		}
 		
@@ -1112,7 +1134,7 @@ package com.jumpGame.level {
 				// left line
 				// get new gx and gy values for new element
 				var sinVal:Number = Math.sin(this.builder.currentY / 8);
-				gx = ((Constants.StageWidth) / 4) * sinVal;
+				gx = ((this.stageWidth) / 4) * sinVal;
 				gy = this.builder.currentY * Constants.UnitHeight;
 				this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0]);
 				
@@ -1124,7 +1146,7 @@ package com.jumpGame.level {
 				
 				
 				this.builder.currentY ++;
-				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8), Constants.Coin]); // coin
+				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, ((this.stageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8), Constants.Coin]); // coin
 				this.builder.currentY ++;
 			}
 			this.builder.currentY += 4;
@@ -1297,13 +1319,13 @@ package com.jumpGame.level {
 				gy = this.builder.currentY * Constants.UnitHeight;
 				
 				if (gx < 0) {
-					this.builder.levelElementsArray.push([gy, gx, "Coin"]);
+					this.builder.levelElementsArray.push([gy, gx, "CoinBubble"]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true, Math.PI / 2]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true, Math.PI]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, true, Math.PI * 3 / 2]);
 				} else {
-					this.builder.levelElementsArray.push([gy, gx, "Coin"]);
+					this.builder.levelElementsArray.push([gy, gx, "CoinBubble"]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false, Math.PI / 2]);
 					this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false, Math.PI]);
@@ -1402,8 +1424,10 @@ package com.jumpGame.level {
 				if (difficulty == 1) { // two straight lines at the left and right edges
 					var randomNum:Number = Math.random();
 					if (randomNum < 0.5) {
-						this.builder.levelElementsArray.push([gy, -100, "Star"]);
-						this.builder.levelElementsArray.push([gy, 100, "Star"]);
+						if (randomNum < 0.05) this.builder.levelElementsArray.push([gy, -100, "StarRed"]);
+						else this.builder.levelElementsArray.push([gy, -100, "Star"]);
+						if (randomNum >= 0.45) this.builder.levelElementsArray.push([gy, 100, "StarRed"]);
+						else this.builder.levelElementsArray.push([gy, 100, "Star"]);
 						this.builder.levelElementsArray.push([gy, 0, "Coin"]);
 					} else {
 						this.builder.levelElementsArray.push([gy, -100, "Coin"]);
@@ -1540,7 +1564,7 @@ package com.jumpGame.level {
 				// left line
 				// get new gx and gy values for new element
 				var sinVal:Number = Math.sin(this.builder.currentY / 8);
-				gx = ((Constants.StageWidth) / 4) * sinVal;
+				gx = ((this.stageWidth) / 4) * sinVal;
 				gy = this.builder.currentY * Constants.UnitHeight;
 				this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100]);
 				
@@ -1551,7 +1575,7 @@ package com.jumpGame.level {
 				this.builder.levelElementsArray.push([gy, gx, "Star", 0, 0, 0, 100, null, false, 0]);
 				
 				this.builder.currentY ++;
-				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8), Constants.Coin]); // coin
+				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, ((this.stageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8), Constants.Coin]); // coin
 				this.builder.currentY ++;
 			}
 			this.builder.currentY += 4;
@@ -1620,7 +1644,7 @@ package com.jumpGame.level {
 						var numElementsPerRow:uint = 6;
 						for (var i:uint = 0;  i < numElementsPerRow; i++) { // loop through elements on the same row
 							// get new gx and gy values for new element
-							gx = (Constants.StageWidth / (numElementsPerRow + 1)) * (i + 1) - Constants.StageWidth / 2;
+							gx = (this.stageWidth / (numElementsPerRow + 1)) * (i + 1) - this.stageWidth / 2;
 							this.builder.levelElementsArray.push([gy, gx, "StarRed", 0, 0, 1]);
 						} // eof loop through elements on the same row
 					}
@@ -1760,7 +1784,7 @@ package com.jumpGame.level {
 				// left line
 				// get new gx and gy values for new element
 				var sinVal:Number = Math.sin(this.builder.currentY / 8);
-				gx = ((Constants.StageWidth) / 4) * sinVal;
+				gx = ((this.stageWidth) / 4) * sinVal;
 				gy = this.builder.currentY * Constants.UnitHeight;
 				this.builder.levelElementsArray.push([gy, gx, "Star", 0]);
 				
@@ -1776,7 +1800,7 @@ package com.jumpGame.level {
 					
 					
 				this.builder.currentY ++;
-				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, ((Constants.StageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8), Constants.Coin]); // coin
+				this.builder.levelElementsArray.push([this.builder.currentY * Constants.UnitHeight, ((this.stageWidth - 100) / 2) * Math.sin(this.builder.currentY / 8), Constants.Coin]); // coin
 				this.builder.currentY ++;
 			}
 			this.builder.currentY += 4;
@@ -1801,6 +1825,26 @@ package com.jumpGame.level {
 				this.builder.currentY += 3;
 			}
 			this.builder.currentY += 4;
+		}
+		
+		private function addRedStarsAtRandom(probability:Number):void {
+			if (Math.random() < probability) {
+				var gx:Number = Math.random() * 600 - 300;
+				var gy:Number = this.builder.currentY * Constants.UnitHeight;
+				if (gx < 0) {
+					this.builder.levelElementsArray.push([gy, gx, "CoinBubble"]);
+					this.builder.levelElementsArray.push([gy, gx, "StarRed", 0, 0, 0, 50, null, true]);
+					this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0, 0, 0, 50, null, true, Math.PI / 2]);
+					this.builder.levelElementsArray.push([gy, gx, "StarRed", 0, 0, 0, 50, null, true, Math.PI]);
+					this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0, 0, 0, 50, null, true, Math.PI * 3 / 2]);
+				} else {
+					this.builder.levelElementsArray.push([gy, gx, "CoinBubble"]);
+					this.builder.levelElementsArray.push([gy, gx, "StarRed", 0, 0, 0, 50, null, false]);
+					this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0, 0, 0, 50, null, false, Math.PI / 2]);
+					this.builder.levelElementsArray.push([gy, gx, "StarRed", 0, 0, 0, 50, null, false, Math.PI]);
+					this.builder.levelElementsArray.push([gy, gx, "StarBlue", 0, 0, 0, 50, null, false, Math.PI * 3 / 2]);
+				}
+			}
 		}
 	}
 }

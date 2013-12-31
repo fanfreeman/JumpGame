@@ -20,9 +20,9 @@ package com.jumpGame.ui.components
 	
 	import starling.display.Image;
 	import starling.events.Event;
-	import starling.events.Touch;
-	import starling.events.TouchEvent;
-	import starling.events.TouchPhase;
+//	import starling.events.Touch;
+//	import starling.events.TouchEvent;
+//	import starling.events.TouchPhase;
 	import starling.textures.Texture;
 	import starling.textures.TextureSmoothing;
 
@@ -30,7 +30,7 @@ package com.jumpGame.ui.components
 	{
 		public function RankingItemRenderer()
 		{
-			this.addEventListener(TouchEvent.TOUCH, touchHandler);
+//			this.addEventListener(TouchEvent.TOUCH, touchHandler);
 			this.addEventListener(starling.events.Event.REMOVED_FROM_STAGE, removedFromStageHandler);
 		}
 		
@@ -122,7 +122,9 @@ package com.jumpGame.ui.components
 		protected var titleLabel:Label;
 		protected var captionLabel:Label;
 		protected var profilePicture:Image;
+		protected var helpButton:Button;
 		protected var loader:Loader;
+		protected var silhouette:Texture;
 		
 		protected var _index:int = -1;
 		
@@ -195,41 +197,23 @@ package com.jumpGame.ui.components
 		
 		override protected function initialize():void
 		{
-			this.width = 437;
-			this.height = 90;
+			this.width = 345;
+			this.height = 80;
 			this.useHandCursor = true;
 			
 			var itemBgButton:Button = new Button();
-			itemBgButton.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsItemBg0000"));
-			itemBgButton.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsItemBg0000"));
-			itemBgButton.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsItemBg0000"));
+			itemBgButton.defaultSkin = new Image(Statics.assets.getTexture("RankingsItemBg0000"));
+			itemBgButton.hoverSkin = new Image(Statics.assets.getTexture("RankingsItemBg0000"));
+			itemBgButton.downSkin = new Image(Statics.assets.getTexture("RankingsItemBg0000"));
 			itemBgButton.hoverSkin.filter = Statics.btnBrightnessFilter;
 			itemBgButton.downSkin.filter = Statics.btnInvertFilter;
+			itemBgButton.addEventListener(starling.events.Event.TRIGGERED, btnItemHandler);
 			this.addChild(itemBgButton);
 			
 			if (!this.titleLabel) {
 				this.titleLabel = new Label();
 				titleLabel.touchable = false;
 				titleLabel.textRendererFactory = function():ITextRenderer
-				{
-					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
-					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("Materhorn24"));
-					textFormat.align = TextFormatAlign.LEFT;
-					textRenderer.textFormat = textFormat;
-					textRenderer.smoothing = TextureSmoothing.NONE;
-					return textRenderer;
-				}
-				titleLabel.width = this.width;
-				titleLabel.height = 35;
-				titleLabel.x = 110;
-				titleLabel.y = 30;
-				this.addChild(this.titleLabel);
-			}
-			
-			if (!this.captionLabel) {
-				this.captionLabel = new Label();
-				captionLabel.touchable = false;
-				captionLabel.textRendererFactory = function():ITextRenderer
 				{
 					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
 					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("BellGothicBlack13"));
@@ -239,30 +223,84 @@ package com.jumpGame.ui.components
 					textRenderer.smoothing = TextureSmoothing.NONE;
 					return textRenderer;
 				}
+				titleLabel.width = this.width;
+				titleLabel.height = 25;
+				titleLabel.x = 90;
+				titleLabel.y = 20;
+				this.addChild(this.titleLabel);
+			}
+			
+			if (!this.captionLabel) {
+				this.captionLabel = new Label();
+				captionLabel.touchable = false;
+				captionLabel.textRendererFactory = function():ITextRenderer
+				{
+					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
+					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("Materhorn24"));
+					textFormat.align = TextFormatAlign.LEFT;
+					textRenderer.textFormat = textFormat;
+					textRenderer.smoothing = TextureSmoothing.NONE;
+					return textRenderer;
+				}
 				captionLabel.width = this.width;
 				captionLabel.height = 35;
-				captionLabel.x = 111;
-				captionLabel.y = 55;
+				captionLabel.x = 89;
+				captionLabel.y = 38;
 				this.addChild(this.captionLabel);
 			}
 			
+			this.silhouette = Statics.assets.getTexture("PictureSilhouette0000");
 			if (!this.profilePicture) {
-				this.profilePicture = new Image(Assets.getSprite("AtlasTexture8").getTexture("PictureSilhouette0000"));
+				this.profilePicture = new Image(silhouette);
 				profilePicture.touchable = false;
-				profilePicture.x = 16;
-				profilePicture.y = 15;
+				profilePicture.x = 14;
+				profilePicture.y = 13;
 				this.addChild(this.profilePicture);
+				var pictureScaleFactor:Number = 60 / this.silhouette.width;
+				this.profilePicture.scaleX = pictureScaleFactor;
+				this.profilePicture.scaleY = pictureScaleFactor;
 				
 				// player profile picture frame
-				var pictureFrame:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("RankingsPictureFrame0000"));
-				pictureFrame.x = 7;
-				pictureFrame.y = 4;
+				var pictureFrame:Image = new Image(Statics.assets.getTexture("RankingsPictureFrame0000"));
+				pictureFrame.x = 6;
+				pictureFrame.y = 3;
 				this.addChild(pictureFrame);
 			}
+			
+			// action button
+			helpButton = new Button();
+			helpButton.defaultSkin = new Image(Statics.assets.getTexture("RankingsBtnHelp0000"));
+			helpButton.hoverSkin = new Image(Statics.assets.getTexture("RankingsBtnHelp0000"));
+			helpButton.downSkin = new Image(Statics.assets.getTexture("RankingsBtnHelp0000"));
+			helpButton.hoverSkin.filter = Statics.btnBrightnessFilter;
+			helpButton.downSkin.filter = Statics.btnInvertFilter;
+			helpButton.useHandCursor = true;
+			helpButton.addEventListener(starling.events.Event.TRIGGERED, btnHelpHandler);
+			this.addChild(helpButton);
+			helpButton.validate();
+			helpButton.pivotX = helpButton.width;
+			helpButton.x = this.width;
+			helpButton.y = 29;
 			
 //			ExternalInterface.addCallback("returnProfilePictureUrlToAs", Statics.pictureUrlReturnedFromJs);
 			loader = new Loader();
 			loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onPictureLoadComplete);
+		}
+		
+		protected function btnItemHandler(event:starling.events.Event):void {
+			this.isSelected = true;
+		}
+		
+		protected function btnHelpHandler(event:starling.events.Event):void {
+			trace("btn helped touched");
+			event.stopImmediatePropagation();
+			
+			if (this.itemToFacebookId(this._data) == Statics.facebookId) { // trying to help self
+//				trace("cannot help self");
+			}
+			else if(ExternalInterface.available){
+				ExternalInterface.call("sendLife", this.itemToFacebookId(this._data));
+			}
 		}
 		
 		private function pictureUrlReturnedFromJs(facebookId:String, pictureUrlData:Object):void {
@@ -322,21 +360,29 @@ package com.jumpGame.ui.components
 			if(this._data && this._owner)
 			{
 				this.titleLabel.text = this.itemToTitle(this._data);
-				this.captionLabel.text = "High Score: " + this.itemToCaption(this._data);
+				this.captionLabel.text = this.itemToCaption(this._data);
 				
-				// load profile picture
-				var profilePicUrl:String = this.itemToPictureUrl(this._data);
-				if (profilePicUrl == null) { // tried getting picture data but unsuccessful
-					// do nothing
-				}
-				else if (profilePicUrl == "none") { // no attempt made at getting picture data yet, so do so
-					if(ExternalInterface.available){
-						ExternalInterface.call("getProfilePictureUrl", this.itemToFacebookId(this._data));
-//						trace("getting picture data for facebook id: " + this.itemToFacebookId(this._data));
+//				if (Statics.showRankingsProfilePics) {
+					// load profile picture
+					var profilePicUrl:String = this.itemToPictureUrl(this._data);
+					if (profilePicUrl == null) { // tried getting picture data but unsuccessful
+						// do nothing
 					}
-				} else { // picture data available, load picture
-					loader.load(new URLRequest(profilePicUrl));
-				}
+					else if (profilePicUrl == "none") { // no attempt made at getting picture data yet, so do so
+						if(ExternalInterface.available){
+							ExternalInterface.call("getProfilePictureUrl", this.itemToFacebookId(this._data));
+							//						trace("getting picture data for facebook id: " + this.itemToFacebookId(this._data));
+						}
+					} else { // picture data available, load picture
+						loader.load(new URLRequest(profilePicUrl));
+					}
+//				} else { // global rankings; show generic silhouette
+//					this.profilePicture.texture = this.silhouette;
+//					this.profilePicture.readjustSize();
+//					var pictureScaleFactor:Number = 59 / this.silhouette.width;
+//					this.profilePicture.scaleX = pictureScaleFactor;
+//					this.profilePicture.scaleY = pictureScaleFactor;
+//				}
 			}
 			else
 			{
@@ -361,7 +407,7 @@ package com.jumpGame.ui.components
 			// scale profile picture to fit box
 			var profilePicWidth:uint = this.itemToPictureWidth(this._data);
 			if (profilePicWidth != 0) {
-				var pictureScaleFactor:Number = 70 / profilePicWidth;
+				var pictureScaleFactor:Number = 60 / profilePicWidth;
 				this.profilePicture.scaleX = pictureScaleFactor;
 				this.profilePicture.scaleY = pictureScaleFactor;
 			}
@@ -426,55 +472,56 @@ package com.jumpGame.ui.components
 		protected var touchPointID:int = -1;
 		private static const HELPER_POINT:Point = new Point();
 		
-		protected function touchHandler(event:TouchEvent):void
-		{
-			const touches:Vector.<Touch> = event.getTouches(this);
-			if(touches.length == 0)
-			{
-				//hover has ended
-				return;
-			}
-			if(this.touchPointID >= 0)
-			{
-				var touch:Touch;
-				for each(var currentTouch:Touch in touches)
-				{
-					if(currentTouch.id == this.touchPointID)
-					{
-						touch = currentTouch;
-						break;
-					}
-				}
-				if(!touch)
-				{
-					return;
-				}
-				if(touch.phase == TouchPhase.ENDED)
-				{
-					this.touchPointID = -1;
-					
-					touch.getLocation(this.stage, HELPER_POINT);
-					//check if the touch is still over the target
-					const isInBounds:Boolean = this.contains(this.stage.hitTest(HELPER_POINT, true));
-					if(isInBounds)
-					{
-						this.isSelected = true;
-					}
-					return;
-				}
-			}
-			else
-			{
-				for each(touch in touches)
-				{
-					if(touch.phase == TouchPhase.BEGAN)
-					{
-						this.touchPointID = touch.id;
-						return;
-					}
-				}
-			}
-		}
+//		protected function touchHandler(event:TouchEvent):void
+//		{
+//			trace("touch handled");
+//			const touches:Vector.<Touch> = event.getTouches(this);
+//			if(touches.length == 0)
+//			{
+//				//hover has ended
+//				return;
+//			}
+//			if(this.touchPointID >= 0)
+//			{
+//				var touch:Touch;
+//				for each(var currentTouch:Touch in touches)
+//				{
+//					if(currentTouch.id == this.touchPointID)
+//					{
+//						touch = currentTouch;
+//						break;
+//					}
+//				}
+//				if(!touch)
+//				{
+//					return;
+//				}
+//				if(touch.phase == TouchPhase.ENDED)
+//				{
+//					this.touchPointID = -1;
+//					
+//					touch.getLocation(this.stage, HELPER_POINT);
+//					//check if the touch is still over the target
+//					const isInBounds:Boolean = this.contains(this.stage.hitTest(HELPER_POINT, true));
+//					if(isInBounds)
+//					{
+//						this.isSelected = true;
+//					}
+//					return;
+//				}
+//			}
+//			else
+//			{
+//				for each(touch in touches)
+//				{
+//					if(touch.phase == TouchPhase.BEGAN)
+//					{
+//						this.touchPointID = touch.id;
+//						return;
+//					}
+//				}
+//			}
+//		}
 		
 		protected function removedFromStageHandler(event:starling.events.Event):void
 		{

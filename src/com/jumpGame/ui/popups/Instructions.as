@@ -37,7 +37,7 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture8").getTexture("InstructionsBg0000"));
+			var popup:Image = new Image(Statics.assets.getTexture("InstructionsBg0000"));
 			popupContainer.addChild(popup);
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
@@ -47,9 +47,9 @@ package com.jumpGame.ui.popups
 			
 			// popup close button
 			var buttonClose:Button = new Button();
-			buttonClose.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.defaultSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.hoverSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.downSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
 			buttonClose.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonClose.downSkin.filter = Statics.btnInvertFilter;
 			buttonClose.useHandCursor = true;
@@ -62,9 +62,9 @@ package com.jumpGame.ui.popups
 			
 			// next button
 			btnNext = new Button();
-			btnNext.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("InstructionsBtnNext0000"));
-			btnNext.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("InstructionsBtnNext0000"));
-			btnNext.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("InstructionsBtnNext0000"));
+			btnNext.defaultSkin = new Image(Statics.assets.getTexture("InstructionsBtnNext0000"));
+			btnNext.hoverSkin = new Image(Statics.assets.getTexture("InstructionsBtnNext0000"));
+			btnNext.downSkin = new Image(Statics.assets.getTexture("InstructionsBtnNext0000"));
 			btnNext.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnNext.downSkin.filter = Statics.btnInvertFilter;
 			btnNext.useHandCursor = true;
@@ -88,14 +88,14 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonNextHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndStart.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_START");
 			this.parent.hideTutorialPointer();
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "play"}, true));
 			this.visible = false;
 		}
 		
 		private function buttonCloseHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndStart.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_START");
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "play"}, true));
 			this.visible = false;
 		}

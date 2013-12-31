@@ -46,7 +46,7 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("GetCoinsBg0000"));
+			var popup:Image = new Image(Statics.assets.getTexture("GetCoinsBg0000"));
 			popupContainer.addChild(popup);
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
@@ -56,9 +56,9 @@ package com.jumpGame.ui.popups
 			
 			// popup close button
 			var buttonClose:Button = new Button();
-			buttonClose.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.defaultSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.hoverSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.downSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
 			buttonClose.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonClose.downSkin.filter = Statics.btnInvertFilter;
 			buttonClose.useHandCursor = true;
@@ -130,9 +130,9 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(priceField1);
 			// buy button
 			var buttonBuy1:Button = new Button();
-			buttonBuy1.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy1.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy1.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
+			buttonBuy1.defaultSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy1.hoverSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy1.downSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
 			buttonBuy1.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonBuy1.downSkin.filter = Statics.btnInvertFilter;
 			buttonBuy1.useHandCursor = true;
@@ -160,9 +160,9 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(priceField2);
 			// buy button
 			var buttonBuy2:Button = new Button();
-			buttonBuy2.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy2.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy2.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
+			buttonBuy2.defaultSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy2.hoverSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy2.downSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
 			buttonBuy2.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonBuy2.downSkin.filter = Statics.btnInvertFilter;
 			buttonBuy2.useHandCursor = true;
@@ -190,9 +190,9 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(priceField3);
 			// buy button
 			var buttonBuy3:Button = new Button();
-			buttonBuy3.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy3.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy3.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
+			buttonBuy3.defaultSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy3.hoverSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy3.downSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
 			buttonBuy3.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonBuy3.downSkin.filter = Statics.btnInvertFilter;
 			buttonBuy3.useHandCursor = true;
@@ -220,9 +220,9 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(priceField4);
 			// buy button
 			var buttonBuy4:Button = new Button();
-			buttonBuy4.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy4.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy4.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
+			buttonBuy4.defaultSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy4.hoverSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy4.downSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
 			buttonBuy4.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonBuy4.downSkin.filter = Statics.btnInvertFilter;
 			buttonBuy4.useHandCursor = true;
@@ -250,9 +250,9 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(priceField5);
 			// buy button
 			var buttonBuy5:Button = new Button();
-			buttonBuy5.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy5.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
-			buttonBuy5.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("GetGemsBtnBuy0000"));
+			buttonBuy5.defaultSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy5.hoverSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
+			buttonBuy5.downSkin = new Image(Statics.assets.getTexture("GetGemsBtnBuy0000"));
 			buttonBuy5.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonBuy5.downSkin.filter = Statics.btnInvertFilter;
 			buttonBuy5.useHandCursor = true;
@@ -276,7 +276,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function purchaseCoinBoosterPackHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on button: coin booster pack');
@@ -292,12 +292,12 @@ package com.jumpGame.ui.popups
 				item: 'coins_booster'
 			});
 			parent.displayLoadingNotice("Purchasing Coins...");
-			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
+//			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
 			parent.communicator.postPurchaseCoins(jsonStr);
 		}
 		
 		public function purchaseCoinSuperPackHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on button: coin super pack');
@@ -313,12 +313,12 @@ package com.jumpGame.ui.popups
 				item: 'coins_super'
 			});
 			parent.displayLoadingNotice("Purchasing Coins...");
-			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
+//			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
 			parent.communicator.postPurchaseCoins(jsonStr);
 		}
 		
 		public function purchaseCoinMegaPackHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on button: coin mega pack');
@@ -334,12 +334,12 @@ package com.jumpGame.ui.popups
 				item: 'coins_mega'
 			});
 			parent.displayLoadingNotice("Purchasing Coins...");
-			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
+//			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
 			parent.communicator.postPurchaseCoins(jsonStr);
 		}
 		
 		public function purchaseCoinUltraPackHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on button: coin ultra pack');
@@ -355,12 +355,12 @@ package com.jumpGame.ui.popups
 				item: 'coins_ultra'
 			});
 			parent.displayLoadingNotice("Purchasing Coins...");
-			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
+//			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
 			parent.communicator.postPurchaseCoins(jsonStr);
 		}
 		
 		public function purchaseCoinUltimatePackHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on button: coin ultimate pack');
@@ -376,12 +376,12 @@ package com.jumpGame.ui.popups
 				item: 'coins_ultimate'
 			});
 			parent.displayLoadingNotice("Purchasing Coins...");
-			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
+//			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
 			parent.communicator.postPurchaseCoins(jsonStr);
 		}
 		
 		private function buttonCloseHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.visible = false;
 		}

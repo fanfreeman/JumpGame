@@ -1,6 +1,5 @@
 package com.jumpGame.ui.screens
 {
-	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.UpgradeItemRenderer;
 	
@@ -25,7 +24,7 @@ package com.jumpGame.ui.screens
 		override protected function initialize():void
 		{
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupLarge0000"));
+			var popup:Image = new Image(Statics.assets.getTexture("PopupLarge0000"));
 			popup.pivotX = Math.ceil(popup.width / 2);
 			popup.pivotY = Math.ceil(popup.height / 2);
 			popup.x = Statics.stageWidth / 2;
@@ -33,7 +32,7 @@ package com.jumpGame.ui.screens
 			this.addChild(popup);
 			
 			// popup header
-			var popupHeader:Image = new Image(Assets.getSprite("AtlasTexture4").getTexture("PopupHeaderUpgrades0000"));
+			var popupHeader:Image = new Image(Statics.assets.getTexture("PopupHeaderUpgrades0000"));
 			popupHeader.pivotX = Math.ceil(popupHeader.width / 2);
 			popupHeader.x = Statics.stageWidth / 2;
 			popupHeader.y = popup.bounds.top + 24;
@@ -41,9 +40,9 @@ package com.jumpGame.ui.screens
 			
 			// popup close button
 			var buttonClose:Button = new Button();
-			buttonClose.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.defaultSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.hoverSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.downSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
 			buttonClose.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonClose.downSkin.filter = Statics.btnInvertFilter;
 			buttonClose.useHandCursor = true;
@@ -194,8 +193,8 @@ package com.jumpGame.ui.screens
 				upgradesCollection.setItemAt({
 					icon: "Safety",
 					title: "Power: Protection", 
-					caption: "Current Rank: " + String(5 + Statics.rankSafety * 1) + " second duration",
-					caption2: "Next Rank: " + String(5 + (Statics.rankSafety + 1) * 1) + " second duration",
+					caption: "Current Rank: " + String(7 + Statics.rankSafety * 1) + " second duration",
+					caption2: "Next Rank: " + String(7 + (Statics.rankSafety + 1) * 1) + " second duration",
 					price: Statics.upgradePrices.safety.price,
 					price_type: Statics.upgradePrices.safety.price_type,
 					progress: Statics.rankSafety,
@@ -206,7 +205,7 @@ package com.jumpGame.ui.screens
 				upgradesCollection.setItemAt({
 					icon: "Safety",
 					title: "Power: Safety Rocket", 
-					caption: "Current Rank: " + String(5 + Statics.rankSafety * 1) + " second duration",
+					caption: "Current Rank: " + String(7 + Statics.rankSafety * 1) + " second duration",
 					caption2: "",
 					price: 0,
 					price_type: "coins",
@@ -329,8 +328,8 @@ package com.jumpGame.ui.screens
 				upgradesCollection.setItemAt({
 					icon: "Extra",
 					title: "Extra Special Ability", 
-					caption: "Current Rank: " + String(3 + Statics.rankExtraAbility * 1) + " ability uses per round",
-					caption2: "Next Rank: " + String(3 + (Statics.rankExtraAbility + 1) * 1) + " ability uses per round",
+					caption: "Current Rank: " + String(4 + Statics.rankExtraAbility * 1) + " ability uses per round",
+					caption2: "Next Rank: " + String(4 + (Statics.rankExtraAbility + 1) * 1) + " ability uses per round",
 					price: Statics.upgradePrices.extra_ability.price,
 					price_type: Statics.upgradePrices.extra_ability.price_type,
 					progress: Statics.rankExtraAbility,
@@ -341,7 +340,7 @@ package com.jumpGame.ui.screens
 				upgradesCollection.setItemAt({
 					icon: "Extra",
 					title: "Extra Special Ability", 
-					caption: "Current Rank: " + String(3 + Statics.rankExtraAbility * 1) + " ability uses per round",
+					caption: "Current Rank: " + String(4 + Statics.rankExtraAbility * 1) + " ability uses per round",
 					caption2: "",
 					price: 0,
 					price_type: "coins",
@@ -390,7 +389,7 @@ package com.jumpGame.ui.screens
 		}
 		
 		public function upgradeTeleportationHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on Upgrade: Teleportation');
@@ -410,12 +409,12 @@ package com.jumpGame.ui.screens
 				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Power...");
-			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
+//			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 			Menu(this.owner).communicator.postPurchaseUpgrade(jsonStr);
 		}
 		
 		public function upgradeAttractionHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on Upgrade: Attraction');
@@ -435,12 +434,12 @@ package com.jumpGame.ui.screens
 				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Power...");
-			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
+//			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 			Menu(this.owner).communicator.postPurchaseUpgrade(jsonStr);
 		}
 		
 		public function upgradeDuplicationHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on Upgrade: Duplication');
@@ -460,12 +459,12 @@ package com.jumpGame.ui.screens
 				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Power...");
-			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
+//			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 			Menu(this.owner).communicator.postPurchaseUpgrade(jsonStr);
 		}
 		
 		public function upgradeSafetyRocketHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on Upgrade: Protection');
@@ -485,12 +484,12 @@ package com.jumpGame.ui.screens
 				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Power...");
-			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
+//			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 			Menu(this.owner).communicator.postPurchaseUpgrade(jsonStr);
 		}
 		
 		public function upgradeBarrelsHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on Upgrade: Barrels');
@@ -510,12 +509,12 @@ package com.jumpGame.ui.screens
 				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Power...");
-			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
+//			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 			Menu(this.owner).communicator.postPurchaseUpgrade(jsonStr);
 		}
 		
 		public function upgradeCometHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on Upgrade: Comet');
@@ -535,12 +534,12 @@ package com.jumpGame.ui.screens
 				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Power...");
-			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
+//			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 			Menu(this.owner).communicator.postPurchaseUpgrade(jsonStr);
 		}
 		
 		public function upgradeCooldownHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on Upgrade: Ability Cooldown');
@@ -560,12 +559,12 @@ package com.jumpGame.ui.screens
 				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Ability...");
-			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
+//			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 			Menu(this.owner).communicator.postPurchaseUpgrade(jsonStr);
 		}
 		
 		public function upgradeAbilityPowerHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on Upgrade: Ability Power');
@@ -585,12 +584,12 @@ package com.jumpGame.ui.screens
 				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Ability...");
-			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
+//			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 			Menu(this.owner).communicator.postPurchaseUpgrade(jsonStr);
 		}
 		
 		public function upgradeExtraAbilityHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on Upgrade: Extra Ability');
@@ -624,12 +623,12 @@ package com.jumpGame.ui.screens
 				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Upgrading Ability...");
-			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
+//			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 			Menu(this.owner).communicator.postPurchaseUpgrade(jsonStr);
 		}
 		
 		public function upgradeCoinDoublerHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			if (Statics.isAnalyticsEnabled) {
 				Statics.mixpanel.track('clicked on Upgrade: Coin Doubler');
@@ -657,7 +656,7 @@ package com.jumpGame.ui.screens
 				achievements: newAchievementsArray
 			});
 			Menu(this.owner).displayLoadingNotice("Fabricating Coin Doubler...");
-			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
+//			Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 			Menu(this.owner).communicator.postPurchaseUpgrade(jsonStr);
 		}
 		
@@ -687,7 +686,7 @@ package com.jumpGame.ui.screens
 				var jsonStr:String = JSON.stringify({
 					achievements: newAchievementsArray
 				});
-				Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
+//				Menu(this.owner).communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, Menu(this.owner).dataReceived);
 				Menu(this.owner).communicator.postSaveAchievements(jsonStr);
 			}
 		}

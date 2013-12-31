@@ -257,10 +257,10 @@ package com.jumpGame.ui.components
 			this.height = 109;
 			
 			var itemBgButton:Button = new Button();
-			itemBgButton.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("UpgradeItemBg0000"));
+			itemBgButton.defaultSkin = new Image(Statics.assets.getTexture("UpgradeItemBg0000"));
 			this.addChild(itemBgButton);
 			
-			icon = new Image(Assets.getSprite("AtlasTexture4").getTexture("UpgradeIconTeleportation0000"));
+			icon = new Image(Statics.assets.getTexture("UpgradeIconTeleportation0000"));
 			icon.x = 21;
 			icon.y = 17;
 			this.addChild(icon);
@@ -339,7 +339,7 @@ package com.jumpGame.ui.components
 			//			this.addChild(progress);
 			
 			// price coin graphic
-			coinAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("CoinLarge"), 40);
+			coinAnimation = new MovieClip(Statics.assets.getTextures("CoinLarge"), 40);
 			coinAnimation.scaleX = 0.5;
 			coinAnimation.scaleY = 0.5;
 			coinAnimation.x = this.width - 125;
@@ -359,9 +359,9 @@ package com.jumpGame.ui.components
 			
 			// action button
 			btnAction = new Button();
-			btnAction.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("UpgradeItemButton0000"));
-			btnAction.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("UpgradeItemButton0000"));
-			btnAction.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("UpgradeItemButton0000"));
+			btnAction.defaultSkin = new Image(Statics.assets.getTexture("UpgradeItemButton0000"));
+			btnAction.hoverSkin = new Image(Statics.assets.getTexture("UpgradeItemButton0000"));
+			btnAction.downSkin = new Image(Statics.assets.getTexture("UpgradeItemButton0000"));
 			btnAction.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnAction.downSkin.filter = Statics.btnInvertFilter;
 			btnAction.useHandCursor = true;
@@ -373,7 +373,7 @@ package com.jumpGame.ui.components
 			btnAction.y = 51;
 			
 			// price gem graphic
-			gemAnimation = new MovieClip(Assets.getSprite("AtlasTexture4").getTextures("Gem"), 20);
+			gemAnimation = new MovieClip(Statics.assets.getTextures("Gem"), 20);
 			gemAnimation.scaleX = 0.55;
 			gemAnimation.scaleY = 0.55;
 			gemAnimation.x = this.width - 125;
@@ -428,7 +428,7 @@ package com.jumpGame.ui.components
 		protected function commitData():void
 		{
 			// upgrade icon
-			this.icon.texture = Assets.getSprite("AtlasTexture4").getTexture("UpgradeIcon" + this.itemToIcon(this._data) + "0000");
+			this.icon.texture = Statics.assets.getTexture("UpgradeIcon" + this.itemToIcon(this._data) + "0000");
 			this.icon.readjustSize();
 			
 			// upgrade title

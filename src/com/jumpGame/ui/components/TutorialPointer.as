@@ -59,7 +59,7 @@ package com.jumpGame.ui.components
 //			this.addChild(clickMask5);
 			// eof smart match button mask
 			
-			pointer = new Image(Assets.getSprite("AtlasTexture2").getTexture("Arrow0000"));
+			pointer = new Image(Statics.assets.getTexture("Arrow0000"));
 			pointer.pivotX = Math.ceil(pointer.width / 2);
 			pointer.pivotY = Math.ceil(pointer.height / 2);
 			pointer.alpha = 0.8;

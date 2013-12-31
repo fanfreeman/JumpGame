@@ -1,9 +1,8 @@
 package com.jumpGame.ui.popups
 {
-	import com.jumpGame.customObjects.Font;
+//	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.components.RankingItemRenderer;
-	import com.jumpGame.ui.components.TutorialPointer;
 	
 	import feathers.controls.Button;
 	import feathers.controls.List;
@@ -15,9 +14,9 @@ package com.jumpGame.ui.popups
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
-	import starling.text.TextField;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
+//	import starling.text.TextField;
+//	import starling.utils.HAlign;
+//	import starling.utils.VAlign;
 	
 	public class ScreenRankings extends Sprite
 	{
@@ -34,7 +33,7 @@ package com.jumpGame.ui.popups
 		private var imgFriendsOn:Image;
 		private var previouslyViewedFriends:Boolean = true;
 		
-		private var comingSoonText:TextField;
+//		private var comingSoonText:TextField;
 		
 		public function ScreenRankings(parent:Menu)
 		{
@@ -55,7 +54,7 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// popup artwork
-			var popup:Image = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBg0000"));
+			var popup:Image = new Image(Statics.assets.getTexture("RankingsBg0000"));
 			popupContainer.addChild(popup);
 			popupContainer.pivotX = Math.ceil(popupContainer.width / 2);
 			popupContainer.pivotY = Math.ceil(popupContainer.height / 2);
@@ -65,9 +64,9 @@ package com.jumpGame.ui.popups
 			
 			// popup close button
 			var buttonClose:Button = new Button();
-			buttonClose.defaultSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.hoverSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
-			buttonClose.downSkin = new Image(Assets.getSprite("AtlasTexture4").getTexture("ButtonPopupClose0000"));
+			buttonClose.defaultSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.hoverSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
+			buttonClose.downSkin = new Image(Statics.assets.getTexture("ButtonPopupClose0000"));
 			buttonClose.hoverSkin.filter = Statics.btnBrightnessFilter;
 			buttonClose.downSkin.filter = Statics.btnInvertFilter;
 			buttonClose.useHandCursor = true;
@@ -79,16 +78,16 @@ package com.jumpGame.ui.popups
 			buttonClose.y = popup.bounds.top + 22;
 			
 			// global button on
-			imgGlobalOn = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnGlobalOn0000"));
+			imgGlobalOn = new Image(Statics.assets.getTexture("RankingsBtnGlobalOn0000"));
 			imgGlobalOn.x = 155;
 			imgGlobalOn.y = -6;
 			popupContainer.addChild(imgGlobalOn);
 			
 			// global button off
 			btnGlobal = new Button();
-			btnGlobal.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnGlobalOff0000"));
-			btnGlobal.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnGlobalOff0000"));
-			btnGlobal.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnGlobalOff0000"));
+			btnGlobal.defaultSkin = new Image(Statics.assets.getTexture("RankingsBtnGlobalOff0000"));
+			btnGlobal.hoverSkin = new Image(Statics.assets.getTexture("RankingsBtnGlobalOff0000"));
+			btnGlobal.downSkin = new Image(Statics.assets.getTexture("RankingsBtnGlobalOff0000"));
 			btnGlobal.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnGlobal.downSkin.filter = Statics.btnInvertFilter;
 			btnGlobal.useHandCursor = true;
@@ -99,7 +98,7 @@ package com.jumpGame.ui.popups
 			btnGlobal.addEventListener(Event.TRIGGERED, buttonGlobalHandler);
 			
 			// friends button on
-			imgFriendsOn = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnFriendsOn0000"));
+			imgFriendsOn = new Image(Statics.assets.getTexture("RankingsBtnFriendsOn0000"));
 			imgFriendsOn.x = imgGlobalOn.bounds.right - 23;
 			imgFriendsOn.y = imgGlobalOn.y;
 			imgFriendsOn.visible = false;
@@ -107,9 +106,9 @@ package com.jumpGame.ui.popups
 			
 			// friends button off
 			btnFriends = new Button();
-			btnFriends.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnFriendsOff0000"));
-			btnFriends.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnFriendsOff0000"));
-			btnFriends.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnFriendsOff0000"));
+			btnFriends.defaultSkin = new Image(Statics.assets.getTexture("RankingsBtnFriendsOff0000"));
+			btnFriends.hoverSkin = new Image(Statics.assets.getTexture("RankingsBtnFriendsOff0000"));
+			btnFriends.downSkin = new Image(Statics.assets.getTexture("RankingsBtnFriendsOff0000"));
 			btnFriends.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnFriends.downSkin.filter = Statics.btnInvertFilter;
 			btnFriends.useHandCursor = true;
@@ -119,12 +118,12 @@ package com.jumpGame.ui.popups
 			btnFriends.addEventListener(Event.TRIGGERED, buttonFriendsHandler);
 			
 			// decorative brackets
-			var imageBracketLeft:Image = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBracketLeft0000"));
+			var imageBracketLeft:Image = new Image(Statics.assets.getTexture("RankingsBracketLeft0000"));
 			imageBracketLeft.x = imgGlobalOn.x - 15;
 			imageBracketLeft.y = imgGlobalOn.y + 30;
 			popupContainer.addChild(imageBracketLeft);
 			
-			var imageBracketRight:Image = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBracketLeft0000"));
+			var imageBracketRight:Image = new Image(Statics.assets.getTexture("RankingsBracketLeft0000"));
 			imageBracketRight.scaleX = -1;
 			imageBracketRight.x = imgFriendsOn.bounds.right + 15;
 			imageBracketRight.y = imgGlobalOn.y + 30;
@@ -150,9 +149,9 @@ package com.jumpGame.ui.popups
 			
 			// invite friends button
 			btnInvite = new Button();
-			btnInvite.defaultSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnInvite0000"));
-			btnInvite.hoverSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnInvite0000"));
-			btnInvite.downSkin = new Image(Assets.getSprite("AtlasTexture8").getTexture("RankingsBtnInvite0000"));
+			btnInvite.defaultSkin = new Image(Statics.assets.getTexture("RankingsBtnInvite0000"));
+			btnInvite.hoverSkin = new Image(Statics.assets.getTexture("RankingsBtnInvite0000"));
+			btnInvite.downSkin = new Image(Statics.assets.getTexture("RankingsBtnInvite0000"));
 			btnInvite.hoverSkin.filter = Statics.btnBrightnessFilter;
 			btnInvite.downSkin.filter = Statics.btnInvertFilter;
 			btnInvite.useHandCursor = true;
@@ -161,14 +160,14 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(btnInvite);
 			btnInvite.addEventListener(Event.TRIGGERED, this.btnInviteHandler);
 			
-			var fontMessage:Font = Fonts.getFont("Badaboom50");
-			comingSoonText = new TextField(popup.width, 100, "Coming Soon!", fontMessage.fontName, fontMessage.fontSize, 0xffa352);
-			comingSoonText.pivotY = comingSoonText.height / 2;
-			comingSoonText.y = Math.ceil(popup.height / 2);
-			comingSoonText.hAlign = HAlign.CENTER;
-			comingSoonText.vAlign = VAlign.CENTER;
-			comingSoonText.visible = false;
-			popupContainer.addChild(comingSoonText);
+//			var fontMessage:Font = Fonts.getFont("Badaboom50");
+//			comingSoonText = new TextField(popup.width, 100, "Coming Soon!", fontMessage.fontName, fontMessage.fontSize, 0xffa352);
+//			comingSoonText.pivotY = comingSoonText.height / 2;
+//			comingSoonText.y = Math.ceil(popup.height / 2);
+//			comingSoonText.hAlign = HAlign.CENTER;
+//			comingSoonText.vAlign = VAlign.CENTER;
+//			comingSoonText.visible = false;
+//			popupContainer.addChild(comingSoonText);
 		}
 		
 		private function btnInviteHandler(event:Event):void {
@@ -177,7 +176,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function close():void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.visible = false;
 			
@@ -217,7 +216,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonGlobalHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.showRankingsGlobal();
 			
@@ -227,7 +226,7 @@ package com.jumpGame.ui.popups
 		}
 		
 		private function buttonFriendsHandler(event:Event):void {
-			if (!Sounds.sfxMuted) Sounds.sndClick.play();
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.showRankingsFriends();
 			
@@ -244,10 +243,11 @@ package com.jumpGame.ui.popups
 			this.imgFriendsOn.visible = false;
 			this.imgGlobalOn.visible = true;
 			this.btnFriends.visible = true;
-			comingSoonText.visible = true;
-			listRankings.visible = false;
-//			Menu(this.parent).refreshRankingsGlobal();
+//			comingSoonText.visible = true;
+//			listRankings.visible = false;
+			Menu(this.parent).refreshRankingsGlobal();
 			previouslyViewedFriends = false;
+			Statics.showRankingsProfilePics = false;
 		}
 		
 		/**
@@ -258,10 +258,11 @@ package com.jumpGame.ui.popups
 			this.btnFriends.visible = false;
 			this.btnGlobal.visible = true;
 			this.imgFriendsOn.visible = true;
-			comingSoonText.visible = false;
-			listRankings.visible = true;
+//			comingSoonText.visible = false;
+//			listRankings.visible = true;
 			Menu(this.parent).refreshRankingsFriends();
 			previouslyViewedFriends = true;
+			Statics.showRankingsProfilePics = true;
 		}
 		
 		/**
