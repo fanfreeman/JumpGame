@@ -3,6 +3,7 @@ package
 	import com.mixpanel.Mixpanel;
 	
 	import flash.display.Bitmap;
+	import flash.external.ExternalInterface;
 	
 	import starling.core.Starling;
 	import starling.extensions.PDParticleSystem;
@@ -226,10 +227,24 @@ package
 			isHardwareRendering = Starling.context.driverInfo.toLowerCase().indexOf("software") == -1;
 //			trace("Hardware rendering: " + Statics.isHardwareRendering);
 			
+			levelNumber = 0;
+		}
+		
+		public static function startMixpanel():void {
+			if(ExternalInterface.available) ExternalInterface.call("kissTrack", "swf started");
+			
 			// create mixpanel object
 			isAnalyticsEnabled = false;
 			mixpanel = new Mixpanel("f6cea95ffc1fa6a0db7c5db16597f5a4");
-			levelNumber = 0;
+			if(ExternalInterface.available) {
+				ExternalInterface.addCallback("returnFbidToAs", fbidReturnedFromJs);
+				ExternalInterface.call("getJumpFbid");
+			} 
+		}
+		
+		private static function fbidReturnedFromJs(fbid:String):void {
+			mixpanel.identify(fbid);
+			mixpanel.track('swf started');
 		}
 		
 		public static function get assets():AssetManager { return sAssets; }

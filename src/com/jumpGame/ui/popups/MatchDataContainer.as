@@ -1,7 +1,6 @@
 package com.jumpGame.ui.popups
 {
 	import com.jumpGame.customObjects.Font;
-	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.screens.Menu;
 	
 	import flash.display.Bitmap;

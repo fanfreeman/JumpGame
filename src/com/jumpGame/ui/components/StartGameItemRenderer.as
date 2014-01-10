@@ -128,6 +128,11 @@ package com.jumpGame.ui.components
 					itemBgButton.hoverSkin = new Image(Statics.assets.getTexture("StartGameBtnMatch0000"));
 					itemBgButton.downSkin = new Image(Statics.assets.getTexture("StartGameBtnMatch0000"));
 				}
+				else if (this._index == 2) {
+					itemBgButton.defaultSkin = new Image(Statics.assets.getTexture("StartGameBtnSupersonic0000"));
+					itemBgButton.hoverSkin = new Image(Statics.assets.getTexture("StartGameBtnSupersonic0000"));
+					itemBgButton.downSkin = new Image(Statics.assets.getTexture("StartGameBtnSupersonic0000"));
+				}
 				itemBgButton.hoverSkin.filter = Statics.btnBrightnessFilter;
 				itemBgButton.downSkin.filter = Statics.btnInvertFilter;
 			}

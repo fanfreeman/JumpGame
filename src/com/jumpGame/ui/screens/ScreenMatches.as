@@ -129,8 +129,8 @@ package com.jumpGame.ui.screens
 				list.backgroundSkin = new Image(Statics.assets.getTexture("StartGameCalloutBg0000"));
 				list.pivotY = 15;
 				list.width = 277;
-				list.height = 177;
-				list.paddingTop = 41;
+				list.height = 217;
+				list.paddingTop = 28;
 				list.paddingLeft = 32;
 				list.itemRendererType = StartGameItemRenderer;
 				list.verticalScrollPolicy = List.SCROLL_POLICY_OFF;
@@ -146,7 +146,8 @@ package com.jumpGame.ui.screens
 			var startGameOptions:ListCollection = new ListCollection(
 				[
 					{ text: "Facebook Friends" },
-					{ text: "Smart Match" }
+					{ text: "Smart Match" },
+					{ text: "Supersonic World" }
 				]);
 			startGamePicker.dataProvider = startGameOptions;
 			startGamePicker.selectedIndex = -1;
@@ -229,14 +230,15 @@ package com.jumpGame.ui.screens
 			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			// show tutorial pointer again
-			if (Statics.tutorialStep == 2) { // tutorial second step: create new match
-				Menu(this.owner).showTutorialSmartMatch();
+			if (Statics.tutorialStep == 1 || Statics.tutorialStep == 2) { // tutorial second step: create new match
+//				Menu(this.owner).showTutorialSmartMatch();
+				Menu(this.owner).showTutorialChallengeFriend();
 			}
 		}
 		
 		private function buttonGameStartCloseHandler(event:Event):void {
 			// show previous tutorial pointer again
-			if (Statics.tutorialStep == 2) { // tutorial second step: create new match
+			if (Statics.tutorialStep == 1 || Statics.tutorialStep == 2) { // tutorial second step: create new match
 //				Starling.juggler.delayCall(Menu(this.owner).checkTutorialPickerlistClose, 0.1);
 				Menu(this.owner).showTutorialStartGame();
 			}
@@ -258,7 +260,7 @@ package com.jumpGame.ui.screens
 //					trace("External interface unavailabe");
 				}
 				
-				if (Statics.tutorialStep == 2) { // hide tutorial temporarily until new match is created
+				if (Statics.tutorialStep == 1 || Statics.tutorialStep == 2) { // hide tutorial temporarily until new match is created
 //					Starling.juggler.delayCall(Menu(this.owner).makeTutorialInvisibleTemporarily, 0.1); // do not do this because player could just close the facebook ui dialog
 				}
 				
@@ -266,21 +268,25 @@ package com.jumpGame.ui.screens
 					Statics.mixpanel.track('clicked on start game with Facebook friend');
 				}
 			}
-//			else if (startGamePicker.selectedIndex == 1) { // smart match
-//				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
-//				
+			else if (startGamePicker.selectedIndex == 1) { // smart match
+				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
+				
+				// bof REMOVE
+				Menu(this.owner).showLargeDialog("We are working hard on creating the smart matching algorithm. Please use Challenge Friend in the mean time.");
+				// eof REMOVE
+				
 //				Menu(this.owner).displayLoadingNotice("Finding an opponent...");
 //				Menu(this.owner).communicator.findSmartMatch();
 //				
-//				if (Statics.tutorialStep == 2) { // hide tutorial temporarily until new match is created
+//				if (Statics.tutorialStep == 1 || Statics.tutorialStep == 2) { // hide tutorial temporarily until new match is created
 //					Starling.juggler.delayCall(Menu(this.owner).makeTutorialInvisibleTemporarily, 0.1); // delay a bit to really make it invisible
 //				}
-//				
-//				if (Statics.isAnalyticsEnabled) { // mixpanel
-//					Statics.mixpanel.track('clicked on start game smart match');
-//				}
-//			}
-			else if (startGamePicker.selectedIndex == 1) { // supersonic world
+				
+				if (Statics.isAnalyticsEnabled) { // mixpanel
+					Statics.mixpanel.track('clicked on start game smart match');
+				}
+			}
+			else if (startGamePicker.selectedIndex == 2) { // supersonic world
 				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 				
 				if (Statics.roundsPlayed >= 80 || Statics.playerHighScore >= 20000) {
@@ -304,7 +310,7 @@ package com.jumpGame.ui.screens
 			Menu(this.owner).communicator.createMatch(opponentId);
 			
 			if (Statics.isAnalyticsEnabled) { // mixpanel
-				Statics.mixpanel.track('selected facebook friend as opponent');
+				Statics.mixpanel.track('selected facebook friend as opponent: ' + opponentId);
 			}
 		}
 		

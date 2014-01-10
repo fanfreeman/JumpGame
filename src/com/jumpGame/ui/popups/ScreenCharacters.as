@@ -2,8 +2,12 @@ package com.jumpGame.ui.popups
 {
 	import com.jumpGame.customObjects.Font;
 	import com.jumpGame.screens.Menu;
+	import com.jumpGame.ui.components.CharacterItemRenderer;
 	
 	import feathers.controls.Button;
+	import feathers.controls.List;
+	import feathers.controls.Scroller;
+	import feathers.data.ListCollection;
 	
 	import starling.animation.Transitions;
 	import starling.core.Starling;
@@ -14,11 +18,14 @@ package com.jumpGame.ui.popups
 	import starling.text.TextField;
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
+	import feathers.layout.HorizontalLayout;
 	
 	public class ScreenCharacters extends Sprite
 	{
 		private var parent:Menu;
 		private var popupContainer:Sprite;
+		private var charactersList:List;
+		private var charactersCollection:ListCollection;
 		
 		public function ScreenCharacters(parent:Menu)
 		{
@@ -69,13 +76,25 @@ package com.jumpGame.ui.popups
 			buttonClose.x = popup.bounds.right - 25;
 			buttonClose.y = popup.bounds.top + 28;
 			
-			var fontMessage:Font = Fonts.getFont("Badaboom50");
-			var comingSoonText:TextField = new TextField(popup.width, 100, "Coming Soon! We Promise!", fontMessage.fontName, fontMessage.fontSize, 0xffa352);
-			comingSoonText.pivotY = comingSoonText.height / 2;
-			comingSoonText.y = Math.ceil(popup.height / 2);
-			comingSoonText.hAlign = HAlign.CENTER;
-			comingSoonText.vAlign = VAlign.CENTER;
-			popupContainer.addChild(comingSoonText);
+			// list of characters
+			var layout:HorizontalLayout = new HorizontalLayout();
+			charactersList = new List();
+			charactersList.layout = layout;
+			charactersList.width = popupContainer.width;
+			charactersList.height = 300;
+			charactersList.pivotX = Math.ceil(charactersList.width / 2);
+			charactersList.x = popupContainer.width / 2;
+			charactersList.y = 110;
+			charactersList.verticalScrollPolicy = Scroller.SCROLL_POLICY_OFF;
+			charactersList.horizontalScrollPolicy = Scroller.SCROLL_POLICY_ON;
+			popupContainer.addChild(charactersList);
+			charactersList.itemRendererType = CharacterItemRenderer;
+			charactersList.itemRendererProperties.nicknameField = "nickname";
+			charactersList.itemRendererProperties.levelField = "level";
+			charactersList.itemRendererProperties.isnewField = "isnew";
+			charactersList.addEventListener(Event.CHANGE, charactersListChangeHandler);
+			
+			this.populateCharactersList();
 		}
 		
 		private function buttonCloseHandler(event:Event):void {
@@ -85,16 +104,58 @@ package com.jumpGame.ui.popups
 		}
 		
 		public function initialize():void {
-			this.visible = true;
+			this.parent.showLargeDialog("Awesome characters are coming soon. We promise!");
 			
-			// popup pop out effect
-			popupContainer.scaleX = 0.5;
-			popupContainer.scaleY = 0.5;
-			Starling.juggler.tween(popupContainer, 0.5, {
-				transition: Transitions.EASE_OUT_ELASTIC,
-				scaleX: 1,
-				scaleY: 1
+//			this.visible = true;
+//			
+//			// popup pop out effect
+//			popupContainer.scaleX = 0.5;
+//			popupContainer.scaleY = 0.5;
+//			Starling.juggler.tween(popupContainer, 0.5, {
+//				transition: Transitions.EASE_OUT_ELASTIC,
+//				scaleX: 1,
+//				scaleY: 1
+//			});
+		}
+		
+		private function charactersListChangeHandler(event:Event):void {
+
+		}
+		
+		private function populateCharactersList():void {
+			charactersCollection = new ListCollection();
+			
+			charactersCollection.addItem({ 
+				nickname: "random", 
+				level: 1, 
+				isnew: true 
 			});
+			
+			charactersCollection.addItem({ 
+				nickname: "prince", 
+				level: 1, 
+				isnew: true 
+			});
+			
+			charactersCollection.addItem({ 
+				nickname: "princess", 
+				level: 1, 
+				isnew: true 
+			});
+			
+			charactersCollection.addItem({ 
+				nickname: "boy", 
+				level: 1, 
+				isnew: true 
+			});
+			
+			charactersCollection.addItem({ 
+				nickname: "girl", 
+				level: 1, 
+				isnew: true 
+			});
+			
+			charactersList.dataProvider = charactersCollection;
 		}
 	}
 }

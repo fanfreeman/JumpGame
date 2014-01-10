@@ -1595,7 +1595,7 @@ package com.jumpGame.screens
 			Statics.particleComet.start(0.5); // burning tail particles
 			
 			// end game after short duration
-			this.endGameTime = Statics.gameTime + 1000;
+			this.endGameTime = Statics.gameTime + 3000;
 			
 			// stop checking win/lose condition
 			Statics.checkWinLose = false;

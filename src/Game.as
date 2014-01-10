@@ -7,6 +7,7 @@ package
 	import com.jumpGame.screens.Menu;
 	import com.jumpGame.ui.SoundButton;
 	
+	import flash.external.ExternalInterface;
 	import flash.system.System;
 	
 	import starling.core.Starling;
@@ -42,6 +43,8 @@ package
 		
 		public function start(assets:AssetManager):void
 		{
+			if(ExternalInterface.available) ExternalInterface.call("kissTrack", "starling started");
+			Statics.mixpanel.track('starling started');
 			// The background is passed into this method for two reasons:
 			// 
 			// 1) we need it right away, otherwise we have an empty frame
@@ -239,7 +242,7 @@ package
 					
 					// load random sky background image
 					Statics.randomSkyNum = int(Math.ceil(Math.random() * 20)).toString();
-					Statics.assets.enqueue("http://d3et7r3ga59g4e.cloudfront.net/bg/bg" + Statics.randomSkyNum + ".png");
+					Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/bg/bg" + Statics.randomSkyNum + ".png");
 					mLoadingProgress.visible = true;
 					Statics.assets.loadQueue(function(ratio:Number):void {
 						mLoadingProgress.ratio = ratio;

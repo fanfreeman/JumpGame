@@ -139,11 +139,15 @@ package com.jumpGame.ui.components
 		public function pointAtStartGameBtn():void {
 			clickMask2.visible = true;
 			clickMask3.visible = true;
-			this.pointUpAt(Statics.stageWidth / 2, 240);
+			this.pointUpAt(Statics.stageWidth - 195, 240);
 		}
 		
 		public function pointAtSmartMatchBtn():void {
 			this.pointLeftAt(Statics.stageWidth / 2 + 157, 318);
+		}
+		
+		public function pointAtChallengeFriendBtn():void {
+			this.pointLeftAt(Statics.stageWidth - 55, 260);
 		}
 		
 		public function pointAtRankingsInvite():void {

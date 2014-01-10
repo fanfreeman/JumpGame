@@ -135,21 +135,25 @@ package com.jumpGame.ui.components
 				ExternalInterface.call("shareHighScore", Statics.firstName + " just jumped " + this.distance.toString() + "m and achieved a new high score of " + this.score.toString() + "! Think you can do better?");
 			}
 			this.dispose();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('shared new high score');
+			}
 		}
 		
 		private function buttonCancelHandler(event:Event):void {
 			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 			
 			this.dispose();
+			
+			if (Statics.isAnalyticsEnabled) {
+				Statics.mixpanel.track('declined to share high score');
+			}
 		}
 		
 		private function dispose():void {
 			Statics.particleConfetti.stop(true);
 			this.visible = false;
-		}
-		
-		private function btnOkHandler():void {
-			
 		}
 	}
 }

@@ -294,7 +294,7 @@ package
 			// id, title, description, reward coins, reward gems
 			new Array(0, "none", "none", 0, 0),
 			new Array(1, "The Journey Begins", "Jump 200 meters in one round", 100, 0),
-			new Array(2, "Yes I Can Jump", "Jump 500 meters in one round", 200, 0),
+			new Array(2, "Born to Jump", "Jump 500 meters in one round", 200, 0),
 			new Array(3, "Bouncy Legs", "Jump 1000 meters in one round", 400, 0),
 			new Array(4, "Like a Boss", "Jump 2000 meters in one round", 1000, 0),
 			new Array(5, "Defying Gravity", "Jump 3500 meters in one round", 2000, 0),

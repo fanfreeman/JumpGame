@@ -592,7 +592,7 @@ package com.jumpGame.ui
 			
 			// high score badge
 			badgeHighScore.visible = false;
-			if (roundScore > Statics.playerHighScore) {
+			if (roundScore >= Statics.playerHighScore) {
 				starling.core.Starling.juggler.add(badgeHighScore);
 				badgeHighScore.initialize(this.distanceTraveled, this.roundScore);
 			}
@@ -843,7 +843,7 @@ package com.jumpGame.ui
 //			trace(event.params.data);
 //			this.menu.dataReceived(event); // pass return data to main response receiver for processing
 			if (this.menu.lives >= 1) {
-				this.btnPlayAgainSmartMatch.visible = true;
+//				this.btnPlayAgainSmartMatch.visible = true;
 			}
 			btnNext.visible = true;
 		}

@@ -57,7 +57,21 @@ package com.jumpGame.customObjects
 				case 9:
 					return "Medic! We need a medic!";
 				case 10:
-					return "You are on fire"
+					return "You are on fire";
+			}
+			return "";
+		}
+		
+		/**
+		 * Helpful tip shown on loading screens
+		 */
+		public function getMessageTip():String {
+			var randomInt:int = Math.floor(Math.random() * 2);
+			switch (randomInt) {
+				case 0:
+					return "Your hero's Spiecial Ability is powerful, but should be saved for emergencies.";
+				case 1:
+					return "Suggestions or concerns? Let us know by click on the feedback button to the left.";
 			}
 			return "";
 		}

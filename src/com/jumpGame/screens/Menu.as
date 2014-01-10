@@ -157,6 +157,7 @@ package com.jumpGame.screens
 						Statics.lastName = dataObj.last_name;
 						Statics.playerName = dataObj.first_name + " " + dataObj.last_name.substr(0, 1) + ".";
 						Statics.playerHighScore = int(dataObj.high_score);
+//						trace("high score: " + Statics.playerHighScore);
 						Statics.playerCoins = int(dataObj.coins);
 						Statics.playerGems = int(dataObj.gems);
 						Statics.roundsPlayed = int(dataObj.rounds_played);
@@ -172,13 +173,12 @@ package com.jumpGame.screens
 //						trace("environment: " + dataObj.environment);
 						if (dataObj.environment == "prod") {
 							Statics.isAnalyticsEnabled = true;
-							Statics.mixpanel.identify(dataObj.facebook_id);
 							Statics.mixpanel.people_set({
 								"user id": String(dataObj.user_id),
 								"first name": dataObj.first_name,
 								"last name": dataObj.last_name
 							});
-							Statics.mixpanel.track('player data received', { "isHardwareRendering": Statics.isHardwareRendering.toString() });
+							Statics.mixpanel.track('player data received');
 						}
 						
 						// get player profile picture
@@ -319,15 +319,15 @@ package com.jumpGame.screens
 						}
 						
 						// tutorial
-						if (Statics.tutorialStep == 1 && Statics.roundsPlayed == 0 && this.screenMatches.gamesMyTurn.length > 0) {
+//						if (Statics.tutorialStep == 1 && Statics.roundsPlayed == 0 && this.screenMatches.gamesMyTurn.length > 0) {
+						if (Statics.tutorialStep == 1 && Statics.roundsPlayed == 0) {
 							// if new player, show match details popup for tutorial match
-							this.screenMatches.listYourTurn.selectedIndex = 0;
-//							this.showStoryPopup(); // also show the story popup on top
+//							this.screenMatches.listYourTurn.selectedIndex = 0;
 							if (this.tutorialPointer == null) {
 								this.tutorialPointer = new TutorialPointer();
 								this.addChild(this.tutorialPointer);
 							}
-							this.showTutorialPlay();
+							this.showTutorialStartGame();
 						}
 						else if (Statics.tutorialStep == 2) { // tutorial second step: create new match
 							if (this.tutorialPointer == null) {
@@ -343,8 +343,14 @@ package com.jumpGame.screens
 //							}
 //							this.dialogLarge.show("Now it's time to challenge a friend. Click on the 'Start Game' button, and then select 'Challenge Friend'");
 //						}
+						else if (Statics.roundsPlayed == 2) {
+							this.showLargeDialog("Support a fledgling indie developer! Like us by clicking the Like button above. We will never spam you.");
+						}
 						else if (Statics.roundsPlayed == 3) {
-							this.showLargeDialog("Support a fledgling indie developer! Like our app page by clicking the Like button above. We will never post spam.");
+							this.showLargeDialog("Invite some friends! They will be happy you did. Click the Invite button at the top right corner.");
+						}
+						else if (Statics.roundsPlayed == 5) {
+							this.showLargeDialog("Bugs or suggestions? We'd love to hear your feedback! Use the Feedback button on the left to talk to us.");
 						}
 //						else if (Statics.tutorialStep == 3) { // tutorial second three: friends rankings
 //							if (this.tutorialPointer == null) {
@@ -373,7 +379,7 @@ package com.jumpGame.screens
 						Statics.isSupersonic = dataObj.is_supersonic;
 						this.showMatchDetailsPopup(false);
 						
-						if (Statics.tutorialStep == 2) { // tutorial second step: create new match
+						if (Statics.tutorialStep == 1 || Statics.tutorialStep == 2) { // tutorial second step: create new match
 							this.showTutorialPlay();
 						}
 					}
@@ -456,9 +462,10 @@ package com.jumpGame.screens
 					}
 					else if (dataObj.status == "error") { // error message received
 //						trace("Error: " + dataObj.reason);
+						this.showLargeDialog("An error has occurred: " + dataObj.reason);
 					}
 				} else {
-					this.displayLoadingNotice("Communication Error #2222");
+					this.showLargeDialog("Communication Error #2222");
 				}
 			}
 		} // eof dataReceived()
@@ -929,7 +936,7 @@ package com.jumpGame.screens
 			// when displaying the matches screen, refresh matches
 			if (this.tabs.selectedItem.action == Constants.ScreenMatches) {
 				this.screenMatches.visible = true;
-//				this.refreshMatches();
+				this.refreshMatches();
 //				setChildIndex(screenMatches, this.getChildIndex(this.loadingNotice) - 1);
 				
 				if (Statics.isAnalyticsEnabled) {
@@ -997,6 +1004,8 @@ package com.jumpGame.screens
 		
 		public function initialize():void
 		{
+			if(ExternalInterface.available) ExternalInterface.call("kissTrack", "initializing menu");
+			Statics.mixpanel.track('initializing menu', { "isHardwareRendering": Statics.isHardwareRendering.toString() });
 			this.visible = true;
 			this.tabs.selectedIndex = -1;
 			this.tabs.validate();
@@ -1031,7 +1040,7 @@ package com.jumpGame.screens
 			
 			if (Statics.adsShowCount == 0) { // do not show ads on game start
 				Statics.adsShowCount = 1;
-				this.refreshMatches();
+//				this.refreshMatches();
 			} else {
 				// show interstitial ad
 				this.showInterstitialAd();
@@ -1231,7 +1240,8 @@ package com.jumpGame.screens
 			popupInstructions.show();
 			
 			// tutorial pointers
-			if (Statics.tutorialStep == 1 && Statics.roundsPlayed == 0 && this.screenMatches.gamesMyTurn.length > 0) {
+//			if (Statics.tutorialStep == 1 && Statics.roundsPlayed == 0 && this.screenMatches.gamesMyTurn.length > 0) {
+			if (Statics.tutorialStep == 1 && Statics.roundsPlayed == 0) {
 				this.showTutorialInstructions();
 			}
 			else if (Statics.tutorialStep == 2) {
@@ -1473,7 +1483,16 @@ package com.jumpGame.screens
 		public function showTutorialStartGame():void {
 			if (this.tutorialPointer != null) {
 				this.tutorialPointer.hide();
+//				setChildIndex(tutorialPointer, numChildren - 1);
 				this.tutorialPointer.pointAtStartGameBtn();
+			}
+		}
+		
+		public function showTutorialChallengeFriend():void {
+			if (this.tutorialPointer != null) {
+				this.tutorialPointer.hide();
+				setChildIndex(tutorialPointer, numChildren - 1);
+				this.tutorialPointer.pointAtChallengeFriendBtn();
 			}
 		}
 		

@@ -65,12 +65,14 @@ package
 		
 		public function JumpGame()
 		{
+			Statics.startMixpanel();
+			
 			// load security policy files
 //			Security.loadPolicyFile("https://www.raiderbear.com/crossdomain.xml");
 			Security.allowDomain("raiderbear.com");
 			Security.allowDomain("www.raiderbear.com");
-			Security.loadPolicyFile("http://d3et7r3ga59g4e.cloudfront.net/");
-			Security.loadPolicyFile("http://profile.ak.fbcdn.net/crossdomain.xml");
+//			Security.loadPolicyFile("http://d3et7r3ga59g4e.cloudfront.net/");
+//			Security.loadPolicyFile("http://profile.ak.fbcdn.net/crossdomain.xml");
 			Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
 			
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
