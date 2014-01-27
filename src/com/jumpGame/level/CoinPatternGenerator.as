@@ -43,35 +43,35 @@ package com.jumpGame.level
 		public function addSimplePattern():void {
 			var randomNum:Number = Math.random();
 			if (randomNum < 0.2) { // actually generate coins
-				if (randomNum < 0.1) { // pattern 1: one two one two one two ...
-					var gx:int = -280;
+//				if (randomNum < 0.1) { // pattern 1: one two one two one two ...
+//					var gx:int = -280;
+//					var gy:Number = (this.builder.currentY) * Constants.UnitHeight;
+//					var count:uint = 0;
+//					while (gx <= 280) {
+//						if (count % 2 == 0) { // add one coin
+//							this.builder.levelElementsArray.push([gy, gx, "CoinSilver"]);
+//						} else { // add two coins
+//							this.builder.levelElementsArray.push([gy - 20, gx, "CoinBronze"]);
+//							this.builder.levelElementsArray.push([gy + 20, gx, "CoinBronze"]);
+//						}
+//						count++;
+//						gx += 40;
+//					}
+//				}
+//				else { // pattern 2: bronze and bubbles
+					var gx:int = -320;
 					var gy:Number = (this.builder.currentY) * Constants.UnitHeight;
 					var count:uint = 0;
-					while (gx <= 280) {
-						if (count % 2 == 0) { // add one coin
-							this.builder.levelElementsArray.push([gy, gx, "CoinSilver"]);
-						} else { // add two coins
-							this.builder.levelElementsArray.push([gy - 20, gx, "CoinBronze"]);
-							this.builder.levelElementsArray.push([gy + 20, gx, "CoinBronze"]);
-						}
-						count++;
-						gx += 40;
-					}
-				}
-				else { // pattern 2: bronze and bubbles
-					gx = -320;
-					gy = (this.builder.currentY) * Constants.UnitHeight;
-					count = 0;
 					while (gx <= 320) {
-						if (count % 4 == 2) { // add bubble coin
+						if (count % 2 == 0) { // add bubble coin
 							this.builder.levelElementsArray.push([gy, gx, "CoinBubble"]);
 						} else { // add two coins
-							this.builder.levelElementsArray.push([gy, gx, "CoinBronze"]);
+//							this.builder.levelElementsArray.push([gy, gx, "CoinBronze"]);
 						}
 						count++;
 						gx += 40;
 					}
-				}
+//				}
 			} // eof actually generate coins
 		}
 		

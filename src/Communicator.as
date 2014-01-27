@@ -6,7 +6,7 @@ package
 	import flash.events.Event;
 //	import flash.events.HTTPStatusEvent;
 	import flash.events.IEventDispatcher;
-	import flash.events.IOErrorEvent;
+//	import flash.events.IOErrorEvent;
 //	import flash.events.ProgressEvent;
 //	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
@@ -116,8 +116,11 @@ package
 		/**
 		 * Find a smart match opponent for the current user
 		 */
-		public function findSmartMatch(alsoSendRoundBegin:Boolean = false):void {
-			if (alsoSendRoundBegin) this.sendGetRequest(Constants.UriFindMatchAndSendRoundBegin);
+		public function findSmartMatch(alsoSendRoundBegin:Boolean = false, forceFind:Boolean = false):void {
+//			if (alsoSendRoundBegin) this.sendGetRequest(Constants.UriFindMatchAndSendRoundBegin);
+//			else this.sendGetRequest(Constants.UriFindMatch);
+			
+			if (forceFind) this.sendGetRequest(Constants.UriFindMatchForce);
 			else this.sendGetRequest(Constants.UriFindMatch);
 		}
 		
@@ -125,14 +128,13 @@ package
 		 * Find a smart match opponent for the current user
 		 */
 		public function findSmartMatchSuper(alsoSendRoundBegin:Boolean = false):void {
-			if (alsoSendRoundBegin) this.sendGetRequest(Constants.UriFindMatchAndSendRoundBegin);
-			else this.sendGetRequest(Constants.UriFindMatchSuper);
+			this.sendGetRequest(Constants.UriFindMatchSuper);
 		}
 		
 		/**
 		 * Find a smart match opponent for the current user
 		 */
-		public function createMatch(opponentId:String):void {
+		public function createMatch(opponentId:String):void { // opponentId is the opponent's FBID
 			this.sendGetRequest(Constants.UriCreateMatchFacebook + "?opponent=" + opponentId);
 		}
 		
@@ -170,7 +172,7 @@ package
 //			dispatcher.addEventListener(Event.OPEN, openHandler);
 //			dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 //			dispatcher.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
-			dispatcher.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+//			dispatcher.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 //			dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 			//dispatcher.addEventListener(IOErrorEvent.NETWORK_ERROR, errorHandler);
 			//dispatcher.addEventListener(IOErrorEvent.VERIFY_ERROR, errorHandler);
@@ -180,7 +182,7 @@ package
 		private function completeHandler(event:Event):void {
 			var loader:URLLoader = URLLoader(event.target);
 			var data:String = loader.data;
-			trace("completeHandler: " + data);
+//			trace("completeHandler: " + data);
 			
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.RESPONSE_RECEIVED, {data: data}, true));
 		}
@@ -189,12 +191,12 @@ package
 //			trace("httpStatusHandler: " + event);
 //		}
 		
-		private function ioErrorHandler(event:IOErrorEvent):void {
-			if (Statics.isAnalyticsEnabled) {
-				Statics.mixpanel.track('communicator io error');
-			}
-			trace("ioErrorHandler: " + event);
-		}
+//		private function ioErrorHandler(event:IOErrorEvent):void {
+//			if (Statics.isAnalyticsEnabled) {
+//				Statics.mixpanel.track('communicator io error');
+//			}
+//			trace("ioErrorHandler: " + event);
+//		}
 		
 //		private function openHandler(event:Event):void {
 			//			trace("openHandler: " + event);

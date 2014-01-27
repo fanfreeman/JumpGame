@@ -68,7 +68,7 @@ package com.jumpGame.gameElements.powerups
 			this.cometOn = isForCometRun;
 			if (!isForCometRun) {
 				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_POWERUP");
-				this.completionTime = Statics.gameTime + 5000 + Statics.rankAttraction * 1000;
+				this.completionTime = Statics.gameTime + 12000 + Statics.rankAttraction * 1000;
 				this.nearCompletionTime = this.completionTime - Constants.PowerupWarningDuration;
 			}
 		}

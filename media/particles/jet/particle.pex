@@ -1,6 +1,6 @@
 <particleEmitterConfig>
 	<texture name="texture.png"></texture>
-	<sourcePosition x="542.17" y="592.68"></sourcePosition>
+	<sourcePosition x="0" y="0"></sourcePosition>
 	<sourcePositionVariance x="0.00" y="0.00"></sourcePositionVariance>
 	<speed value="2000"></speed>
 	<speedVariance value="180"></speedVariance>
@@ -16,7 +16,7 @@
 	<startColor red="0.30" green="0.40" blue="1.00" alpha="1.00"></startColor><startColorVariance red="0.40" green="0.50" blue="0.00" alpha="0.00"></startColorVariance>
 	<finishColor red="0.20" green="0.10" blue="1.00" alpha="0.31"></finishColor>
 	<finishColorVariance red="0.00" green="0.00" blue="0.00" alpha="0.00"></finishColorVariance>
-	<maxParticles value="200"></maxParticles>
+	<maxParticles value="100"></maxParticles>
 	<startParticleSize value="20.00"></startParticleSize>
 	<startParticleSizeVariance value="80.00"></startParticleSizeVariance>
 	<finishParticleSize value="20.00"></finishParticleSize>
@@ -28,7 +28,7 @@
 	<minRadius value="0.00"></minRadius>
 	<rotatePerSecond value="0.00"></rotatePerSecond>
 	<rotatePerSecondVariance value="0.00"></rotatePerSecondVariance>
-	<blendFuncSource value="775"></blendFuncSource>
+	<blendFuncSource value="1"></blendFuncSource>
 	<blendFuncDestination value="1"></blendFuncDestination>
 	<rotationStart value="0.00"></rotationStart>
 	<rotationStartVariance value="0.00"></rotationStartVariance>

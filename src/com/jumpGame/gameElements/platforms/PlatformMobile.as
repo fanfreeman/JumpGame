@@ -50,8 +50,10 @@ package com.jumpGame.gameElements.platforms
 					this.isMovingRight = true;
 				}
 			}
-			if (this.dx > Constants.PlatformMobileMaxVelocityX && !Statics.powerupAttractionEnabled) this.dx = Constants.PlatformMobileMaxVelocityX;
-			else if (this.dx < -Constants.PlatformMobileMaxVelocityX && !Statics.powerupAttractionEnabled) this.dx = -Constants.PlatformMobileMaxVelocityX;
+//			if (this.dx > Constants.PlatformMobileMaxVelocityX && !Statics.powerupAttractionEnabled) this.dx = Constants.PlatformMobileMaxVelocityX;
+//			else if (this.dx < -Constants.PlatformMobileMaxVelocityX && !Statics.powerupAttractionEnabled) this.dx = -Constants.PlatformMobileMaxVelocityX;
+			if (this.dx > Constants.PlatformMobileMaxVelocityX) this.dx = Constants.PlatformMobileMaxVelocityX;
+			else if (this.dx < -Constants.PlatformMobileMaxVelocityX) this.dx = -Constants.PlatformMobileMaxVelocityX;
 			super.update(timeDiff);
 		}
 	}

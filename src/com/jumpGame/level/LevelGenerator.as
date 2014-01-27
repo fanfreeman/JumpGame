@@ -66,8 +66,11 @@ package com.jumpGame.level {
 					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
 					break;
 				
-				case 900: // beginner stars
-					this.generateSineWave();
+//				case 900: // beginner stars
+//					this.generateSineWave();
+//					break;
+				case 900:
+					this.generateStarsCircularMotion();
 					break;
 				case 901: // beginner stars
 					this.generateStarCrossLarge();
@@ -84,18 +87,17 @@ package com.jumpGame.level {
 				case 905:
 					this.generateDesigned2001();
 					break;
+				case 906:
+					this.generateBeginnerSpinningCircles(2);
+					break;
 				
 				case 1000: // 1 size 5 normal platform per row
+					this.prevBlockNumber = 0; // only one block type for this difficulty, therefore allow immediate repeat
 					// normal, drop, mobile, normalboost, etc.
-					elementDistribution = new Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
+					elementDistribution = new Array(0.4, 0.6, 0.7, 0.85, 0.95, 0.97, 0.97, 1.0);
 					// size 1, 2, 3, 4, 5
 					sizeDistribution = new Array(0, 0, 0, 0.6, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
-					break;
-				case 1001: // [1] size [4-5] [normal, drop] platforms per row
-					elementDistribution = new Array(0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
-					sizeDistribution = new Array(0, 0, 0, 0.5, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
 					break;
 				
 				case 2000: // designed pattern
@@ -122,17 +124,21 @@ package com.jumpGame.level {
 				case 2007:
 					this.generateStairWithName("PlatformDrop", 4);
 					break;
+				case 2008:
+					this.generateDesigned2000(4);
+					break;
 				
 				case 3000: // [1] size [3-5] [normal, drop, mobile, normalboost, mobileboost]
-					elementDistribution = new Array(0.3, 0.6, 0.9, 0.97, 0.97, 1.0, 1.0, 1.0);
+					this.prevBlockNumber = 0; // only one block type for this difficulty, therefore allow immediate repeat
+					elementDistribution = new Array(0.3, 0.5, 0.6, 0.7, 0.8, 0.88, 0.94, 1.0);
 					sizeDistribution = new Array(0, 0, 0, 0.6, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
 					break;
-				case 3001: // [1] size [3-5] [normal, drop, mobile, normalboost, dropboost, mobileboost]
-					elementDistribution = new Array(0.2, 0.5, 0.8, 0.9, 0.98, 1.0, 1.0, 1.0);
-					sizeDistribution = new Array(0, 0, 0, 0.7, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
-					break;
+//				case 3001: // [1] size [3-5] [normal, drop, mobile, normalboost, dropboost, mobileboost]
+//					elementDistribution = new Array(0.4, 0.7, 0.8, 0.9, 0.98, 1.0, 1.0, 1.0);
+//					sizeDistribution = new Array(0, 0, 0, 0.7, 1.0)
+//					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
+//					break;
 				
 				case 4000: // designed pattern
 					this.generateDesigned4000();
@@ -152,6 +158,13 @@ package com.jumpGame.level {
 				case 4005:
 					this.generateBeginnerSpinningCircles(2);
 					break;
+				
+				case 4006: // designed pattern
+					this.generateStarCrossLarge();
+					break;
+				case 4007: // designed pattern
+					this.generateBeginnerSpinningCircles();
+					break;
 //				case 4006:
 //					this.generateAttractorsTwoColumns();
 //					break;
@@ -160,7 +173,7 @@ package com.jumpGame.level {
 					this.prevBlockNumber = 0; // only one block type for this difficulty, therefore allow immediate repeat
 					elementDistribution = new Array(0.1, 0.4, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0);
 					sizeDistribution = new Array(0, 0, 0.3, 1.0, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
 					break;
 				
 				case 6000: // designed pattern
@@ -180,6 +193,9 @@ package com.jumpGame.level {
 					break;
 				case 6005:
 					this.generateStairWithName("PlatformDropBoost", 4, 2);
+					break;
+				case 6006:
+					this.generateStraightLine();
 					break;
 				
 				case 7000:
@@ -212,7 +228,7 @@ package com.jumpGame.level {
 					this.prevBlockNumber = 0; // only one block type for this difficulty, therefore allow immediate repeat
 					elementDistribution = new Array(0.03, 0.3, 0.7, 0.76, 0.82, 0.88, 0.94, 1.0);
 					sizeDistribution = new Array(0, 0, 1.0, 1.0, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
 					break;
 				
 				case 10000:
@@ -235,6 +251,10 @@ package com.jumpGame.level {
 					break;
 				case 10006:
 					this.generateDesignedPlatformAndReuplsor(2);
+					break;
+				
+				case 10007: // designed pattern
+					this.generateStairWithName("PlatformSuper", 4);
 					break;
 				
 				case 11000: // [1] size [2-4] [normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
@@ -267,7 +287,7 @@ package com.jumpGame.level {
 					this.prevBlockNumber = 0; // only one block type for this difficulty, therefore allow immediate repeat
 					elementDistribution = new Array(0.1, 0.3, 0.6, 0.68, 0.76, 0.84, 0.92, 1.0);
 					sizeDistribution = new Array(0, 0, 0.5, 1.0, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, false, 0.2, 0);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, true, 0.2, 0);
 					break;
 				
 				case 14000:
@@ -290,7 +310,7 @@ package com.jumpGame.level {
 					this.prevBlockNumber = 0; // only one block type for this difficulty, therefore allow immediate repeat
 					elementDistribution = new Array(0.1, 0.3, 0.6, 0.68, 0.76, 0.84, 0.92, 1.0);
 					sizeDistribution = new Array(0, 0, 0.7, 1.0, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, false, 0.25, 0);
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, true, 0.2, 0);
 					break;
 				
 				case 16000:
@@ -365,10 +385,14 @@ package com.jumpGame.level {
 //					this.generateRandom(height, false, elementDistribution, sizeDistribution, false, 0, 0.5);
 					
 //					this.generateDesigned2000(6);
+					elementDistribution = new Array(0.5, 0.8, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
+					// size 1, 2, 3, 4, 5
+					sizeDistribution = new Array(0.0, 0.0, 1.0, 1.0, 1.0)
+					this.generateRandom(height, false, elementDistribution, sizeDistribution, true);
 					//[normal, drop, mobile, normalboost, dropboost, mobileboost, power, super]
-					elementDistribution = new Array(0, 0, 0, 0.2, 0.5, 0.8, 0.9, 1.0);
-					sizeDistribution = new Array(0, 0, 0, 0.7, 1.0)
-					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
+//					elementDistribution = new Array(0, 0, 0, 0.2, 0.5, 0.8, 0.9, 1.0);
+//					sizeDistribution = new Array(0, 0, 0, 0.7, 1.0)
+//					this.generateRandom(height, false, elementDistribution, sizeDistribution, false);
 //					this.generateSingleRisingMobile(3);
 //					this.generateDesignedPlatformAndReuplsor(2);
 //					this.generateStairWithName("PlatformNormal", 4);
@@ -405,7 +429,7 @@ package com.jumpGame.level {
 		 * @param height the height of a block to generate
 		 */
 		private var rowsToSkip:uint;
-		private function generateRandom(height:int, isBonusMode:Boolean, elementDistribution:Array, 
+		private function generateRandom(height:int, repulsorWalls:Boolean, elementDistribution:Array, 
 										sizeDistribution:Array, twoPerRow:Boolean, chanceRepulsor:Number = 0, chanceStarDark:Number = 0):void {
 			var gx:Number = 0;
 			var gy:Number = 0;
@@ -427,6 +451,7 @@ package com.jumpGame.level {
 							gx = Math.random() * (this.stageWidth / 2 - border * 2) + (border);
 						}
 							//					else gx = Math.random() * 400 - 200 + this.prevElementX; // do not place consecutive platforms too far apart
+						else if (repulsorWalls) gx = Math.random() * 400 - 200;
 						else gx = Math.random() * 600 - 300;
 						// do not go off sides of screen
 						//					if (gx < -this.stageWidth / 2 + 300) {
@@ -444,7 +469,7 @@ package com.jumpGame.level {
 							elementSize = this.getElementSizeByDistribution(sizeDistribution);
 						}
 						else if ([Constants.PlatformNormalBoost, Constants.PlatformDropBoost, Constants.PlatformMobileBoost].indexOf(elementClass) != -1) {
-							if (Math.random() < 0.5) this.rowsToSkip = 1;
+//							if (Math.random() < 0.5) this.rowsToSkip = 1; // test
 							elementSize = this.getElementSizeByDistribution(sizeDistribution);
 						}
 //						else if (elementClass == Constants.PlatformSuper) {
@@ -477,6 +502,16 @@ package com.jumpGame.level {
 					gx = Math.random() * 600 - 300;
 					while (Math.abs(gx - prevElemGx) < 100) gx = Math.random() * 600 - 300;
 					this.builder.levelElementsArray.push([(this.builder.currentY + 2) * Constants.UnitHeight, gx, "StarDark"]);
+				}
+				
+				// repulsor walls
+				if (repulsorWalls) {
+					if (Math.random() < 0.5) {
+						gx = -310;
+					} else {
+						gx = 310;
+					}
+					this.builder.levelElementsArray.push([(this.builder.currentY) * Constants.UnitHeight, gx, "Repulsor"]);
 				}
 				
 //				this.builder.currentY++;

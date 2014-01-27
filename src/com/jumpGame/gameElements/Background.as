@@ -28,7 +28,7 @@ package com.jumpGame.gameElements {
 		private var layer0Sky_test:Image;
 		
 		// other decorative layers
-		private var bgLayerPlanets:BgLayer; // bg planet/pirateship/moon
+//		private var bgLayerPlanets:BgLayer; // bg planet/pirateship/moon
 		private var bgLayerCreatures:BgLayer; // dragon/stingray
 		private var bgLayerClouds:BgLayer; // bg clouds
 		private var bgLayerIslandsSmall:BgLayer; // bg small islands
@@ -38,7 +38,7 @@ package com.jumpGame.gameElements {
 		private var bgLayerFairy:BgLayer;
 		
 		// expiration times
-		private var bgLayerPlanetsExpiration:int;
+//		private var bgLayerPlanetsExpiration:int;
 		private var bgLayerCreaturesExpiration:int;
 		private var bgLayerCloudsExpiration:int;
 		private var bgLayerIslandsSmallExpiration:int;
@@ -95,7 +95,7 @@ package com.jumpGame.gameElements {
 			this.sofHeight = Constants.InitialSofHeight;
 			
 			if (this.type == Constants.Background) {
-				bgLayerPlanetsExpiration = Statics.gameTime + Constants.BgLayerPlanetsDuration;
+//				bgLayerPlanetsExpiration = Statics.gameTime + Constants.BgLayerPlanetsDuration;
 				bgLayerCreaturesExpiration = Statics.gameTime + Constants.BgLayerCreaturesDuration;
 				bgLayerCloudsExpiration = Statics.gameTime + Constants.BgLayerCloudsDuration;
 				bgLayerIslandsSmallExpiration = Statics.gameTime + Constants.BgLayerIslandsSmallDuration;
@@ -123,7 +123,16 @@ package com.jumpGame.gameElements {
 //				layer0Sky3_right.gx = int(-this.stageWidth / 2 + skyImageWidth);
 //				layer0Sky3_right.gy = int(-this.stageHeight / 2 + skyImageHeight * 2);
 				// eof sky
-				if (Statics.randomSkyNum != null) this.layer0Sky_test.texture = Statics.assets.getTexture("bg" + Statics.randomSkyNum);
+				if (Statics.randomSkyNum != null) {
+					if (this.layer0Sky_test == null) {
+						this.layer0Sky_test = new Image(Statics.assets.getTexture("bg" + Statics.randomSkyNum));
+						layer0Sky_test.blendMode = BlendMode.NONE;
+//						this.addChild(layer0Sky_test);
+						this.addChildAt(layer0Sky_test, 0);
+					} else {
+						this.layer0Sky_test.texture = Statics.assets.getTexture("bg" + Statics.randomSkyNum);
+					}
+				}
 				
 				// floating stars
 				for (var i:uint = 0; i < Constants.NumBgFloatingStarsInGame; i++) {
@@ -143,10 +152,10 @@ package com.jumpGame.gameElements {
 				this.sofLayer1.gx = 0;
 				this.sofLayer1.gy = this.sofHeight + Constants.SofLayer1HeightOffset;
 				
-				this.bgLayerPlanets.gx = -this.stageWidth / 2; // place at top left of screen
-				this.bgLayerPlanets.gy = this.stageHeight / 2;
-				this.bgLayerPlanets.visible = false;
-				this.layerPlanetsHeight = this.bgLayerPlanets.height;
+//				this.bgLayerPlanets.gx = -this.stageWidth / 2; // place at top left of screen
+//				this.bgLayerPlanets.gy = this.stageHeight / 2;
+//				this.bgLayerPlanets.visible = false;
+//				this.layerPlanetsHeight = this.bgLayerPlanets.height;
 				
 				this.bgLayerCreatures.gx = -this.stageWidth / 2; // place at top left of screen
 				this.bgLayerCreatures.gy = this.stageHeight / 2;
@@ -298,11 +307,7 @@ package com.jumpGame.gameElements {
 //				this.addChild(layer0Sky3_right);
 				// eof add sky images
 				
-				// bg test
-				this.layer0Sky_test = new Image(Statics.assets.getTexture("bg6"));
-				layer0Sky_test.blendMode = BlendMode.NONE;
-				this.addChild(layer0Sky_test);
-				// eof bg test
+				// create bg sky
 				
 				// add ground image
 				layer0Ground = new GameObject();
@@ -320,9 +325,9 @@ package com.jumpGame.gameElements {
 				this.addChild(this.sofLayer1);
 				
 				// add bg layer: moon/pirate ship/planet
-				this.bgLayerPlanets = new BgLayer(10);
-				this.bgLayerPlanets.parallaxDepth = Constants.BgLayerPlanetsParallaxDepth;
-				this.addChild(this.bgLayerPlanets);
+//				this.bgLayerPlanets = new BgLayer(10);
+//				this.bgLayerPlanets.parallaxDepth = Constants.BgLayerPlanetsParallaxDepth;
+//				this.addChild(this.bgLayerPlanets);
 				
 				// add bg layer: dragon/stingray
 				this.bgLayerCreatures = new BgLayer(15);
@@ -509,19 +514,19 @@ package com.jumpGame.gameElements {
 //				if (layer0Sky3_right.gx < int(-this.stageWidth / 2 - skyImageWidth)) layer0Sky3_right.gx = int(layer0Sky3_left.gx + skyImageWidth);
 				
 				// scroll planets layer
-				if (this.bgLayerPlanets.visible) {
-					this.bgLayerPlanets.updateLayerPlanets(timeDiff);
-					this.bgLayerPlanets.gy += cameraDy * (1.0 - this.bgLayerPlanets.parallaxDepth);
-					if (this.bgLayerPlanets.gy < cameraGy - this.stageHeight - this.layerPlanetsHeight) {
-						this.bgLayerPlanets.visible = false;
-					}
-				}
-				else if (Statics.gameTime > this.bgLayerPlanetsExpiration) { // cycle element
-					this.bgLayerPlanets.cycle();
-					this.bgLayerPlanets.gy = cameraGy + this.stageHeight * 0.5;
-					this.bgLayerPlanets.visible = true;
-					this.bgLayerPlanetsExpiration = getExpirationTime(Constants.BgLayerPlanetsDuration);
-				}
+//				if (this.bgLayerPlanets.visible) {
+//					this.bgLayerPlanets.updateLayerPlanets(timeDiff);
+//					this.bgLayerPlanets.gy += cameraDy * (1.0 - this.bgLayerPlanets.parallaxDepth);
+//					if (this.bgLayerPlanets.gy < cameraGy - this.stageHeight - this.layerPlanetsHeight) {
+//						this.bgLayerPlanets.visible = false;
+//					}
+//				}
+//				else if (Statics.gameTime > this.bgLayerPlanetsExpiration) { // cycle element
+//					this.bgLayerPlanets.cycle();
+//					this.bgLayerPlanets.gy = cameraGy + this.stageHeight * 0.5;
+//					this.bgLayerPlanets.visible = true;
+//					this.bgLayerPlanetsExpiration = getExpirationTime(Constants.BgLayerPlanetsDuration);
+//				}
 				
 				// scroll dragon/stingray layer
 				if (this.bgLayerCreatures.visible) {
@@ -654,8 +659,12 @@ package com.jumpGame.gameElements {
 			this.sofHeight += timeDiff * 0.1;
 			
 			// adjust sea of fire so it keeps up with player
-			if ((heroGy - this.sofHeight) > this.stageHeight * 3) {
-				this.sofHeight = heroGy - this.stageHeight * 3;
+//			if ((heroGy - this.sofHeight) > this.stageHeight * 3) {
+//				this.sofHeight = heroGy - this.stageHeight * 3;
+//			}
+			// test
+			if ((heroGy - this.sofHeight) > this.stageHeight * 1.2) {
+				this.sofHeight = heroGy - this.stageHeight * 1.2;
 			}
 			
 			// move all sof layers vertically according to sof height property

@@ -80,11 +80,11 @@ package com.jumpGame.ui.popups
 			var layout:HorizontalLayout = new HorizontalLayout();
 			charactersList = new List();
 			charactersList.layout = layout;
-			charactersList.width = popupContainer.width;
-			charactersList.height = 300;
+			charactersList.width = 600;
+			charactersList.height = 400;
 			charactersList.pivotX = Math.ceil(charactersList.width / 2);
 			charactersList.x = popupContainer.width / 2;
-			charactersList.y = 110;
+			charactersList.y = 100;
 			charactersList.verticalScrollPolicy = Scroller.SCROLL_POLICY_OFF;
 			charactersList.horizontalScrollPolicy = Scroller.SCROLL_POLICY_ON;
 			popupContainer.addChild(charactersList);
@@ -126,7 +126,7 @@ package com.jumpGame.ui.popups
 			charactersCollection = new ListCollection();
 			
 			charactersCollection.addItem({ 
-				nickname: "random", 
+				nickname: "cat", 
 				level: 1, 
 				isnew: true 
 			});
@@ -144,13 +144,13 @@ package com.jumpGame.ui.popups
 			});
 			
 			charactersCollection.addItem({ 
-				nickname: "boy", 
+				nickname: "girl", 
 				level: 1, 
 				isnew: true 
 			});
 			
 			charactersCollection.addItem({ 
-				nickname: "girl", 
+				nickname: "boy", 
 				level: 1, 
 				isnew: true 
 			});

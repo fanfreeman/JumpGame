@@ -431,20 +431,22 @@ package
 //			bgmMenuSound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/magical_waltz2.mp3"));
 			bgmMenu = new Object();
 //			bgmMenu.sound = new Sounds.SND_BGM_MENU() as Sound;
-			bgmMenu.volume = 1;
+			bgmMenu.volume = 0.7;
 			
 //			var bgmInGameSound:Sound = new Sound();
 //			bgmInGameSound.load(new URLRequest("https://s3-us-west-2.amazonaws.com/youjumpijump/chaoz_airflow.mp3"));
 			bgmInGame = new Object();
 //			bgmInGame.sound = new Sounds.SND_BGM_INGAME() as Sound;
-			bgmInGame.volume = 1;
+			bgmInGame.volume = 0.7;
 		}
 		
 		public static function playBgmMenu():void {
 //			var channelBgmMenu:SoundChannel = bgmMenu.sound.play(0, 999);
 			var channelBgmMenu:SoundChannel = Statics.assets.playSound("SND_BGM_MENU", 0, 999);
 			bgmMenu.channel = channelBgmMenu;
-			bgmMenu.volume = 1;
+			bgmMenu.volume = 0.7;
+			soundTransform.volume = 0.7; // lower volume a bit
+			channelBgmMenu.soundTransform = soundTransform;
 			if (bgmMuted) {
 				// mute menu bgm
 				soundTransform.volume = 0;
@@ -458,11 +460,12 @@ package
 			
 //			var channelBgmIngame:SoundChannel = bgmInGame.sound.play(0, 999);
 			if (bgmInGame.channel == null) {
-				var channelBgmIngame:SoundChannel = Statics.assets.playSound("SND_BGM_INGAME", 0, 999);
-				soundTransform.volume = 0.8; // lower volume a bit
+				var channelBgmIngame:SoundChannel = Statics.assets.playSound("chaoz_airflow", 0, 999);
+				soundTransform.volume = 0.7; // lower volume a bit
+//				soundTransform.volume = 0; // test 
 				channelBgmIngame.soundTransform = soundTransform;
 				bgmInGame.channel = channelBgmIngame;
-				bgmInGame.volume = 1;
+				bgmInGame.volume = 0.7;
 				if (bgmMuted) {
 					// mute in game bgm
 					soundTransform.volume = 0;

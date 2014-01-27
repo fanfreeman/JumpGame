@@ -42,14 +42,14 @@ package
 		public static const PARTICLE_TYPE_2:int = 2;
 		
 		// physics
-		public static const Gravity:Number = 0.00158;
+		public static const Gravity:Number = 0.00108; // 0.00158
 //		public static const MaxHeroFallVelocity:Number = -0.5;
 		public static const MaxObjectFallVelocity:Number = -2;
 		public static const MaxHeroBouncePower:Number = 3.0;
 		
 		public static const HeroMaxSpeedX:Number = 0.6;
 		public static const HeroExpansionMaxSpeedX:Number = 0.6;
-		public static const HeroSpeedX:Number = 0.0025;
+		public static const HeroSpeedX:Number = 0.0035; // 0.0025
 		
 		/** Level Elements ********************************************************/
 		// level element name definitions
@@ -112,10 +112,10 @@ package
 //		public static const BoostBouncePower:Number = 1.1;
 //		public static const PowerBouncePower:Number = 1.3;
 //		public static const SuperBouncePower:Number = 2.4;
-		public static const NormalBouncePower:Number = 1.05;
+		public static const NormalBouncePower:Number = 0.85; // 1.05
 		public static const BoostBouncePower:Number = 1.35;
 		public static const PowerBouncePower:Number = 1.6;
-		public static const SuperBouncePower:Number = 3;
+		public static const SuperBouncePower:Number = 2.5;
 		// star bounce powers
 		public static const StarWhiteBouncePower:Number = 1.4;
 		public static const StarBlueBouncePower:Number = 1.6;
@@ -204,7 +204,8 @@ package
 		public static const UriVerifyPurchase:String = "user/verify/purchase";
 		public static const UriFindMatch:String = "user/findmatch";
 		public static const UriFindMatchSuper:String = "user/findmatch?super=true";
-		public static const UriFindMatchAndSendRoundBegin:String = "user/findmatch?begin=true";
+//		public static const UriFindMatchAndSendRoundBegin:String = "user/findmatch?begin=true";
+		public static const UriFindMatchForce:String = "user/findmatch?force=true";
 		public static const UriCreateMatchFacebook:String = "user/creatematchfb";
 		public static const UriResignMatch:String = "user/resignmatch";
 		public static const UriGetRoundBegin:String = "user/round/begin";

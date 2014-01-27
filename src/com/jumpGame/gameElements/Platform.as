@@ -28,6 +28,10 @@ package com.jumpGame.gameElements
 		
 		private var _destroyed:Boolean = true; // required by interface
 		
+		public function Platform() {
+			this.createPlatformArt();
+		}
+		
 		public function initialize(gx, gy, size:int, args = null):void {
 			this.gx = gx;
 			this.gy = gy;
@@ -36,7 +40,7 @@ package com.jumpGame.gameElements
 			this.dx = 0;
 			this.dy = 0;
 			this.isTouched = false;
-			if (platformAnimation == null && platformImage == null) createPlatformArt();
+//			if (platformAnimation == null && platformImage == null) createPlatformArt();
 			
 			if (size == 0) this.size = 4;
 			else this.size = size;
@@ -76,7 +80,7 @@ package com.jumpGame.gameElements
 			}
 		}
 		
-		protected function createPlatformArt():void{}
+		protected function createPlatformArt():void {}
 		
 		// can only touch once each contact
 		// return true is touch is real
@@ -218,6 +222,10 @@ package com.jumpGame.gameElements
 		
 		public function getWidthFast():Number {
 			return this.platformWidth * this.scaleX;
+		}
+		
+		public function isStar():Boolean {
+			return false;
 		}
 		
 		// methods required by interface

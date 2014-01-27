@@ -31,7 +31,7 @@ package com.jumpGame.gameElements.platforms
 			this.dx = 0;
 			this.dy = 0;
 			this.isTouched = false;
-			if (platformAnimation == null && platformImage == null) createPlatformArt();
+//			if (platformAnimation == null && platformImage == null) createPlatformArt();
 			this.show();
 		}
 		

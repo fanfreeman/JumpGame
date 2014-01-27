@@ -1,6 +1,8 @@
 package
 {
 //	import com.adobe.images.JPGEncoder;
+	import com.jumpGame.customObjects.Font;
+	import com.jumpGame.customObjects.Localization;
 	import com.jumpGame.customObjects.ProgressBar;
 	import com.jumpGame.events.NavigationEvent;
 	import com.jumpGame.screens.InGame;
@@ -11,9 +13,13 @@ package
 	import flash.system.System;
 	
 	import starling.core.Starling;
+	import starling.display.MovieClip;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.text.TextField;
 	import starling.utils.AssetManager;
+	import starling.utils.HAlign;
+	import starling.utils.VAlign;
 
 //	import flash.utils.ByteArray;
 	
@@ -28,6 +34,10 @@ package
 		private var screenMenu:Menu;
 		private var screenInGame:InGame;
 		private var soundButton:SoundButton;
+		
+		private var loadingChar:MovieClip;
+		private var loadingCaption:TextField;
+		private var loadingTip:TextField;
 		
 //		private var jpgEncoder:JPGEncoder;
 		
@@ -44,7 +54,7 @@ package
 		public function start(assets:AssetManager):void
 		{
 			if(ExternalInterface.available) ExternalInterface.call("kissTrack", "starling started");
-			Statics.mixpanel.track('starling started');
+			if (Statics.isAnalyticsEnabled) Statics.mixpanel.track('starling started');
 			// The background is passed into this method for two reasons:
 			// 
 			// 1) we need it right away, otherwise we have an empty frame
@@ -55,12 +65,31 @@ package
 			// The AssetManager contains all the raw asset data, but has not created the textures
 			// yet. This takes some time (the assets might be loaded from disk or even via the
 			// network), during which we display a progress indicator. 
+			var stageWidth:int = 756;
+			var stageHeight:int = 650;
 			
-			mLoadingProgress = new ProgressBar(756, 20);
-//			mLoadingProgress.x = (stage.width - mLoadingProgress.width) / 2;
+			// loading progress bar
+			mLoadingProgress = new ProgressBar(stageWidth, 20);
 			mLoadingProgress.x = 0;
-			mLoadingProgress.y = 650 * 0.7;
-			addChild(mLoadingProgress);
+			mLoadingProgress.y = stageHeight * 0.7;
+			
+			// loading caption
+			var font15:Font = Fonts.getFont("Materhorn15White");
+			this.loadingCaption = new TextField(100, 60, "Loading at breakneck speed...", font15.fontName, font15.fontSize, 0xffffff);
+			loadingCaption.hAlign = HAlign.CENTER;
+			loadingCaption.vAlign = VAlign.TOP;
+			loadingCaption.x = stageWidth - 120;
+			loadingCaption.y = stageHeight - 60;
+			
+			// loading tip
+			var font24:Font = Fonts.getFont("Materhorn24White");
+			this.loadingTip = new TextField(500, 60, "", font24.fontName, font24.fontSize, 0xffffff);
+			loadingTip.hAlign = HAlign.LEFT;
+			loadingTip.vAlign = VAlign.TOP;
+			loadingTip.x = 20;
+			loadingTip.y = stageHeight - 60;
+			
+			this.showLoading();
 			
 			assets.loadQueue(function(ratio:Number):void
 			{
@@ -74,7 +103,8 @@ package
 					{
 //						mLoadingProgress.removeFromParent(true);
 //						mLoadingProgress = null;
-						mLoadingProgress.visible = false;
+//						mLoadingProgress.visible = false;
+						hideLoading();
 						initialize(assets);
 					}, 0.15);
 			});
@@ -85,6 +115,13 @@ package
 			Statics.stageWidth = stage.stageWidth;
 			Statics.stageHeight = stage.stageHeight;
 			Statics.initialize(assets);
+			
+			// loading character
+			this.loadingChar = new MovieClip(Statics.assets.getTextures("CharBoySuper"), 30);
+			this.loadingChar.pivotX = this.loadingChar.texture.width;
+			this.loadingChar.pivotY = this.loadingChar.texture.height;
+			this.loadingChar.x = 756 - 35;
+			this.loadingChar.y = 650 - 5;
 			
 			// start loading bgm
 			Sounds.loadBgm();
@@ -131,6 +168,7 @@ package
 //			if (screenInGame == null) screenInGame = new InGame();
 			if (!this.contains(screenInGame)) this.addChildAt(screenInGame, this.numChildren - 1);
 			screenInGame.initializeNormalMode();
+			Statics.roundsPlayedThisSession++;
 		}
 		
 		/**
@@ -240,19 +278,43 @@ package
 					screenMenu.disposeTemporarily();
 					screenMenu.removeFromParent();
 					
-					// load random sky background image
-					Statics.randomSkyNum = int(Math.ceil(Math.random() * 20)).toString();
-					Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/bg/bg" + Statics.randomSkyNum + ".png");
-					mLoadingProgress.visible = true;
-					Statics.assets.loadQueue(function(ratio:Number):void {
-						mLoadingProgress.ratio = ratio;
-						if (ratio == 1.0) {
-							mLoadingProgress.visible = false;
-							showGame(); // initialize in game screen
-						}
-					});
+					this.loadInGame();
 					break;
 			}
+		}
+		
+		private function loadInGame():void {
+			this.showLoading(true);
+			
+			if (Statics.roundsPlayedThisSession == 0) {
+				// load assets
+				Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/assets_1/platforms.atf");
+				Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/assets/platforms.xml");
+				Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/assets_1/atlas2.atf");
+				Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/assets/atlas2.xml");
+				Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/assets_1/atlas3.atf");
+				Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/assets/atlas3.xml");
+				Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/assets_1/atlas5_fg.atf");
+				Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/assets/atlas5_fg.xml");
+				Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/assets_1/atlas6_drgn.atf");
+				Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/assets/atlas6_drgn.xml");
+				Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/assets/layer0_ground.png");
+				Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/assets/chaoz_airflow.mp3");
+			}
+			
+			// load random sky background image
+			Statics.randomSkyNum = int(Math.ceil(Math.random() * 20)).toString();
+			Statics.assets.enqueue("https://d3et7r3ga59g4e.cloudfront.net/bg/bg" + Statics.randomSkyNum + ".png");
+			
+//			mLoadingProgress.visible = true;
+			Statics.assets.loadQueue(function(ratio:Number):void {
+				mLoadingProgress.ratio = ratio;
+				if (ratio == 1.0) {
+//					mLoadingProgress.visible = false;
+					hideLoading(true);
+					showGame(); // initialize in game screen
+				}
+			});
 		}
 		
 		// creates a screenshot of entire stage in JPEG format
@@ -270,5 +332,32 @@ package
 //			
 //			return result;
 //		}
+		
+		private function showLoading(characterReady:Boolean = false):void {
+			this.addChild(this.mLoadingProgress);
+			
+			this.addChild(loadingCaption);
+			
+			loadingTip.text = Localization.getMessageTip();
+			this.addChild(loadingTip);
+			
+			if (characterReady) {
+				Starling.juggler.add(loadingChar);
+				this.addChild(loadingChar);
+			}
+		}
+		
+		private function hideLoading(characterReady:Boolean = false):void {
+			this.removeChild(this.mLoadingProgress);
+			
+			this.removeChild(loadingCaption);
+			
+			this.removeChild(loadingTip);
+			
+			if (characterReady) {
+				Starling.juggler.remove(loadingChar);
+				this.removeChild(loadingChar);
+			}
+		}
 	}
 }

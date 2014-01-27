@@ -1,7 +1,5 @@
 package 
 {
-	import com.mixpanel.Mixpanel;
-	
 	import flash.display.Bitmap;
 	import flash.external.ExternalInterface;
 	
@@ -9,6 +7,7 @@ package
 	import starling.extensions.PDParticleSystem;
 	import starling.filters.ColorMatrixFilter;
 	import starling.utils.AssetManager;
+	import com.jumpGame.customObjects.Mixpanel;
 
 	public class Statics
 	{
@@ -148,6 +147,7 @@ package
 		public static var cameraGy:Number;
 		
 		// mixpanel
+//		public static var mixpanel:Mixpanel;
 		public static var mixpanel:Mixpanel;
 		public static var isAnalyticsEnabled:Boolean;
 		public static var levelNumber:uint;
@@ -159,6 +159,8 @@ package
 		
 		// counter for how many times interstitial ads have been shown
 		public static var adsShowCount:uint = 0;
+		
+		public static var roundsPlayedThisSession:uint = 0;
 		
 		// whether profile pictures should be shown on rankings screen
 //		public static var showRankingsProfilePics:Boolean;
@@ -234,17 +236,21 @@ package
 			if(ExternalInterface.available) ExternalInterface.call("kissTrack", "swf started");
 			
 			// create mixpanel object
-			isAnalyticsEnabled = false;
-			mixpanel = new Mixpanel("f6cea95ffc1fa6a0db7c5db16597f5a4");
+			isAnalyticsEnabled = true;
+//			mixpanel = new Mixpanel("f6cea95ffc1fa6a0db7c5db16597f5a4");
+			mixpanel = new Mixpanel();
 			if(ExternalInterface.available) {
 				ExternalInterface.addCallback("returnFbidToAs", fbidReturnedFromJs);
 				ExternalInterface.call("getJumpFbid");
 			} 
 		}
 		
-		private static function fbidReturnedFromJs(fbid:String):void {
-			mixpanel.identify(fbid);
-			mixpanel.track('swf started');
+		private static function fbidReturnedFromJs(fbid:String, environment:String):void {
+//			if (environment != "dev") {
+//				isAnalyticsEnabled = true;
+//				mixpanel.identify(fbid);
+				mixpanel.track('swf started');
+//			}
 		}
 		
 		public static function get assets():AssetManager { return sAssets; }

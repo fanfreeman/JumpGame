@@ -54,45 +54,50 @@ package com.jumpGame.level  {
 			var blockNumber:int;
 			switch (this.difficulty) {
 				case 7:
-					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingBell, 10]);
-					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingWitch, 15]);
+//					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingBell, 10]);
+//					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingWitch, 15]);
 					blockNumber = int(Math.floor(Math.random() * 4) + 700);
 					this.generator.generate(blockNumber);
 					break;
 				case 8:
+//					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 18]);
+					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingBell, 10]);
+					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingWitch, 10]);
 					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingPowerupBoxes, 18]);
+					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingTrainRight, 15]);
+					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingTrainLeft, 15]);
 					blockNumber = int(Math.floor(Math.random() * 1) + 800);
 					this.generator.generate(blockNumber);
 					break;
 				case 9:
-					blockNumber = int(Math.floor(Math.random() * 6) + 900);
+					blockNumber = int(Math.floor(Math.random() * 7) + 900);
 					this.generator.generate(blockNumber);
 					break;
 				case 10:
-					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingTrainRight, 15]);
-					blockNumber = int(Math.floor(Math.random() * 2) + 1000);
+//					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingTrainRight, 15]);
+					blockNumber = int(Math.floor(Math.random() * 1) + 1000);
 					this.generator.generate(blockNumber);
 					break;
 				case 11:
-					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingTrainLeft, 15]);
-					blockNumber = int(Math.floor(Math.random() * 8) + 2000);
+//					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingTrainLeft, 15]);
+					blockNumber = int(Math.floor(Math.random() * 9) + 2000);
 					this.generator.generate(blockNumber);
 					break;
 				case 12:
-					blockNumber = int(Math.floor(Math.random() * 2) + 3000);
+					blockNumber = int(Math.floor(Math.random() * 1) + 3000);
 					this.generator.generate(blockNumber);
 					break;
 				case 13:
-					blockNumber = int(Math.floor(Math.random() * 6) + 4000);
+					blockNumber = int(Math.floor(Math.random() * 8) + 4000);
 					this.generator.generate(blockNumber);
 					break;
 				case 14:
-					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingWitch, 10]);
+//					this.levelElementsArray.push([currentY * Constants.UnitHeight, Constants.ContraptionSettingWitch, 10]);
 					blockNumber = int(Math.floor(Math.random() * 1) + 5000);
 					this.generator.generate(blockNumber);
 					break;
 				case 15:
-					blockNumber = int(Math.floor(Math.random() * 6) + 6000);
+					blockNumber = int(Math.floor(Math.random() * 7) + 6000);
 					this.generator.generate(blockNumber);
 					break;
 				case 16:
@@ -113,7 +118,7 @@ package com.jumpGame.level  {
 					this.generator.generate(blockNumber);
 					break;
 				case 19:
-					blockNumber = int(Math.floor(Math.random() * 7) + 10000);
+					blockNumber = int(Math.floor(Math.random() * 8) + 10000);
 					this.generator.generate(blockNumber);
 					break;
 				case 20:
@@ -189,11 +194,11 @@ package com.jumpGame.level  {
 //						this.raiseDifficulty();
 //						this.nextDifficultyDistance = Statics.maxDist + 5000;
 //					}
-					if (this.difficulty == 9) {
-						this.raiseDifficulty();
-						this.nextDifficultyDistance = Statics.maxDist + 5000;
-					}
-					else if (this.difficulty == 25) { // only one repetition of boss level
+//					if (this.difficulty == 9) {
+//						this.raiseDifficulty();
+//						this.nextDifficultyDistance = Statics.maxDist + 5000;
+//					}
+					if (this.difficulty == 25) { // only one repetition of boss level
 						this.raiseDifficulty();
 						this.nextDifficultyDistance = Statics.maxDist + 3000;
 					}
@@ -222,8 +227,8 @@ package com.jumpGame.level  {
 								Statics.mixpanel.track('repeating levels', { "repetitions": this.repetitions });
 							}
 						}
-						if (this.difficulty % 2 == 0) this.nextDifficultyDistance = Statics.maxDist + 16000; // platform levels
-						else this.nextDifficultyDistance = Statics.maxDist + 16000; // star levels are longer
+						if (this.difficulty % 2 == 0) this.nextDifficultyDistance = Statics.maxDist + 20000; // platform levels
+						else this.nextDifficultyDistance = Statics.maxDist + 10000; // star levels are longer
 					}
 					
 					// add a row of red stars
@@ -234,8 +239,8 @@ package com.jumpGame.level  {
 		
 		private function raiseDifficulty():void {
 			this.difficulty++;
-			if (Statics.speedFactor < 2) Statics.speedFactor += 0.01;
-			if (this._maxHeroFallVelocity > -2) this._maxHeroFallVelocity -= 0.03;
+//			if (Statics.speedFactor < 2) Statics.speedFactor += 0.01;
+//			if (this._maxHeroFallVelocity > -1.6) this._maxHeroFallVelocity -= 0.03;
 //			trace("max hero fall velocity: " + this._maxHeroFallVelocity);
 		}
 		

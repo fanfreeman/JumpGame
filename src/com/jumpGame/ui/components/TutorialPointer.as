@@ -147,7 +147,8 @@ package com.jumpGame.ui.components
 		}
 		
 		public function pointAtChallengeFriendBtn():void {
-			this.pointLeftAt(Statics.stageWidth - 55, 260);
+			this.pointLeftAt(Statics.stageWidth - 55, 245);
+//			this.pointLeftAt(Statics.stageWidth - 55, 305);
 		}
 		
 		public function pointAtRankingsInvite():void {

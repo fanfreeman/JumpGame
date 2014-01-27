@@ -127,10 +127,13 @@ package com.jumpGame.ui.screens
 			{
 				var list:List = new List();
 				list.backgroundSkin = new Image(Statics.assets.getTexture("StartGameCalloutBg0000"));
+//				list.backgroundSkin = new Image(Statics.assets.getTexture("StartGameCalloutSmall0000"));
 				list.pivotY = 15;
 				list.width = 277;
 				list.height = 217;
+//				list.height = 168;
 				list.paddingTop = 28;
+//				list.paddingTop = 31;
 				list.paddingLeft = 32;
 				list.itemRendererType = StartGameItemRenderer;
 				list.verticalScrollPolicy = List.SCROLL_POLICY_OFF;
@@ -272,15 +275,16 @@ package com.jumpGame.ui.screens
 				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 				
 				// bof REMOVE
-				Menu(this.owner).showLargeDialog("We are working hard on creating the smart matching algorithm. Please use Challenge Friend in the mean time.");
+//				Menu(this.owner).showLargeDialog("We are working hard on creating the smart matching algorithm. Please use Challenge Friend in the mean time.");
 				// eof REMOVE
 				
-//				Menu(this.owner).displayLoadingNotice("Finding an opponent...");
-//				Menu(this.owner).communicator.findSmartMatch();
-//				
-//				if (Statics.tutorialStep == 1 || Statics.tutorialStep == 2) { // hide tutorial temporarily until new match is created
-//					Starling.juggler.delayCall(Menu(this.owner).makeTutorialInvisibleTemporarily, 0.1); // delay a bit to really make it invisible
-//				}
+				Menu(this.owner).displayLoadingNotice("Finding an opponent...");
+				if (Statics.tutorialStep == 1 || Statics.tutorialStep == 2) Menu(this.owner).communicator.findSmartMatch(false, true);
+				else Menu(this.owner).communicator.findSmartMatch();
+				
+				if (Statics.tutorialStep == 1 || Statics.tutorialStep == 2) { // hide tutorial temporarily until new match is created
+					Starling.juggler.delayCall(Menu(this.owner).makeTutorialInvisibleTemporarily, 0.1); // delay a bit to really make it invisible
+				}
 				
 				if (Statics.isAnalyticsEnabled) { // mixpanel
 					Statics.mixpanel.track('clicked on start game smart match');
@@ -289,12 +293,12 @@ package com.jumpGame.ui.screens
 			else if (startGamePicker.selectedIndex == 2) { // supersonic world
 				if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
 				
-				if (Statics.roundsPlayed >= 80 || Statics.playerHighScore >= 20000) {
-					Menu(this.owner).displayLoadingNotice("Finding a seasoned opponent...");
-					Menu(this.owner).communicator.findSmartMatchSuper();
-				} else {
+//				if (Statics.roundsPlayed >= 80 || Statics.playerHighScore >= 20000) {
+//					Menu(this.owner).displayLoadingNotice("Finding a seasoned opponent...");
+//					Menu(this.owner).communicator.findSmartMatchSuper();
+//				} else {
 					Menu(this.owner).showLargeDialog("Achieve a single round score of 20000, or play 80 rounds in total to unlock Supersonic World.");
-				}
+//				}
 				
 				if (Statics.isAnalyticsEnabled) { // mixpanel
 					Statics.mixpanel.track('clicked on start game supersonic world');

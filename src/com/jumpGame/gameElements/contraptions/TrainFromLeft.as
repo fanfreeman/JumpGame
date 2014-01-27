@@ -9,14 +9,13 @@ package com.jumpGame.gameElements.contraptions
 	{
 		override protected function createArt():void
 		{
+			// train art
 			headImage = new Image(Statics.assets.getTexture("TrainHead0000"));
 			headImage.scaleX = -1;
 			headImage.pivotY = Math.ceil(headImage.height / 2); // center y
 			this.addChild(headImage);
-		}
-		
-		override protected function createLookOutAnimation():void
-		{
+			
+			// look out animation
 			lookOutAnimation = new MovieClip(Statics.assets.getTextures("Lookout"), 40);
 			lookOutAnimation.pivotY = lookOutAnimation.height;
 			this.addChild(lookOutAnimation);

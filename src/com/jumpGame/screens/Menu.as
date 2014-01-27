@@ -34,7 +34,6 @@ package com.jumpGame.screens
 	import feathers.data.ListCollection;
 	import feathers.motion.transitions.TabBarSlideTransitionManager;
 	import feathers.system.DeviceCapabilities;
-	import feathers.themes.MetalWorksMobileTheme;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
@@ -48,7 +47,6 @@ package com.jumpGame.screens
 	
 	public class Menu extends ScreenNavigator
 	{
-		protected var theme:MetalWorksMobileTheme;
 		private var coinLabel:TextField;
 		private var gemLabel:TextField;
 		private var lifeLabel:TextField;
@@ -171,13 +169,12 @@ package com.jumpGame.screens
 						this.timeUpdated = getTimer();
 						
 //						trace("environment: " + dataObj.environment);
-						if (dataObj.environment == "prod") {
-							Statics.isAnalyticsEnabled = true;
-							Statics.mixpanel.people_set({
-								"user id": String(dataObj.user_id),
-								"first name": dataObj.first_name,
-								"last name": dataObj.last_name
-							});
+						if (Statics.isAnalyticsEnabled) {
+//							Statics.mixpanel.people_set({
+//								"user id": String(dataObj.user_id),
+//								"first name": dataObj.first_name,
+//								"last name": dataObj.last_name
+//							});
 							Statics.mixpanel.track('player data received');
 						}
 						
@@ -382,6 +379,9 @@ package com.jumpGame.screens
 						if (Statics.tutorialStep == 1 || Statics.tutorialStep == 2) { // tutorial second step: create new match
 							this.showTutorialPlay();
 						}
+					}
+					else if (dataObj.status == "pending") { // looking for match
+						this.showLargeDialog("We are looking for a good match for you, and will notify you when ready! You can also Challenge a Friend to start playing right now.", true);
 					}
 //					else if (dataObj.status == "rankings") {
 //						this.updateFriendsRankingsList(dataObj);
@@ -969,7 +969,8 @@ package com.jumpGame.screens
 			loadingNotice.addChild(bg);
 			
 			// spinning box
-			var boxAnimation:MovieClip = new MovieClip(Statics.assets.getTextures("BoxBlue"), 20);
+//			var boxAnimation:MovieClip = new MovieClip(Statics.assets.getTextures("BoxBlue"), 20);
+			var boxAnimation:MovieClip = new MovieClip(Statics.assets.getTextures("Blast"), 20);
 			boxAnimation.pivotX = Math.ceil(boxAnimation.texture.width  / 2); // center art on registration point
 			boxAnimation.pivotY = Math.ceil(boxAnimation.texture.height / 2);
 			boxAnimation.x = stage.stageWidth / 2 - 200;
@@ -1005,7 +1006,7 @@ package com.jumpGame.screens
 		public function initialize():void
 		{
 			if(ExternalInterface.available) ExternalInterface.call("kissTrack", "initializing menu");
-			Statics.mixpanel.track('initializing menu', { "isHardwareRendering": Statics.isHardwareRendering.toString() });
+			if (Statics.isAnalyticsEnabled) Statics.mixpanel.track('initializing menu', { "isHardwareRendering": Statics.isHardwareRendering.toString() });
 			this.visible = true;
 			this.tabs.selectedIndex = -1;
 			this.tabs.validate();
@@ -1548,9 +1549,9 @@ package com.jumpGame.screens
 			Statics.adsShowCount++;
 		}
 		
-		public function showLargeDialog(message:String):void {
+		public function showLargeDialog(message:String, isLong:Boolean = false):void {
 			setChildIndex(this.dialogLarge, numChildren - 1);
-			this.dialogLarge.show(message);
+			this.dialogLarge.show(message, isLong);
 		}
 	}
 }

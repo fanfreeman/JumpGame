@@ -141,14 +141,14 @@ package com.jumpGame.ui
 			
 			chanceArray = new Array(9);
 			chanceArray[0] = 5; // teleportation
-			chanceArray[1] = 3; // attraction
+			chanceArray[1] = 5; // attraction
 			chanceArray[2] = 3; // protection
-			chanceArray[3] = 3; // duplication
+			chanceArray[3] = 0; // duplication // 3
 			chanceArray[4] = 8; // barrels
 			chanceArray[5] = 1; // broomstick
 			chanceArray[6] = 1; // vermilion bird
 			chanceArray[7] = 1; // master da pan
-			chanceArray[8] = 8; // comet
+			chanceArray[8] = 6; // comet
 			totalChance = 0;
 			for (var i:uint = 0; i < 9; i++) {
 				totalChance += chanceArray[i];

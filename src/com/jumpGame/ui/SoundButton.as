@@ -22,7 +22,7 @@ package com.jumpGame.ui
 		
 		public function SoundButton()
 		{
-			super(Texture.fromBitmapData(new BitmapData(Statics.assets.getTexture("BtnSoundOff0000").width, Statics.assets.getTexture("BtnSoundOff0000").height, true, 0)));
+			super(Texture.fromBitmapData(new BitmapData(Statics.assets.getTexture("BtnSoundOff0000").width, Statics.assets.getTexture("BtnSoundOff0000").height, true, 0), false));
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}

@@ -42,7 +42,7 @@ package com.jumpGame.gameElements.platforms
 			this.dx = 0;
 			this.dy = 0;
 			this.canBounce = false;
-			if (platformAnimation == null) createPlatformArt();
+//			if (platformAnimation == null) createPlatformArt();
 			this.show();
 		}
 		

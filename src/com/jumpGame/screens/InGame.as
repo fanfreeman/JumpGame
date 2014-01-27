@@ -69,6 +69,7 @@ package com.jumpGame.screens
 	import starling.events.Event;
 	import starling.events.KeyboardEvent;
 	import starling.extensions.PDParticleSystem;
+	import starling.textures.Texture;
 	
 	public class InGame extends Sprite
 	{
@@ -350,19 +351,19 @@ package com.jumpGame.screens
 			// bof set up static particle emitters
 //			if (this.isHardwareRendering) {
 				// create leaf particle emitter
-				Statics.particleLeaf = new PDParticleSystem(XML(new ParticleAssets.ParticleLeafXML()), Statics.assets.getTexture("ParticleLeaf0000"));
+				Statics.particleLeaf = new PDParticleSystem(Statics.assets.getXml("ParticleLeafXML"), Statics.assets.getTexture("ParticleLeaf0000"));
 				Statics.particleLeaf.touchable = false;
 				Starling.juggler.add(Statics.particleLeaf);
 				this.addChild(Statics.particleLeaf);
 				
 				// create charge particle emitter
-				Statics.particleCharge = new PDParticleSystem(XML(new ParticleAssets.ParticleChargeXML()),Statics.assets.getTexture("ParticleCharge0000"));
+				Statics.particleCharge = new PDParticleSystem(Statics.assets.getXml("ParticleChargeXML"),Statics.assets.getTexture("ParticleCharge0000"));
 				Statics.particleCharge.touchable = false;
 				Starling.juggler.add(Statics.particleCharge);
 				this.addChild(Statics.particleCharge);
 				
 				// create wind particle emitter
-				Statics.particleWind = new PDParticleSystem(XML(new ParticleAssets.ParticleWindXML()), Statics.assets.getTexture("ParticleWind0000"));
+				Statics.particleWind = new PDParticleSystem(Statics.assets.getXml("ParticleWindXML"), Statics.assets.getTexture("ParticleWind0000"));
 				Statics.particleWind.touchable = false;
 				Starling.juggler.add(Statics.particleWind);
 				this.addChild(Statics.particleWind);
@@ -370,31 +371,31 @@ package com.jumpGame.screens
 				Statics.particleWind.emitterY = 0;
 				
 				// create jet particle emitter
-				Statics.particleJet = new PDParticleSystem(XML(new ParticleAssets.ParticleJetXML()), Statics.assets.getTexture("ParticleJet0000"));
+				Statics.particleJet = new PDParticleSystem(Statics.assets.getXml("ParticleJetXML"), Texture.fromBitmap(new Assets.ParticleJetTexture(), false));
 				Statics.particleJet.touchable = false;
 				Starling.juggler.add(Statics.particleJet);
 				this.addChild(Statics.particleJet);
 				
 				// create comet tail particle emitter
-				Statics.particleComet = new PDParticleSystem(XML(new ParticleAssets.ParticleCometXML()), Statics.assets.getTexture("ParticleJet0000"));
+				Statics.particleComet = new PDParticleSystem(Statics.assets.getXml("ParticleCometXML"), Texture.fromBitmap(new Assets.ParticleJetTexture(), false));
 				Statics.particleComet.touchable = false;
 				Starling.juggler.add(Statics.particleComet);
 				this.addChild(Statics.particleComet);
 				
 				// create bounce particle emitter
-				Statics.particleBounce = new PDParticleSystem(XML(new ParticleAssets.ParticleBounceXML()), Statics.assets.getTexture("ParticleCharge0000"));
+				Statics.particleBounce = new PDParticleSystem(Statics.assets.getXml("ParticleBounceXML"), Statics.assets.getTexture("ParticleCharge0000"));
 				Statics.particleBounce.touchable = false;
 				Starling.juggler.add(Statics.particleBounce);
 				this.addChild(Statics.particleBounce);
 				
 				// create explosion particle emitter
-				Statics.particleExplode = new PDParticleSystem(XML(new ParticleAssets.ParticleExplodeXML()), Statics.assets.getTexture("ParticleCharge0000"));
+				Statics.particleExplode = new PDParticleSystem(Statics.assets.getXml("ParticleExplodeXML"), Statics.assets.getTexture("ParticleCharge0000"));
 				Statics.particleExplode.touchable = false;
 				Starling.juggler.add(Statics.particleExplode);
 				this.addChild(Statics.particleExplode);
 				
-				// create explosion particle emitter
-				Statics.particleConfetti = new PDParticleSystem(XML(new ParticleAssets.ParticleConfettiXML()), Statics.assets.getTexture("ParticleConfetti0000"));
+				// create confetti particle emitter
+				Statics.particleConfetti = new PDParticleSystem(Statics.assets.getXml("ParticleConfettiXML"), Statics.assets.getTexture("ParticleConfetti0000"));
 				Statics.particleConfetti.touchable = false;
 				
 				// create hero trail particle emitter
@@ -475,35 +476,65 @@ package com.jumpGame.screens
 			this.addChild(this.inGameMenu);
 			
 			// create platform pools
-			ObjectPool.instance.registerPool(PlatformNormal, 50, false);
-			ObjectPool.instance.registerPool(PlatformMobile, 50, false);
-			ObjectPool.instance.registerPool(PlatformDrop, 40, false);
-			ObjectPool.instance.registerPool(PlatformNormalBoost, 40, false);
-			ObjectPool.instance.registerPool(PlatformDropBoost, 40, false);
-			ObjectPool.instance.registerPool(PlatformMobileBoost, 80, false);
-//			ObjectPool.instance.registerPool(PlatformPower, 12, false);
-			ObjectPool.instance.registerPool(PlatformSuper, 40, false);
-			ObjectPool.instance.registerPool(Coin, 130, false);
-			ObjectPool.instance.registerPool(CoinSilver, 100, false);
-			ObjectPool.instance.registerPool(CoinBronze, 100, false);
-			ObjectPool.instance.registerPool(CoinBubble, 40, false);
-//			ObjectPool.instance.registerPool(BigCoin, 10, false);
-			ObjectPool.instance.registerPool(Star, 180, false);
-			ObjectPool.instance.registerPool(StarMini, 60, false);
-			ObjectPool.instance.registerPool(StarBlue, 150, false);
-			ObjectPool.instance.registerPool(StarRed, 60, false);
-			ObjectPool.instance.registerPool(StarDark, 50, false);
+//			ObjectPool.instance.registerPool(PlatformNormal, 50, false);
+//			ObjectPool.instance.registerPool(PlatformMobile, 50, false);
+//			ObjectPool.instance.registerPool(PlatformDrop, 40, false);
+//			ObjectPool.instance.registerPool(PlatformNormalBoost, 40, false);
+//			ObjectPool.instance.registerPool(PlatformDropBoost, 40, false);
+//			ObjectPool.instance.registerPool(PlatformMobileBoost, 80, false);
+//			ObjectPool.instance.registerPool(PlatformSuper, 40, false);
+//			ObjectPool.instance.registerPool(Coin, 130, false);
+//			ObjectPool.instance.registerPool(CoinSilver, 100, false);
+//			ObjectPool.instance.registerPool(CoinBronze, 100, false);
+//			ObjectPool.instance.registerPool(CoinBubble, 40, false);
+//			ObjectPool.instance.registerPool(Star, 180, false);
+//			ObjectPool.instance.registerPool(StarMini, 60, false);
+//			ObjectPool.instance.registerPool(StarBlue, 150, false);
+//			ObjectPool.instance.registerPool(StarRed, 60, false);
+//			ObjectPool.instance.registerPool(StarDark, 50, false);
+//			ObjectPool.instance.registerPool(Comet, 5, false);
+//			ObjectPool.instance.registerPool(Repulsor, 60, false);
+//			ObjectPool.instance.registerPool(Attractor, 20, false);
+//			ObjectPool.instance.registerPool(Bouncer, 60, false);
+//			ObjectPool.instance.registerPool(Cannonball, 50, false);
+//			ObjectPool.instance.registerPool(SpikyBomb, 30, false);
+//			ObjectPool.instance.registerPool(Train, 2, false);
+//			ObjectPool.instance.registerPool(TrainFromLeft, 2, false);
+//			ObjectPool.instance.registerPool(Cannon, 1, false);
+//			ObjectPool.instance.registerPool(CannonFromLeft, 1, false);
+//			ObjectPool.instance.registerPool(Bell, 1, false);
+//			ObjectPool.instance.registerPool(PowerupBoxPink, 2, false);
+//			ObjectPool.instance.registerPool(PowerupBoxGreen, 2, false);
+//			ObjectPool.instance.registerPool(PowerupBoxFire, 2, false);
+//			ObjectPool.instance.registerPool(PowerupBoxBlue, 2, false);
+//			ObjectPool.instance.registerPool(Witch, 2, false);
+			
+			ObjectPool.instance.registerPool(PlatformNormal, 15, false);
+			ObjectPool.instance.registerPool(PlatformMobile, 15, false);
+			ObjectPool.instance.registerPool(PlatformDrop, 12, false);
+			ObjectPool.instance.registerPool(PlatformNormalBoost, 12, false);
+			ObjectPool.instance.registerPool(PlatformDropBoost, 12, false);
+			ObjectPool.instance.registerPool(PlatformMobileBoost, 25, false);
+			ObjectPool.instance.registerPool(PlatformSuper, 12, false);
+			ObjectPool.instance.registerPool(Coin, 20, false);
+			ObjectPool.instance.registerPool(CoinSilver, 20, false);
+			ObjectPool.instance.registerPool(CoinBronze, 20, false);
+			ObjectPool.instance.registerPool(CoinBubble, 25, false);
+			ObjectPool.instance.registerPool(Star, 60, false);
+			ObjectPool.instance.registerPool(StarMini, 20, false);
+			ObjectPool.instance.registerPool(StarBlue, 50, false);
+			ObjectPool.instance.registerPool(StarRed, 20, false);
+			ObjectPool.instance.registerPool(StarDark, 15, false);
 			ObjectPool.instance.registerPool(Comet, 5, false);
-			ObjectPool.instance.registerPool(Repulsor, 60, false);
-			ObjectPool.instance.registerPool(Attractor, 20, false);
-			ObjectPool.instance.registerPool(Bouncer, 60, false);
-			ObjectPool.instance.registerPool(Cannonball, 50, false);
-			ObjectPool.instance.registerPool(SpikyBomb, 30, false);
+			ObjectPool.instance.registerPool(Repulsor, 20, false);
+			ObjectPool.instance.registerPool(Attractor, 4, false);
+			ObjectPool.instance.registerPool(Bouncer, 20, false);
+			ObjectPool.instance.registerPool(Cannonball, 10, false);
+			ObjectPool.instance.registerPool(SpikyBomb, 10, false);
 			ObjectPool.instance.registerPool(Train, 2, false);
 			ObjectPool.instance.registerPool(TrainFromLeft, 2, false);
 			ObjectPool.instance.registerPool(Cannon, 1, false);
 			ObjectPool.instance.registerPool(CannonFromLeft, 1, false);
-//			ObjectPool.instance.registerPool(Hourglass, 3, false);
 			ObjectPool.instance.registerPool(Bell, 1, false);
 			ObjectPool.instance.registerPool(PowerupBoxPink, 2, false);
 			ObjectPool.instance.registerPool(PowerupBoxGreen, 2, false);
@@ -540,7 +571,7 @@ package com.jumpGame.screens
 			// reset static vars
 //			Statics.gameMode = Constants.ModeNormal;
 			Statics.gamePaused = false;
-			Statics.speedFactor = 1.1;
+			Statics.speedFactor = 1.3; // 1.1
 			Statics.preparationStep = Constants.PrepareStep0;
 			Statics.gameTime = 0;
 //			Statics.bonusTime = 0;
@@ -594,7 +625,8 @@ package com.jumpGame.screens
 			timeFor60frames = 0;
 			totalFps = 0;
 			fpsCounts = 0;
-			if (Statics.tutorialStep == 1 || Statics.tutorialStep == 2) this.tutorialOn = true;
+//			if (Statics.tutorialStep == 1 || Statics.tutorialStep == 2) this.tutorialOn = true;
+			if (Statics.tutorialStep == 1) this.tutorialOn = true;
 			else this.tutorialOn = false;
 			this.tutorialProgress = 0;
 			
@@ -720,6 +752,8 @@ package com.jumpGame.screens
 			this.powerupSafety.activate(false, 10000);
 //			this.powerupVermilion.activate();
 //			this.powerupBroomstick.activate();
+//			this.powerupAttraction.activate();
+//			this.powerupDuplication.activate();
 //			hud.spinPowerupReel();
 		}
 		
@@ -868,7 +902,7 @@ package com.jumpGame.screens
 			hud.update();
 //			var powerupToActivate:int = hud.updatePowerupReel(this.timeDiffReal);
 			var powerupToActivate:int = hud.getPowerupToActivate();
-			if (powerupToActivate != -1 && this.tutorialOn && this.tutorialProgress < 8) {
+			if (powerupToActivate != -1 && this.tutorialOn && this.tutorialProgress < 7) {
 				powerupToActivate = 8;
 			}
 
@@ -1047,40 +1081,45 @@ package com.jumpGame.screens
 				if (this.tutorialOn) {
 					if (this.tutorialProgress == 0) {
 						this.powerupSafety.activate(true);
-						hud.showMessage("Jump as high as you can", 5000, 2);
+						hud.showMessage("Jump as high as you can", 8000, 2);
 						this.tutorialProgress = 1;
 					}
-					if (this.tutorialProgress == 1 && timeCurrent > 6000) {
-						hud.showMessage("Try not to fall", 5000, 2);
+					if (this.tutorialProgress == 1 && timeCurrent > 9000) {
+						hud.showMessage("Try not to fall", 8000, 2);
 						this.tutorialProgress = 2;
 					}
-					else if (this.tutorialProgress == 2 && timeCurrent > 12000) {
-						hud.showMessage("Bounce on platforms", 5000, 2);
-						hud.showMessage("to go higher", 5000, 3);
+					else if (this.tutorialProgress == 2 && timeCurrent > 18000) {
+						hud.showMessage("You are safe during", 8000, 2);
+						hud.showMessage("this tutorial", 8000, 3);
 						this.tutorialProgress = 3;
 					}
-					else if (this.tutorialProgress == 3 && timeCurrent > 18000) {
-						hud.showMessage("If you fall, press space", 5000, 2);
-						hud.showMessage("to use special ability", 5000, 3);
+					else if (this.tutorialProgress == 3 && timeCurrent > 27000) {
+						hud.showMessage("Bounce on platforms", 8000, 2);
+						hud.showMessage("or stars to go up", 8000, 3);
 						this.tutorialProgress = 4;
 					}
-					else if (this.tutorialProgress == 4 && timeCurrent > 24000) {
-						hud.showMessage("You can use it three times", 5000, 2);
-						hud.showMessage("per round", 5000, 3);
+//					else if (this.tutorialProgress == 3 && timeCurrent > 18000) {
+//						hud.showMessage("If you fall, press space", 5000, 2);
+//						hud.showMessage("to use special ability", 5000, 3);
+//						this.tutorialProgress = 4;
+//					}
+//					else if (this.tutorialProgress == 4 && timeCurrent > 24000) {
+//						hud.showMessage("You can use it three times", 5000, 2);
+//						hud.showMessage("per round", 5000, 3);
+//						this.tutorialProgress = 5;
+//					}
+					else if (this.tutorialProgress == 4 && timeCurrent > 36000) {
+						hud.showMessage("You may also use the", 8000, 2);
+						hud.showMessage("A   and   D   keys for movement", 8000, 3);
 						this.tutorialProgress = 5;
 					}
-					else if (this.tutorialProgress == 5 && timeCurrent > 30000) {
-						hud.showMessage("You may also use the", 5000, 2);
-						hud.showMessage("A   and   D   keys for movement", 5000, 3);
+					else if (this.tutorialProgress == 5 && timeCurrent > 45000) {
+						hud.showMessage("That's it. Good luck!", 8000, 2);
 						this.tutorialProgress = 6;
 					}
-					else if (this.tutorialProgress == 6 && timeCurrent > 36000) {
-						hud.showMessage("That's it. Good luck!", 9000, 2);
-						this.tutorialProgress = 7;
-					}
-					else if (this.tutorialProgress == 7 && timeCurrent > 75000) {
+					else if (this.tutorialProgress == 6 && timeCurrent > 60000) {
 						hud.showMessage("Turning off safety mode", 5000, 2);
-						this.tutorialProgress = 8;
+						this.tutorialProgress = 7;
 					}
 				}
 				
@@ -1767,7 +1806,7 @@ package com.jumpGame.screens
 					
 					if (inCollision) { // platform collision!
 						if (this.platformsList[i].touch()) { // ensures stuff inside this block only runs once per contact
-							if (isCoin) {
+							if (isCoin && !this.platformsList[i].isAcquired) {
 //								if (this.platformsList[i] is BigCoin) {
 //									this.coinsObtained += 100;
 //									// show caption
@@ -1896,18 +1935,20 @@ package com.jumpGame.screens
 					}
 				} // eof platform collision detection
 				
-				// bof power: attraction
+				// bof power:attraction
 				if (this.powerupAttraction.isActivated) {
-					if (!((isCoin && this.platformsList[i].isAcquired) || isAttractor || isRepulsor || isBouncer)) { // not acquired coin, attractor, repulsor or bouncer
-						var isCoinOrStar:Boolean = false;
-						var effectiveReachBelow:Number = 280;
-						if (isCoin || isStar) {
-							isCoinOrStar = true;
-							effectiveReachBelow = 140;
-						}
+//					if (!((isCoin && this.platformsList[i].isAcquired) || isAttractor || isRepulsor || isBouncer)) { // not acquired coin, attractor, repulsor or bouncer
+					if (isCoin || isStar) { // test
+//						var isCoinOrStar:Boolean = false;
+//						var effectiveReachBelow:Number = 280;
+//						if (isCoin || isStar) {
+//							isCoinOrStar = true;
+//							effectiveReachBelow = 140;
+//						}
+						var effectiveReachBelow:Number = 140;
 						if (Statics.distance(this.hero.gx, this.hero.gy, this.platformsList[i].gx, this.platformsList[i].gy) < 300
 							&& this.platformsList[i].gy > this.hero.gy - effectiveReachBelow) { // within effective area
-							var easingFactor:Number = (200 - Math.abs(this.hero.gy - this.platformsList[i].gy) / 10);
+							var easingFactor:Number = (150 - Math.abs(this.hero.gy - this.platformsList[i].gy) / 10);
 							if (easingFactor < 5) easingFactor = 5;
 							
 							// x
@@ -1923,29 +1964,30 @@ package com.jumpGame.screens
 							}
 							this.platformsList[i].dx += d2x * this.timeDiffControlled;
 							
-							if (isCoinOrStar) {
-								// y
-								var d2y:Number = 0.0; // acceleration
-								if (this.hero.gy >= this.platformsList[i].gy) { // move platform up
-									d2y = ((this.hero.gy - this.platformsList[i].gy) - this.platformsList[i].dy * easingFactor) / (0.5 * easingFactor * easingFactor);
-								}
-								else if (this.hero.gy <= this.platformsList[i].gy) { // move platform down
-									d2y = ((this.hero.gy - this.platformsList[i].gy) - this.platformsList[i].dy * easingFactor) / (0.5 * easingFactor * easingFactor);
-								}
-								else { // bring to rest
-									d2y = -this.platformsList[i].dy / easingFactor;
-								}
-								this.platformsList[i].dy += d2y * this.timeDiffControlled;
-							}
+//							if (isCoin) {
+//								// y
+//								var d2y:Number = 0.0; // acceleration
+//								if (this.hero.gy >= this.platformsList[i].gy) { // move platform up
+//									d2y = ((this.hero.gy - this.platformsList[i].gy) - this.platformsList[i].dy * easingFactor) / (0.5 * easingFactor * easingFactor);
+//								}
+//								else if (this.hero.gy <= this.platformsList[i].gy) { // move platform down
+//									d2y = ((this.hero.gy - this.platformsList[i].gy) - this.platformsList[i].dy * easingFactor) / (0.5 * easingFactor * easingFactor);
+//								}
+//								else { // bring to rest
+//									d2y = -this.platformsList[i].dy / easingFactor;
+//								}
+//								this.platformsList[i].dy += d2y * this.timeDiffControlled;
+//							}
 						}
 					}
-				} else {
-					if (!(isCoin || isStar || isMobile || isCannonball || isComet))
-						this.platformsList[i].dx = 0; // searchmark
 				}
+//				else {
+//					if (!(isCoin || isStar || isMobile || isCannonball || isComet))
+//						this.platformsList[i].dx = 0; // searchmark
+//				}
 				// eof power:attraction
 				
-				// extender power
+				// power:duplication mobile platforms movement
 				if (this.powerupDuplication.isActivated) {
 					// update mobile platform position
 					if (isMobile) {
@@ -2304,29 +2346,30 @@ package com.jumpGame.screens
 //				}
 				else { // add platform element
 					var newElementIndex:int = this.addElementFromPool(levelElement[0], levelElement[1], levelElement[2], levelElement[3], levelElement[4], levelElement[5], levelElement[6], levelElement[7], levelElement[8], levelElement[9]);	
-					// duplication power, add extended platforms
+					// power:duplication, add extended platforms
 //					trace("level: " + Statics.levelNumber); //searchmark
-					if (this.powerupDuplication.isActivated && newElementIndex != -1 && !(this.platformsList[newElementIndex] is Coin) && levelElement[2] != "Attractor" && levelElement[2] != "StarDark") {
+					if (this.powerupDuplication.isActivated && this.isDuplicationEnabled && newElementIndex != -1 && !(this.platformsList[newElementIndex] is Coin) && levelElement[2] != "Attractor" && levelElement[2] != "StarDark") {
 						var newPlatformExtenderIndex:int;
 						newPlatformExtenderIndex = addElementFromPool(
 							levelElement[0],
 							-this.stageWidth / 2 - this.platformsList[newElementIndex].getWidthFast(),
 							levelElement[2], levelElement[3], levelElement[4], levelElement[5], levelElement[6], levelElement[7], levelElement[8], levelElement[9]);
 						if (newPlatformExtenderIndex != -1) this.platformsList[newPlatformExtenderIndex].makeExtender(this.platformsList[newElementIndex],
-							-1, levelElement[1] - this.platformsList[newElementIndex].getWidthFast(), this.platformsList[newElementIndex] is Star);
+							-1, levelElement[1] - this.platformsList[newElementIndex].getWidthFast(), this.platformsList[newElementIndex].isStar());
 						
 						newPlatformExtenderIndex = addElementFromPool(
 							levelElement[0],
 							this.stageWidth / 2 + this.platformsList[newElementIndex].getWidthFast(),
 							levelElement[2], levelElement[3], levelElement[4], levelElement[5], levelElement[6], levelElement[7], levelElement[8], levelElement[9]);
 						if (newPlatformExtenderIndex != -1) this.platformsList[newPlatformExtenderIndex].makeExtender(this.platformsList[newElementIndex],
-							1, levelElement[1] + this.platformsList[newElementIndex].getWidthFast(), this.platformsList[newElementIndex] is Star);
+							1, levelElement[1] + this.platformsList[newElementIndex].getWidthFast(), this.platformsList[newElementIndex].isStar());
 					}
 				}
 				this.levelParser.levelElementsArray.splice(0, 1); // remove this entry from level elements array
 			}
 			// request new block
 			if (this.levelParser.levelElementsArray.length == 0) this.levelParser.requestBlock();
+//			trace("duplication enabled: " + this.isDuplicationEnabled.toString());
 		} /** eof scrollElements() */
 		
 //		private function summonHourglass():void {
@@ -2431,7 +2474,7 @@ package com.jumpGame.screens
 		/**
 		 * Dispose the platform temporarily. Check-in into pool (will get cleaned) and reduce the vector length by 1
 		 */
-		private function returnPlatformToPool(platformIndex:Number):void
+		private function returnPlatformToPool(platformIndex:uint):void
 		{
 			var platform:Platform = platformsList[platformIndex];
 			platformsList.splice(platformIndex, 1);
@@ -2442,7 +2485,7 @@ package com.jumpGame.screens
 		/**
 		 * Dispose the contraption temporarily. Check-in into pool (will get cleaned) and reduce the vector length by 1
 		 */
-		private function returnContraptionToPool(contraptionIndex:Number):void
+		private function returnContraptionToPool(contraptionIndex:uint):void
 		{
 			var contraption:Contraption = contraptionsList[contraptionIndex];
 			contraptionsList.splice(contraptionIndex, 1);

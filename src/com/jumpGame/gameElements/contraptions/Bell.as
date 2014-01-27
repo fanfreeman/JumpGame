@@ -16,7 +16,7 @@ package com.jumpGame.gameElements.contraptions
 		public var fastHeight:Number;
 		
 		override public function initialize():void {
-			if (bellImage == null) createArt();
+//			if (bellImage == null) createArt();
 			this.isTouched = false;
 			this.dx = 0;
 			this.dy = 0;
@@ -25,7 +25,7 @@ package com.jumpGame.gameElements.contraptions
 			Statics.isBellActive = true;
 		}
 		
-		protected function createArt():void
+		override protected function createArt():void
 		{
 			bellImage = new Image(Statics.assets.getTexture("Bell0000"));
 			bellImage.pivotX = Math.ceil(bellImage.width / 2); // center image on registration point

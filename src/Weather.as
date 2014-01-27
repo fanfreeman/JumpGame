@@ -95,7 +95,7 @@ package
 //			this.addChild(this.snowContainer);
 			
 			// setup rain
-			particleRain = new PDParticleSystem(XML(new ParticleAssets.ParticleRainXML()), Statics.assets.getTexture("ParticleRain0000"));
+			particleRain = new PDParticleSystem(Statics.assets.getXml("ParticleRainXML"), Statics.assets.getTexture("ParticleRain0000"));
 			Starling.juggler.add(particleRain);
 			this.addChild(particleRain);
 			particleRain.emitterX = Statics.stageWidth / 2;

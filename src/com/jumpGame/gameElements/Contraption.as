@@ -4,6 +4,12 @@ package com.jumpGame.gameElements
 	{
 		protected var _destroyed:Boolean = true; // required by interface
 		
+		public function Contraption() {
+			this.createArt();
+		}
+		
+		protected function createArt():void {}
+		
 		public function initialize():void {}
 		
 		public function update(timeDiff:Number):void {

@@ -21,7 +21,7 @@ package com.jumpGame.gameElements
 			super();
 //			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			
-			var starImage:Image = new Image(Statics.assets.getTexture("Star0000"));
+			var starImage:Image = new Image(Statics.assets.getTexture("BgStar0000"));
 			this.addChild(starImage);
 			this.starWidth = starImage.width;
 			this.starHeight = starImage.height;

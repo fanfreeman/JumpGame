@@ -13,14 +13,14 @@ package com.jumpGame.gameElements.contraptions
 		public var touched:Boolean = false;
 		
 		override public function initialize():void {
-			if (this.boxAnimation == null) createArt();
+//			if (this.boxAnimation == null) createArt();
 			this.boxAnimation.visible = true;
 			Starling.juggler.add(this.boxAnimation);
 			this.show();
 			this.touched = false;
 		}
 		
-		protected function createArt():void {
+		override protected function createArt():void {
 			blastAnimation = new MovieClip(Statics.assets.getTextures("Blast"), 30);
 			blastAnimation.pivotX = Math.ceil(blastAnimation.texture.width  / 2); // center art on registration point
 			blastAnimation.pivotY = Math.ceil(blastAnimation.texture.height / 2);

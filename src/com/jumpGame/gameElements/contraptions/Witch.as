@@ -11,9 +11,9 @@ package com.jumpGame.gameElements.contraptions
 		
 		override public function initialize():void {
 			// create art
-			if (witchImage == null) {
-				createArt();
-			}
+//			if (witchImage == null) {
+//				createArt();
+//			}
 			
 			// reset properties
 			this.nextFireTime = Statics.gameTime;
@@ -21,7 +21,7 @@ package com.jumpGame.gameElements.contraptions
 			this.show();
 		}
 		
-		protected function createArt():void
+		override protected function createArt():void
 		{
 			witchImage = new Image(Statics.assets.getTexture("Witch0000"));
 			witchImage.pivotX = Math.ceil(witchImage.width / 2); // center x

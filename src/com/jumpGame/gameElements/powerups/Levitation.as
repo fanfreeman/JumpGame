@@ -59,7 +59,7 @@ package com.jumpGame.gameElements.powerups
 			this.completionWarned = false;
 			
 			if (isTutorial) {
-				this.completionTime = Statics.gameTime + 80000; // duration
+				this.completionTime = Statics.gameTime + 65000; // duration
 			} else {
 				if (duration == -1) this.completionTime = Statics.gameTime + 7000 + Statics.rankSafety * 1000; // duration
 				else this.completionTime = Statics.gameTime + duration; // custom duration for start of round
@@ -76,7 +76,7 @@ package com.jumpGame.gameElements.powerups
 			this.gx = this.hero.gx;
 			this.gy = this.hero.gy;
 
-			if (this.hero.dy < -1 || (this.hero.gy - 250 < sofHeight)) {
+			if (this.hero.dy < -0.8 || (this.hero.gy - 300 < sofHeight)) {
 				if (!this.jetFired) {
 					// fire jet
 					if (!Sounds.sfxMuted) Statics.assets.playSound("SND_SWOOSH");

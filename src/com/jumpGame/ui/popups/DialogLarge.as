@@ -73,7 +73,10 @@ package com.jumpGame.ui.popups
 			popupContainer.addChild(btnOk);
 		}
 		
-		public function show(promptString:String):void {
+		public function show(promptString:String, isLong:Boolean):void {
+			if (isLong) this.promptText.y = 50;
+			else this.promptText.y = 70;
+			
 			this.visible = true;
 			this.promptText.text = promptString;
 			

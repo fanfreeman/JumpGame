@@ -36,7 +36,7 @@ package com.jumpGame.gameElements.platforms
 			this.dy = 0;
 			this.canBounce = false;
 			this.isTouched = false;
-			if (platformImage == null) createPlatformArt();
+//			if (platformImage == null) createPlatformArt();
 			this.show();
 			
 			// revolving coin

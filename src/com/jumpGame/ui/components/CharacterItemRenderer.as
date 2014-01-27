@@ -1,25 +1,27 @@
 package com.jumpGame.ui.components
 {
 	
+	import com.jumpGame.customObjects.Font;
+	
 	import flash.geom.Point;
-	import flash.text.TextFormatAlign;
 	
 	import feathers.controls.Button;
-	import feathers.controls.Label;
 	import feathers.controls.List;
 	import feathers.controls.renderers.IListItemRenderer;
-	import feathers.controls.text.BitmapFontTextRenderer;
 	import feathers.core.FeathersControl;
-	import feathers.core.ITextRenderer;
 	import feathers.text.BitmapFontTextFormat;
 	
+	import starling.core.Starling;
 	import starling.display.Image;
+	import starling.display.MovieClip;
 	import starling.events.Event;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
-	import starling.textures.TextureSmoothing;
-	import starling.display.MovieClip;
+	import starling.text.TextField;
+	import starling.textures.Texture;
+	import starling.utils.HAlign;
+	import starling.utils.VAlign;
 	
 	public class CharacterItemRenderer extends FeathersControl implements IListItemRenderer
 	{
@@ -81,8 +83,11 @@ package com.jumpGame.ui.components
 		}
 		
 		protected var charNameBanner:Image;
-		protected var charName:Label;
+		protected var charName:TextField;
+		protected var levelCaption:TextField;
 		protected var charAnimation:MovieClip;
+		protected var charDescription:TextField;
+		protected var btnAction:Button;
 		protected var newFlag:Image;
 		
 		protected var _index:int = -1;
@@ -156,7 +161,8 @@ package com.jumpGame.ui.components
 		
 		override protected function initialize():void
 		{
-			this.width = 219;
+			var itemWidth:int = 219 + 11;
+			this.width = itemWidth;
 			this.height = 200;
 			this.useHandCursor = true;
 			
@@ -174,37 +180,95 @@ package com.jumpGame.ui.components
 			// character name banner
 			if (!this.charNameBanner) {
 				this.charNameBanner = new Image(Statics.assets.getTexture("CharName0000"));
+				charNameBanner.x = 5;
+				charNameBanner.y = 20;
 				this.addChild(charNameBanner);
 			}
 			
 			// character name text
 			if (!this.charName) {
-				this.charName = new Label();
-				charName.touchable = false;
-				charName.textRendererFactory = function():ITextRenderer
-				{
-					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
-					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("Materhorn15White"));
-					textFormat.align = TextFormatAlign.CENTER;
-					textRenderer.textFormat = textFormat;
-					textRenderer.smoothing = TextureSmoothing.NONE;
-					return textRenderer;
-				}
-				charName.width = this.width;
-				charName.height = 35;
-				charName.y = 11;
-				this.addChild(this.charName);
+//				this.charName = new Label();
+//				charName.touchable = false;
+//				charName.textRendererFactory = function():ITextRenderer
+//				{
+//					var textRenderer:BitmapFontTextRenderer = new BitmapFontTextRenderer();
+//					var textFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("Materhorn15White"));
+//					textFormat.align = TextFormatAlign.CENTER;
+//					textRenderer.textFormat = textFormat;
+//					textRenderer.smoothing = TextureSmoothing.NONE;
+//					return textRenderer;
+//				}
+//				charName.width = this.width;
+//				charName.height = 35;
+//				charName.y = 15;
+//				this.addChild(this.charName);
+				var font15:Font = Fonts.getFont("Materhorn15White");
+				this.charName = new TextField(200, 20, "Name", font15.fontName, font15.fontSize, 0xffffff);
+				charName.hAlign = HAlign.CENTER;
+				charName.vAlign = VAlign.TOP;
+				charName.pivotX = charName.width / 2;
+				charName.x = itemWidth / 2;
+				charName.y = charNameBanner.y + 15;
+				this.addChild(charName);
 			}
 			
+			// level caption
+			if (!this.levelCaption) {
+				this.levelCaption = new TextField(200, 20, "Max Level: 60", font15.fontName, font15.fontSize, 0x72370a);
+				levelCaption.hAlign = HAlign.CENTER;
+				levelCaption.vAlign = VAlign.TOP;
+				levelCaption.pivotX = levelCaption.width / 2;
+				levelCaption.x = itemWidth / 2;
+				levelCaption.y = charNameBanner.y + charNameBanner.height;
+				this.addChild(levelCaption);
+			}
+			
+			// character animation
 			if (!this.charAnimation) {
 				charAnimation = new MovieClip(Statics.assets.getTextures("CharPrinceIdle"), 40);
-				charAnimation.y = 30;
+				charAnimation.pivotX = Math.ceil(charAnimation.texture.width / 2);
+				charAnimation.x = itemWidth / 2;
+				charAnimation.y = levelCaption.y + levelCaption.height;
 				this.addChild(charAnimation);
+				Starling.juggler.add(charAnimation);
 			}
 			
+			// character description
+			if (!this.charDescription) {
+				this.charDescription = new TextField(200, 50, "Default Description Text", font15.fontName, font15.fontSize, 0x72370a);
+				charDescription.hAlign = HAlign.CENTER;
+				charDescription.vAlign = VAlign.TOP;
+				charDescription.pivotX = charDescription.width / 2;
+				charDescription.x = itemWidth / 2;
+				charDescription.y = charAnimation.y + charAnimation.height;
+				this.addChild(charDescription);
+			}
+			
+			// action button
+			if (!this.btnAction) {
+				btnAction = new Button();
+				btnAction.defaultSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
+				btnAction.hoverSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
+				btnAction.downSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
+				btnAction.hoverSkin.filter = Statics.btnBrightnessFilter;
+				btnAction.downSkin.filter = Statics.btnInvertFilter;
+				btnAction.useHandCursor = true;
+				btnAction.addEventListener(Event.TRIGGERED, btnActionHandler);
+				this.addChild(btnAction);
+				btnAction.validate();
+				btnAction.pivotX = Math.ceil(btnAction.width / 2);
+				btnAction.x = itemWidth / 2;
+				btnAction.y = charDescription.y + charDescription.height;
+				var ctaTextFormat:BitmapFontTextFormat = new BitmapFontTextFormat(Fonts.getBitmapFont("Materhorn25"));
+				btnAction.defaultLabelProperties.textFormat = ctaTextFormat;
+			}
+			
+			// new badge
 			if (!this.newFlag) {
 				newFlag = new Image(Statics.assets.getTexture("MatchesItemNew0000"));
-				newFlag.y = 12;
+				newFlag.pivotX = newFlag.texture.width;
+				newFlag.x = itemWidth;
+//				newFlag.y = 10;
 				this.addChild(newFlag);
 			}
 			
@@ -277,25 +341,54 @@ package com.jumpGame.ui.components
 			{
 				var nickname:String = this.itemToNickname(this._data);
 				switch (nickname) {
-					case "random":
-						this.charName.text = "Scroll of Summoning";
+					case "cat":
+						this.charName.text = "Captain Fluffpaws";
+						this.charDescription.text = "The infamous pirate captain can autotrigger Fly, and turns stone into gold";
+						this.swapFrames(charAnimation, Statics.assets.getTextures("CharCatIdle"));
 						break;
 					case "prince":
-						this.charName.text = "Prince Valorpants";
+						this.charName.text = "Prince Valorawesome";
+						this.charDescription.text = "This future heir can FLY, and wields the arcane power of PROTECTION";
+						this.swapFrames(charAnimation, Statics.assets.getTextures("CharPrinceIdle"));
 						break;
 					case "princess":
-						this.charName.text = "Princess Cherry";
-						break;
-					case "boy":
-						this.charName.text = "Iago the Brave";
+						this.charName.text = "Princess Powerberries";
+						this.charDescription.text = "A beautiful princess with the amazing ability to FLY short distances.";
+						this.swapFrames(charAnimation, Statics.assets.getTextures("CharPrincessIdle"));
 						break;
 					case "girl":
-						this.charName.text = "Little Alice";
+						this.charName.text = "Cinderella";
+						this.charDescription.text = "A pretty little girl who has the rare gift of SLOW FALL.";
+						this.swapFrames(charAnimation, Statics.assets.getTextures("CharGirlIdle"));
+						break;
+					case "boy":
+						this.charName.text = "Iago Don Juan";
+						this.charDescription.text = "A courageous young lad with big dreams.";
+						this.swapFrames(charAnimation, Statics.assets.getTextures("CharBoyIdle"));
+						this.btnAction.label = "Upgrade";
 						break;
 				}
 				if (this.itemToIsnew(this._data)) this.newFlag.visible = true;
 				else this.newFlag.visible = false;
 			}
+		}
+		
+		private function swapFrames(clip:MovieClip, textures:Vector.<Texture>):void {
+			// remove all frame but one, since a MovieClip is not allowed to have 0 frames
+			while(clip.numFrames > 1){
+				clip.removeFrameAt(0);
+			}
+			
+			// add new frames
+			for each (var texture:Texture in textures){
+				clip.addFrame(texture);
+			}
+			
+			// remove that last previous frame
+			clip.removeFrameAt(0);
+			
+			// set to frame 1
+			clip.currentFrame = 1;
 		}
 		
 		//		protected function layout():void
@@ -391,6 +484,10 @@ package com.jumpGame.ui.components
 		protected function removedFromStageHandler(event:Event):void
 		{
 			this.touchPointID = -1;
+		}
+		
+		protected function btnActionHandler(event:Event):void {
+			
 		}
 	}
 }

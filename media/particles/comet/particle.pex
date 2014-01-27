@@ -1,6 +1,6 @@
 <particleEmitterConfig>
 	<texture name="texture.png"></texture>
-	<sourcePosition x="542.17" y="592.68"></sourcePosition>
+	<sourcePosition x="0" y="0"></sourcePosition>
 	<sourcePositionVariance x="10" y="0.00"></sourcePositionVariance>
 	<speed value="2000"></speed>
 	<speedVariance value="180"></speedVariance>

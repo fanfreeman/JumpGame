@@ -15,25 +15,23 @@ package com.jumpGame.gameElements.contraptions
 		protected var launchTime:int;
 		
 		override public function initialize():void {
-			if (headImage == null) {
-				createArt();
-				createLookOutAnimation();
-			}
+//			if (headImage == null) {
+//				createArt();
+//			}
 			this.lookOutAnimation.visible = true;
 			this.show();
 			this.launchTime = Statics.gameTime + 2600 + int(Math.ceil(Math.random() * 500));
 			this.isLaunched = false;
 		}
 		
-		protected function createArt():void
+		override protected function createArt():void
 		{
+			// train art
 			headImage = new Image(Statics.assets.getTexture("TrainHead0000"));
 			headImage.pivotY = Math.ceil(headImage.height / 2); // center y
 			this.addChild(headImage);
-		}
-		
-		protected function createLookOutAnimation():void
-		{
+			
+			// look out animation
 			lookOutAnimation = new MovieClip(Statics.assets.getTextures("Lookout"), 40);
 			lookOutAnimation.pivotX = lookOutAnimation.width;
 			lookOutAnimation.pivotY = lookOutAnimation.height;

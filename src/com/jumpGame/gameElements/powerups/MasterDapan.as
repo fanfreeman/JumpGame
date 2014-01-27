@@ -152,7 +152,7 @@ package com.jumpGame.gameElements.powerups
 //			else if (this.hero.gx < -100) this.arrivingOnLeft();
 //			this.hero.dy = 0.5 + this.incrementalHeroDy;
 			
-			if (this.hero.dy < 0.75 && !this.isDynamicDisabled) { // stop falling due to gravity once slowed down
+			if (this.hero.dy < 0.5 && !this.isDynamicDisabled) { // stop falling due to gravity once slowed down
 				this.hero.isDynamic = false;
 				this.isDynamicDisabled = true;
 			}

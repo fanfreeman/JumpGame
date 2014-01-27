@@ -20,9 +20,9 @@ package com.jumpGame.gameElements.contraptions
 		
 		override public function initialize():void {
 			// create art
-			if (cannonOffImage == null || cannonOnImage == null) {
-				createArt();
-			}
+//			if (cannonOffImage == null || cannonOnImage == null) {
+//				createArt();
+//			}
 			
 			// reset properties
 			this.isTouched = false;
@@ -40,7 +40,7 @@ package com.jumpGame.gameElements.contraptions
 			Statics.isRightCannonActive = true;
 		}
 		
-		protected function createArt():void
+		override protected function createArt():void
 		{
 			cannonOffImage = new Image(Statics.assets.getTexture("CannonOff0000"));
 			cannonOffImage.pivotX = Math.ceil(cannonOffImage.width / 2); // center x

@@ -35,7 +35,7 @@ package com.jumpGame.ui.popups
 		private var player1TotalText:TextField;
 		private var player2TotalText:TextField;
 		private var btnPlay:Button;
-		private var btnResign:Button;
+		private var btnAux:Button;
 //		private var winnerText:TextField;
 		private var player1Picture:Image;
 		private var player2Picture:Image;
@@ -72,7 +72,7 @@ package com.jumpGame.ui.popups
 			popupContainer = new Sprite();
 			
 			// confetti
-			particleConfetti = new PDParticleSystem(XML(new ParticleAssets.ParticleConfettiXML()), Statics.assets.getTexture("ParticleConfetti0000"));
+			particleConfetti = new PDParticleSystem(Statics.assets.getXml("ParticleConfettiXML"), Statics.assets.getTexture("ParticleConfetti0000"));
 			particleConfetti.touchable = false;
 			this.addChild(particleConfetti);
 			
@@ -247,21 +247,21 @@ package com.jumpGame.ui.popups
 			btnPlay.label = "Return";
 			
 			// resign button
-			btnResign = new Button();
-			btnResign.defaultSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
-			btnResign.hoverSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
-			btnResign.downSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
-			btnResign.hoverSkin.filter = Statics.btnBrightnessFilter;
-			btnResign.downSkin.filter = Statics.btnInvertFilter;
-			btnResign.defaultLabelProperties.textFormat = ctaTextFormat;
-			btnResign.useHandCursor = true;
-			btnResign.addEventListener(starling.events.Event.TRIGGERED, buttonResignHandler);
-			contentContainer.addChild(btnResign);
-			btnResign.validate();
-			btnResign.pivotX = Math.ceil(btnResign.width / 2);
-			btnResign.x = Statics.stageWidth / 2 - Math.ceil(btnResign.width / 2);;
-			btnResign.y = 524;
-			btnResign.label = "Decline";
+			btnAux = new Button();
+			btnAux.defaultSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
+			btnAux.hoverSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
+			btnAux.downSkin = new Image(Statics.assets.getTexture("ButtonMatchDetailsCta0000"));
+			btnAux.hoverSkin.filter = Statics.btnBrightnessFilter;
+			btnAux.downSkin.filter = Statics.btnInvertFilter;
+			btnAux.defaultLabelProperties.textFormat = ctaTextFormat;
+			btnAux.useHandCursor = true;
+			btnAux.addEventListener(starling.events.Event.TRIGGERED, buttonAuxHandler);
+			contentContainer.addChild(btnAux);
+			btnAux.validate();
+			btnAux.pivotX = Math.ceil(btnAux.width / 2);
+			btnAux.x = Statics.stageWidth / 2 - Math.ceil(btnAux.width / 2);;
+			btnAux.y = 524;
+			btnAux.label = "Nudge";
 			
 			// second place badge
 			badgeSecondPlace = new Image(Statics.assets.getTexture("BadgeSecondPlace0000"));
@@ -363,6 +363,7 @@ package com.jumpGame.ui.popups
 		
 		private function buttonPlayHandler(event:starling.events.Event):void {
 			if (btnPlay.label == "Play") {
+				if(ExternalInterface.available) ExternalInterface.call("shareOpengraphPlayMatch", Statics.facebookId, Statics.gameId);
 //				if (!Sounds.sfxMuted) Sounds.sndStart.play();
 //				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "play"}, true));
 				parent.showInstructionsPopup();
@@ -370,19 +371,26 @@ package com.jumpGame.ui.popups
 			this.close();
 		}
 		
-		private function buttonResignHandler(event:starling.events.Event):void {
-			resignMatch();
-			this.close();
-			if (Statics.isAnalyticsEnabled) {
-				Statics.mixpanel.track('clicked on button: resign match');
+		private function buttonAuxHandler(event:starling.events.Event):void {
+			if (!Sounds.sfxMuted) Statics.assets.playSound("SND_CLICK");
+			if (btnAux.label == "Nudge!") {
+				if(ExternalInterface.available){
+					ExternalInterface.call("nudgePlayer", Statics.opponentFbid);
+				}
+				if (Statics.isAnalyticsEnabled) Statics.mixpanel.track('clicked on button: nudge');
 			}
+			else if (btnAux.label == "Rematch!") {
+				parent.displayLoadingNotice("Creating a new match...");
+				parent.communicator.createMatch(Statics.opponentFbid);
+				if (Statics.isAnalyticsEnabled) Statics.mixpanel.track('clicked on button: rematch');
+			}
+			this.close();
 		}
 		
-		private function resignMatch():void {
-			parent.displayLoadingNotice("Updating matches...");
-//			parent.communicator.addEventListener(NavigationEvent.RESPONSE_RECEIVED, parent.dataReceived);
-			parent.communicator.resignMatch(Statics.gameId);
-		}
+//		private function resignMatch():void {
+//			parent.displayLoadingNotice("Updating matches...");
+//			parent.communicator.resignMatch(Statics.gameId);
+//		}
 		
 		private function buttonCloseHandler(event:starling.events.Event):void {
 			this.close();
@@ -416,7 +424,9 @@ package com.jumpGame.ui.popups
 			});
 			
 			btnPlay.label = "Return";
-			btnResign.visible = false;
+			btnPlay.x = Statics.stageWidth / 2;
+			btnAux.visible = false;
+			btnAux.isEnabled = false;
 			
 			if (Statics.isPlayer2) {
 				player1Name.text = Statics.opponentName;
@@ -439,6 +449,7 @@ package com.jumpGame.ui.popups
 				if (i % 2 == 0) { // round 1, 3, 5
 					if (Statics.isPlayer2) {
 						scoreTextFields[i].text = "Their Turn";
+						this.showButtonNudge();
 					} else {
 						scoreTextFields[i].text = "Your Turn";
 						btnPlay.label = "Play";
@@ -450,6 +461,7 @@ package com.jumpGame.ui.popups
 						btnPlay.label = "Play";
 					} else {
 						scoreTextFields[i].text = "Their Turn";
+						this.showButtonNudge();
 					}
 				}
 				Statics.currentRound = i;
@@ -471,37 +483,30 @@ package com.jumpGame.ui.popups
 			badgeSecondPlace.visible = false;
 			particleConfetti.visible = false;
 //			trace("resigned by: " + Statics.resignedBy);
-			btnPlay.x = Statics.stageWidth / 2;
-			btnResign.isEnabled = false;
-			if (Statics.resignedBy != "0") {
-				if (Statics.resignedBy == Statics.userId) { // current player resigned this game
-					if (Statics.isPlayer2) {
-//						winnerText.text = player1Name.text + " Wins!";
-						this.animateWinLoseBadges(1, false);
-					} else {
-//						winnerText.text = player2Name.text + " Wins!";
-						this.animateWinLoseBadges(2, false);
-					}
-				}
-				else { // the opponent resigned this game
-					if (Statics.isPlayer2) {
-//						winnerText.text = player2Name.text + " Wins!";
-						this.animateWinLoseBadges(2, true);
-					} else {
-//						winnerText.text = player1Name.text + " Wins!";
-						this.animateWinLoseBadges(1, true);
-					}
-				}
-//				winnerText.visible = true;
-				btnPlay.label = "Return";
-			} else { // no one resigned
-				// resign button
-				if (Statics.isPlayer2 && Statics.currentRound == 1) {
-					btnPlay.x = Statics.stageWidth / 2 + Math.ceil(btnPlay.width / 2);
-					btnResign.visible = true;
-					btnResign.isEnabled = true;
-				}
-			}
+//			if (Statics.resignedBy != "0") {
+//				if (Statics.resignedBy == Statics.userId) { // current player resigned this game
+//					if (Statics.isPlayer2) {
+//						this.animateWinLoseBadges(1, false);
+//					} else {
+//						this.animateWinLoseBadges(2, false);
+//					}
+//				}
+//				else { // the opponent resigned this game
+//					if (Statics.isPlayer2) {
+//						this.animateWinLoseBadges(2, true);
+//					} else {
+//						this.animateWinLoseBadges(1, true);
+//					}
+//				}
+//				btnPlay.label = "Return";
+//			} else { // no one resigned
+//				// resign button
+//				if (Statics.isPlayer2 && Statics.currentRound == 1) {
+//					btnPlay.x = Statics.stageWidth / 2 + Math.ceil(btnPlay.width / 2);
+//					btnResign.visible = true;
+//					btnResign.isEnabled = true;
+//				}
+//			}
 			
 			// check if game has ended
 //			winnerText.visible = false;
@@ -524,6 +529,8 @@ package com.jumpGame.ui.popups
 //					winnerText.text = "It's a draw!";
 				}
 //				winnerText.visible = true;
+				// show aux button as rematch
+				this.showButtonRematch();
 			}
 			
 			if (isDone) {
@@ -544,6 +551,20 @@ package com.jumpGame.ui.popups
 			}
 			
 			this.visible = true;
+		}
+		
+		private function showButtonNudge():void {
+			btnPlay.x = Statics.stageWidth / 2 + Math.ceil(btnPlay.width / 2);
+			btnAux.label = "Nudge!";
+			btnAux.visible = true;
+			btnAux.isEnabled = true;
+		}
+		
+		private function showButtonRematch():void {
+			btnPlay.x = Statics.stageWidth / 2 + Math.ceil(btnPlay.width / 2);
+			btnAux.label = "Rematch!";
+			btnAux.visible = true;
+			btnAux.isEnabled = true;
 		}
 		
 		public function getProfilePictureUrlFromJs(facebookId:String):void {

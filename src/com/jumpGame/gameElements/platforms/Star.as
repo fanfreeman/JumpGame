@@ -52,7 +52,7 @@ package com.jumpGame.gameElements.platforms
 			this.dx = 0;
 			this.dy = 0;
 			this.canBounce = false;
-			if (platformImage == null) createPlatformArt();
+//			if (platformImage == null) createPlatformArt();
 			this.platformImage.visible = true;
 //			platformAnimation.stop();
 			this.show();
@@ -116,19 +116,31 @@ package com.jumpGame.gameElements.platforms
 					this.dy = Constants.MaxObjectFallVelocity;
 				}
 			}
-			this.fixedX += this.dx * timeDiff;
-			this.gx = this.fixedX;
-			this.fixedY += this.dy * timeDiff;
-			this.gy = this.fixedY;
+//			this.fixedX += this.dx * timeDiff;
+////			this.gx += this.dx * timeDiff;
+//			this.gx = this.fixedX;
+//			this.fixedY += this.dy * timeDiff;
+////			this.gy += this.dy * timeDiff;
+//			this.gy = this.fixedY;
 			this.platformImage.rotation += Math.PI / 72;
 			
-			// check if star should revolve around center
-			if (distanceFromCenter > 0 && this.dx == 0) {
-				this.gx = fixedX + distanceFromCenter * Math.cos(revolveAngle);
-				this.gy = fixedY + distanceFromCenter * Math.sin(revolveAngle);
-				if (revolveClockwise) revolveAngle -= revolveVelocity * timeDiff * 0.06;
-				else revolveAngle += revolveVelocity * timeDiff * 0.06;
+			if (this.dx == 0 && this.dy == 0) { // star does not move
+				this.gx = this.fixedX;
+				this.gy = this.fixedY;
+				
+				// check if star should revolve around center
+				if (distanceFromCenter > 0) {
+					this.gx = fixedX + distanceFromCenter * Math.cos(revolveAngle);
+					this.gy = fixedY + distanceFromCenter * Math.sin(revolveAngle);
+					if (revolveClockwise) revolveAngle -= revolveVelocity * timeDiff * 0.06;
+					else revolveAngle += revolveVelocity * timeDiff * 0.06;
+				}
+			} else { // star moves
+				this.gx += this.dx * timeDiff;
+				this.gy += this.dy * timeDiff;
 			}
+			
+			
 		}
 		
 		public function makeKinematic(bouncePower:Number):void {
@@ -140,6 +152,10 @@ package com.jumpGame.gameElements.platforms
 		public function makeKinematicWithDx(dx:Number):void {
 			this.isKinematic = true;
 			this.dx = dx;
+		}
+		
+		override public function isStar():Boolean {
+			return true;
 		}
 	}
 }

@@ -38,7 +38,8 @@ package com.jumpGame.gameElements.powerups
 			this.gx = this.hero.gx;
 			this.gy = this.hero.gy - 20;
 			
-			this.hero.dy = 2.5;
+//			this.hero.dy = 2.5;
+			if (this.hero.dy < 2.5) this.hero.dy += 0.03;
 			Statics.cameraShake = 10;
 			
 			// time up, deactivate

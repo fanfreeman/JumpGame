@@ -14,6 +14,7 @@ package com.jumpGame.gameElements.platforms
 			platformImage.pivotX = Math.ceil(platformImage.texture.width  / 2); // center art on registration point
 			platformImage.pivotY = Math.ceil(platformImage.texture.height / 2);
 			this.addChild(platformImage);
+			this.platformWidth = platformImage.texture.width;
 			
 //			platformAnimation = new MovieClip(Assets.getSprite("AtlasTexturePlatforms").getTextures("Sparkle"), 60);
 //			platformAnimation.pivotX = Math.ceil(platformAnimation.width  / 2); // center art on registration point

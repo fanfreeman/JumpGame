@@ -65,15 +65,28 @@ package com.jumpGame.customObjects
 		/**
 		 * Helpful tip shown on loading screens
 		 */
-		public function getMessageTip():String {
-			var randomInt:int = Math.floor(Math.random() * 2);
+		public static function getMessageTip():String {
+			var randomInt:int = Math.floor(Math.random() * 5);
 			switch (randomInt) {
 				case 0:
-					return "Your hero's Spiecial Ability is powerful, but should be saved for emergencies.";
+					return "Suggestions or concerns? Let us know by writing on our page.";
 				case 1:
-					return "Suggestions or concerns? Let us know by click on the feedback button to the left.";
+					return "Click and drag to scroll menus, like you would on a mobile device.";
+				case 2:
+					return "Don't get run over by a train! You won't if you move upward quickly.";
+				case 3:
+					return "Step on evil floating cannons to get rid of them!";
+				case 4:
+					return "Bouncy blue balls knocking you sideways? Best to let the hero come to a stop by himself."
+				case 5:
+					return "The Big Bell sprays magical goodies when you bump it up."
+				case 6:
+					return "Bouncy red balls do not help you move up, so it's best to avoid them.";
+				case 7:
+					return "Fairies trapped in bubbles are worth more score points than coins.";
 			}
 			return "";
 		}
+		//					return "Suggestions or concerns? Let us know by click on the feedback button to the left.";
 	}
 }

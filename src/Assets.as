@@ -11,65 +11,125 @@ package
 		 * Texture Atlases
 		 */
 		// atlas 1: platforms
-		[Embed(source="../media/graphics/platforms.png")]
-		public static const platforms:Class;
-		[Embed(source="../media/graphics/platforms.xml", mimeType="application/octet-stream")]
-		public static const platforms_xml:Class;
+//		[Embed(source="../media/graphics/platforms.png")]
+//		public static const platforms:Class;
+//		[Embed(source="../media/graphics/platforms.xml", mimeType="application/octet-stream")]
+//		public static const platforms_xml:Class;
+//		[Embed(source="../media/graphics/platforms.atf", mimeType="application/octet-stream")]
+//		public static const platforms:Class;
 		
 		// atlas 2: gameplay elements
-		[Embed(source="../media/graphics/atlas2.png")]
-		public static const atlas2:Class;
-		[Embed(source="../media/graphics/atlas2.xml", mimeType="application/octet-stream")]
-		public static const atlas2_xml:Class;
+//		[Embed(source="../media/graphics/atlas2.png")]
+//		public static const atlas2:Class;
+//		[Embed(source="../media/graphics/atlas2.xml", mimeType="application/octet-stream")]
+//		public static const atlas2_xml:Class;
+//		[Embed(source="../media/graphics/atlas2.atf", mimeType="application/octet-stream")]
+//		public static const atlas2:Class;
 		
 		// atlas 3: gameplay background elements
-		[Embed(source="../media/graphics/atlas3.png")]
-		public static const atlas3:Class;
-		[Embed(source="../media/graphics/atlas3.xml", mimeType="application/octet-stream")]
-		public static const atlas3_xml:Class;
+//		[Embed(source="../media/graphics/atlas3.png")]
+//		public static const atlas3:Class;
+//		[Embed(source="../media/graphics/atlas3.xml", mimeType="application/octet-stream")]
+//		public static const atlas3_xml:Class;
+//		[Embed(source="../media/graphics/atlas3.atf", mimeType="application/octet-stream")]
+//		public static const atlas3:Class;
 		
 		// atlas 4: UI elements
-		[Embed(source="../media/graphics/atlas4.png")]
-		public static const atlas4:Class;
+//		[Embed(source="../media/graphics/atlas4.png")]
+//		public static const atlas4:Class;
 		[Embed(source="../media/graphics/atlas4.xml", mimeType="application/octet-stream")]
 		public static const atlas4_xml:Class;
+		[Embed(source="../media/graphics/atlas4.atf", mimeType="application/octet-stream")]
+		public static const atlas4:Class;
 		
 		// atlas 5: gameplay foreground elements
-		[Embed(source="../media/graphics/atlas5_fg.png")]
-		public static const atlas5_fg:Class;
-		[Embed(source="../media/graphics/atlas5_fg.xml", mimeType="application/octet-stream")]
-		public static const atlas5_fg_xml:Class;
+//		[Embed(source="../media/graphics/atlas5_fg.png")]
+//		public static const atlas5_fg:Class;
+//		[Embed(source="../media/graphics/atlas5_fg.xml", mimeType="application/octet-stream")]
+//		public static const atlas5_fg_xml:Class;
+//		[Embed(source="../media/graphics/atlas5_fg.atf", mimeType="application/octet-stream")]
+//		public static const atlas5_fg:Class;
 		
 		// atlas 6: background dragon/stingray
-		[Embed(source="../media/graphics/atlas6_drgn.png")]
-		public static const atlas6_drgn:Class;
-		[Embed(source="../media/graphics/atlas6_drgn.xml", mimeType="application/octet-stream")]
-		public static const atlas6_drgn_xml:Class;
+//		[Embed(source="../media/graphics/atlas6_drgn.png")]
+//		public static const atlas6_drgn:Class;
+//		[Embed(source="../media/graphics/atlas6_drgn.xml", mimeType="application/octet-stream")]
+//		public static const atlas6_drgn_xml:Class;
+//		[Embed(source="../media/graphics/atlas6_drgn.atf", mimeType="application/octet-stream")]
+//		public static const atlas6_drgn:Class;
 		
-		// atlas 7: character idle/hurt animations
-		[Embed(source="../media/graphics/atlas7_char.png")]
-		public static const atlas7_char:Class;
-		[Embed(source="../media/graphics/atlas7_char.xml", mimeType="application/octet-stream")]
-		public static const atlas7_char_xml:Class;
+		// atlas 7: in game extras
+//		[Embed(source="../media/graphics/atlas7_char.png")]
+//		public static const atlas7_char:Class;
+		[Embed(source="../media/graphics/atlas7.xml", mimeType="application/octet-stream")]
+		public static const atlas7_xml:Class;
+		[Embed(source="../media/graphics/atlas7.atf", mimeType="application/octet-stream")]
+		public static const atlas7:Class;
 		
 		// atlas 8: miscellaneous
-		[Embed(source="../media/graphics/atlas8.png")]
-		public static const atlas8:Class;
+//		[Embed(source="../media/graphics/atlas8.png")]
+//		public static const atlas8:Class;
 		[Embed(source="../media/graphics/atlas8.xml", mimeType="application/octet-stream")]
 		public static const atlas8_xml:Class;
+		[Embed(source="../media/graphics/atlas8.atf", mimeType="application/octet-stream")]
+		public static const atlas8:Class;
+		
+		// atlas 9: character idle animations
+		[Embed(source="../media/graphics/atlas9.xml", mimeType="application/octet-stream")]
+		public static const atlas9_xml:Class;
+		[Embed(source="../media/graphics/atlas9.atf", mimeType="application/octet-stream")]
+		public static const atlas9:Class;
 		
 		/**
 		 * Background Images
 		 */
 		// layer 0
-		[Embed(source="../media/graphics/layer0_ground.png")]
-		public static const layer0_ground:Class;
+//		[Embed(source="../media/graphics/layer0_ground.png")]
+//		public static const layer0_ground:Class;
+//		
+//		[Embed(source="../media/graphics/layer0_sky.png")]
+//		public static const layer0_sky:Class;
 		
-		[Embed(source="../media/graphics/layer0_sky.png")]
-		public static const layer0_sky:Class;
+		/**
+		 * Particles
+		 */
+		// leaf
+		[Embed(source="../media/particles/particleLeaf.pex", mimeType="application/octet-stream")]
+		public static const ParticleLeafXML:Class;
 		
-		[Embed(source="../media/graphics/new_png_src/bg_test/bg6.png")]
-		public static const bg6:Class;
+		// charge
+		[Embed(source="../media/particles/charge/particleCharge.pex", mimeType="application/octet-stream")]
+		public static const ParticleChargeXML:Class;
+		
+		// wind
+		[Embed(source="../media/particles/wind/particle.pex", mimeType="application/octet-stream")]
+		public static const ParticleWindXML:Class;
+		
+		// rain
+		[Embed(source="../media/particles/rain/particle.pex", mimeType="application/octet-stream")]
+		public static const ParticleRainXML:Class;
+		
+		// jet
+		[Embed(source="../media/particles/jet/texture.png")]
+		public static const ParticleJetTexture:Class;
+		[Embed(source="../media/particles/jet/particle.pex", mimeType="application/octet-stream")]
+		public static const ParticleJetXML:Class;
+		
+		// comet tail
+		[Embed(source="../media/particles/comet/particle.pex", mimeType="application/octet-stream")]
+		public static const ParticleCometXML:Class;
+		
+		// bounce
+		[Embed(source="../media/particles/bounce/particle.pex", mimeType="application/octet-stream")]
+		public static const ParticleBounceXML:Class;
+		
+		// explode
+		[Embed(source="../media/particles/explode/particle.pex", mimeType="application/octet-stream")]
+		public static const ParticleExplodeXML:Class;
+		
+		// confetti
+		[Embed(source="../media/particles/confetti/particle.pex", mimeType="application/octet-stream")]
+		public static const ParticleConfettiXML:Class;
 		
 		/**
 		 * Sounds
@@ -317,8 +377,8 @@ package
 		[Embed(source="../media/sounds/bgm/magical_waltz.mp3")]
 		public static const SND_BGM_MENU:Class;
 		
-		[Embed(source="../media/sounds/bgm/chaoz_airflow.mp3")]
-		public static const SND_BGM_INGAME:Class;
+//		[Embed(source="../media/sounds/bgm/chaoz_airflow.mp3")]
+//		public static const SND_BGM_INGAME:Class;
 		
 		
 		/**

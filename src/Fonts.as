@@ -42,28 +42,28 @@ package
 		public static const XML_Badabb:Class;
 		
 		// Verdana 14 font
-		[Embed(source="../media/fonts/bitmap/verdana14.png")]
-		public static const Font_Verdana14:Class;
-		[Embed(source="../media/fonts/bitmap/verdana14.fnt", mimeType="application/octet-stream")]
-		public static const XML_Verdana14:Class;
+//		[Embed(source="../media/fonts/bitmap/verdana14.png")]
+//		public static const Font_Verdana14:Class;
+//		[Embed(source="../media/fonts/bitmap/verdana14.fnt", mimeType="application/octet-stream")]
+//		public static const XML_Verdana14:Class;
 		
 		// Lithos 30 font
-		[Embed(source="../media/fonts/bitmap/fontLithos30.png")]
-		public static const Font_Lithos24:Class;
-		[Embed(source="../media/fonts/bitmap/fontLithos30.fnt", mimeType="application/octet-stream")]
-		public static const XML_Lithos24:Class;
+//		[Embed(source="../media/fonts/bitmap/fontLithos30.png")]
+//		public static const Font_Lithos24:Class;
+//		[Embed(source="../media/fonts/bitmap/fontLithos30.fnt", mimeType="application/octet-stream")]
+//		public static const XML_Lithos24:Class;
 		
 		// Lithos 42 font
-		[Embed(source="../media/fonts/bitmap/fontLithos42.png")]
-		public static const Font_Lithos42:Class;
-		[Embed(source="../media/fonts/bitmap/fontLithos42.fnt", mimeType="application/octet-stream")]
-		public static const XML_Lithos42:Class;
+//		[Embed(source="../media/fonts/bitmap/fontLithos42.png")]
+//		public static const Font_Lithos42:Class;
+//		[Embed(source="../media/fonts/bitmap/fontLithos42.fnt", mimeType="application/octet-stream")]
+//		public static const XML_Lithos42:Class;
 		
 		// Verdana 23 font
-		[Embed(source="../media/fonts/bitmap/fontVerdana23.png")]
-		public static const Font_Verdana23:Class;
-		[Embed(source="../media/fonts/bitmap/fontVerdana23.fnt", mimeType="application/octet-stream")]
-		public static const XML_Verdana23:Class;
+//		[Embed(source="../media/fonts/bitmap/fontVerdana23.png")]
+//		public static const Font_Verdana23:Class;
+//		[Embed(source="../media/fonts/bitmap/fontVerdana23.fnt", mimeType="application/octet-stream")]
+//		public static const XML_Verdana23:Class;
 		
 		// Lithos 44 bold font
 		[Embed(source="../media/fonts/bitmap/fontLithosBold44.png")]
@@ -108,10 +108,10 @@ package
 		public static const XML_Pulsing72:Class;
 		
 		// Badaboom 72 font (pulsing distance text)
-		[Embed(source="../media/fonts/bitmap/pulsing72.png")]
-		public static const Font_Pulsing72Fire:Class;
-		[Embed(source="../media/fonts/bitmap/pulsing72.fnt", mimeType="application/octet-stream")]
-		public static const XML_Pulsing72Fire:Class;
+//		[Embed(source="../media/fonts/bitmap/pulsing72.png")]
+//		public static const Font_Pulsing72Fire:Class;
+//		[Embed(source="../media/fonts/bitmap/pulsing72.fnt", mimeType="application/octet-stream")]
+//		public static const XML_Pulsing72Fire:Class;
 		
 		// Bell Gothic Black 25 font (dialog box)
 		[Embed(source="../media/fonts/bitmap/bellgothicblack25.png")]
@@ -138,18 +138,13 @@ package
 		private static var ScoreLabel:BitmapFont;
 		private static var ScoreValue:BitmapFont;
 		private static var Badabb:BitmapFont;
-		private static var Verdana14:BitmapFont;
-		private static var Lithos24:BitmapFont;
-		private static var Lithos42:BitmapFont;
-		private static var Verdana23:BitmapFont;
-		private static var LithosBold44:BitmapFont;
 		private static var Materhorn24:BitmapFont;
 		private static var BellGothicBlack13:BitmapFont;
 		private static var Badaboom25:BitmapFont;
 		private static var Materhorn25:BitmapFont;
 		private static var Badaboom50:BitmapFont;
 		private static var Pulsing72:BitmapFont;
-		private static var Pulsing72Fire:BitmapFont;
+//		private static var Pulsing72Fire:BitmapFont;
 		private static var BellGothicBlack25:BitmapFont;
 		private static var Materhorn24White:BitmapFont;
 		private static var Materhorn15White:BitmapFont;

@@ -158,6 +158,8 @@ package com.jumpGame.gameElements
 		
 		// return true if ability triggered
 		public function triggerSpecialAbility(levelDifficulty:int):Boolean {
+			return false; // test
+			
 			if (Statics.numSpecials <= 0) {
 				hud.showMessage("No More Abilities Left");
 			}
@@ -414,8 +416,10 @@ package com.jumpGame.gameElements
 		}
 		
 		public function repulseOffBouncer(repulsorGx:Number, repulsorGy:Number):void {
-			if (this.gx > repulsorGx + 10) this.dx = 1.35;
-			else if (this.gx < repulsorGx - 10) this.dx = -1.35;
+//			if (this.gx > repulsorGx + 10) this.dx = 1.35;
+//			else if (this.gx < repulsorGx - 10) this.dx = -1.35;
+			if (this.gx > repulsorGx) this.dx = 1.35;
+			else this.dx = -1.35;
 			if (this.dy < 1.65) this.dy += (1.65 - this.dy);
 		}
 		
